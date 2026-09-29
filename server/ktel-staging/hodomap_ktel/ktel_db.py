@@ -5,13 +5,15 @@ import os
 import sqlite3
 from pathlib import Path
 
-DEFAULT_KTEL_DB_PATH = os.environ.get(
-    "SYRMOS_KTEL_DB_PATH",
-    str(Path(__file__).resolve().parent.parent / "data" / "ktel.db"),
+DEFAULT_KTEL_DB_PATH = (
+    os.environ.get("HODOMAP_KTEL_DB_PATH")
+    or os.environ.get("SYRMOS_KTEL_DB_PATH")  # legacy fallback, drop after Pi migration
+    or str(Path(__file__).resolve().parent.parent / "data" / "ktel.db")
 )
-DEFAULT_KTEL_PUBLIC_DB_PATH = os.environ.get(
-    "SYRMOS_KTEL_PUBLIC_DB_PATH",
-    str(Path(__file__).resolve().parent.parent / "data" / "ktel-public.db"),
+DEFAULT_KTEL_PUBLIC_DB_PATH = (
+    os.environ.get("HODOMAP_KTEL_PUBLIC_DB_PATH")
+    or os.environ.get("SYRMOS_KTEL_PUBLIC_DB_PATH")  # legacy fallback, drop after Pi migration
+    or str(Path(__file__).resolve().parent.parent / "data" / "ktel-public.db")
 )
 KTEL_MIGRATIONS_DIR = Path(__file__).resolve().parent.parent / "ktel_migrations"
 

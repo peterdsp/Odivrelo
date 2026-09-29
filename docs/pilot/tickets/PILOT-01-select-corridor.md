@@ -1,7 +1,7 @@
 # PILOT-01: Select the pilot corridor and operators, with a fallback
 
 - Type: research
-- Status: todo
+- Status: done, 7 September 2026
 - Step: 2, data check
 - Depends on: none
 - Blocks: PILOT-02, PILOT-03, PILOT-04, PILOT-05
@@ -19,6 +19,21 @@ fails.
 The corridor is chosen by which one's data actually checks out, not by ambition.
 Naming a fallback up front keeps the pilot from stalling if the first choice
 fails PILOT-02 to PILOT-05.
+
+## Outcome
+
+Selection recorded in [the corridor brief](../CORRIDOR_BRIEF.md).
+
+- Primary: Athens to Delphi, hub Athens Liosion Terminal B. Operators
+  `ktel-fokida` (through service), with `ktel-livadeia` or `ktel-thiva` as the
+  intermediate or transfer leg. Terminal-confusion case: Delphi departs Liosion,
+  not the better-known Kifissos.
+- Fallback: Athens to Nafplio, `ktel-argolida`, from Kifissos Terminal A.
+- Second fallback if operator-type diversity is later preferred: Thessaloniki to
+  Halkidiki, `ktel-thessaloniki` and `ktel-halkidiki`.
+
+The choice stays provisional until the data-check gate
+[PILOT-07](PILOT-07-data-check-gate.md).
 
 ## Tasks
 

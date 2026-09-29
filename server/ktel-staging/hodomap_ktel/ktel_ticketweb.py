@@ -163,7 +163,7 @@ class TicketWebReadClient:
                 Path(
                     os.environ.get(
                         "KTEL_TICKETWEB_CACHE_DIR",
-                        "/home/peterdsp/syrmos-api/cache/ktel-ticketweb",
+                        "/home/peterdsp/hodomap/cache/ktel-ticketweb",
                     )
                 ),
                 ttl_seconds=int(
@@ -224,7 +224,7 @@ class TicketWebReadClient:
             "Accept": "application/json",
             "Authorization": self.authorization,
             "Content-Type": "application/json",
-            "User-Agent": "Syrmos-KTEL-Research/1.0 (+https://syrmos.peterdsp.dev)",
+            "User-Agent": "HodoMap-KTEL-Research/1.0 (+mailto:info@peterdsp.dev)",
         }
         if self.client_key:
             header_name = os.environ.get(
