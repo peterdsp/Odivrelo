@@ -1,268 +1,229 @@
 <div align="center">
 
-# HodoMap
+<img src="design/logo/poravia-mark.svg" width="88" height="88" alt="">
 
-### Greece by bus, clearly.
+# Poravia
 
-Search intercity coach routes, timetables, stops and operators across Greece.
-Understand what is verified, what is current and where to book officially.
+### Greece by coach, with certainty.
 
-[![Project status](https://img.shields.io/badge/status-foundation-315c48)](#project-status)
-[![Kotlin Multiplatform](https://img.shields.io/badge/mobile-Kotlin_Multiplatform-7F52FF?logo=kotlin&logoColor=white)](#why-kotlin-multiplatform)
-[![Platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20Android%20%7C%20Web-1f2937)](#platform-strategy)
+Find the journey, the exact boarding point, and the operator's own booking
+page. See when each fact was checked and which source supports it.
+
+[![Release](https://img.shields.io/badge/release-1.0.0_beta-0B6B63)](docs/beta/RELEASE-NOTES.md)
+[![Data mode](https://img.shields.io/badge/data-demonstration_only-F2B84B)](#data-mode-demonstration-only)
+[![Platforms](https://img.shields.io/badge/platforms-Web%20%7C%20iOS%20%7C%20Android-1f2937)](#platforms)
 [![License](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
 
 </div>
 
-## What is HodoMap?
+## What Poravia is
 
-HodoMap brings Greece's fragmented intercity coach information into one
-independent application. Travelers can search journeys, inspect stops and
-route maps, save verified schedules for offline use and continue to each
-operator's official booking service. When an operator does not sell
-electronically, HodoMap provides its verified ticket-office and contact
-information instead. Passengers can save trips, retain an explicitly imported
-ticket securely on their device, and receive opt-in travel notifications.
+Greece's intercity coach network is run by dozens of independent KTEL
+operators, each with its own site, its own timetable format and its own
+terminal. The hard part is not finding *a* coach. It is being sure of the one
+you need: the right date, the right terminal, the right bay, and a booking
+route that actually works.
 
-The product is designed for residents and visitors, with Greek, English and
-Albanian treated as first-class languages.
+Poravia is a certainty layer over that. It answers four questions and shows its
+working for each:
 
-HodoMap does not pretend that unavailable data is complete. Every public
-timetable is linked to its source, effective period, retrieval time and review
-state.
+1. **Does this journey run on the date I am travelling?**
+2. **Where exactly do I board?** Not the city. The terminal, and the bay.
+3. **How do I buy a ticket officially?** Or, when there is no online sale, the
+   verified ticket office, address, phone and opening hours.
+4. **How stale is what you just told me, and who said it?**
 
-HodoMap's differentiating product strategy is to become Greece's intercity
-coach certainty layer: verify the date-specific journey, identify the exact
-boarding point, provide an official purchase or contact action, and keep the
-trip ready offline. See the
-[product differentiation strategy](docs/PRODUCT_DIFFERENTIATION.md).
+Poravia never sells or issues tickets. It hands you to the operator.
+
+The name is invented. It was built to suggest the Greek *πόρος*, a passage,
+ford or strait. It is not a Greek word and it is not claimed to translate to
+anything.
+
+## Data mode: demonstration only
+
+**This 1.0.0 beta ships invented data.** Every journey, terminal and operator
+you can see belongs to a fictional region called **Aloria**, which does not
+exist. No departure shown is real. Every client says so on screen, in all three
+languages, and the web release is marked `noindex`.
+
+That is not a shortcut. It is what the evidence allows:
+
+- All 62 KTEL federation operator directory sources in
+  [`data/operators/registry.json`](data/operators/registry.json) are
+  `rightsStatus: unknown`. No operator permission is in hand.
+- The one rights-cleared national source, the Greek National Access Point's
+  long-distance bus dataset, is **ODbL-licensed but was last updated on
+  1 December 2020**. It contains **no boarding points, no coordinates and no
+  stop identifiers**, only free-text city names, and the word *Delphi* appears
+  in it **zero times**. Full dated evidence:
+  [PHASE0-02 findings](docs/phase0/NAP-DATASET-EVIDENCE.md).
+
+So the engineering is complete and the dataset is honest about itself.
+Switching to real data is a rights-and-review event, not a rewrite: the
+`dataMode` field flips, the notices disappear, indexing turns on, and no client
+code changes. What it would take is written down in
+[EXTERNAL-BLOCKERS.md](docs/beta/EXTERNAL-BLOCKERS.md).
+
+Poravia would rather show you a missing journey than an invented one.
 
 ## Product principles
 
-- **Evidence before coverage.** A missing journey is better than an invented
-  journey.
-- **One national search.** Operator boundaries should not become passenger
-  complexity.
-- **Offline where it matters.** Reviewed schedules and stop data should remain
-  useful with poor connectivity.
-- **Official booking handoff.** HodoMap informs and routes users to the
-  operator. It does not issue tickets without written authority. Operators
-  without electronic ticketing receive a verified contact and physical
-  ticket-office fallback.
-- **Passenger-owned travel wallet.** Saved trips and imported tickets remain
-  local by default. Push services receive no ticket, barcode, passenger, or
-  booking-reference data.
-- **Visible freshness.** Users can see when information was checked and which
-  source supports it.
-- **Privacy by default.** Location and favorites stay on the device unless a
-  future feature clearly requires otherwise.
-- **Accessible to everyone.** Screen readers, dynamic text, keyboard
-  navigation, contrast and reduced motion are release requirements.
+- **Evidence before coverage.** A missing journey beats an invented journey.
+- **One national search.** Operator boundaries are not the traveller's problem.
+- **Offline where it matters.** Reviewed schedules and stop data stay useful on
+  a bad connection, and say which cached release they came from.
+- **Official booking handoff.** Poravia informs and routes. Operators without
+  electronic ticketing get a verified contact and ticket-office fallback.
+- **Passenger-owned travel wallet.** Saved trips and explicitly imported
+  tickets stay on the device. No push service ever receives a ticket, a
+  barcode, a passenger name or a booking reference.
+- **Visible freshness.** Every fact carries when it was checked and what
+  supports it.
+- **Privacy by default.** No account, no analytics, no trackers.
+- **Accessible to everyone.** Screen readers, dynamic text, keyboard, contrast
+  and reduced motion are release gates, not polish.
 
-## Should HodoMap use Kotlin Multiplatform?
+Greek, English and Albanian are all first-class.
 
-**Yes, for the mobile core.**
+## Platforms
 
-Kotlin Multiplatform is a strong fit for the parts that must behave identically
-on iOS and Android:
+| Target | Implementation | State |
+|---|---|---|
+| Web, mobile and desktop | React, TypeScript, Vite, installable PWA | deployed at `poravia.peterdsp.dev` |
+| iPhone and iPad, including iPhone Duo | SwiftUI, MapKit, shared Kotlin core | native app |
+| Android phones, tablets and foldables | Jetpack Compose, shared Kotlin core | native app |
+| Backend and ingestion | Python, FastAPI, SQLite | service and governed release pipeline |
 
-- Domain models and journey contracts.
-- API and offline-pack clients.
-- SQLDelight persistence.
-- Favorites and recent searches.
-- Coverage, freshness and rights states.
-- Date, time-zone and calendar rules.
-- Search coordination and result ordering.
-- Localization keys and formatting contracts.
+Desktop coverage is deliberately Web and PWA. There is no native desktop
+binary, no watch app, no TV app and no spatial app, and none is claimed.
 
-HodoMap should not become one enormous shared UI module.
-
-## Platform strategy
-
-| Platform | UI | Maps | Shared code |
-|---|---|---|---|
-| Android | Jetpack Compose | MapLibre or native map SDK | KMP mobile core |
-| iOS | SwiftUI | MapKit | KMP mobile core |
-| Web | TypeScript and React/Next.js | MapLibre GL JS | OpenAPI and JSON schemas |
-
-The Web app stays web-native because public transport pages benefit from
-search-engine indexing, semantic HTML, browser accessibility and the mature
-JavaScript mapping ecosystem.
-
-The API remains canonical for routes, calendars, source lineage and release
-identity. Clients may cache reviewed data for offline use, but they do not
-independently invent national timetable logic.
+Per-platform build, verification and distribution status, with evidence, is in
+[docs/beta/TEST-MATRIX.md](docs/beta/TEST-MATRIX.md) and
+[docs/beta/RELEASE-READINESS.md](docs/beta/RELEASE-READINESS.md).
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-    Sources["Official operator, government and permitted provider sources"]
+    Sources["Official, government and permitted sources"]
     Ingestion["Bounded ingestion and source archive"]
     Review["Normalization, quarantine and human review"]
-    Compiler["Rights-gated public release compiler"]
-    API["HodoMap Coach API"]
-    Packs["Versioned offline packs"]
-    Android["Android, Compose"]
+    Compiler["Rights-gated release compiler"]
+    Packs["Immutable, checksummed release packs plus GTFS"]
+    API["Poravia read API"]
+    Web["Web and PWA"]
     IOS["iOS, SwiftUI"]
-    Web["Web, React"]
-    Booking["Official operator booking services"]
+    Android["Android, Compose"]
+    Booking["Operator booking services"]
 
-    Sources --> Ingestion
-    Ingestion --> Review
-    Review --> Compiler
+    Sources --> Ingestion --> Review --> Compiler --> Packs
     Compiler --> API
-    Compiler --> Packs
-    API --> Android
-    API --> IOS
-    API --> Web
-    Packs --> Android
+    Packs --> Web
     Packs --> IOS
-    Android --> Booking
-    IOS --> Booking
+    Packs --> Android
+    API --> IOS
+    API --> Android
     Web --> Booking
+    IOS --> Booking
+    Android --> Booking
 ```
 
-The data path uses separate ingestion and public databases. Candidate,
-rights-pending and quarantined records never enter a public release. See
-[Architecture](docs/ARCHITECTURE.md) and
-[Data governance](docs/DATA_GOVERNANCE.md).
+Two databases, always. An ingestion database holds candidates, provenance and
+review state. A compiled public database holds only rows that are both
+**approved by a reviewer** and **sourced from a rights-cleared source**. The
+compiler refuses to mix them, the manifest is written last, and one previous
+release is retained so a rollback has a target.
 
-## Daily source monitoring
+Service-date semantics, `Europe/Athens`, midnight crossings, GTFS times beyond
+24:00 and daylight-saving transitions are resolved **once**, server-side, and
+tested. No client reimplements a timetable engine.
 
-HodoMap includes a deployable Raspberry Pi acquisition service. Every day it
-checks the 62 federation operator directory pages, the national directory and
-the Greek NAP catalog using conditional, rate-limited requests.
-
-The monitor:
-
-- Retains only metadata and content digests when reuse rights are unknown.
-- Stores source bodies only when rights are explicitly `permitted`.
-- Discovers external official-site candidates without retaining page bodies.
-- Queues changed sources for review.
-- Rejects oversized and unexpected responses.
-- Has a hard daily request budget.
-- Keeps TicketWeb disabled until written terms approval.
-- Never publishes a changed timetable automatically.
-
-See the [daily acquisition runbook](ops/raspberry-pi/DAILY_ACQUISITION.md).
-
-## Design language
-
-HodoMap uses Aegean teal, limestone surfaces and sun amber to create a calm,
-independent and trustworthy national travel product.
-
-The complete [design system](docs/DESIGN_SYSTEM.md), machine-readable
-[design tokens](design/tokens/hodomap.tokens.json) and
-[visual brand board](design/HodoMap-Brand-Board.svg) define color, typography,
-spacing, components, maps, dark mode, motion and accessibility.
+See [Architecture](docs/ARCHITECTURE.md),
+[Data governance](docs/DATA_GOVERNANCE.md) and the
+[beta architecture decisions](docs/beta/ARCHITECTURE-DECISIONS.md).
 
 ## Repository layout
 
 ```text
-HodoMap/
+.
+├── brand.json            Single source of product identity
 ├── apps/
-│   ├── android/          Android Compose application
-│   ├── ios/              Native SwiftUI application
-│   └── web/              React/Next.js public web application
+│   ├── android/          Jetpack Compose application
+│   ├── ios/              SwiftUI application
+│   └── web/              React PWA, the public 1.0.0 release
 ├── shared/
-│   ├── core/             KMP domain, network, database and common code
+│   ├── core/             Kotlin Multiplatform domain, network, database
 │   └── features/         Shared mobile feature logic
 ├── server/
-│   ├── api/              Public API and administrative review service
-│   ├── ingestion/        Source adapters and normalization jobs
-│   ├── migrations/       Versioned database migrations
-│   └── ktel-staging/     Transplanted compiler and API awaiting integration
+│   ├── api/              Public read API and private review surface
+│   ├── ktel-staging/     Compiler, GTFS export, release packs
+│   └── src/              Bounded source acquisition pipeline
 ├── data/
-│   ├── schemas/          Public schemas and interchange contracts
-│   └── fixtures/         Small lawful test fixtures
-├── ops/
-│   └── raspberry-pi/     Deployment, systemd, nginx, backup and monitoring
-├── scripts/              Reproducible development and data commands
-├── docs/                 Architecture, governance and roadmap
-└── .github/              Contribution and automation configuration
+│   ├── schemas/          Versioned public contracts, OpenAPI and JSON Schema
+│   ├── fixtures/         The labelled Aloria demonstration dataset
+│   └── operators/        Operator registry and source rights
+├── design/               Tokens, brand marks, brand board
+├── ops/raspberry-pi/     Daily acquisition deployment
+├── scripts/              Reproducible build, check and release commands
+└── docs/beta/            Delivery ledger, evidence and release gates
 ```
 
-Each top-level area has a README describing what belongs there and what must
-not be committed.
+## Running it
 
-The [documentation index](docs/INDEX.md) identifies the current plan,
-architecture, design and preserved earlier analysis.
+```bash
+# Data pipeline: migrate, seed, import, review, publish, pack, verify
+python3.12 -m venv .venv
+PY=.venv/bin/python bash scripts/ci-pipeline-smoke.sh
 
-## Data trust model
+# Web
+cd apps/web && npm ci && npm run dev
 
-Every source and normalized entity carries:
+# Shared core and Android
+JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./gradlew :shared:core:allTests
+JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./gradlew :apps:android:assembleDebug
 
-- Operator and source identity.
-- Retrieval time and effective period.
-- Content digest.
-- Rights state.
-- Review state.
-- Parser version.
-- Public release identity.
+# iOS
+bash scripts/shared-build-xcframework.sh
+open apps/ios/Poravia.xcodeproj
+```
 
-Only records marked `permitted` and `approved` can be compiled for public use.
-Raw booking-system responses, credentials, passenger information and
-rights-pending datasets are not repository content.
+Full, exact steps including signing, deployment and rollback:
+[docs/beta/BUILD-AND-RELEASE.md](docs/beta/BUILD-AND-RELEASE.md).
+The Phase 0 data runbook is [docs/phase0/RUNBOOK.md](docs/phase0/RUNBOOK.md).
 
-Read the complete rules in [DATA_GOVERNANCE.md](docs/DATA_GOVERNANCE.md).
+## Documentation
 
-## Project status
+[docs/INDEX.md](docs/INDEX.md) is the map. The delivery ledger for this release
+lives in [docs/beta/](docs/beta/):
 
-HodoMap is currently in the **foundation and source-acquisition phase**.
+- [EXECUTION-STATUS.md](docs/beta/EXECUTION-STATUS.md), what is done and what is not
+- [BRAND-DECISION.md](docs/beta/BRAND-DECISION.md), the name, its screening and its limits
+- [ARCHITECTURE-DECISIONS.md](docs/beta/ARCHITECTURE-DECISIONS.md), dated decisions
+- [TEST-MATRIX.md](docs/beta/TEST-MATRIX.md), evidence per platform
+- [RELEASE-READINESS.md](docs/beta/RELEASE-READINESS.md), the gates
+- [EXTERNAL-BLOCKERS.md](docs/beta/EXTERNAL-BLOCKERS.md), what is missing and exactly what would unblock it
+- [RELEASE-NOTES.md](docs/beta/RELEASE-NOTES.md)
 
-The repository structure and product architecture are established. National
-route and timetable coverage, the 19,872-source-stop normalization program,
-exact road geometry, production Raspberry Pi deployment and client
-applications are not yet complete.
+Documents written before 30 September 2026 carry the product's former name,
+HodoMap, and are marked as historical. They are preserved, not rewritten.
 
-The first release sequence is:
-
-1. Establish legal and source authority.
-2. Complete a three-operator vertical pilot.
-3. Scale lawful adapters and stop normalization.
-4. Deploy an isolated Raspberry Pi staging service.
-5. Build iOS, Android and Web clients against one API contract.
-6. Launch a transparent national beta.
-
-See the detailed [roadmap](docs/ROADMAP.md).
-The complete R0 to R6 delivery program is in the
-[national execution plan](docs/NATIONAL_EXECUTION_PLAN.md).
-
-## Development
-
-The repository is intentionally architecture-first and does not yet contain a
-generated Gradle, Xcode, Next.js or Python project. Toolchain versions and
-dependency choices will be locked in the first implementation change instead
-of committing disposable scaffolding.
-
-Expected toolchains:
-
-- JDK 17 or newer.
-- Kotlin and Kotlin Multiplatform.
-- Android Studio and Xcode.
-- Node.js LTS for the Web app.
-- Python 3.12 or newer for ingestion and API services.
-- SQLite for source review and compiled public releases.
-
-## Contributing
+## Contributing and security
 
 Start with [CONTRIBUTING.md](CONTRIBUTING.md). Changes to timetable logic,
-source adapters, entity matching or public data require fixtures and evidence.
-
-Security issues should follow [SECURITY.md](SECURITY.md), not a public issue.
+source adapters, entity matching or public data need fixtures and evidence.
+Security issues follow [SECURITY.md](SECURITY.md), not a public issue.
 
 ## License and independence
 
-HodoMap source code is licensed under the
-[Apache License 2.0](LICENSE).
-
-That license does not grant rights to third-party timetables, maps, operator
-logos, trademarks or booking-system data. Dataset publication follows each
-source's recorded terms and the rules in
+Poravia's source code is licensed under the
+[Apache License 2.0](LICENSE). That license grants no rights to third-party
+timetables, maps, operator logos, trademarks or booking-system data. Dataset
+publication follows each source's recorded terms and the rules in
 [DATA_GOVERNANCE.md](docs/DATA_GOVERNANCE.md).
 
-HodoMap is an independent project. It is not affiliated with, endorsed by or
-operated by the KTEL federation, regional KTEL operators, TicketWeb or their
+Poravia is an independent project. It is not affiliated with, endorsed by or
+operated by the KTEL federation, any regional KTEL operator, TicketWeb or their
 technology providers. Operator names and trademarks remain the property of
 their respective owners.
+
+Corrections and takedown requests: `info@peterdsp.dev`.

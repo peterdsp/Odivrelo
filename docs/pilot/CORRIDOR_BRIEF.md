@@ -1,5 +1,12 @@
 # Corridor brief: pilot selection (PILOT-01)
 
+> **Historical document.** This records a decision made under the product's
+> former name, HodoMap, which was rejected on 30 September 2026 and replaced
+> by **Poravia**. The text below is preserved as written, including the old
+> name, because rewriting a dated decision would falsify the record. See
+> [the brand decision](../../docs/beta/BRAND-DECISION.md).
+
+
 Status: proposed, provisional. The final corridor is confirmed only when it
 passes the data-check gate [PILOT-07](tickets/PILOT-07-data-check-gate.md). This
 brief names the primary and fallback so the data check has a target.

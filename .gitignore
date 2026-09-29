@@ -136,3 +136,7 @@ terraform.tfstate
 terraform.tfstate.*
 *.tfvars
 !*.tfvars.example
+
+# Local artifacts from the beta delivery (binaries, screenshots, logs, datasets)
+/artifacts/
+apps/*/artifacts/

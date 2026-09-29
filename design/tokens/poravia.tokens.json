@@ -1,7 +1,7 @@
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
-  "name": "HodoMap",
-  "version": "0.1.0",
+  "name": "Poravia",
+  "version": "1.0.0",
   "color": {
     "primitive": {
       "aegean950": { "$type": "color", "$value": "#0D1B1A" },

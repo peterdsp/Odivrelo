@@ -1,17 +1,17 @@
 # KTEL staging (transplanted from the Syrmos project)
 
 These files were originally built in the separate Syrmos rail project tree by
-mistake; they belong to HodoMap (the intercity coach app). The Python package
-was renamed from `syrmos_admin` to `hodomap_ktel` in PHASE0-01 (issue #12), so no
-Syrmos identity remains in HodoMap code. Behaviour is unchanged.
+mistake; they belong to Poravia (the intercity coach app). The Python package
+was renamed from `syrmos_admin` to `hodomap_ktel` (and later to the Poravia package name) in PHASE0-01 (issue #12), so no
+Syrmos identity remains in Poravia code. Behaviour is unchanged.
 
 - `hodomap_ktel/ktel_*.py`: the 6 self-contained KTEL modules. They import each
   other with relative imports (`from . import ktel_db`, `from .ktel_registry`),
   so they work as a package regardless of where it is mounted.
 - `ktel_migrations/`, `data/`: `ktel_db.py` resolves these relative to the
   package parent (`__file__.parent.parent`), that is this `ktel-staging/` dir.
-  The DB paths are env-overridable. `HODOMAP_KTEL_DB_PATH` and
-  `HODOMAP_KTEL_PUBLIC_DB_PATH` are the current names; the legacy
+  The DB paths are env-overridable. `PORAVIA_KTEL_DB_PATH` and
+  `PORAVIA_KTEL_PUBLIC_DB_PATH` are the current names; the legacy
   `SYRMOS_KTEL_DB_PATH` and `SYRMOS_KTEL_PUBLIC_DB_PATH` are still read as a
   fallback so an existing deployment keeps working until it migrates.
 - `pkg/ktel/operators.json`: operator seed data.

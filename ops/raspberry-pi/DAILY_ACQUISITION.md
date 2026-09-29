@@ -34,9 +34,9 @@ separate bounded adapter.
 
 On 26 July 2026:
 
-- The source tree was deployed to `/home/peterdsp/hodomap`.
+- The source tree was deployed to `/home/peterdsp/poravia`.
 - The registry validated 62 official operators and 64 enabled metadata targets.
-- `hodomap-acquire.timer` was enabled and active.
+- `poravia-acquire.timer` was enabled and active.
 - User lingering was confirmed active for unattended runs.
 - A live three-source smoke run completed with three successful HTTP 200
   checks.
@@ -61,19 +61,19 @@ applications.
 ## Runtime locations
 
 ```text
-/home/peterdsp/hodomap/
+/home/peterdsp/poravia/
     Deployed source tree
 
-/home/peterdsp/.config/hodomap/acquisition.env
+/home/peterdsp/.config/poravia/acquisition.env
     Private runtime configuration
 
-/home/peterdsp/.local/share/hodomap/acquisition.db
+/home/peterdsp/.local/share/poravia/acquisition.db
     Acquisition state and review queue
 
-/home/peterdsp/.local/share/hodomap/artifacts/
+/home/peterdsp/.local/share/poravia/artifacts/
     Permitted content-addressed artifacts only
 
-/home/peterdsp/.local/state/hodomap/reports/
+/home/peterdsp/.local/state/poravia/reports/
     Per-run JSON reports
 ```
 
@@ -85,7 +85,7 @@ From the repository root:
 ./ops/raspberry-pi/deploy.sh
 ```
 
-The script deploys to the dedicated `/home/peterdsp/hodomap` directory. It
+The script deploys to the dedicated `/home/peterdsp/poravia` directory. It
 does not delete the remote directory, replace the private environment file or
 touch Syrmos runtime data.
 
@@ -100,45 +100,45 @@ sudo loginctl enable-linger peterdsp
 Validate the registry:
 
 ```bash
-PYTHONPATH=server/src python3 -m hodomap_pipeline validate-registry
+PYTHONPATH=server/src python3 -m poravia_pipeline validate-registry
 ```
 
 Show what is due:
 
 ```bash
-PYTHONPATH=server/src python3 -m hodomap_pipeline plan
+PYTHONPATH=server/src python3 -m poravia_pipeline plan
 ```
 
 Run a bounded smoke acquisition:
 
 ```bash
-PYTHONPATH=server/src python3 -m hodomap_pipeline \
+PYTHONPATH=server/src python3 -m poravia_pipeline \
   refresh --max-sources 3
 ```
 
 Inspect status:
 
 ```bash
-PYTHONPATH=server/src python3 -m hodomap_pipeline status
+PYTHONPATH=server/src python3 -m poravia_pipeline status
 ```
 
 Inspect the user timer:
 
 ```bash
-systemctl --user status hodomap-acquire.timer
-systemctl --user list-timers hodomap-acquire.timer
+systemctl --user status poravia-acquire.timer
+systemctl --user list-timers poravia-acquire.timer
 ```
 
 Inspect the latest job:
 
 ```bash
-journalctl --user -u hodomap-acquire.service -n 200 --no-pager
+journalctl --user -u poravia-acquire.service -n 200 --no-pager
 ```
 
 Trigger one full due run:
 
 ```bash
-systemctl --user start hodomap-acquire.service
+systemctl --user start poravia-acquire.service
 ```
 
 ## Failure policy

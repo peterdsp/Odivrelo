@@ -3,8 +3,8 @@ set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 repository_root=$(CDPATH= cd -- "$script_dir/../.." && pwd)
-target=${HODOMAP_PI_TARGET:-peterdsp@192.168.10.10}
-remote_root=/home/peterdsp/hodomap
+target=${PORAVIA_PI_TARGET:-peterdsp@192.168.10.10}
+remote_root=/home/peterdsp/poravia
 
 case "$target" in
   peterdsp@*)
@@ -30,15 +30,15 @@ rsync -az \
 ssh "$target" sh -s <<'REMOTE'
 set -eu
 
-repository_root=/home/peterdsp/hodomap
-config_root=/home/peterdsp/.config/hodomap
+repository_root=/home/peterdsp/poravia
+config_root=/home/peterdsp/.config/poravia
 unit_root=/home/peterdsp/.config/systemd/user
 
 mkdir -p \
   "$config_root" \
   "$unit_root" \
-  /home/peterdsp/.local/share/hodomap \
-  /home/peterdsp/.local/state/hodomap/reports
+  /home/peterdsp/.local/share/poravia \
+  /home/peterdsp/.local/state/poravia/reports
 
 chmod 0755 "$repository_root/ops/raspberry-pi/run-acquisition.sh"
 
@@ -50,18 +50,18 @@ if [ ! -f "$config_root/acquisition.env" ]; then
 fi
 
 cp \
-  "$repository_root/ops/raspberry-pi/systemd/hodomap-acquire.service" \
-  "$unit_root/hodomap-acquire.service"
+  "$repository_root/ops/raspberry-pi/systemd/poravia-acquire.service" \
+  "$unit_root/poravia-acquire.service"
 cp \
-  "$repository_root/ops/raspberry-pi/systemd/hodomap-acquire.timer" \
-  "$unit_root/hodomap-acquire.timer"
+  "$repository_root/ops/raspberry-pi/systemd/poravia-acquire.timer" \
+  "$unit_root/poravia-acquire.timer"
 
 PYTHONPATH="$repository_root/server/src" /usr/bin/python3 \
-  -m hodomap_pipeline \
+  -m poravia_pipeline \
   --registry "$repository_root/data/operators/registry.json" \
   validate-registry
 
 systemctl --user daemon-reload
-systemctl --user enable --now hodomap-acquire.timer
-systemctl --user list-timers hodomap-acquire.timer --no-pager
+systemctl --user enable --now poravia-acquire.timer
+systemctl --user list-timers poravia-acquire.timer --no-pager
 REMOTE

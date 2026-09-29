@@ -1,24 +1,34 @@
 {
   "$comment": "Single source of product identity. Every platform reads or generates its constants from this file, so a rename touches one place. Regenerate platform constants with scripts/generate-brand.sh.",
-  "name": "Perastra",
-  "slug": "perastra",
+  "name": "Poravia",
+  "slug": "poravia",
   "tagline": {
     "el": "Ταξίδεψε με βεβαιότητα.",
     "en": "Travel with certainty.",
     "sq": "Udhëto me siguri."
   },
-  "domain": "perastra.peterdsp.dev",
-  "url": "https://perastra.peterdsp.dev",
+  "domain": "poravia.peterdsp.dev",
+  "url": "https://poravia.peterdsp.dev",
   "supportEmail": "info@peterdsp.dev",
-  "bundleId": "dev.peterdsp.perastra",
-  "androidApplicationId": "dev.peterdsp.perastra",
-  "androidPackage": "dev.peterdsp.perastra",
-  "urlScheme": "perastra",
-  "envPrefix": "PERASTRA",
+  "bundleId": "dev.peterdsp.poravia",
+  "androidApplicationId": "dev.peterdsp.poravia",
+  "androidPackage": "dev.peterdsp.poravia",
+  "urlScheme": "poravia",
+  "envPrefix": "PORAVIA",
   "contractVersion": "1.0.0",
   "version": "1.0.0",
   "repository": "https://github.com/peterdsp/HodoMap",
-  "legacyNames": ["HodoMap", "Hodo", "hodomap", "syrmos_admin", "hodomap_ktel"],
-  "languages": ["el", "en", "sq"],
+  "legacyNames": [
+    "HodoMap",
+    "Hodo",
+    "hodomap",
+    "syrmos_admin",
+    "hodomap_ktel"
+  ],
+  "languages": [
+    "el",
+    "en",
+    "sq"
+  ],
   "defaultLanguage": "el"
 }

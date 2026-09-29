@@ -1,5 +1,12 @@
 # PHASE0-01: Rename the transplanted `syrmos_admin` package to a HodoMap name
 
+> **Historical document.** This records a decision made under the product's
+> former name, HodoMap, which was rejected on 30 September 2026 and replaced
+> by **Poravia**. The text below is preserved as written, including the old
+> name, because rewriting a dated decision would falsify the record. See
+> [the brand decision](../../../docs/beta/BRAND-DECISION.md).
+
+
 - Type: build
 - Status: done, 9 September 2026
 - Phase: 0, clear the runway

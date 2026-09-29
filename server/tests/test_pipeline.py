@@ -1,3 +1,4 @@
+import os
 import io
 import json
 import tempfile
@@ -6,13 +7,14 @@ import urllib.error
 from email.message import Message
 from pathlib import Path
 
-from hodomap_pipeline.acquisition import (
+from poravia_pipeline.acquisition import (
     AcquisitionSettings,
     SourceAcquirer,
     discover_candidate_links,
 )
-from hodomap_pipeline.registry import Registry, SourceTarget
-from hodomap_pipeline.state import StateStore
+from poravia_pipeline import acquisition, cli
+from poravia_pipeline.registry import Registry, SourceTarget
+from poravia_pipeline.state import StateStore
 
 
 class FakeResponse:
@@ -219,3 +221,52 @@ class PipelineTestCase(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BrandMigrationCompatibilityTestCase(unittest.TestCase):
+    """The rename must not silently orphan an existing Pi deployment."""
+
+    def setUp(self):
+        self._saved = {
+            name: os.environ.pop(name, None)
+            for name in (
+                "PORAVIA_MAX_REQUESTS",
+                "HODOMAP_MAX_REQUESTS",
+                "SYRMOS_MAX_REQUESTS",
+                "PORAVIA_TICKETWEB_TERMS_APPROVED",
+                "HODOMAP_TICKETWEB_TERMS_APPROVED",
+                "SYRMOS_TICKETWEB_TERMS_APPROVED",
+            )
+        }
+
+    def tearDown(self):
+        for name, value in self._saved.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+
+    def test_legacy_env_names_are_still_read(self):
+        self.assertEqual(cli.env("MAX_REQUESTS", "100"), "100")
+        os.environ["SYRMOS_MAX_REQUESTS"] = "11"
+        self.assertEqual(cli.env("MAX_REQUESTS", "100"), "11")
+        os.environ["HODOMAP_MAX_REQUESTS"] = "22"
+        self.assertEqual(cli.env("MAX_REQUESTS", "100"), "22")
+
+    def test_current_env_name_wins_over_legacy(self):
+        os.environ["HODOMAP_MAX_REQUESTS"] = "22"
+        os.environ["PORAVIA_MAX_REQUESTS"] = "33"
+        self.assertEqual(cli.env("MAX_REQUESTS", "100"), "33")
+
+    def test_ticketweb_gate_is_off_unless_explicitly_approved(self):
+        self.assertFalse(acquisition._ticketweb_terms_approved())
+        for name in (
+            "SYRMOS_TICKETWEB_TERMS_APPROVED",
+            "HODOMAP_TICKETWEB_TERMS_APPROVED",
+            "PORAVIA_TICKETWEB_TERMS_APPROVED",
+        ):
+            os.environ[name] = "0"
+            self.assertFalse(acquisition._ticketweb_terms_approved())
+            os.environ[name] = "1"
+            self.assertTrue(acquisition._ticketweb_terms_approved())
+            del os.environ[name]

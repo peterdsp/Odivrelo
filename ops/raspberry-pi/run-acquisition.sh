@@ -6,6 +6,6 @@ repository_root=$(CDPATH= cd -- "$script_dir/../.." && pwd)
 
 export PYTHONPATH="$repository_root/server/src"
 
-exec /usr/bin/python3 -m hodomap_pipeline \
+exec /usr/bin/python3 -m poravia_pipeline \
   --registry "$repository_root/data/operators/registry.json" \
   refresh

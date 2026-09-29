@@ -1,5 +1,12 @@
 # Syrmos National KTEL Data Platform
 
+> **Historical document.** This records a decision made under the product's
+> former name, HodoMap, which was rejected on 30 September 2026 and replaced
+> by **Poravia**. The text below is preserved as written, including the old
+> name, because rewriting a dated decision would falsify the record. See
+> [the brand decision](../docs/beta/BRAND-DECISION.md).
+
+
 Status date: 26 July 2026
 Implementation status: national registry and data platform foundation complete, national timetable population partial
 Runtime target: Raspberry Pi, FastAPI, SQLite, nginx, systemd

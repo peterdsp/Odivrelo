@@ -1,15 +1,15 @@
 [Unit]
-Description=HodoMap bounded daily source acquisition
-Documentation=https://github.com/peterdsp/HodoMap
+Description=Poravia bounded daily source acquisition
+Documentation=https://github.com/peterdsp/Poravia
 After=network-online.target
 Wants=network-online.target
-ConditionPathExists=%h/hodomap/data/operators/registry.json
+ConditionPathExists=%h/poravia/data/operators/registry.json
 
 [Service]
 Type=oneshot
-WorkingDirectory=%h/hodomap
-EnvironmentFile=-%h/.config/hodomap/acquisition.env
-ExecStart=%h/hodomap/ops/raspberry-pi/run-acquisition.sh
+WorkingDirectory=%h/poravia
+EnvironmentFile=-%h/.config/poravia/acquisition.env
+ExecStart=%h/poravia/ops/raspberry-pi/run-acquisition.sh
 Nice=10
 IOSchedulingClass=best-effort
 IOSchedulingPriority=6

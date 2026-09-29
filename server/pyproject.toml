@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hodomap-pipeline"
+name = "poravia-pipeline"
 version = "0.1.0"
-description = "Bounded, rights-aware acquisition pipeline for HodoMap"
+description = "Bounded, rights-aware acquisition pipeline for Poravia"
 requires-python = ">=3.9"
 license = { text = "Apache-2.0" }
 authors = [
@@ -14,7 +14,7 @@ authors = [
 dependencies = []
 
 [project.scripts]
-hodomap-pipeline = "hodomap_pipeline.cli:main"
+poravia-pipeline = "poravia_pipeline.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

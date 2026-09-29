@@ -1,7 +1,14 @@
 # PHASE0-02: Acquire and licence-clear the NAP KTEL dataset
 
+> **Historical document.** This records a decision made under the product's
+> former name, HodoMap, which was rejected on 30 September 2026 and replaced
+> by **Poravia**. The text below is preserved as written, including the old
+> name, because rewriting a dated decision would falsify the record. See
+> [the brand decision](../../../docs/beta/BRAND-DECISION.md).
+
+
 - Type: data-check
-- Status: todo
+- Status: done, 30 September 2026, outcome no-go
 - Phase: 0, clear the runway
 - Depends on: none. Pairs with the corridor named in PILOT-01.
 - Blocks: PILOT-02, PILOT-03, PILOT-06
@@ -78,3 +85,34 @@ are unconfirmed and must be established before the feed is built:
 - [Data governance, rights states and lineage](../../DATA_GOVERNANCE.md)
 - [Corridor brief](../../pilot/CORRIDOR_BRIEF.md)
 - `scripts/ktel_pipeline.py stage-nap-xlsx`
+
+## Outcome (30 September 2026)
+
+Done. The dataset was retrieved lawfully, its licence recorded, its structure
+inventoried, and corridor coverage established. The answer is **no-go**.
+
+- Licence is **ODbL 1.0**, not the feared non-commercial government licence.
+  Reuse including commercial reuse is permitted, subject to attribution of the
+  Hellenic Institute of Transport and share-alike on derived databases.
+- `data.nap.gov.gr` has a certificate that expired on 15 April 2026. TLS
+  verification was **not** bypassed; the working mirror `data.nap.imet.gr` was
+  used instead.
+- SHA-256 `b01d4711774b7a87c70241c420b021da62a38d709518ae0348e7bd066987d856`,
+  231,397 bytes, dataset last updated **1 December 2020**.
+- 42 prefecture sheets, 1,184 non-empty rows, two incompatible layouts.
+- **`ΔΕΛΦΟΙ` appears zero times.** The primary pilot corridor does not exist in
+  the dataset. KTEL Fokida's sheet covers Amfissa only.
+- **No boarding points, no coordinates, no stop identifiers.** Origin and
+  destination are free-text city names, so the Athens Kifissos-versus-Liosion
+  terminal question, which is the product's core promise, cannot be answered
+  from this source at all.
+- Calendars are unnormalised Greek prose with no validity period. Most rows
+  have no arrival time. The Achaia sheet records
+  `ΤΡΟΠΟΠΟΙΟΥΝΤΑΙ ΚΆΘΕ ΕΒΔΟΜΑΔΑ` in place of departure times.
+
+Full evidence: [NAP-DATASET-EVIDENCE.md](../NAP-DATASET-EVIDENCE.md).
+
+This refutes pilot assumptions 2, 3 and 4 for this source and fails Gate D1 on
+evidence. It is handed to PILOT-02 and PILOT-03, and it is the reason
+[AD-002](../../beta/ARCHITECTURE-DECISIONS.md) ships a labelled demonstration
+dataset instead.

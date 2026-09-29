@@ -1,4 +1,4 @@
-from hodomap_pipeline.cli import main
+from poravia_pipeline.cli import main
 
 
 if __name__ == "__main__":

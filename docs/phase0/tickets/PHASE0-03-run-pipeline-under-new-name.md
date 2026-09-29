@@ -1,7 +1,14 @@
 # PHASE0-03: Run the transplanted pipeline end to end under the new name
 
+> **Historical document.** This records a decision made under the product's
+> former name, HodoMap, which was rejected on 30 September 2026 and replaced
+> by **Poravia**. The text below is preserved as written, including the old
+> name, because rewriting a dated decision would falsify the record. See
+> [the brand decision](../../../docs/beta/BRAND-DECISION.md).
+
+
 - Type: build
-- Status: todo
+- Status: done, 30 September 2026
 - Phase: 0, clear the runway
 - Depends on: PHASE0-01
 - Blocks: PILOT-06
@@ -68,3 +75,23 @@ path, then get the suite green.
 - [KTEL staging README](../../../server/ktel-staging/README.md)
 - [Data governance, publication gate](../../DATA_GOVERNANCE.md)
 - [Architecture, database separation](../../ARCHITECTURE.md)
+
+## Outcome (30 September 2026)
+
+Done. Seed, import, review, publish, pack generation and query run in sequence
+without error, and the suite is green.
+
+- The missing `generator` import was repaired by restating its release contract
+  as `hodomap_ktel/ktel_release.py` rather than deleting the test. The module's
+  Syrmos rail payloads are obsolete for a coach product; its contract, content
+  addressed packs with the manifest written last, is not. See
+  [AD-006](../../beta/ARCHITECTURE-DECISIONS.md).
+- `hodomap_ktel/ktel_gtfs.py` adds the reviewed GTFS export the ticket
+  anticipated, with `Europe/Athens` service-date semantics resolved once.
+- The suite went from failing at import to **22 passing tests**. No assertion
+  was removed. Fifteen were added, covering times past 24:00, both 2026
+  daylight-saving transitions, pack corruption and deletion, rollback, and
+  proof that a `permission_pending` source stays out of a public release even
+  after a reviewer approves the row.
+- A compiled public database is produced and carries a release id.
+- One-page runbook: [RUNBOOK.md](../RUNBOOK.md).

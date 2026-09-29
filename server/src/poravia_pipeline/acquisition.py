@@ -16,8 +16,27 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 from urllib.parse import urldefrag, urljoin, urlparse
 
-from hodomap_pipeline.registry import SourceTarget
-from hodomap_pipeline.state import StateStore, utc_now
+from poravia_pipeline.registry import SourceTarget
+from poravia_pipeline.state import StateStore, utc_now
+
+
+def _ticketweb_terms_approved() -> bool:
+    """Ticketing acquisition stays off until written terms approval exists.
+
+    The former environment-variable prefixes are honoured so a rename can
+    neither accidentally enable nor accidentally disable the gate on an
+    existing deployment.
+    """
+    for name in (
+        "PORAVIA_TICKETWEB_TERMS_APPROVED",
+        "HODOMAP_TICKETWEB_TERMS_APPROVED",
+        "SYRMOS_TICKETWEB_TERMS_APPROVED",
+    ):
+        if os.environ.get(name) == "1":
+            return True
+    return False
+
+
 
 
 @dataclass(frozen=True)
@@ -132,7 +151,7 @@ class SourceAcquirer:
         previous = self.store.source_state(target.source_id)
         headers = {
             "Accept": ", ".join(target.expected_content_types) or "*/*",
-            "User-Agent": "HodoMap-Source-Monitor/0.1 (+mailto:{})".format(
+            "User-Agent": "Poravia-Source-Monitor/0.1 (+mailto:{})".format(
                 self.settings.contact_email
             ),
         }
@@ -253,7 +272,7 @@ class SourceAcquirer:
             return "body retention requires permitted rights"
         if (
             target.source_kind == "ticketing"
-            and os.environ.get("HODOMAP_TICKETWEB_TERMS_APPROVED") != "1"
+            and not _ticketweb_terms_approved()
         ):
             return "ticketing acquisition disabled until written terms approval"
         return None

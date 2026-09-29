@@ -1,10 +1,10 @@
 # Server
 
-HodoMap currently has two server areas with different maturity:
+Poravia currently has two server areas with different maturity:
 
 ## Active acquisition monitor
 
-`src/hodomap_pipeline/` is the deployed, tested daily source monitor.
+`src/poravia_pipeline/` is the deployed, tested daily source monitor.
 
 It owns:
 
@@ -25,16 +25,16 @@ TicketWeb foundation copied from the Syrmos working tree.
 It is not yet:
 
 - Renamed from `syrmos_admin`.
-- Integrated with `hodomap_pipeline`.
+- Integrated with `poravia_pipeline`.
 - Included in the deployed daily service.
-- Reverified against HodoMap paths and dependencies.
+- Reverified against Poravia paths and dependencies.
 - Authorized for TicketWeb public redistribution.
 - A complete national timetable database.
 
 Treat it as migration input, not the current production service. Preserve its
-tests and rights gates while moving capabilities into the final HodoMap server
+tests and rights gates while moving capabilities into the final Poravia server
 modules.
 
 Current verification note: its transplanted test suite does not import because
 `syrmos_admin.generator` was not copied with the KTEL modules. The failure is
-isolated to `ktel-staging`; the deployed `hodomap_pipeline` tests pass.
+isolated to `ktel-staging`; the deployed `poravia_pipeline` tests pass.

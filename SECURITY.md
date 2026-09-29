@@ -11,7 +11,7 @@ mitigation. Do not include real passenger information or reusable credentials.
 
 ## Sensitive areas
 
-HodoMap treats these as especially sensitive:
+Poravia treats these as especially sensitive:
 
 - Booking-provider credentials and session material.
 - Administrative review endpoints.

@@ -1,10 +1,10 @@
-# HodoMap Design System
+# Poravia Design System
 
 Status: proposed design language, version 0.1
 
 ## Design idea
 
-HodoMap should feel like a calm, trustworthy journey companion, not a ticketing
+Poravia should feel like a calm, trustworthy journey companion, not a ticketing
 portal and not a government form.
 
 The visual language combines:
@@ -30,7 +30,7 @@ Rules:
 - Do not put operator logos inside the mark.
 - Do not use a bus silhouette as the only identifying idea.
 - Keep a square app-icon version and a horizontal wordmark version.
-- Render the product as `HodoMap`, with a capital H and M.
+- Render the product as `Poravia`, with a capital H and M.
 
 ## Color
 
@@ -209,8 +209,8 @@ Tapping a coach, predicted coach, or journey opens a bottom sheet containing:
 - `Contact KTEL`.
 - `Journey details`.
 
-The bottom sheet stays inside HodoMap. Official-store checkout opens outside
-HodoMap in the device browser.
+The bottom sheet stays inside Poravia. Official-store checkout opens outside
+Poravia in the device browser.
 
 ### Saved trip card
 
@@ -286,7 +286,7 @@ Shows geography or operator, release date, size, freshness and update action.
 
 ### Home
 
-Use an Aegean Ink header with the HodoMap mark, a plain-language promise and a
+Use an Aegean Ink header with the Poravia mark, a plain-language promise and a
 white journey search panel overlapping the lower edge. Below it, show recent
 journeys, nearby terminals and national coverage status.
 
@@ -314,7 +314,7 @@ ticket-office card.
 
 ## Voice and writing
 
-HodoMap is direct, calm and honest.
+Poravia is direct, calm and honest.
 
 Use:
 
@@ -326,7 +326,7 @@ Use:
 Avoid:
 
 - `Guaranteed`
-- `Official HodoMap ticket`
+- `Official Poravia ticket`
 - `Live` when the value is scheduled or cached
 - Technical provider names in primary passenger copy
 
@@ -345,10 +345,10 @@ Avoid:
 ## Implementation
 
 The canonical tokens live in
-`design/tokens/hodomap.tokens.json`.
+`design/tokens/poravia.tokens.json`.
 
 The Web variables live in
-`design/tokens/hodomap.css`.
+`design/tokens/poravia.css`.
 
 Platform themes should be generated from the semantic token layer. Features
 must not import primitive color values directly.

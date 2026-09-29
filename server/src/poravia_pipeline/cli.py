@@ -1,4 +1,4 @@
-"""Command-line entry point for the HodoMap acquisition pipeline."""
+"""Command-line entry point for the Poravia acquisition pipeline."""
 from __future__ import annotations
 
 import argparse
@@ -7,13 +7,32 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from hodomap_pipeline.acquisition import (
+from poravia_pipeline.acquisition import (
     AcquisitionSettings,
     is_due,
     run_refresh,
 )
-from hodomap_pipeline.registry import Registry
-from hodomap_pipeline.state import StateStore
+from poravia_pipeline.registry import Registry
+from poravia_pipeline.state import StateStore
+
+
+#: Environment variables were renamed from the product's former name. An
+#: existing Raspberry Pi deployment still sets the old ones, so they are read
+#: as a fallback until it migrates. Documented in the legacy-reference
+#: allowlist in docs/beta/BRAND-DECISION.md.
+_LEGACY_ENV_PREFIXES = ("HODOMAP_", "SYRMOS_")
+
+
+def env(name: str, default: str) -> str:
+    """Read ``PORAVIA_<name>``, falling back to the former prefixes."""
+    value = os.environ.get(f"PORAVIA_{name}")
+    if value is not None:
+        return value
+    for prefix in _LEGACY_ENV_PREFIXES:
+        value = os.environ.get(f"{prefix}{name}")
+        if value is not None:
+            return value
+    return default
 
 
 def _repository_root() -> Path:
@@ -21,17 +40,27 @@ def _repository_root() -> Path:
 
 
 def _default_data_root() -> Path:
-    return Path(
-        os.environ.get(
-            "HODOMAP_DATA_ROOT",
-            str(Path.home() / ".local" / "share" / "hodomap"),
-        )
-    )
+    explicit = os.environ.get("PORAVIA_DATA_ROOT")
+    if explicit:
+        return Path(explicit)
+    for prefix in _LEGACY_ENV_PREFIXES:
+        legacy = os.environ.get(f"{prefix}DATA_ROOT")
+        if legacy:
+            return Path(legacy)
+    current = Path.home() / ".local" / "share" / "poravia"
+    if not current.exists():
+        # Keep an existing deployment pointed at its own state rather than
+        # silently starting an empty database under the new name.
+        for legacy_name in ("hodomap", "syrmos"):
+            legacy = Path.home() / ".local" / "share" / legacy_name
+            if legacy.exists():
+                return legacy
+    return current
 
 
 def build_parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(
-        description="Bounded HodoMap source acquisition",
+        description="Bounded Poravia source acquisition",
     )
     root.add_argument(
         "--registry",
@@ -62,9 +91,9 @@ def build_parser() -> argparse.ArgumentParser:
         "--report-root",
         type=Path,
         default=Path(
-            os.environ.get(
-                "HODOMAP_REPORT_ROOT",
-                str(Path.home() / ".local" / "state" / "hodomap" / "reports"),
+            env(
+                "REPORT_ROOT",
+                str(Path.home() / ".local" / "state" / "poravia" / "reports"),
             )
         ),
     )
@@ -73,16 +102,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _settings() -> AcquisitionSettings:
     return AcquisitionSettings(
-        contact_email=os.environ.get(
-            "HODOMAP_CONTACT_EMAIL",
-            "info@peterdsp.dev",
-        ),
-        max_requests=int(os.environ.get("HODOMAP_MAX_REQUESTS", "100")),
+        contact_email=env("CONTACT_EMAIL", "info@peterdsp.dev"),
+        max_requests=int(env("MAX_REQUESTS", "100")),
         minimum_host_interval_seconds=float(
-            os.environ.get("HODOMAP_MIN_HOST_INTERVAL_SECONDS", "1.5")
+            env("MIN_HOST_INTERVAL_SECONDS", "1.5")
         ),
-        jitter_seconds=float(os.environ.get("HODOMAP_JITTER_SECONDS", "0.3")),
-        timeout_seconds=float(os.environ.get("HODOMAP_TIMEOUT_SECONDS", "20")),
+        jitter_seconds=float(env("JITTER_SECONDS", "0.3")),
+        timeout_seconds=float(env("TIMEOUT_SECONDS", "20")),
     )
 
 
