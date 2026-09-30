@@ -243,3 +243,43 @@ pack is validated against its JSON Schema in `data/schemas/`.
 mid-build. Taken deliberately: a duplicated generator is cheap to leave and
 expensive to discover, and the whole product claim is that the answer you get
 offline is the answer the source supports.
+
+---
+
+## AD-010, 30 September 2026: the XCFramework exports `shared/core` only
+
+**Context.** `shared/features` holds presentation-state helpers: display
+formatting, settings validation and repair, and download tracking. It is not
+currently in the `PoraviaCore` XCFramework, so Android consumes it directly
+through the Gradle module graph while iOS does not see it. The question was
+whether to fold it in.
+
+**Decision.** Keep the XCFramework exporting `shared/core` only, for now.
+
+**Why.**
+
+1. **The rule that matters is already satisfied.** The prohibition is against a
+   UI inventing its own timetable engine. It has not happened: the iOS
+   `ServiceDate` type carries and validates the contract's string form and
+   documents that it "decides nothing", delegating current service date,
+   midnight crossing and daylight-saving behaviour to the core. Freshness state
+   arrives decided in the payload rather than being recomputed per client.
+2. **`docs/ARCHITECTURE.md` explicitly permits this.** Native iOS behaviour,
+   Compose conventions and semantic web pages matter more than maximising the
+   percentage of shared source. Presentation state is the layer where platforms
+   are allowed to differ.
+3. **The change is not free mid-integration.** Folding features in means moving
+   the XCFramework declaration to `:shared:features` with
+   `export(projects.shared.core)`, and the iOS project is already wired to the
+   current artifact. Churning a build seam while three clients are being
+   verified buys nothing today.
+
+**The condition that reverses this.** If iOS starts reimplementing anything in
+`shared/features` — freshness thresholds, download de-duplication, settings
+repair — that is duplication of decision logic, not presentation, and the
+module moves into the framework. The framework's `baseName` and output
+directory must stay `PoraviaCore` and `shared/core/build/XCFramework/` when
+that happens, so the iOS wiring does not move with it.
+
+**Recorded so it is not mistaken for an oversight.** It is a scoped choice with
+a stated trigger, not a gap.

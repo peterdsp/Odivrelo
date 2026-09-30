@@ -1,0 +1,172 @@
+-- Poravia local database, schema version 2.
+--
+-- This database holds only what belongs to the person using the application
+-- (favourites, recent searches, saved trips) and the registry of installed
+-- public data packs. It never holds credentials, passenger identity, ticket
+-- documents or barcodes.
+--
+-- Version 1 shipped without a step-free flag on a saved trip. Migration
+-- 1.sqm adds it, so an upgrading beta tester keeps their saved trips.
+
+CREATE TABLE favorite_place (
+    place_id     TEXT NOT NULL PRIMARY KEY,
+    name_json    TEXT NOT NULL,
+    kind         TEXT NOT NULL,
+    municipality TEXT,
+    added_at     TEXT NOT NULL
+);
+
+CREATE TABLE recent_search (
+    origin_id             TEXT NOT NULL,
+    origin_name_json      TEXT NOT NULL,
+    destination_id        TEXT NOT NULL,
+    destination_name_json TEXT NOT NULL,
+    service_date          TEXT NOT NULL,
+    searched_at           TEXT NOT NULL,
+    PRIMARY KEY (origin_id, destination_id, service_date)
+);
+
+CREATE TABLE saved_trip (
+    id                     TEXT NOT NULL PRIMARY KEY,
+    journey_id             TEXT NOT NULL,
+    service_date           TEXT NOT NULL,
+    saved_at               TEXT NOT NULL,
+    origin_name_json       TEXT NOT NULL,
+    destination_name_json  TEXT NOT NULL,
+    operator_name_json     TEXT NOT NULL,
+    departure_at           TEXT NOT NULL,
+    arrival_at             TEXT NOT NULL,
+    crosses_midnight       INTEGER NOT NULL DEFAULT 0,
+    boarding_bay           TEXT,
+    release_id             TEXT NOT NULL,
+    cached_at              TEXT NOT NULL,
+    detail_json            TEXT NOT NULL,
+    boarding_step_free     INTEGER
+);
+
+CREATE UNIQUE INDEX saved_trip_journey_date ON saved_trip (journey_id, service_date);
+
+CREATE TABLE installed_pack (
+    name                 TEXT NOT NULL PRIMARY KEY,
+    release_id           TEXT NOT NULL,
+    sha256               TEXT NOT NULL,
+    bytes                INTEGER NOT NULL,
+    installed_at         TEXT NOT NULL,
+    published_at         TEXT NOT NULL,
+    file_name            TEXT NOT NULL,
+    previous_release_id  TEXT,
+    previous_file_name   TEXT,
+    previous_sha256      TEXT
+);
+
+CREATE TABLE release_state (
+    id                    INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+    release_id            TEXT NOT NULL,
+    published_at          TEXT NOT NULL,
+    data_mode             TEXT NOT NULL,
+    manifest_json         TEXT NOT NULL,
+    updated_at            TEXT NOT NULL,
+    previous_release_id   TEXT,
+    previous_published_at TEXT,
+    previous_manifest_json TEXT
+);
+
+-- Favourites -----------------------------------------------------------------
+
+selectFavorites:
+SELECT * FROM favorite_place ORDER BY added_at DESC, place_id ASC;
+
+selectFavorite:
+SELECT * FROM favorite_place WHERE place_id = ?;
+
+insertFavorite:
+INSERT OR REPLACE INTO favorite_place (place_id, name_json, kind, municipality, added_at)
+VALUES (?, ?, ?, ?, ?);
+
+deleteFavorite:
+DELETE FROM favorite_place WHERE place_id = ?;
+
+countFavorites:
+SELECT count(*) FROM favorite_place;
+
+-- Recent searches ------------------------------------------------------------
+
+selectRecentSearches:
+SELECT * FROM recent_search ORDER BY searched_at DESC LIMIT ?;
+
+upsertRecentSearch:
+INSERT OR REPLACE INTO recent_search (
+    origin_id, origin_name_json, destination_id, destination_name_json,
+    service_date, searched_at
+) VALUES (?, ?, ?, ?, ?, ?);
+
+trimRecentSearches:
+DELETE FROM recent_search
+WHERE rowid NOT IN (
+    SELECT rowid FROM recent_search ORDER BY searched_at DESC LIMIT ?
+);
+
+clearRecentSearches:
+DELETE FROM recent_search;
+
+-- Saved trips ----------------------------------------------------------------
+
+selectSavedTrips:
+SELECT * FROM saved_trip ORDER BY departure_at ASC, id ASC;
+
+selectSavedTripById:
+SELECT * FROM saved_trip WHERE id = ?;
+
+selectSavedTripByJourney:
+SELECT * FROM saved_trip WHERE journey_id = ? AND service_date = ?;
+
+upsertSavedTrip:
+INSERT OR REPLACE INTO saved_trip (
+    id, journey_id, service_date, saved_at, origin_name_json,
+    destination_name_json, operator_name_json, departure_at, arrival_at,
+    crosses_midnight, boarding_bay, release_id, cached_at, detail_json,
+    boarding_step_free
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteSavedTrip:
+DELETE FROM saved_trip WHERE id = ?;
+
+countSavedTrips:
+SELECT count(*) FROM saved_trip;
+
+-- Installed packs ------------------------------------------------------------
+
+selectInstalledPacks:
+SELECT * FROM installed_pack ORDER BY name ASC;
+
+selectInstalledPack:
+SELECT * FROM installed_pack WHERE name = ?;
+
+upsertInstalledPack:
+INSERT OR REPLACE INTO installed_pack (
+    name, release_id, sha256, bytes, installed_at, published_at, file_name,
+    previous_release_id, previous_file_name, previous_sha256
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteInstalledPack:
+DELETE FROM installed_pack WHERE name = ?;
+
+deleteAllInstalledPacks:
+DELETE FROM installed_pack;
+
+selectDistinctPackReleaseIds:
+SELECT DISTINCT release_id FROM installed_pack;
+
+-- Release state --------------------------------------------------------------
+
+selectReleaseState:
+SELECT * FROM release_state WHERE id = 1;
+
+upsertReleaseState:
+INSERT OR REPLACE INTO release_state (
+    id, release_id, published_at, data_mode, manifest_json, updated_at,
+    previous_release_id, previous_published_at, previous_manifest_json
+) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteReleaseState:
+DELETE FROM release_state WHERE id = 1;
