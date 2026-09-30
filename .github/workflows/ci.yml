@@ -181,7 +181,10 @@ jobs:
 
   ios:
     name: iOS build and tests
-    runs-on: macos-15
+    # The project is authored with Xcode 27. macos-15 defaults to Xcode 16.4,
+    # whose SDK predates the Sendable annotations and @State macro the code
+    # relies on; macos-26 carries the newest Xcode the hosted runners offer.
+    runs-on: macos-26
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -197,8 +200,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r server/api/requirements.txt
           PY=python bash scripts/api-seed-demo.sh
-      - name: Install xcodegen
-        run: brew install xcodegen
+      - name: Install xcodegen, and report the toolchain in use
+        run: |
+          brew install xcodegen
+          xcodebuild -version
       - name: Build the shared XCFramework
         run: bash scripts/shared-build-xcframework.sh
       # Runner images change which simulators they carry, so use the first
