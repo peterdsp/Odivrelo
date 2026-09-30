@@ -39,6 +39,13 @@ def test_the_brand_is_read_from_brand_json_and_nothing_is_hardcoded():
     assert isinstance(BRAND, Brand)
 
 
+#: The staging package is an import path, not a user-visible string. Renaming it
+#: with the product was the point of the brand migration, so its identifier is
+#: excluded from the hardcoded-identity scan. Every other occurrence of the
+#: product name, slug or domain in this package is still a defect.
+STAGING_PACKAGE = "poravia_ktel"
+
+
 def test_no_product_name_is_hardcoded_in_the_package():
     """The package is brand neutral: identity only ever arrives from brand.json."""
     package = REPO_ROOT / "server" / "api" / "publicapi"
@@ -46,10 +53,30 @@ def test_no_product_name_is_hardcoded_in_the_package():
     offenders: list[str] = []
     for source in sorted(package.rglob("*.py")):
         text = source.read_text(encoding="utf-8").lower()
+        text = text.replace(STAGING_PACKAGE, "<staging-package>")
         for needle in forbidden:
             if needle in text:
-                offenders.append(f"{source.relative_to(REPO_ROOT)}: {needle}")
+                line = next(
+                    (
+                        n
+                        for n, raw in enumerate(text.splitlines(), 1)
+                        if needle in raw
+                    ),
+                    0,
+                )
+                offenders.append(
+                    f"{source.relative_to(REPO_ROOT)}:{line}: {needle}"
+                )
     assert not offenders, offenders
+
+
+def test_the_staging_package_carries_the_product_slug():
+    """Guards the exclusion above: if the package is renamed away from the
+    product again, this fails and the exclusion must be revisited."""
+    assert BRAND.slug in STAGING_PACKAGE
+    assert (
+        REPO_ROOT / "server" / "ktel-staging" / STAGING_PACKAGE / "__init__.py"
+    ).is_file()
 
 
 def test_a_brand_file_missing_a_required_key_is_refused(tmp_path, monkeypatch):
@@ -72,12 +99,12 @@ def test_the_correction_url_is_derived_from_the_brand():
 
 
 def test_the_staging_bootstrap_resolves_the_compiled_data_layer():
-    assert (_staging.STAGING_PATH / "hodomap_ktel" / "__init__.py").is_file()
+    assert (_staging.STAGING_PATH / "poravia_ktel" / "__init__.py").is_file()
     assert _staging.STAGING_PATH.name == "ktel-staging"
 
 
 def test_the_staging_branding_module_follows_brand_json():
-    from hodomap_ktel import branding
+    from poravia_ktel import branding
 
     # The release directory name and the GTFS publisher come from here, so a
     # rename in brand.json must reach them.

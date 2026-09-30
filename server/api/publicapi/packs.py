@@ -35,7 +35,7 @@ from typing import Any, Callable
 from . import _staging  # noqa: F401  (installs the staging import path)
 from . import repository  # noqa: E402
 from .brand import BRAND  # noqa: E402
-from hodomap_ktel import ktel_gtfs  # noqa: E402
+from poravia_ktel import ktel_gtfs  # noqa: E402
 
 #: The complete set of logical pack names a release may carry. A journey pack is
 #: suffixed with its service date; everything else is fixed. The contract and

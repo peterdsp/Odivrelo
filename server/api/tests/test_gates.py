@@ -20,9 +20,9 @@ from conftest import DAYTIME_DATE, ORAVO_EXTERNAL_ID, ORIGIN_TERMINAL_EXTERNAL_I
 from publicapi import demo_seed
 from publicapi.release import demo_rows_present
 
-from hodomap_ktel import ktel_db
-from hodomap_ktel.ktel_ingest import import_normalized_snapshot, review_entity
-from hodomap_ktel.ktel_registry import coordinate_status, seed_registry
+from poravia_ktel import ktel_db
+from poravia_ktel.ktel_ingest import import_normalized_snapshot, review_entity
+from poravia_ktel.ktel_registry import coordinate_status, seed_registry
 
 #: A coordinate in the open Atlantic near 0N 0E: valid on the globe, nowhere
 #: near Greece, and used by the Aloria fixture.

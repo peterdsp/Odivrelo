@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Final step of the brand migration: rename the staging Python package from
-# hodomap_ktel to poravia_ktel.
+# poravia_ktel to poravia_ktel.
 #
 # This is deliberately LAST. The package is imported by the API service, the
 # seed script, the release generator and the test suites, so renaming it while
@@ -15,7 +15,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-OLD=hodomap_ktel
+OLD=poravia_ktel
 NEW=poravia_ktel
 PKG_DIR="server/ktel-staging/$OLD"
 
@@ -46,9 +46,9 @@ git ls-files -z | while IFS= read -r -d '' f; do
   if grep -qI "$OLD" "$f" 2>/dev/null; then
     # Protect the env-var fallbacks, which keep their historical spelling.
     sed -i '' \
-      -e 's/HODOMAP_KTEL_/@@ENV1@@/g' \
+      -e 's/HODOMAP_KTEL_/HODOMAP_KTEL_/g' \
       -e "s/$OLD/$NEW/g" \
-      -e 's/@@ENV1@@/HODOMAP_KTEL_/g' "$f"
+      -e 's/HODOMAP_KTEL_/HODOMAP_KTEL_/g' "$f"
     echo "  $f"
   fi
 done

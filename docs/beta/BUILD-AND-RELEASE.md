@@ -58,7 +58,7 @@ artifacts/ARTIFACT-MANIFEST.json         machine-readable artifact manifest
 
 ```bash
 cd server/ktel-staging && PYTHONPATH=. ../../.venv/bin/python -c "
-from hodomap_ktel import ktel_release
+from poravia_ktel import ktel_release
 print(ktel_release.rollback_release('../../artifacts/releases/poravia'))"
 ```
 

@@ -72,7 +72,7 @@ unchanged release id and the command becomes a no-op.
 
 ```bash
 PYTHONPATH=. ../../$PY - <<'PY'
-from hodomap_ktel import ktel_release
+from poravia_ktel import ktel_release
 import os
 print(ktel_release.generate_public_release(
     os.environ["ARTIFACTS"] + "/releases",
@@ -91,7 +91,7 @@ the packs and is byte-reproducible.
 
 ```bash
 PYTHONPATH=. ../../$PY -c "
-from hodomap_ktel import ktel_release
+from poravia_ktel import ktel_release
 ktel_release.verify_release('$ARTIFACTS/releases/poravia')"
 ```
 
@@ -104,7 +104,7 @@ nothing is deleted and the rolled-back manifest still verifies.
 
 ```bash
 PYTHONPATH=. ../../$PY -c "
-from hodomap_ktel import ktel_api, ktel_db
+from poravia_ktel import ktel_api, ktel_db
 with ktel_db.connect('$ARTIFACTS/public.db', read_only=True) as c:
     print(ktel_api.release_metadata(c))
     print(ktel_api.coverage_payload(c))

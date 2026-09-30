@@ -43,7 +43,7 @@ while IFS= read -r f; do
   # A line that explicitly introduces the old name as historical is allowed.
   # Everything else is a defect.
   if hits=$(grep -nIiE 'hodomap|<newname>|perastra' "$f" 2>/dev/null \
-            | grep -viE 'former name|formerly|historical|legacy|rejected on|git/HodoMap|hodomap_ktel|HODOMAP_'); then
+            | grep -viE 'former name|formerly|historical|legacy|rejected on|git/HodoMap|poravia_ktel|HODOMAP_'); then
     report "Old-brand or placeholder string in $f:"
     echo "$hits" | head -5
   fi

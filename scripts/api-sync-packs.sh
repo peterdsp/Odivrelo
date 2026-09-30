@@ -38,7 +38,7 @@ verify() {
   PYTHONPATH="$ROOT/server/api" "$PY" - "$1" <<'PYCODE'
 import sys
 from publicapi import _staging  # noqa: F401
-from hodomap_ktel.ktel_release import verify_release
+from poravia_ktel.ktel_release import verify_release
 
 manifest = verify_release(sys.argv[1])
 print(f"  verified {len(manifest['files'])} packs of release {manifest['releaseId']}")

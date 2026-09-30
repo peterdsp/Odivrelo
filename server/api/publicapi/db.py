@@ -17,7 +17,7 @@ from typing import Iterator
 
 from . import _staging  # noqa: F401  (installs the staging import path)
 from .errors import unavailable  # noqa: E402
-from hodomap_ktel import ktel_db  # noqa: E402
+from poravia_ktel import ktel_db  # noqa: E402
 
 
 class PublicDatabaseError(RuntimeError):

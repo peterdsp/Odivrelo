@@ -11,11 +11,11 @@ from typing import Any
 
 from openpyxl import load_workbook
 
-from hodomap_ktel import ktel_db
-from hodomap_ktel.ktel_ingest import import_normalized_snapshot, review_entity
-from hodomap_ktel.ktel_publish import compile_public_database
-from hodomap_ktel.ktel_registry import content_hash, seed_registry, stable_entity_id
-from hodomap_ktel.ktel_ticketweb import bounded_execution_plan
+from poravia_ktel import ktel_db
+from poravia_ktel.ktel_ingest import import_normalized_snapshot, review_entity
+from poravia_ktel.ktel_publish import compile_public_database
+from poravia_ktel.ktel_registry import content_hash, seed_registry, stable_entity_id
+from poravia_ktel.ktel_ticketweb import bounded_execution_plan
 
 
 def _now_iso() -> str:

@@ -1,6 +1,6 @@
 """Release manifest, pack access and readiness, on top of the staging generator.
 
-Integrity checking is delegated to ``hodomap_ktel.ktel_release.verify_release``,
+Integrity checking is delegated to ``poravia_ktel.ktel_release.verify_release``,
 which is the code that wrote the manifest in the first place. Nothing here
 re-implements digesting or release generation.
 """
@@ -17,9 +17,9 @@ from . import _staging  # noqa: F401  (installs the staging import path)
 from .config import Settings  # noqa: E402
 from .db import PublicDatabaseError, integrity_ok, read_only  # noqa: E402
 from .errors import not_found, release_mismatch, unavailable  # noqa: E402
-from hodomap_ktel import ktel_api  # noqa: E402
-from hodomap_ktel.ktel_registry import coordinate_status  # noqa: E402
-from hodomap_ktel.ktel_release import (  # noqa: E402
+from poravia_ktel import ktel_api  # noqa: E402
+from poravia_ktel.ktel_registry import coordinate_status  # noqa: E402
+from poravia_ktel.ktel_release import (  # noqa: E402
     ReleaseConsistencyError,
     verify_release,
 )

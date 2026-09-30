@@ -26,8 +26,8 @@ from . import _staging  # noqa: F401  (installs the staging import path)
 from .brand import BRAND  # noqa: E402
 from .config import Settings  # noqa: E402
 from .db import read_only  # noqa: E402
-from hodomap_ktel import ktel_api  # noqa: E402
-from hodomap_ktel.ktel_release import (  # noqa: E402
+from poravia_ktel import ktel_api  # noqa: E402
+from poravia_ktel.ktel_release import (  # noqa: E402
     ReleaseConsistencyError,
     verify_release,
 )

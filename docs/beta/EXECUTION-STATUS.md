@@ -38,14 +38,14 @@ for the gates.
 
 ### Inventory and preservation
 
-The working tree already held an unfinished `syrmos_admin` → `hodomap_ktel`
+The working tree already held an unfinished `syrmos_admin` → `poravia_ktel`
 rename, new Phase 0 documents and pilot edits. None of it was reset, stashed or
 overwritten. It is preserved verbatim in commit `aeba939` on the task branch,
 described as pre-existing, before any of this delivery's own changes.
 
 The reported defect was reproduced exactly before being touched:
 `tests/test_ktel.py` failed at import with
-`ImportError: cannot import name 'generator' from 'hodomap_ktel'`, so the whole
+`ImportError: cannot import name 'generator' from 'poravia_ktel'`, so the whole
 suite refused to load.
 
 ### Brand

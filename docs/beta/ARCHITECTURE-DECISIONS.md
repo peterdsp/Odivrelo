@@ -104,7 +104,7 @@ its own timetable engine.
 
 **Decision.** `Europe/Athens` service-date semantics, midnight crossings, GTFS
 times at or beyond 24:00, calendar exceptions and daylight-saving transitions
-are implemented once in `server/ktel-staging/hodomap_ktel/ktel_gtfs.py` and
+are implemented once in `server/ktel-staging/poravia_ktel/ktel_gtfs.py` and
 encoded in the published payloads. The Kotlin Multiplatform core is the single
 client-side implementation for mobile; the Web client reads the same published
 fields.
@@ -220,7 +220,7 @@ hits it.
    exactly what the matching `/v1/...` endpoint would have returned for the
    same input. An offline read and an online read are the same bytes.
 3. The low-level release mechanism stays in
-   `hodomap_ktel/ktel_release.py` — content addressing, digest and size in the
+   `poravia_ktel/ktel_release.py` — content addressing, digest and size in the
    manifest, manifest written last, one previous manifest retained for
    rollback, and `verify_release`. Only the payload shaping moved. The
    mechanism is not forked.

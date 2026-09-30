@@ -25,7 +25,7 @@ cd server/ktel-staging
 PYTHONPATH=. "$PY" - "$RELEASE_DIR" <<'PYCODE'
 import json, sys
 from pathlib import Path
-from hodomap_ktel import ktel_release
+from poravia_ktel import ktel_release
 
 root = Path(sys.argv[1])
 manifest = ktel_release.verify_release(root)
