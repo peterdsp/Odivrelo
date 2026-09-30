@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Poravia asks for as little as it can.
+
+      INTERNET and ACCESS_NETWORK_STATE are needed to fetch published data packs
+      and to tell a person honestly whether the origin is reachable.
+      POST_NOTIFICATIONS is requested in context, only when someone opts in to a
+      departure reminder. RECEIVE_BOOT_COMPLETED exists so an opted-in reminder
+      survives a restart rather than silently disappearing.
+
+      There is no storage permission of any kind. Ticket files are imported one at
+      a time through the Storage Access Framework, so the application only ever
+      sees a document the person deliberately chose.
+
+      There is no location permission. Nothing in this release needs one.
+
+      Three further permissions appear in the merged manifest without being
+      requested here, and they are named rather than left to be discovered in a
+      store listing: WorkManager contributes FOREGROUND_SERVICE and WAKE_LOCK
+      for its own scheduler, and AndroidX core declares a private
+      DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION. Poravia starts no foreground
+      service and takes no wake lock; WorkManager is here only as the backstop
+      for a reminder an alarm was deferred past.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Custom Tabs availability is checked before a booking handoff is offered. -->
+    <queries>
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".PoraviaApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Poravia.Starting"
+        android:localeConfig="@xml/locales_config"
+        android:supportsRtl="false"
+        android:enableOnBackInvokedCallback="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:allowBackup="false">
+        <!--
+          allowBackup is false deliberately, and this is the reason rather than a
+          default nobody looked at.
+
+          The application's private storage can hold an imported ticket document,
+          encrypted with a key held in the Android Keystore. A Keystore key cannot
+          leave the device, so a backup would carry ciphertext that can never be
+          decrypted again, while still copying a travel document off the device
+          into cloud storage the person did not choose for it. Nothing else in this
+          application is worth backing up: favourites and saved trips can be
+          recreated in seconds from public data. So backup is off, and
+          backup_rules.xml and data_extraction_rules.xml exclude the same paths
+          again so that turning it on later cannot leak a ticket by accident.
+        -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.Poravia.Starting">
+            <!--
+              No android:configChanges and no android:screenOrientation. Rotation,
+              resize and folding all recreate the activity, which is the harder
+              case, and the state a traveller cares about is restored from saved
+              instance state. Locking an orientation to hide a layout problem is
+              not an option.
+            -->
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!--
+              https deep links for the product's own domain.
+
+              autoVerify is deliberately OFF: Digital Asset Links verification
+              requires /.well-known/assetlinks.json to be published on
+              ${appLinkHost} with this application's signing certificate
+              fingerprint, and that file does not exist yet because there is no
+              release signing identity. Declaring autoVerify now would produce a
+              link that silently fails to verify. Without it the links still work,
+              through the ordinary chooser, and nothing pretends to be verified.
+              See apps/android/SIGNING.md for exactly what has to be published.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="${appLinkHost}"
+                    android:pathPrefix="/j" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/journey" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/operator" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/stop" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/search" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/trips" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/offline" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/settings" />
+            </intent-filter>
+
+            <!-- The product's own scheme, which needs no domain verification. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="${urlScheme}" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".reminders.ReminderReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".reminders.SystemStateReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- No analytics, no crash reporter, no advertising id, no third party. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+    </application>
+</manifest>

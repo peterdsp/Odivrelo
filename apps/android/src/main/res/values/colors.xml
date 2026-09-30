@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Only the handful of colours the platform needs before Compose starts drawing:
+  the splash background, the window background and the system bar scrims. Every
+  other colour lives in the Compose theme, generated from
+  design/tokens/poravia.tokens.json, so there is one palette and not two.
+-->
+<resources>
+    <!-- color.light.background -->
+    <color name="poravia_window_background">#F6F7F2</color>
+    <!-- color.primitive.aegean600, the mark's ground -->
+    <color name="poravia_splash_background">#0B6B63</color>
+</resources>

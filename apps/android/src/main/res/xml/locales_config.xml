@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The three languages Poravia is complete in. Greek is the default, so a device
+  set to any other language still gets Greek rather than an untranslated string.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="el" />
+    <locale android:name="en" />
+    <locale android:name="sq" />
+</locale-config>
