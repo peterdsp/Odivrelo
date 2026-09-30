@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify a live Poravia Web deployment. Every check must pass before the
+# Verify a live Odivrelo Web deployment. Every check must pass before the
 # release can be called delivered.
 set -uo pipefail
 
@@ -26,8 +26,8 @@ case "$redir" in 30*https://*) ok "http redirects to https ($redir)";; 200*) ok 
 
 echo "Content"
 body=$(curl -sS --max-time 20 "$BASE/" || true)
-grep -qi 'poravia' <<<"$body" && ok "homepage carries the Poravia identity" || bad "homepage does not mention Poravia"
-grep -qiE 'hodomap|<newname>' <<<"$body" && bad "homepage still carries an old-brand or placeholder string" || ok "no old-brand or placeholder string"
+grep -qi 'odivrelo' <<<"$body" && ok "homepage carries the Odivrelo identity" || bad "homepage does not mention Odivrelo"
+grep -qiE 'hodomap|poravia|dromiqo|<newname>' <<<"$body" && bad "homepage still carries an old-brand or placeholder string" || ok "no old-brand or placeholder string"
 
 echo "Release identity"
 manifest=$(curl -sS --max-time 20 "$BASE/data/manifest.json" || true)
@@ -59,7 +59,7 @@ case "$code" in
   404) ok "unknown path returns 404" ;;
   *)   bad "unknown path returned $code, expected 404" ;;
 esac
-grep -qi 'id="root"\|poravia' /tmp/unknown.$$ 2>/dev/null \
+grep -qi 'id="root"\|odivrelo' /tmp/unknown.$$ 2>/dev/null \
   && ok "the 404 page still renders the app shell" \
   || bad "the 404 page is blank"
 rm -f /tmp/unknown.$$

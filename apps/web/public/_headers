@@ -1,7 +1,7 @@
-# Security headers Poravia requires.
+# Security headers Odivrelo requires.
 #
 # The site is served by Cloudflare Pages, which applies this file, so the full
-# set is in force on https://poravia.peterdsp.dev, including frame-ancestors.
+# set is in force on https://odivrelo.peterdsp.dev, including frame-ancestors.
 # The format is shared with Netlify; an nginx or Caddy translation is in the
 # README for any other host.
 
