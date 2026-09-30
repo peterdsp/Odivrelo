@@ -68,7 +68,7 @@ footnote. Flipping it to `real` requires EB-04, not a code change.
 
 | Platform | Build | Runtime | Package | Sign | Upload | Testers |
 |---|---|---|---|---|---|---|
-| Web and PWA | pending | pending | pending | n/a | **blocked**, EB-01 | **blocked**, EB-01 |
+| Web and PWA | passed | passed, less Firefox (W18) | passed | n/a | **blocked**, EB-01 | **blocked**, EB-01 |
 | iOS and iPadOS | passed | **partial**, see I12 | passed | **blocked**, EB-02 | **blocked**, EB-02 | **blocked**, EB-02 |
 | Android | pending | pending | pending | **blocked**, EB-03 | **blocked**, EB-03 | **blocked**, EB-03 |
 | Backend service | passed | passed | passed | n/a | local and packaged | n/a |

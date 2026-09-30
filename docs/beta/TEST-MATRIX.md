@@ -163,6 +163,59 @@ Each caught by a test or by reading a screenshot back, not by assuming.
   all** and reported success. It now bootstraps properly and fails if the built
   binary lacks the core.
 
+## W. Web application
+
+All of the following ran against the same artifact: release `3d7f0bf5902b38f6`,
+synced with `scripts/web-sync-packs.sh` and built immediately before the
+end-to-end run.
+
+| # | Scenario | Status | Evidence |
+|---|---|---|---|
+| W1 | Lint | passed | `eslint . --max-warnings 0`, clean |
+| W2 | Type check | passed | app and node projects, clean |
+| W3 | Unit and integration tests | passed | **171 tests in 8 files** |
+| W4 | Production build | passed | app 1744.3 KiB raw, 469.0 KiB gzip; data 786.1 KiB; **26 prerendered entry points**, 11 static plus 14 from the release plus the root |
+| W5 | Performance budgets | passed | initial JS 162.1 KiB of a 180 KiB budget; precache 638.8 KiB of 800 KiB. MapLibre's 277.3 KiB is lazy and excluded from precache. |
+| W6 | Playwright, Chromium desktop | passed | 92 tests |
+| W7 | Playwright, Chromium mobile | passed | 92 tests |
+| W8 | Playwright, WebKit desktop | passed | 90 passed, 2 skipped |
+| W9 | Playwright, WebKit mobile | passed | 90 passed, 2 skipped |
+| W10 | **Accessibility, axe-core** | passed | **zero violations** across 16 routes × 2 themes × 4 projects. No excluded regions, no disabled rules. |
+| W11 | Deep links return a real 200 | passed | `/`, `/search`, `/settings`, `/operators`, `/operators/<id>`, `/offline`, `/stations`, `/coverage` all 200 through a Pages simulator; `/nope` returns 404. `e2e/prerender.spec.ts` fails if a router route has no entry point. |
+| W12 | `noindex` ships in the bytes | passed | default-deny in every prerendered page; `useHead` only ever upgrades, and only when the route is indexable **and** `dataMode` is `real` |
+| W13 | Cross-source equality | passed | deep equality through the pack source and the API source for every place pair × service date, every stop × date, every operator, every journey detail, and each filter variant |
+| W14 | **No offline data is not no service** | passed | three tests, including one asserting a packed-but-empty date is **not** reported as missing data |
+| W15 | Rename gate on the built artifact | passed | `check-brand.sh --dist apps/web/dist` reports the artifact clean |
+| W16 | No third-party request | passed | asserted by test. The map loads no basemap; there is no tile provider. |
+| W17 | Screenshots from the production build | passed | **154 PNGs**, 39 scenarios × 4 projects, named `scenario__project__viewport__date.png` |
+| W18 | **Firefox, entirely** | **not-run** | the Playwright Firefox build (155.0 Nightly, `firefox-1543`) will not start on this host: `Could not find profile folder`. It fails identically outside Playwright with a valid pre-made profile, with a forced reinstall, with `TMPDIR` redirected, and with the sandbox disabled. A broken browser build on this machine, not an app fault. Both Firefox projects are configured; **CI installs Firefox cleanly and must run them.** |
+| W19 | Offline document reload in WebKit | **not-run** | Playwright's WebKit intercepts requests before the service worker, so a document reload cannot be served from cache. Named in the test title so it reads as a limitation. Offline is still covered on every engine through in-app navigation. |
+| W20 | The skip link as first Tab stop, WebKit | **not-run** | Safari omits links from the Tab order. The keyboard contract the app owns, every control focusable, named and operable, is asserted on every engine. |
+| W21 | Lighthouse lab profile | not-run | bundle and precache sizes are measured and budgeted; no lab performance profile was captured |
+| W22 | Screen readers | not-run | axe is automation, not a VoiceOver or NVDA pass |
+
+### Defects found and fixed during Web verification
+
+Beyond the 404 deep links: `hidden` overridden by `display: grid`, leaving a
+listbox focusable while marked hidden; a dark-mode contrast failure putting
+1.41:1 text on an amber chip; the demonstration banner outside every landmark,
+because `role="note"` is not one; a null `directoryUrl` throwing from
+`new URL()` and taking down a whole page; `upgrade-insecure-requests` in the
+meta CSP breaking WebKit on http origins; offline broken despite installed
+packs, because the manifest itself was network-only; download resume not
+resuming, because it recorded files complete without persisting bytes; a
+preference write reporting success with `localStorage` absent; a skipped
+heading level; and a search returning only terminals so the results heading
+printed raw stop ids.
+
+### Defect fixed at the source, from the Web report
+
+`coverage.note` and `notCovered` were English-only strings rendered on Greek
+and Albanian pages. Now localised in `publicapi/copy.py`, which refuses a
+partial translation rather than falling back to English in front of a user.
+Verified end to end in the generated packs. Three tests hold it, including one
+asserting the three languages are not the same sentence repeated.
+
 ## C. Rename and brand gates
 
 | # | Scenario | Status | Command | Evidence |
@@ -204,8 +257,11 @@ separately, as their own rows.
 
 These were **not** tested and are not claimed:
 
-- Windows, Linux and ChromeOS host browsers. Only macOS-hosted Chromium, WebKit
-  and Firefox are available here.
+- Windows, Linux and ChromeOS host browsers. Only macOS-hosted engines are
+  available here.
+- **Firefox on any platform.** The Playwright Firefox build will not start on
+  this host; see W18. This is the largest single untested combination in the
+  Web release.
 - Physical iPhone, iPad, Android phone, Android tablet or physical foldable. No
   device is connected; all mobile evidence is simulator and emulator.
 - Safari on a physical iOS device, as distinct from the simulator.
