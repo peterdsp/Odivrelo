@@ -107,6 +107,62 @@ then by parsing the JUnit XML rather than trusting the console.
 | S18 | XCFramework produced with both slices | passed | `ios-arm64` and `ios-arm64_x86_64-simulator`, static, 1811 `swift_name` attributes |
 | S19 | `:apps:android:assembleDebug` links both shared modules | passed | 22 MB debug APK carrying exactly the 11 packs the manifest names, pruned from 124 files and 748 KB to 11 and 54 KB |
 
+## I. iOS and iPadOS
+
+Build commit recorded in the archive: `9808c1712a1f`. Host Xcode 27.0, iOS 27.0
+SDK, Swift 6.4.
+
+| # | Scenario | Status | Evidence |
+|---|---|---|---|
+| I1 | Unit and UI tests | passed | **167 tests in 19 suites**, 0 failures |
+| I2 | Debug build and run, iPhone 15 / iOS 27.0 | passed | `BUILD SUCCEEDED` |
+| I3 | Release build, device target | passed | `BUILD SUCCEEDED`, arm64, 17 MB |
+| I4 | Release archive | passed | `ARCHIVE SUCCEEDED`, 35 MB with dSYM |
+| I5 | Release validation suite | passed | 40 checks, entitlements, usage descriptions, privacy manifest, bundle identity, localisations, resources |
+| I6 | **Shared core linked in Release, not merely referenced** | passed | plain Release binary: 4009 Kotlin symbols, 272 `PoraviaCore*` Objective-C classes, `createPoraviaCore` present. Archive binary is stripped, so proven through 1915 symbols in the dSYM plus the class table. **Zero fixture symbols in either.** |
+| I7 | Happy path in el, en and sq, light and dark, largest accessibility size | passed | screenshots, each read back |
+| I8 | Twelve failure and edge scenarios | passed | offline, not-covered, empty results, partial coverage, stale release, served-from-cache, core-unavailable, corrupt download (fails digest, offers retry, installs nothing), **interrupted download fails then resumes to Installed**, insufficient storage, trips, wallet, offline packs, settings |
+| I9 | iPad adaptive layout | passed | onboarding constrained to a readable column; populated two-column split with search and results left, detail right |
+| I10 | **iPhone Duo runtime** | **partial** | Two integrated displays measured: screen 1 `1398×2034 @3` = 466×678 pt, screen 3 `2007×2853 @3` = 669×951 pt, black throughout, i.e. cover posture. On screen 1 the system hands the app a window narrower than the display and the app **never draws into the ~86 pt reserved strip**, verified at normal and largest accessibility size. **No posture control exists in this toolchain**: `simctl ui` offers only appearance, contrast and content size, and the device profile carries no posture, fold, hinge or reserved keys, so the unfolded posture could not be selected. Findings in `apps/ios/artifacts/duo-runtime-findings.txt`. |
+| I11 | Reserved-region API | passed, as a negative result | `SwiftUI.ReservedRegion` and `GeometryProxy.reservedRegions` exist as linker symbols in `SwiftUICore.tbd` but are **absent from the public swiftinterface**; a typecheck fails. The app reports nothing rather than guessing, and never infers posture from aspect ratio. |
+| I12 | **Runtime behaviour against the real core** | **failed, fix in progress** | A fresh install with no packs terminates the process: a `PoraviaException` thrown from a suspend function with no `@Throws` is never converted to `NSError`, so the Kotlin runtime kills the app before Swift can catch it. Every runtime screenshot therefore used a fixture data source. See the defect note below. |
+| I13 | iPad multitasking, Split View and Stage Manager | not-run | could not be driven from this toolchain |
+| I14 | VoiceOver | not-run | could not be enabled. Three accessibility hierarchy dumps captured instead, including one at AX3XL, which show a journey card exposing one correctly combined element. **A hierarchy dump is not a VoiceOver run.** |
+| I15 | Performance: launch, search latency, scrolling, map, memory, size | not-run | the machine reached load average 251 with simulators contending. **No figures were invented.** |
+| I16 | Signing and distribution | blocked, EB-02 | two Apple Development identities, no provisioning profile, no App Store Connect credentials; `exportArchive` fails with `Failed to Use Accounts`. A simulator app is not an installable iPhone beta. |
+
+### Defect I12, open
+
+The shared core's exported suspend functions carry no `@Throws`, so on
+Kotlin/Native an exception outside the declared list terminates the process
+instead of bridging to `NSError`. It is not fixable from Swift. The fix is
+`@Throws(PoraviaException::class, CancellationException::class)` across the
+eighteen exported members, plus a test that fails when an exported throwing
+member lacks the annotation, and a test for the first-run state itself — no
+packs, no API — which was untested, which is why a fresh install crashed while
+158 core tests passed.
+
+Until it lands, **the iOS build evidence is stronger than the iOS runtime
+evidence**, and that asymmetry is stated rather than averaged away.
+
+### Defects found and fixed during iOS verification
+
+Each caught by a test or by reading a screenshot back, not by assuming.
+
+- **Path traversal in the deep-link validator.** `URLComponents.path`
+  percent-decodes, so `..%2F..%2Fetc` arrived as `../../etc` and `..` passed
+  the character check. Now rejected; a legitimate dotted id still resolves.
+- **Thirteen counted strings had no plural form** ("1 journeys"). Now proper
+  String Catalog plurals, shipped as `.stringsdict` in all three languages.
+- A Greek navigation title truncating; a badge overflowing its card; format
+  strings used as row labels; `0h 45m`; `Zero KB`; a heading styled as body
+  text; an unused `UIBackgroundModes` declaration; and `strings.source.json`
+  and `__LLVM_COV` shipping inside the Release bundle.
+- **Three bugs in `scripts/ios-ci-build.sh`**, which I wrote. The worst: it
+  generated from the plain project spec, so it built with **no shared core at
+  all** and reported success. It now bootstraps properly and fails if the built
+  binary lacks the core.
+
 ## C. Rename and brand gates
 
 | # | Scenario | Status | Command | Evidence |
