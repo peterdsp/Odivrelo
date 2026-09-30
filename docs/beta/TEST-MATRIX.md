@@ -50,6 +50,28 @@ directories. They are not committed. Retention in CI is 7 days.
 | B10 | Brand and configuration come from `brand.json` | passed | `test_config_and_brand.py` | | |
 | B11 | Remote checks against a deployed beta service | blocked | — | — | no public API is deployed; AD-003 deploys the Web release as a static pack client |
 
+### B12 to B20, live HTTP runtime checks against the running service
+
+Run on 30 September 2026 against `uvicorn publicapi.app:build --factory` on
+port 8791, serving the compiled demonstration release `f004e5669e013f6f`.
+These are not unit tests; they are real requests over HTTP.
+
+| # | Check | Status | Observed |
+|---|---|---|---|
+| B12 | Service starts and reports its configuration | passed | `service configured … product Poravia, contractVersion 1.0.0, dataMode demo, adminEnabled false` |
+| B13 | Security headers on a public response | passed | CSP `default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; sandbox`, plus `nosniff`, `no-referrer`, `DENY`, CORP, COOP, `Permissions-Policy`, HSTS, `Cache-Control: no-store`, `x-request-id` |
+| B14 | `/v1/meta` declares demo mode and real attribution | passed | `dataMode: demo`, coverage note naming Aloria, three attributions including the ODbL NAP dataset |
+| B15 | Place disambiguation separates a terminal from its bays | passed | `q=alo` returns `Aloria Central Terminal` as `stop_place` plus bays A1 and A2 as `stop` |
+| B16 | Journey search returns results with purchase, freshness and confidence | passed | two results, `purchase.kind: online`, `freshness.state: stale`, `confidence: reviewed` |
+| B17 | **Both 2026 DST transitions keep the wall clock** | passed | 29 March returns `+03:00`, 25 October returns `+02:00`, both at 09:00 local |
+| B18 | **Overnight journey keeps its earlier service date** | passed | `serviceDate 2026-10-02`, `crossesMidnight true`, departs `2026-10-02T23:40+03:00`, arrives `2026-10-03T01:20+03:00` |
+| B19 | The same trip is `25:20:00` in GTFS | passed | `stop_times.txt` row at `25:20:00`, past 24:00 as the specification requires |
+| B20 | Calendar exceptions reach the feed | passed | `calendar_dates.txt` carries `20260406,2` removed and `20260411,1` added |
+| B21 | Journey detail carries the boarding point, provenance and geometry confidence | passed | bay `A1`, `stepFree true`, review `published`, provenance `manual-review / allowed / reviewed`, geometry `ordered_stops_only` |
+| B22 | Pickup and drop-off rules are per stop | passed | first stop `allowed / not_allowed`, last stop `not_allowed / allowed` |
+| B23 | Ticket-office fallback where there is no online sale | passed | overnight journey returns `purchase.kind: ticket_office` with a phone, not a booking URL |
+| B24 | Offline manifest and GTFS served | passed | manifest lists 9 packs for release `f004e5669e013f6f`; `/v1/gtfs` returns `application/zip`, 2,483 bytes, 9 members |
+
 ## C. Rename and brand gates
 
 | # | Scenario | Status | Command | Evidence |
