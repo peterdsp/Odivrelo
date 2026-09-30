@@ -87,9 +87,9 @@ then by parsing the JUnit XML rather than trusting the console.
 
 | # | Scenario | Status | Evidence |
 |---|---|---|---|
-| S1 | Core and feature suites, JVM debug | passed | **158 tests, 0 failures, 0 errors** |
-| S2 | Same suites, JVM release | passed | 158 tests, 0 failures, 0 errors |
-| S3 | Same suites, iOS simulator arm64 | passed | 158 tests, 0 failures, 0 errors |
+| S1 | Core and feature suites, JVM debug | passed | **171 tests, 0 failures, 0 errors** |
+| S2 | Same suites, JVM release | passed | 171 tests, 0 failures, 0 errors |
+| S3 | Same suites, iOS simulator arm64 | passed | 171 tests, 0 failures, 0 errors |
 | S4 | Both 2026 Greek clock changes | passed | the same wall-clock span is 75 real minutes in October and 195 in March |
 | S5 | Overnight keeps the earlier service date | passed | |
 | S6 | SHA-256 against the four standard vectors | passed | |
@@ -105,6 +105,10 @@ then by parsing the JUnit XML rather than trusting the console.
 | S16 | A first run downloads only the day it searched, not every published date | passed | |
 | S17 | `iosX64` execution | not-run | compiles and links into the simulator slice, but an x86_64 simulator cannot boot on this arm64 host. Stated, not counted as a pass. |
 | S18 | XCFramework produced with both slices | passed | `ios-arm64` and `ios-arm64_x86_64-simulator`, static, 1811 `swift_name` attributes |
+| S20 | **Every exported suspending member declares `@Throws`** | passed | `ExportedApiContractTest`, 6 tests. Reads the **source, not the header**: a suspending function exports with an `NSError` out-parameter whether or not `@Throws` is declared, so the header is byte-identical either way and a header-based check would have passed against the broken build. Proved to catch the real defect by deleting the annotation and watching it fail by name. |
+| S21 | **First run: no packs, no API** | passed | `FirstRunTest`, 7 tests. All twenty exported members called; fails if any throws outside its declared list, with the call count tied to the exported surface so a new member cannot be added uncovered. The calls owning only the person's own data still answer, so a first launch can open its saved screens. |
+| S22 | A date inside the stated coverage range with no published pack | passed | asserted against the **shipped** release, so the gap is real in the data rather than only in a unit test's imagination. This is why "no offline data for this date" must never render as "no service on this date". |
+| S23 | `-lsqlite3` declared in every module map | passed | verified in all four: 2 slices × debug and release |
 | S19 | `:apps:android:assembleDebug` links both shared modules | passed | 22 MB debug APK carrying exactly the 11 packs the manifest names, pruned from 124 files and 748 KB to 11 and 54 KB |
 
 ## I. iOS and iPadOS
@@ -125,25 +129,25 @@ SDK, Swift 6.4.
 | I9 | iPad adaptive layout | passed | onboarding constrained to a readable column; populated two-column split with search and results left, detail right |
 | I10 | **iPhone Duo runtime** | **partial** | Two integrated displays measured: screen 1 `1398×2034 @3` = 466×678 pt, screen 3 `2007×2853 @3` = 669×951 pt, black throughout, i.e. cover posture. On screen 1 the system hands the app a window narrower than the display and the app **never draws into the ~86 pt reserved strip**, verified at normal and largest accessibility size. **No posture control exists in this toolchain**: `simctl ui` offers only appearance, contrast and content size, and the device profile carries no posture, fold, hinge or reserved keys, so the unfolded posture could not be selected. Findings in `apps/ios/artifacts/duo-runtime-findings.txt`. |
 | I11 | Reserved-region API | passed, as a negative result | `SwiftUI.ReservedRegion` and `GeometryProxy.reservedRegions` exist as linker symbols in `SwiftUICore.tbd` but are **absent from the public swiftinterface**; a typecheck fails. The app reports nothing rather than guessing, and never infers posture from aspect ratio. |
-| I12 | **Runtime behaviour against the real core** | **failed, fix in progress** | A fresh install with no packs terminates the process: a `PoraviaException` thrown from a suspend function with no `@Throws` is never converted to `NSError`, so the Kotlin runtime kills the app before Swift can catch it. Every runtime screenshot therefore used a fixture data source. See the defect note below. |
+| I12 | **Runtime behaviour against the real core** | **fixed in the core, iOS re-verification pending** | A fresh install with no packs terminated the process. Fixed in `shared/core` (S20 to S22), and the XCFramework is rebuilt. The iOS screenshots on record were all captured through a fixture source to get past the crash, so **iOS runtime evidence remains weaker than its build evidence until re-captured against the real core.** |
 | I13 | iPad multitasking, Split View and Stage Manager | not-run | could not be driven from this toolchain |
 | I14 | VoiceOver | not-run | could not be enabled. Three accessibility hierarchy dumps captured instead, including one at AX3XL, which show a journey card exposing one correctly combined element. **A hierarchy dump is not a VoiceOver run.** |
 | I15 | Performance: launch, search latency, scrolling, map, memory, size | not-run | the machine reached load average 251 with simulators contending. **No figures were invented.** |
 | I16 | Signing and distribution | blocked, EB-02 | two Apple Development identities, no provisioning profile, no App Store Connect credentials; `exportArchive` fails with `Failed to Use Accounts`. A simulator app is not an installable iPhone beta. |
 
-### Defect I12, open
+### Defect I12, fixed in the core
 
-The shared core's exported suspend functions carry no `@Throws`, so on
-Kotlin/Native an exception outside the declared list terminates the process
-instead of bridging to `NSError`. It is not fixable from Swift. The fix is
-`@Throws(PoraviaException::class, CancellationException::class)` across the
-eighteen exported members, plus a test that fails when an exported throwing
-member lacks the annotation, and a test for the first-run state itself — no
-packs, no API — which was untested, which is why a fresh install crashed while
-158 core tests passed.
+A fresh install terminated the process because no exported suspending member
+declared `@Throws`. Two further latent crashes sat on the same path:
+`createPoraviaCore` had the same defect and is the first call a host makes, and
+`CoreConfig`'s constructor threw, which across the Objective-C boundary kills
+the process for the same reason. All three are fixed, and every exported call
+now routes through one guard so the declaration is sound rather than merely
+present.
 
-Until it lands, **the iOS build evidence is stronger than the iOS runtime
-evidence**, and that asymmetry is stated rather than averaged away.
+**The iOS runtime evidence has not yet been re-captured against the fixed
+core.** Until it is, the build evidence stands and the runtime evidence is
+recorded as fixture-backed. That asymmetry is stated rather than averaged away.
 
 ### Defects found and fixed during iOS verification
 
