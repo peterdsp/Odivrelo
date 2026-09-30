@@ -117,6 +117,27 @@ A one-page runbook records the exact ingest-to-release commands:
   the homepage, the release manifest, deep-link loads and the PWA files, and
   fails loudly rather than reporting a green deployment that is not live.
 
+## Work partition
+
+Delivery is parallelised across bounded workstreams with non-overlapping paths,
+integrated here.
+
+| Workstream | Paths | State |
+|---|---|---|
+| Data, compiler, GTFS, release packs | `server/ktel-staging/` | complete |
+| Public API, contracts, fixtures, ops scripts | `server/api/`, `data/schemas/`, `data/fixtures/`, `scripts/api-*` | complete |
+| Shared Kotlin Multiplatform core | `shared/` and the root Gradle graph | in progress |
+| Android application | `apps/android/` | in progress |
+| Web application | `apps/web/` | in progress |
+| iOS and iPadOS application | `apps/ios/` | in progress |
+| Brand, docs, CI, release materials, integration | everything else | in progress |
+
+The Android application was re-partitioned away from the shared-core
+workstream on 30 September 2026. Carrying both meant neither was finishing, and
+`apps/android/src` still had no Kotlin source while the shared core was
+complete. Splitting them at the `apps/android/build.gradle.kts` seam lets both
+finish properly.
+
 ## Data mode
 
 **Demonstration only.** The beta ships an invented region, Aloria, with
