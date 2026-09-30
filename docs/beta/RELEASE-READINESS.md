@@ -78,21 +78,14 @@ Detail per row, with commands, artifacts and limitations, is in
 
 ## 5. The `1.0.0` Web release gate
 
-**Status: blocked.**
+**Status: satisfied, 1 October 2026.**
 
-The release requires a working, publicly accessible deployment at
-`https://poravia.peterdsp.dev` with live verification evidence. That is not
-satisfied.
-
-- The production artifact builds, is verified locally, and carries the version,
-  commit, build time and data release id.
-- The deployment workflow, the Pages configuration, the `CNAME` file and the
-  live verification script are all in place.
-- `poravia.peterdsp.dev` does not resolve. One Cloudflare CNAME record is
-  missing and no Cloudflare credential is available to this environment.
-
-No other hostname was substituted and `1.0.0` is **not** marked ready. The
-exact record and the commands that follow it are in EB-01.
+`https://poravia.peterdsp.dev` is live on Cloudflare Pages with a valid
+certificate, and the release workflow's live verification passed every check
+(DNS, HTTPS, redirect, homepage identity, release manifest, six deep links,
+404 handling, PWA files) in
+https://github.com/peterdsp/Poravia/actions/runs/36779339890. EB-01 is
+resolved.
 
 ## 6. Legal and account gates
 

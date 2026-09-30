@@ -12,7 +12,12 @@ Last updated: 30 September 2026.
 
 - **Affected capability:** the public Web `1.0.0` release gate. This is the
   one gate that cannot be closed without it.
-- **State:** blocked.
+- **State:** resolved, 1 October 2026. The owner added the record
+  (`poravia` CNAME to `poravia.pages.dev`, proxied) and the Cloudflare secrets.
+  The release workflow published through CI and `verify-deployment.sh
+  https://poravia.peterdsp.dev` passed every check in run
+  https://github.com/peterdsp/Poravia/actions/runs/36779339890. The history
+  below is kept as it was written.
 
 **What is missing.** `peterdsp.dev` is on Cloudflare nameservers
 (`ganz.ns.cloudflare.com`, `itzel.ns.cloudflare.com`). Every sibling project
