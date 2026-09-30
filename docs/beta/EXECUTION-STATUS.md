@@ -32,7 +32,7 @@ for the gates.
 | 7 | Offline packs, saved trips, wallet, reminders, translations, accessibility, failure states | in progress |
 | 8 | Runtime verification in real browsers, simulators and emulators | in progress |
 | 9 | Release artifacts, operational checks, store materials, authorised uploads | partly blocked |
-| 10 | Deploy and verify Web `1.0.0` at `https://poravia.peterdsp.dev` | **blocked**, see EB-01 |
+| 10 | Deploy and verify Web `1.0.0` at `https://odivrelo.peterdsp.dev` | done, 1 October 2026: `verify-deployment.sh` passed every check on the Pages project `odivrelo` |
 | 11 | Reconcile code, evidence, artifacts, documentation and distribution status | in progress |
 
 ## Completed work
