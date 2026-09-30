@@ -36,10 +36,33 @@ if grep -q '"releaseId"' <<<"$manifest"; then
 else bad "release manifest missing at $BASE/data/manifest.json"; fi
 
 echo "Deep links and reload"
-for path in /search /operators /settings; do
+# A prerendered route must return a real 200. Static hosting that falls back to
+# 404.html would render the app but report 404, which breaks link previews and
+# crawlers, so the status code is checked, not just the body.
+for path in /search /operators /settings /offline /saved /coverage; do
   code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "$BASE$path" || echo 000)
-  [ "$code" = "200" ] && ok "$path loads directly ($code)" || bad "$path returned $code"
+  [ "$code" = "200" ] && ok "$path loads directly ($code)" || bad "$path returned $code, expected 200"
 done
+
+# Per-page metadata, not the generic shell repeated.
+for path in /search /operators; do
+  title=$(curl -sS --max-time 20 "$BASE$path" | sed -n 's/.*<title>\([^<]*\)<\/title>.*/\1/p' | head -1)
+  [ -n "$title" ] && ok "$path has a title: $title" || bad "$path has no title"
+done
+
+echo "Unknown paths"
+# An unknown path SHOULD be a 404, and should still render the app shell so the
+# visitor gets a useful screen rather than a blank page.
+unknown="$BASE/this-route-does-not-exist-$$"
+code=$(curl -sS -o /tmp/unknown.$$ -w '%{http_code}' --max-time 20 "$unknown" || echo 000)
+case "$code" in
+  404) ok "unknown path returns 404" ;;
+  *)   bad "unknown path returned $code, expected 404" ;;
+esac
+grep -qi 'id="root"\|poravia' /tmp/unknown.$$ 2>/dev/null \
+  && ok "the 404 page still renders the app shell" \
+  || bad "the 404 page is blank"
+rm -f /tmp/unknown.$$
 
 echo "Static assets and PWA"
 for path in /manifest.webmanifest /robots.txt; do
