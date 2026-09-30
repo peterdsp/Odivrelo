@@ -18,7 +18,7 @@ directories. They are not committed. Retention in CI is 7 days.
 
 | # | Scenario | Status | Command | Evidence | Limitation |
 |---|---|---|---|---|---|
-| A1 | Migrate, seed, import, review, compile, pack, verify end to end | passed | `bash scripts/ci-pipeline-smoke.sh` | `artifacts/releases/poravia/manifest.json`, 9 packs | demonstration fixture only |
+| A1 | Migrate, seed, import, review, compile, pack, verify end to end | passed | `bash scripts/ci-pipeline-smoke.sh` | `artifacts/releases/poravia/manifest.json`, 11 packs | demonstration fixture only |
 | A2 | Staging suite | passed | `cd server/ktel-staging && PYTHONPATH=. ../../.venv/bin/python -m unittest discover -s tests` | 22 tests, 0 failures | |
 | A3 | Acquisition pipeline suite, including rename compatibility | passed | `cd server && PYTHONPATH=src ../.venv/bin/python -m unittest discover -s tests` | 11 tests, 0 failures | |
 | A4 | GTFS time past 24:00 for an overnight journey | passed | A1 assertions, and `test_release_and_gtfs.py` | 1 stop time at or beyond 24:00 in the generated feed | |
@@ -38,8 +38,8 @@ directories. They are not committed. Retention in CI is 7 days.
 
 | # | Scenario | Status | Command | Evidence | Limitation |
 |---|---|---|---|---|---|
-| B1 | Full API suite | passed | `.venv/bin/python -m pytest server/api/tests -q` | **216 passed** | |
-| B2 | Contract drift gate | passed | `bash scripts/gen-contracts.sh --check` | OpenAPI, six JSON Schemas and the generated TypeScript all match the committed files | |
+| B1 | Full API suite | passed | `.venv/bin/python -m pytest server/api/tests -q` | **266 passed**, `filterwarnings = error` except one allowlisted Starlette deprecation | |
+| B2 | Contract drift gate | passed | `bash scripts/gen-contracts.sh --check` | OpenAPI 3.1 with 14 paths, thirteen JSON Schemas and the generated TypeScript all match. **Proven to fail in both directions**: editing the generated TypeScript exits 1 with a diff, restoring it exits 0. | |
 | B3 | Every public endpoint against the seeded release | passed | `test_public_endpoints.py` | | |
 | B4 | Service dates, overnight, both DST transitions, calendar exceptions | passed | `test_service_dates.py` | | |
 | B5 | Rights and review gates at the API boundary | passed | `test_gates.py` | | |
@@ -47,7 +47,14 @@ directories. They are not committed. Retention in CI is 7 days.
 | B7 | Admin rejects a missing or wrong token, and is absent entirely when disabled | passed | `test_admin.py` | | |
 | B8 | Errors, security headers and CORS | passed | `test_errors_and_security.py` | | |
 | B9 | Backup and restore produce an identical release id | passed | `test_backup.py` | | |
-| B10 | Brand and configuration come from `brand.json` | passed | `test_config_and_brand.py` | | |
+| B10 | Brand and configuration come from `brand.json` | passed | `test_config_and_brand.py` | no product name, slug or domain is hardcoded anywhere in the package |
+| B10a | Offline packs are byte-identical to the endpoint responses | passed | `test_packs.py`, 49 tests | meta, coverage, sources, places, every operator, every stop, every journey detail and every journey result compared byte for byte; now-relative freshness compared structurally |
+| B10b | The manifest names exactly the canonical pack set | passed | `test_packs.py` | a stray non-canonical name is a hard failure; no retired staging name survives |
+| B10c | Every pack validates against its JSON Schema | passed | `test_packs.py` | |
+| B10d | A restored backup serves byte-identical responses | passed | `test_a_restored_release_serves_identical_responses` | database, manifest and every pack wiped, then restored; identical bodies and ETags |
+| B10e | An unknown **real** operator id is still rejected after the demo path was added | passed | `test_gates.py` | plus: demo operators refused on a real dataset, `demo-` prefix required, federation number forbidden |
+| B10f | `/readyz` refuses to serve the demo release as real data | passed | `test_readyz_refuses_to_serve_the_demo_release_as_real_data` | uses the same coordinate gate with its real-data default, so the two cannot drift |
+| B10g | Path traversal on pack filenames | passed | `test_errors_and_security.py` | | |
 | B11 | Remote checks against a deployed beta service | blocked | — | — | no public API is deployed; AD-003 deploys the Web release as a static pack client |
 
 ### B12 to B20, live HTTP runtime checks against the running service
@@ -76,7 +83,7 @@ These are not unit tests; they are real requests over HTTP.
 
 | # | Scenario | Status | Command | Evidence |
 |---|---|---|---|---|
-| C1 | No unintended old-brand or placeholder string in tracked source or paths | passed | `bash scripts/check-brand.sh` | allowlist is documented in `BRAND-DECISION.md` |
+| C1 | No unintended old-brand or placeholder string in tracked source or paths | passed | `bash scripts/check-brand.sh` | **clean across the whole tree** after the `poravia_ktel` rename; allowlist documented in `BRAND-DECISION.md` |
 | C2 | No old-brand or placeholder string in the built web artifact, including binaries | not-run | `bash scripts/check-brand.sh --dist apps/web/dist` | runs once the production build exists |
 | C3 | Legacy `HODOMAP_` and `SYRMOS_` environment names still honoured | passed | `BrandMigrationCompatibilityTestCase` | 3 tests |
 | C4 | TicketWeb gate cannot be flipped by the rename | passed | `test_ticketweb_gate_is_off_unless_explicitly_approved` | all three prefixes checked, both directions |

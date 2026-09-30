@@ -71,7 +71,7 @@ footnote. Flipping it to `real` requires EB-04, not a code change.
 | Web and PWA | pending | pending | pending | n/a | **blocked**, EB-01 | **blocked**, EB-01 |
 | iOS and iPadOS | pending | pending | pending | **blocked**, EB-02 | **blocked**, EB-02 | **blocked**, EB-02 |
 | Android | pending | pending | pending | **blocked**, EB-03 | **blocked**, EB-03 | **blocked**, EB-03 |
-| Backend service | pending | pending | pending | n/a | local and packaged | n/a |
+| Backend service | passed | passed | passed | n/a | local and packaged | n/a |
 
 Detail per row, with commands, artifacts and limitations, is in
 `TEST-MATRIX.md` and the artifact manifest.
