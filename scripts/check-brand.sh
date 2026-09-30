@@ -11,6 +11,11 @@ cd "$(dirname "$0")/.."
 fail=0
 report() { printf '\n%s\n' "$1"; fail=1; }
 
+# A line that enumerates every rejected pattern at once is, by construction, a
+# guard against them rather than branding: no real slip contains "hodomap",
+# "perastra" and "<newname>" together. Those lines are skipped, which is how the
+# client-side rename tests can assert on the same strings this script hunts for.
+#
 # Paths where a historical reference is deliberate. Every entry here is also
 # listed in docs/beta/BRAND-DECISION.md under the legacy-reference allowlist.
 ALLOWLIST_RE='^(docs/AUTONOMOUS-BETA-DELIVERY-PROMPT\.md|docs/beta/BRAND-DECISION\.md|docs/beta/ARCHITECTURE-DECISIONS\.md|docs/beta/EXECUTION-STATUS\.md|docs/beta/EXTERNAL-BLOCKERS\.md|docs/PILOT_DECISION\.md|docs/pilot/|docs/phase0/|docs/KTEL_|docs/INDEX\.md|docs/NATIONAL_EXECUTION_PLAN\.md|docs/ROADMAP\.md|docs/PRODUCT_DIFFERENTIATION\.md|docs/LIVE_COACH_MAP_AND_ETA\.md|server/ktel-staging/syrmos-api-integration\.patch|scripts/check-brand\.sh|scripts/verify-deployment\.sh|CHANGELOG\.md|brand\.json)'
@@ -43,7 +48,8 @@ while IFS= read -r f; do
   # A line that explicitly introduces the old name as historical is allowed.
   # Everything else is a defect.
   if hits=$(grep -nIiE 'hodomap|<newname>|perastra' "$f" 2>/dev/null \
-            | grep -viE 'former name|formerly|historical|legacy|rejected on|git/HodoMap|poravia_ktel|HODOMAP_'); then
+            | grep -viE 'former name|formerly|historical|legacy|rejected on|git/HodoMap|poravia_ktel|HODOMAP_' \
+            | grep -viE 'hodomap.*perastra.*<newname>|hodomap.*<newname>.*perastra|perastra.*hodomap.*<newname>'); then
     report "Old-brand or placeholder string in $f:"
     echo "$hits" | head -5
   fi
