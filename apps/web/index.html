@@ -56,11 +56,13 @@
     -->
     <meta name="robots" content="noindex, nofollow" />
 
-    <title>Poravia</title>
-    <meta name="description" content="Intercity coach information you can check: the exact boarding point, the source of every fact, and how old it is." />
+    <title>Odivrelo</title>
+    <meta name="description" content="Find intercity coach journeys in Greece, understand exactly where to board, and reach the correct operator's ticket purchase page." />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#0b6b63" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1b1a" />
+    <!-- @generated theme-color start. scripts/generate-design-tokens.sh -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#0b4a6b" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#06131c" />
+    <!-- @generated theme-color end -->
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/icons/icon-32.png" sizes="32x32" type="image/png" />
@@ -72,14 +74,16 @@
         Inlined so the first paint is not a white flash in dark mode, and so the
         page has a background before the stylesheet arrives.
       */
-      :root { color-scheme: light; --pv-boot-bg: #f6f7f2; --pv-boot-fg: #142e2c; }
+      /* @generated boot-colours start. scripts/generate-design-tokens.sh */
+      :root { color-scheme: light; --od-boot-bg: #f4f8fb; --od-boot-fg: #082f45; }
       @media (prefers-color-scheme: dark) {
-        :root:not([data-theme='light']) { color-scheme: dark; --pv-boot-bg: #0d1b1a; --pv-boot-fg: #f4f8f6; }
+        :root:not([data-theme='light']) { color-scheme: dark; --od-boot-bg: #06131c; --od-boot-fg: #f2f7fa; }
       }
-      :root[data-theme='dark'] { color-scheme: dark; --pv-boot-bg: #0d1b1a; --pv-boot-fg: #f4f8f6; }
-      html, body { margin: 0; padding: 0; background: var(--pv-boot-bg); color: var(--pv-boot-fg); }
+      :root[data-theme='dark'] { color-scheme: dark; --od-boot-bg: #06131c; --od-boot-fg: #f2f7fa; }
+      /* @generated boot-colours end */
+      html, body { margin: 0; padding: 0; background: var(--od-boot-bg); color: var(--od-boot-fg); }
       body { font-family: Inter, 'SF Pro Text', Roboto, system-ui, sans-serif; }
-      #pv-boot { padding: 2rem 1rem; max-inline-size: 40rem; margin-inline: auto; }
+      #od-boot { padding: 2rem 1rem; max-inline-size: 40rem; margin-inline: auto; }
     </style>
   </head>
   <body>
@@ -89,8 +93,8 @@
         is still loading on a slow connection, sees something honest rather than
         an empty page.
       -->
-      <div id="pv-boot">
-        <h1>Poravia</h1>
+      <div id="od-boot">
+        <h1>Odivrelo</h1>
         <p lang="el">Φόρτωση. Αν δεν εμφανιστεί τίποτα, η JavaScript είναι απενεργοποιημένη σε αυτόν τον browser.</p>
         <p lang="en">Loading. If nothing appears, JavaScript is disabled in this browser.</p>
         <p lang="sq">Po ngarkohet. Nëse nuk shfaqet asgjë, JavaScript është i çaktivizuar në këtë shfletues.</p>

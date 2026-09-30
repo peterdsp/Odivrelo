@@ -5,7 +5,7 @@ import type { DataMode, Language } from '../data/contract';
 /**
  * Document head management, done directly rather than through a helper library.
  *
- * Each managed element is tagged `data-pv-head`, so a route can replace the set
+ * Each managed element is tagged `data-od-head`, so a route can replace the set
  * it owns without disturbing anything the HTML shell declared. Structured data
  * is emitted as a single JSON-LD block, built from data the page already has.
  *
@@ -26,7 +26,7 @@ export interface HeadDescriptor {
   readonly imagePath?: string;
 }
 
-const MANAGED = 'data-pv-head';
+const MANAGED = 'data-od-head';
 
 function upsertMeta(attribute: 'name' | 'property', key: string, content: string): void {
   const doc = globalThis.document;
@@ -111,7 +111,7 @@ export function useHead(descriptor: HeadDescriptor): void {
     upsertMeta('property', 'og:url', canonical);
     upsertMeta('property', 'og:locale', language === 'el' ? 'el_GR' : language === 'sq' ? 'sq_AL' : 'en_GB');
     if (description) upsertMeta('property', 'og:description', description);
-    upsertMeta('property', 'og:image', canonicalUrl(imagePath ?? '/icons/icon-512.png'));
+    upsertMeta('property', 'og:image', canonicalUrl(imagePath ?? '/icons/og-image.png'));
     upsertMeta('name', 'twitter:card', 'summary');
 
     setStructuredData(structuredData);

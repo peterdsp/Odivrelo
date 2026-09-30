@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Geometry, JourneyStop } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
+import { BRAND_COLORS } from '../styles/brandColors.generated';
 import { Button } from './primitives';
 import { GeometryBadge } from './quality';
 import { StateBlock } from './states';
@@ -87,9 +88,9 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
             sources: {},
             layers: [
               {
-                id: 'pv-background',
+                id: 'od-background',
                 type: 'background',
-                paint: { 'background-color': getComputedStyle(node).getPropertyValue('--pv-map-water').trim() || '#e3eeec' },
+                paint: { 'background-color': getComputedStyle(node).getPropertyValue('--od-map-water').trim() || '#e3eeec' },
               },
             ],
           },
@@ -117,15 +118,15 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
         map.on('load', () => {
           if (cancelled) return;
           if (linePoints.length > 1) {
-            map.addSource('pv-route', {
+            map.addSource('od-route', {
               type: 'geojson',
               data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: linePoints } },
             });
             const unverified = geometry === null || geometry.confidence === 'unverified' || geometry.confidence === 'ordered_stops_only';
             map.addLayer({
-              id: 'pv-route-casing',
+              id: 'od-route-casing',
               type: 'line',
-              source: 'pv-route',
+              source: 'od-route',
               paint: {
                 'line-color': '#ffffff',
                 'line-width': 10,
@@ -134,11 +135,11 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
               layout: { 'line-cap': 'round', 'line-join': 'round' },
             });
             map.addLayer({
-              id: 'pv-route-line',
+              id: 'od-route-line',
               type: 'line',
-              source: 'pv-route',
+              source: 'od-route',
               paint: {
-                'line-color': '#0B6B63',
+                'line-color': BRAND_COLORS.deepTealBlue,
                 'line-width': 6,
                 // A line that has not been surveyed is drawn dashed, and the
                 // badge beside the map says so. A solid line would be a claim
@@ -152,7 +153,7 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
           for (const stop of stops) {
             const element = globalThis.document.createElement('div');
             element.className =
-              stop.stopId === boardingStopId ? 'pv-map-marker pv-map-marker--boarding' : 'pv-map-marker';
+              stop.stopId === boardingStopId ? 'od-map-marker od-map-marker--boarding' : 'od-map-marker';
             // The marker is decorative: the stop list is the accessible source
             // of truth, so it is hidden from assistive technology rather than
             // duplicating every name twice.
@@ -203,9 +204,9 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
   }
 
   return (
-    <div className="pv-map">
-      <div className="pv-map__canvas" ref={containerRef} style={{ blockSize: `${heightPx}px` }} data-ready={ready ? '' : undefined} />
-      <div className="pv-map__controls" role="group" aria-label={t('a11y.mapControls')}>
+    <div className="od-map">
+      <div className="od-map__canvas" ref={containerRef} style={{ blockSize: `${heightPx}px` }} data-ready={ready ? '' : undefined} />
+      <div className="od-map__controls" role="group" aria-label={t('a11y.mapControls')}>
         <Button tone="quiet" onClick={() => mapRef.current?.zoomIn()} aria-label={t('a11y.zoomIn')}>
           <span aria-hidden="true">+</span>
         </Button>
@@ -216,10 +217,10 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
           {t('a11y.recentre')}
         </Button>
       </div>
-      <div className="pv-map__notes">
+      <div className="od-map__notes">
         <GeometryBadge confidence={geometry?.confidence ?? 'unverified'} />
-        <p className="pv-map__note">{t('journey.mapNoTiles')}</p>
-        {geometry ? <p className="pv-map__attribution">{geometry.attribution}</p> : null}
+        <p className="od-map__note">{t('journey.mapNoTiles')}</p>
+        {geometry ? <p className="od-map__attribution">{geometry.attribution}</p> : null}
       </div>
     </div>
   );

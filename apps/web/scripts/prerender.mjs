@@ -117,7 +117,7 @@ function pageHtml({ path, title, description, ogType = 'website', canIndex = fal
     `<meta property="og:description" content="${escapeHtml(description)}" />`,
     `<meta property="og:url" content="${escapeHtml(canonical)}" />`,
     `<meta property="og:locale" content="el_GR" />`,
-    `<meta property="og:image" content="${escapeHtml(`${SITE}/icons/icon-512.png`)}" />`,
+    `<meta property="og:image" content="${escapeHtml(`${SITE}/icons/og-image.png`)}" />`,
     `<meta name="twitter:card" content="summary" />`,
   ];
   if (structuredData) {
@@ -187,7 +187,7 @@ emit(
   pageHtml({
     path: '/',
     title: brand.name,
-    description: brand.tagline.el,
+    description: brand.description?.el ?? brand.tagline.el,
     canIndex: false,
   }),
 );
@@ -267,7 +267,7 @@ if (release) {
           path: `/journey/${id}/booking?date=${date}`,
           title: 'Πώς αγοράζεις αυτό το εισιτήριο',
           description:
-            'Το Poravia δεν πουλά και δεν εκδίδει εισιτήρια. Ο μεταφορέας είναι υπεύθυνος για την τιμή, το εισιτήριο, τις αλλαγές και τις επιστροφές.',
+            'Το Odivrelo δεν πουλά και δεν εκδίδει εισιτήρια. Ο μεταφορέας είναι υπεύθυνος για την τιμή, το εισιτήριο, τις αλλαγές και τις επιστροφές.',
         }),
       );
       emitted.push(`/journey/${id}`, `/journey/${id}/booking`);

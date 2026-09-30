@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test';
+import { THEME_COLORS } from '../src/styles/brandColors.generated';
 import { expectDemoNotice, expectNoAxeViolations, readReleaseFacts, setLanguage, setTheme, shoot, skipOnboarding, waitForApp } from './support';
+
+/** `#RRGGBB` from the design tokens, as getComputedStyle reports it. */
+function rgb(hex: string): string {
+  const value = Number.parseInt(hex.slice(1), 16);
+  return `rgb(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255})`;
+}
 
 const facts = readReleaseFacts();
 
@@ -78,8 +85,7 @@ test.describe('cold launch', () => {
 
       // The theme has actually taken effect, rather than the class merely being set.
       const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-      if (theme === 'dark') expect(background).toBe('rgb(13, 27, 26)');
-      else expect(background).toBe('rgb(246, 247, 242)');
+      expect(background).toBe(rgb(THEME_COLORS[theme].background));
 
       await expectNoAxeViolations(page, testInfo, `search-${theme}`);
       await shoot(page, testInfo, `search-${theme}`);
@@ -92,8 +98,8 @@ test.describe('cold launch', () => {
     await page.goto('/');
     // The shell says what has happened in all three languages rather than
     // presenting a blank white page.
-    await expect(page.locator('#pv-boot')).toBeVisible();
-    await expect(page.locator('#pv-boot')).toContainText('JavaScript');
+    await expect(page.locator('#od-boot')).toBeVisible();
+    await expect(page.locator('#od-boot')).toContainText('JavaScript');
     await shoot(page, testInfo, 'no-javascript');
     await context.close();
   });
@@ -140,12 +146,12 @@ test.describe('the static host files', () => {
   test('serves the SPA fallback, the CNAME and the manifest', async ({ request }) => {
     const cname = await request.get('/CNAME');
     expect(cname.ok()).toBe(true);
-    expect((await cname.text()).trim()).toBe('poravia.peterdsp.dev');
+    expect((await cname.text()).trim()).toBe('odivrelo.peterdsp.dev');
 
     const webmanifest = await request.get('/manifest.webmanifest');
     expect(webmanifest.ok()).toBe(true);
     const manifest = JSON.parse(await webmanifest.text()) as { name: string; icons: { sizes: string; purpose?: string }[] };
-    expect(manifest.name).toBe('Poravia');
+    expect(manifest.name).toBe('Odivrelo');
     const purposes = manifest.icons.map((icon) => icon.purpose ?? 'any');
     expect(purposes, 'the web manifest has no maskable icon').toContain('maskable');
     expect(manifest.icons.map((icon) => icon.sizes)).toContain('512x512');
@@ -165,7 +171,7 @@ test.describe('the static host files', () => {
     expect(csp).toContain("default-src 'self'");
     expect(csp).toContain("object-src 'none'");
     // No third party is permitted to load anything at all.
-    expect(csp).not.toMatch(/https:\/\/(?!poravia)/);
+    expect(csp).not.toMatch(/https:\/\/(?!odivrelo)/);
   });
 
   test('serves the release packs the static source reads', async ({ request }) => {

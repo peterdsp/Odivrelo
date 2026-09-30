@@ -1,18 +1,20 @@
 /**
- * The Poravia marks, inlined as SVG so the header needs no network request and
+ * The Odivrelo marks, inlined as SVG so the header needs no network request and
  * renders before anything else.
  *
- * The artwork is the one in design/logo/: an arch, which is a passage you travel
- * through, with an amber point inside the opening standing for the exact
- * boarding point. Web, iOS and Android all ship this same mark.
+ * The artwork is the one in design/logo/: a ring crossed by a road with lane
+ * dashes, arriving at an orange destination node on the ring. The path data is
+ * generated from the same geometry every platform ships
+ * (markGeometry.generated.ts), so Web, iOS and Android draw one mark.
  *
- * The wordmark has a light and a dark variant. Rather than swap files at run
- * time, both are expressed with the theme's own custom properties, so the
- * correct colours follow `prefers-color-scheme` and the explicit `data-theme`
- * override without any JavaScript.
+ * The ring and road take their colours from the theme's custom properties, so
+ * the mark follows `prefers-color-scheme` and the explicit `data-theme` override
+ * without any JavaScript: deep teal blue and navy on light surfaces, white on
+ * dark ones. The node is always the brand orange.
  */
 import { useI18n } from '../i18n/I18nProvider';
 import { BRAND } from './brand';
+import { MARK_NODE, MARK_RING, MARK_ROAD, MARK_SILHOUETTE, MARK_VIEWBOX } from './markGeometry.generated';
 
 export interface MarkProps {
   readonly size?: number;
@@ -21,22 +23,25 @@ export interface MarkProps {
   readonly decorative?: boolean;
 }
 
-/** The full-colour app mark: teal ground, limestone arch, amber point. */
+function a11yProps(decorative: boolean, label: string) {
+  return decorative ? { 'aria-hidden': true, role: 'presentation' } : { role: 'img', 'aria-label': label };
+}
+
+/** The full-colour mark: ring, road and destination node. */
 export function Mark({ size = 32, className, decorative = false }: MarkProps) {
   const { t } = useI18n();
-  const label = t('a11y.logo');
   return (
     <svg
-      viewBox="0 0 64 64"
+      viewBox={MARK_VIEWBOX}
       width={size}
       height={size}
       className={className}
-      {...(decorative ? { 'aria-hidden': true, role: 'presentation' } : { role: 'img', 'aria-label': label })}
+      {...a11yProps(decorative, t('a11y.logo'))}
       focusable="false"
     >
-      <rect width="64" height="64" rx="15" fill="#0B6B63" />
-      <path d="M16 53V30a16 16 0 0 1 32 0v23" fill="none" stroke="#EFF7F5" strokeWidth="7.5" strokeLinecap="round" />
-      <circle cx="32" cy="34" r="5.5" fill="#F2B84B" />
+      <path d={MARK_RING} fill="var(--od-mark-ring)" fillRule="evenodd" />
+      <path d={MARK_ROAD} fill="var(--od-mark-road)" fillRule="evenodd" />
+      <path d={MARK_NODE} fill="var(--od-brand-warm-orange)" />
     </svg>
   );
 }
@@ -46,15 +51,14 @@ export function MarkMono({ size = 24, className, decorative = true }: MarkProps)
   const { t } = useI18n();
   return (
     <svg
-      viewBox="0 0 64 64"
+      viewBox={MARK_VIEWBOX}
       width={size}
       height={size}
       className={className}
-      {...(decorative ? { 'aria-hidden': true, role: 'presentation' } : { role: 'img', 'aria-label': t('a11y.logo') })}
+      {...a11yProps(decorative, t('a11y.logo'))}
       focusable="false"
     >
-      <path d="M16 53V30a16 16 0 0 1 32 0v23" fill="none" stroke="currentColor" strokeWidth="7.5" strokeLinecap="round" />
-      <circle cx="32" cy="34" r="5.5" fill="currentColor" />
+      <path d={MARK_SILHOUETTE} fill="currentColor" fillRule="evenodd" />
     </svg>
   );
 }
@@ -65,32 +69,15 @@ export interface WordmarkProps {
 }
 
 /**
- * Horizontal wordmark. The arch and the product name are drawn with theme
- * tokens, and the name is real text in the page rather than an outlined path, so
- * it stays selectable, searchable and correctly weighted at any zoom.
+ * Horizontal wordmark: the mark beside the product name. The name is real text
+ * in the page rather than an outlined path, so it stays selectable, searchable
+ * and correctly weighted at any zoom.
  */
 export function Wordmark({ height = 32, className }: WordmarkProps) {
   return (
-    <span className={className ? `pv-wordmark ${className}` : 'pv-wordmark'}>
-      <svg
-        viewBox="0 0 46 64"
-        height={height}
-        width={(height * 46) / 64}
-        aria-hidden="true"
-        role="presentation"
-        focusable="false"
-        className="pv-wordmark__arch"
-      >
-        <path
-          d="M10 50V30a13 13 0 0 1 26 0v20"
-          fill="none"
-          stroke="var(--pv-primary)"
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
-        <circle cx="23" cy="33" r="4.5" fill="var(--pv-accent)" />
-      </svg>
-      <span className="pv-wordmark__name">{BRAND.name}</span>
+    <span className={className ? `od-wordmark ${className}` : 'od-wordmark'}>
+      <Mark size={height} decorative className="od-wordmark__mark" />
+      <span className="od-wordmark__name">{BRAND.name}</span>
     </span>
   );
 }

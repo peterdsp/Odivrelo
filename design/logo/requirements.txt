@@ -1,0 +1,6 @@
+# Dependencies of design/logo/generate_odivrelo_brand.py only. The outputs are
+# committed, so no build or CI job installs these.
+shapely==2.1.2
+resvg-py==0.5.0
+Pillow==12.3.0
+fonttools==4.66.1

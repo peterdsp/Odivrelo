@@ -1,113 +1,117 @@
 /**
- * Poravia design tokens.
+ * Odivrelo design tokens for the web application.
  *
- * Copied from design/tokens/poravia.css, which carries the Aegean teal,
- * limestone and sun amber palette forward unchanged, and then refined for the
- * web application:
+ * Every colour below comes from design/tokens/odivrelo.tokens.json, the one
+ * palette source for Web, iOS and Android. The blocks between the
+ * `@generated colours` markers are written by scripts/generate-design-tokens.sh,
+ * which also audits WCAG AA contrast for every text pairing in both themes and
+ * refuses to write a palette that fails. Edit the token file, not this one.
+ *
+ * The rest is the web's own refinement:
  *
  *  - the explicit theme override (`data-theme`) sits alongside the system
  *    preference, so Settings can pick light or dark and not merely follow;
  *  - the type scale, focus ring, layout maxima and z-index ladder are named
  *    here rather than repeated in component files;
- *  - two teal steps were added (`--pv-primary-soft`, `--pv-primary-ink`) so
- *    tonal surfaces stop relying on ad-hoc opacity, which was the one place the
- *    old palette could not hold AA contrast in dark mode;
- *  - `--pv-neutral-surface` gives status chips a non-semantic resting state, so
+ *  - `--od-primary-soft` and `--od-primary-ink` give tonal surfaces a real
+ *    colour instead of ad-hoc opacity;
+ *  - `--od-neutral-surface` gives status chips a non-semantic resting state, so
  *    "unknown" never has to borrow the warning colour.
- *
- * Nothing here is read from the old token files at run time.
  */
 
 :root {
   color-scheme: light;
 
-  /* Surfaces and text */
-  --pv-background: #f6f7f2;
-  --pv-surface: #ffffff;
-  --pv-surface-muted: #eff7f5;
-  --pv-neutral-surface: #e7eeeb;
-  --pv-text-primary: #142e2c;
-  --pv-text-secondary: #4e615d;
-  --pv-border: #cbd8d4;
-  --pv-border-strong: #91a29e;
-
-  /* Brand */
-  --pv-primary: #0b6b63;
-  --pv-primary-pressed: #064b47;
-  --pv-primary-soft: #dcebe7;
-  --pv-primary-ink: #064b47;
-  --pv-on-primary: #ffffff;
-  --pv-accent: #f2b84b;
-  /* Ink that sits on the accent. The accent is sun amber in every theme, so
-     this stays dark in every theme; making it pale in dark mode put pale text
-     on an amber chip at 1.41:1. */
-  --pv-accent-ink: #4a2e00;
-  --pv-focus: #f2b84b;
-  --pv-focus-ring: #064b47;
-
-  /* Status */
-  --pv-warning-surface: #fff1c9;
-  --pv-warning-text: #4a2e00;
-  --pv-error-surface: #fce8e5;
-  --pv-error-text: #8f2f25;
-  --pv-success-surface: #e3f3e9;
-  --pv-success-text: #185c38;
-  --pv-info-surface: #e5f0fa;
-  --pv-info-text: #174f83;
+  /* @generated colours:light start. scripts/generate-design-tokens.sh */
+  --od-background: #f4f8fb;
+  --od-surface: #ffffff;
+  --od-surface-muted: #e6f1f7;
+  --od-neutral-surface: #e3ecf1;
+  --od-surface-container-high: #d2e7f2;
+  --od-surface-container-highest: #d2e7f2;
+  --od-text-primary: #082f45;
+  --od-text-secondary: #45596a;
+  --od-border: #c9d8e1;
+  --od-border-strong: #687f90;
+  --od-outline: #45596a;
+  --od-primary: #0b4a6b;
+  --od-primary-pressed: #083a55;
+  --od-primary-soft: #d2e7f2;
+  --od-primary-ink: #083a55;
+  --od-on-primary: #ffffff;
+  --od-accent: #ff9f2e;
+  --od-accent-ink: #4a2800;
+  --od-focus: #ff9f2e;
+  --od-focus-ring: #083a55;
+  --od-warning-surface: #ffe9cc;
+  --od-warning-text: #4a2800;
+  --od-error-surface: #fce8e5;
+  --od-error-text: #8f2f25;
+  --od-success-surface: #e3f3e9;
+  --od-success-text: #185c38;
+  --od-info-surface: #e5f0fa;
+  --od-info-text: #174f83;
+  --od-mark-ring: #0b4a6b;
+  --od-mark-road: #082f45;
+  --od-brand-deep-teal-blue: #0b4a6b;
+  --od-brand-warm-orange: #ff9f2e;
+  --od-brand-light-background: #e6f1f7;
+  --od-brand-navy: #082f45;
+  /* @generated colours:light end */
 
   /* Shape */
-  --pv-radius-small: 8px;
-  --pv-radius-medium: 12px;
-  --pv-radius-large: 18px;
-  --pv-radius-panel: 24px;
-  --pv-radius-pill: 999px;
+  --od-radius-small: 8px;
+  --od-radius-medium: 12px;
+  --od-radius-large: 18px;
+  --od-radius-panel: 24px;
+  --od-radius-pill: 999px;
 
   /* Space */
-  --pv-space-1: 4px;
-  --pv-space-2: 8px;
-  --pv-space-3: 12px;
-  --pv-space-4: 16px;
-  --pv-space-5: 20px;
-  --pv-space-6: 24px;
-  --pv-space-8: 32px;
-  --pv-space-10: 40px;
-  --pv-space-12: 48px;
-  --pv-space-16: 64px;
+  --od-space-1: 4px;
+  --od-space-2: 8px;
+  --od-space-3: 12px;
+  --od-space-4: 16px;
+  --od-space-5: 20px;
+  --od-space-6: 24px;
+  --od-space-8: 32px;
+  --od-space-10: 40px;
+  --od-space-12: 48px;
+  --od-space-16: 64px;
 
   /* Size */
-  --pv-touch-minimum: 44px;
-  --pv-control-height: 52px;
-  --pv-content-maximum: 1200px;
-  --pv-reading-maximum: 68ch;
+  --od-touch-minimum: 44px;
+  --od-control-height: 52px;
+  --od-content-maximum: 1200px;
+  --od-reading-maximum: 68ch;
 
   /* Type */
-  --pv-font-sans: Inter, "SF Pro Text", Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --pv-font-mono: ui-monospace, SFMono-Regular, "Roboto Mono", "Courier New", monospace;
-  --pv-type-display: 700 2.5rem / 1.1 var(--pv-font-sans);
-  --pv-type-title: 700 1.75rem / 1.2 var(--pv-font-sans);
-  --pv-type-heading: 650 1.25rem / 1.3 var(--pv-font-sans);
-  --pv-type-body: 450 1rem / 1.5 var(--pv-font-sans);
-  --pv-type-label: 650 0.875rem / 1.3 var(--pv-font-sans);
-  --pv-type-caption: 520 0.75rem / 1.35 var(--pv-font-sans);
+  --od-font-sans: Inter, "SF Pro Text", Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --od-font-mono: ui-monospace, SFMono-Regular, "Roboto Mono", "Courier New", monospace;
+  --od-type-display: 700 2.5rem / 1.1 var(--od-font-sans);
+  --od-type-title: 700 1.75rem / 1.2 var(--od-font-sans);
+  --od-type-heading: 650 1.25rem / 1.3 var(--od-font-sans);
+  --od-type-body: 450 1rem / 1.5 var(--od-font-sans);
+  --od-type-label: 650 0.875rem / 1.3 var(--od-font-sans);
+  --od-type-caption: 520 0.75rem / 1.35 var(--od-font-sans);
 
   /* Elevation */
-  --pv-shadow-card: 0 6px 18px rgb(20 46 44 / 8%);
-  --pv-shadow-floating: 0 12px 32px rgb(20 46 44 / 14%);
+  --od-shadow-card: 0 6px 18px rgb(8 47 69 / 8%);
+  --od-shadow-floating: 0 12px 32px rgb(8 47 69 / 14%);
 
   /* Motion */
-  --pv-motion-fast: 120ms;
-  --pv-motion-standard: 220ms;
-  --pv-motion-slow: 360ms;
-  --pv-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --od-motion-fast: 120ms;
+  --od-motion-standard: 220ms;
+  --od-motion-slow: 360ms;
+  --od-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   /* Layering */
-  --pv-z-map: 1;
-  --pv-z-sticky: 10;
-  --pv-z-header: 20;
-  --pv-z-sheet: 30;
-  --pv-z-dialog: 40;
-  --pv-z-toast: 50;
-  --pv-z-skip-link: 60;
+  --od-z-map: 1;
+  --od-z-sticky: 10;
+  --od-z-header: 20;
+  --od-z-sheet: 30;
+  --od-z-dialog: 40;
+  --od-z-toast: 50;
+  --od-z-skip-link: 60;
 }
 
 /* Dark values, written once and applied both by system preference and by an
@@ -115,71 +119,85 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --pv-background: #0d1b1a;
-    --pv-surface: #142522;
-    --pv-surface-muted: #1c302d;
-    --pv-neutral-surface: #1c302d;
-    --pv-text-primary: #f4f8f6;
-    --pv-text-secondary: #b8c9c5;
-    --pv-border: #34504a;
-    --pv-border-strong: #5c7a73;
-    --pv-primary: #52c8bc;
-    --pv-primary-pressed: #76d9cf;
-    --pv-primary-soft: #16403c;
-    --pv-primary-ink: #a7e7df;
-    --pv-on-primary: #08201e;
-    --pv-accent: #f2b84b;
-    --pv-accent-ink: #4a2e00;
-    --pv-focus: #f2b84b;
-    --pv-focus-ring: #ffe29a;
-    --pv-warning-surface: #493817;
-    --pv-warning-text: #ffe29a;
-    --pv-error-surface: #47231f;
-    --pv-error-text: #ffb4aa;
-    --pv-success-surface: #173c29;
-    --pv-success-text: #9ddfb5;
-    --pv-info-surface: #19354f;
-    --pv-info-text: #a7d2ff;
-    --pv-shadow-card: 0 6px 18px rgb(0 0 0 / 40%);
-    --pv-shadow-floating: 0 12px 32px rgb(0 0 0 / 55%);
+    /* @generated colours:dark start. scripts/generate-design-tokens.sh */
+    --od-background: #06131c;
+    --od-surface: #0c1f2b;
+    --od-surface-muted: #12293a;
+    --od-neutral-surface: #12293a;
+    --od-surface-container-high: #183447;
+    --od-surface-container-highest: #1e3e53;
+    --od-text-primary: #f2f7fa;
+    --od-text-secondary: #b3c6d3;
+    --od-border: #2a4557;
+    --od-border-strong: #6a8497;
+    --od-outline: #8fa7b8;
+    --od-primary: #7cc4e8;
+    --od-primary-pressed: #a9d8ef;
+    --od-primary-soft: #123a52;
+    --od-primary-ink: #bee3f5;
+    --od-on-primary: #04202e;
+    --od-accent: #ff9f2e;
+    --od-accent-ink: #4a2800;
+    --od-focus: #ff9f2e;
+    --od-focus-ring: #ffd08f;
+    --od-warning-surface: #4a3312;
+    --od-warning-text: #ffd9a3;
+    --od-error-surface: #47231f;
+    --od-error-text: #ffb4aa;
+    --od-success-surface: #173c29;
+    --od-success-text: #9ddfb5;
+    --od-info-surface: #19354f;
+    --od-info-text: #a7d2ff;
+    --od-mark-ring: #ffffff;
+    --od-mark-road: #ffffff;
+    /* @generated colours:dark end */
+    --od-shadow-card: 0 6px 18px rgb(0 0 0 / 40%);
+    --od-shadow-floating: 0 12px 32px rgb(0 0 0 / 55%);
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --pv-background: #0d1b1a;
-  --pv-surface: #142522;
-  --pv-surface-muted: #1c302d;
-  --pv-neutral-surface: #1c302d;
-  --pv-text-primary: #f4f8f6;
-  --pv-text-secondary: #b8c9c5;
-  --pv-border: #34504a;
-  --pv-border-strong: #5c7a73;
-  --pv-primary: #52c8bc;
-  --pv-primary-pressed: #76d9cf;
-  --pv-primary-soft: #16403c;
-  --pv-primary-ink: #a7e7df;
-  --pv-on-primary: #08201e;
-  --pv-accent: #f2b84b;
-  --pv-accent-ink: #4a2e00;
-  --pv-focus: #f2b84b;
-  --pv-focus-ring: #ffe29a;
-  --pv-warning-surface: #493817;
-  --pv-warning-text: #ffe29a;
-  --pv-error-surface: #47231f;
-  --pv-error-text: #ffb4aa;
-  --pv-success-surface: #173c29;
-  --pv-success-text: #9ddfb5;
-  --pv-info-surface: #19354f;
-  --pv-info-text: #a7d2ff;
-  --pv-shadow-card: 0 6px 18px rgb(0 0 0 / 40%);
-  --pv-shadow-floating: 0 12px 32px rgb(0 0 0 / 55%);
+  /* @generated colours:dark start. scripts/generate-design-tokens.sh */
+  --od-background: #06131c;
+  --od-surface: #0c1f2b;
+  --od-surface-muted: #12293a;
+  --od-neutral-surface: #12293a;
+  --od-surface-container-high: #183447;
+  --od-surface-container-highest: #1e3e53;
+  --od-text-primary: #f2f7fa;
+  --od-text-secondary: #b3c6d3;
+  --od-border: #2a4557;
+  --od-border-strong: #6a8497;
+  --od-outline: #8fa7b8;
+  --od-primary: #7cc4e8;
+  --od-primary-pressed: #a9d8ef;
+  --od-primary-soft: #123a52;
+  --od-primary-ink: #bee3f5;
+  --od-on-primary: #04202e;
+  --od-accent: #ff9f2e;
+  --od-accent-ink: #4a2800;
+  --od-focus: #ff9f2e;
+  --od-focus-ring: #ffd08f;
+  --od-warning-surface: #4a3312;
+  --od-warning-text: #ffd9a3;
+  --od-error-surface: #47231f;
+  --od-error-text: #ffb4aa;
+  --od-success-surface: #173c29;
+  --od-success-text: #9ddfb5;
+  --od-info-surface: #19354f;
+  --od-info-text: #a7d2ff;
+  --od-mark-ring: #ffffff;
+  --od-mark-road: #ffffff;
+  /* @generated colours:dark end */
+  --od-shadow-card: 0 6px 18px rgb(0 0 0 / 40%);
+  --od-shadow-floating: 0 12px 32px rgb(0 0 0 / 55%);
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --pv-motion-fast: 0ms;
-    --pv-motion-standard: 0ms;
-    --pv-motion-slow: 0ms;
+    --od-motion-fast: 0ms;
+    --od-motion-standard: 0ms;
+    --od-motion-slow: 0ms;
   }
 }

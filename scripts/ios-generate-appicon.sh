@@ -1,193 +1,49 @@
 #!/usr/bin/env bash
-# Renders the Poravia app icon, brand mark and wordmark into the iOS asset
-# catalog from the shared brand artwork in design/logo/.
+# Installs the Odivrelo app icon, in-app mark and launch mark into the iOS
+# asset catalog.
 #
-# The artwork is not redrawn here. design/logo/poravia-mark.svg is the single
-# source all three platforms ship, so this script only:
+# The artwork is not drawn here. design/logo/generate_odivrelo_brand.py renders
+# every raster from the one mark geometry and the palette in
+# design/tokens/odivrelo.tokens.json, and commits them under
+# design/logo/png/ios/. This script only copies them into place and writes the
+# catalog's Contents.json files, so it needs no rasteriser and runs the same on
+# a developer Mac and on CI.
 #
-#   1. writes recoloured copies of that SVG for the dark and tinted icon
-#      appearances, taking every colour from design/tokens/poravia.tokens.json;
-#   2. rasterises each copy through Quick Look, which renders the SVG exactly;
-#   3. flattens the icon variants onto an opaque square, because an iOS app
-#      icon must carry no alpha and no baked-in corner radius. The system
-#      applies the mask, so the mark's own rounded ground is squared off to the
-#      same teal rather than cropped.
-#
-# The mark is a passage: an arch you travel through, with the exact boarding
-# point marked in amber inside it.
+# The icons are square and opaque with no corner mask: iOS applies its own.
+# Three appearances ship: any (white mark on deep teal blue), dark (white mark
+# on night) and tinted (grayscale, which the system recolours).
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-LOGO_DIR="${REPO_ROOT}/design/logo"
-TOKENS="${REPO_ROOT}/design/tokens/poravia.tokens.json"
-ASSETS="${REPO_ROOT}/apps/ios/Poravia/Resources/Assets.xcassets"
+SOURCE="${REPO_ROOT}/design/logo/png/ios"
+ASSETS="${REPO_ROOT}/apps/ios/Odivrelo/Resources/Assets.xcassets"
 
-for required in "${LOGO_DIR}/poravia-mark.svg" "${TOKENS}"; do
-  if [[ ! -f "${required}" ]]; then
-    echo "error: ${required} not found" >&2
+required=(AppIcon-1024.png AppIcon-1024-Dark.png AppIcon-1024-Tinted.png)
+for base in BrandMark BrandMark-Dark LaunchMark LaunchMark-Dark; do
+  required+=("${base}.png" "${base}@2x.png" "${base}@3x.png")
+done
+for file in "${required[@]}"; do
+  if [[ ! -f "${SOURCE}/${file}" ]]; then
+    echo "error: ${SOURCE}/${file} not found; run design/logo/generate_odivrelo_brand.py" >&2
     exit 1
   fi
 done
-
-WORK="$(mktemp -d)"
-trap 'rm -rf "${WORK}"' EXIT
-mkdir -p "${WORK}/svg" "${WORK}/png" "${ASSETS}"
-
-/usr/bin/env python3 - "${LOGO_DIR}" "${TOKENS}" "${WORK}/svg" <<'PY'
-import json, re, sys, pathlib
-
-logo_dir, tokens_path, out_dir = (pathlib.Path(p) for p in sys.argv[1:4])
-tokens = json.loads(tokens_path.read_text(encoding="utf-8"))
-primitive = tokens["color"]["primitive"]
-REF = re.compile(r"^\{color\.primitive\.([A-Za-z0-9]+)\}$")
-
-
-def token(group: str, key: str) -> str:
-    value = tokens["color"][group][key]["$value"]
-    match = REF.match(value)
-    return primitive[match.group(1)]["$value"] if match else value
-
-
-mark = (logo_dir / "poravia-mark.svg").read_text(encoding="utf-8")
-
-# The colours the shared mark uses, read back out of the artwork so a change in
-# design/logo is caught here rather than silently ignored.
-GROUND, ARCH, POINT = "#0B6B63", "#EFF7F5", "#F2B84B"
-for name, value in (("ground", GROUND), ("arch", ARCH), ("point", POINT)):
-    if value not in mark:
-        raise SystemExit(f"error: poravia-mark.svg no longer uses the {name} colour {value}")
-
-variants = {
-    # Light appearance: the mark exactly as designed.
-    "any": (GROUND, ARCH, POINT),
-    # Dark appearance: the dark semantic roles from the same token file.
-    "dark": (token("dark", "background"), token("dark", "primary"), token("dark", "focus")),
-    # Tinted appearance: grayscale only. The system derives the tint from
-    # luminance, so the point stays the brightest shape and the arch reads
-    # against the ground.
-    "tinted": ("#0F0F0F", "#D6D6D6", "#FFFFFF"),
-}
-
-for name, (ground, arch, point) in variants.items():
-    svg = mark.replace(GROUND, ground).replace(ARCH, arch).replace(POINT, point)
-    # Square the ground for the icon: the system supplies the corner mask.
-    svg = svg.replace('rx="15"', 'rx="0"')
-    (out_dir / f"icon-{name}.svg").write_text(svg, encoding="utf-8")
-    print(f"{name}: ground {ground} arch {arch} point {point}")
-
-# The rounded mark is kept as-is for in-app use, in both appearances.
-(out_dir / "mark-light.svg").write_text(mark, encoding="utf-8")
-(out_dir / "mark-dark.svg").write_text(
-    mark.replace(GROUND, token("dark", "surfaceMuted"))
-        .replace(ARCH, token("dark", "primary"))
-        .replace(POINT, token("dark", "focus")),
-    encoding="utf-8",
-)
-PY
-
-# Quick Look renders SVG faithfully and needs no third-party rasteriser.
-render() {
-  local source="$1" pixels="$2" destination="$3"
-  local stage="${WORK}/ql"
-  rm -rf "${stage}"; mkdir -p "${stage}"
-  qlmanage -t -s "${pixels}" -o "${stage}" "${source}" >/dev/null 2>&1
-  local produced
-  produced="$(find "${stage}" -name '*.png' -print -quit)"
-  if [[ -z "${produced}" ]]; then
-    echo "error: Quick Look produced no thumbnail for ${source}" >&2
-    exit 1
-  fi
-  mv "${produced}" "${destination}"
-}
-
-for variant in any dark tinted; do
-  render "${WORK}/svg/icon-${variant}.svg" 1024 "${WORK}/png/icon-${variant}.png"
-done
-render "${WORK}/svg/mark-light.svg" 512 "${WORK}/png/mark-light@3x.png"
-render "${WORK}/svg/mark-light.svg" 341 "${WORK}/png/mark-light@2x.png"
-render "${WORK}/svg/mark-light.svg" 171 "${WORK}/png/mark-light.png"
-render "${WORK}/svg/mark-dark.svg" 512 "${WORK}/png/mark-dark@3x.png"
-render "${WORK}/svg/mark-dark.svg" 341 "${WORK}/png/mark-dark@2x.png"
-render "${WORK}/svg/mark-dark.svg" 171 "${WORK}/png/mark-dark.png"
-# The wordmark is composed in the app from this mark plus live text, so it
-# stays sharp, follows Dynamic Type and is read correctly by a screen reader.
-# Quick Look only produces square thumbnails, which would letterbox the
-# 196x64 wordmark artboard into a padded square image.
-
-# Flatten the three icon variants onto an opaque 1024 square.
-/usr/bin/env python3 - "${WORK}/png" <<'PY'
-import subprocess, sys, pathlib
-
-png_dir = pathlib.Path(sys.argv[1])
-grounds = {"any": "#0B6B63", "dark": None, "tinted": None}
-
-flatten = pathlib.Path(png_dir, "flatten.swift")
-flatten.write_text('''
-import AppKit
-import CoreGraphics
-import Foundation
-
-let input = URL(fileURLWithPath: CommandLine.arguments[1])
-let output = URL(fileURLWithPath: CommandLine.arguments[2])
-let hex = UInt32(CommandLine.arguments[3], radix: 16)!
-
-guard let source = NSImage(contentsOf: input),
-      let cgSource = source.cgImage(forProposedRect: nil, context: nil, hints: nil)
-else { fatalError("could not read \\(input.path)") }
-
-let size = 1024
-guard let ctx = CGContext(data: nil, width: size, height: size,
-                          bitsPerComponent: 8, bytesPerRow: 0,
-                          space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                          bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
-else { fatalError("no context") }
-
-let r = CGFloat((hex >> 16) & 0xFF) / 255
-let g = CGFloat((hex >> 8) & 0xFF) / 255
-let b = CGFloat(hex & 0xFF) / 255
-ctx.setFillColor(CGColor(srgbRed: r, green: g, blue: b, alpha: 1))
-ctx.fill(CGRect(x: 0, y: 0, width: size, height: size))
-ctx.draw(cgSource, in: CGRect(x: 0, y: 0, width: size, height: size))
-
-guard let image = ctx.makeImage() else { fatalError("no image") }
-let rep = NSBitmapImageRep(cgImage: image)
-guard let data = rep.representation(using: .png, properties: [:]) else { fatalError("no png") }
-try data.write(to: output)
-''', encoding="utf-8")
-
-binary = png_dir / "flatten"
-subprocess.run(["swiftc", "-O", "-o", str(binary), str(flatten)], check=True)
-
-# The squared SVG already fills the frame with its own ground colour, so the
-# backdrop only needs to match it. Reading it back from the rendered pixel at
-# the corner keeps the two in step without restating the palette here.
-from struct import unpack
-
-def corner_hex(path: pathlib.Path) -> str:
-    probe = subprocess.run(
-        ["sips", "-g", "all", str(path)], capture_output=True, text=True, check=True
-    )
-    return probe.stdout and ""
-
-for variant in ("any", "dark", "tinted"):
-    src = png_dir / f"icon-{variant}.png"
-    ground = {"any": "0B6B63", "dark": "0D1B1A", "tinted": "0F0F0F"}[variant]
-    subprocess.run([str(binary), str(src), str(png_dir / f"AppIcon-{variant}.png"), ground], check=True)
-    print(f"flattened icon-{variant}.png onto #{ground}")
-PY
 
 ICONSET="${ASSETS}/AppIcon.appiconset"
 MARKSET="${ASSETS}/BrandMark.imageset"
-rm -rf "${ICONSET}" "${MARKSET}" "${ASSETS}/Wordmark.imageset"
-mkdir -p "${ICONSET}" "${MARKSET}"
+LAUNCHSET="${ASSETS}/LaunchMark.imageset"
+rm -rf "${ICONSET}" "${MARKSET}" "${LAUNCHSET}" "${ASSETS}/Wordmark.imageset"
+mkdir -p "${ICONSET}" "${MARKSET}" "${LAUNCHSET}"
 
-cp "${WORK}/png/AppIcon-any.png"    "${ICONSET}/AppIcon-1024.png"
-cp "${WORK}/png/AppIcon-dark.png"   "${ICONSET}/AppIcon-1024-Dark.png"
-cp "${WORK}/png/AppIcon-tinted.png" "${ICONSET}/AppIcon-1024-Tinted.png"
+cp "${SOURCE}/AppIcon-1024.png"        "${ICONSET}/AppIcon-1024.png"
+cp "${SOURCE}/AppIcon-1024-Dark.png"   "${ICONSET}/AppIcon-1024-Dark.png"
+cp "${SOURCE}/AppIcon-1024-Tinted.png" "${ICONSET}/AppIcon-1024-Tinted.png"
 
 for suffix in "" "@2x" "@3x"; do
-  cp "${WORK}/png/mark-light${suffix}.png" "${MARKSET}/BrandMark${suffix}.png"
-  cp "${WORK}/png/mark-dark${suffix}.png"  "${MARKSET}/BrandMark-Dark${suffix}.png"
+  cp "${SOURCE}/BrandMark${suffix}.png"       "${MARKSET}/BrandMark${suffix}.png"
+  cp "${SOURCE}/BrandMark-Dark${suffix}.png"  "${MARKSET}/BrandMark-Dark${suffix}.png"
+  cp "${SOURCE}/LaunchMark${suffix}.png"      "${LAUNCHSET}/LaunchMark${suffix}.png"
+  cp "${SOURCE}/LaunchMark-Dark${suffix}.png" "${LAUNCHSET}/LaunchMark-Dark${suffix}.png"
 done
 
 cat > "${ICONSET}/Contents.json" <<'JSON'
@@ -245,16 +101,15 @@ JSON
 }
 
 write_imageset "${MARKSET}" "BrandMark"
+write_imageset "${LAUNCHSET}" "LaunchMark"
 
-# The mark must stay square: a non-square rasterisation would mean Quick Look
-# padded the artboard, which is what the wordmark used to suffer from.
-for f in "${MARKSET}"/BrandMark*.png; do
-  W="$(sips -g pixelWidth "$f" | awk '/pixelWidth/{print $2}')"
-  H="$(sips -g pixelHeight "$f" | awk '/pixelHeight/{print $2}')"
-  if [[ "${W}" != "${H}" ]]; then
-    echo "error: $(basename "$f") is ${W}x${H}, expected square" >&2
+# An iOS app icon must be opaque. The generator flattens it; check anyway, so a
+# hand-edited PNG with an alpha channel cannot slip into the catalog.
+for f in "${ICONSET}"/AppIcon-*.png; do
+  if [[ "$(sips -g hasAlpha "$f" | awk '/hasAlpha/{print $2}')" == "yes" ]]; then
+    echo "error: $(basename "$f") has an alpha channel; app icons must be opaque" >&2
     exit 1
   fi
 done
 
-echo "app icon and brand mark written to ${ASSETS} from ${LOGO_DIR}"
+echo "app icon, brand mark and launch mark installed in ${ASSETS} from ${SOURCE}"

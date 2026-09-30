@@ -1,60 +1,80 @@
-# Poravia Design System
+# Odivrelo Design System
 
 Status: proposed design language, version 0.1
 
 ## Design idea
 
-Poravia should feel like a calm, trustworthy journey companion, not a ticketing
+Odivrelo should feel like a calm, trustworthy journey companion, not a ticketing
 portal and not a government form.
 
 The visual language combines:
 
-- Aegean teal for movement and orientation.
-- Warm limestone backgrounds inspired by Greek stations and road signs.
-- Sun amber for focus and important travel moments.
+- Deep teal blue for the brand, primary actions and orientation.
+- A light blue-grey background, so white cards and journey detail stand out.
+- Warm orange as an accent for the destination and for focus, never as text.
 - Generous white space and clear route structure.
 - Visible source and freshness states.
 
 The product should never borrow operator logos or federation visual language in
 a way that suggests official affiliation.
 
+The source of truth for every colour below is
+`design/tokens/odivrelo.tokens.json`. `scripts/generate-design-tokens.sh`
+writes the Web, Android and iOS themes from it and audits WCAG AA contrast for
+every text pairing in both themes before it writes anything.
+
 ## Brand mark
 
-The proposed mark is a rounded map pin containing a folded road that forms a
-subtle `H`.
+The mark, "Route O", is a bold ring in deep teal blue with a road (lane dashes
+down its middle) sweeping up through it from the lower left to a warm orange
+node on the upper right of the ring. The masters, the generator and the rules
+are in `design/logo/` and on the brand board, `design/Odivrelo-Brand-Board.svg`.
 
 Rules:
 
-- The mark must work at 24 pixels.
-- Use one color at small sizes.
+- The mark must work at 16 pixels. Below 96 pixels use the simplified cut
+  (no lane dashes, heavier strokes), which is what the favicon ships.
+- Use one colour where contrast needs it: the black and white versions, or the
+  monochrome silhouette.
+- Keep clear space of a quarter of the ring's diameter on every side.
 - Do not put operator logos inside the mark.
 - Do not use a bus silhouette as the only identifying idea.
 - Keep a square app-icon version and a horizontal wordmark version.
-- Render the product as `Poravia`, with a capital H and M.
+- Write the product as `Odivrelo` in running text. `ODIVRELO` is only for a
+  layout that sets everything in capitals.
 
 ## Color
 
-### Core palette
+### Brand palette
 
 | Token | Value | Purpose |
 |---|---|---|
-| Aegean Ink | `#142E2C` | Primary text and dark brand field |
-| Route Teal | `#0B6B63` | Primary actions and selected routes |
-| Deep Route | `#064B47` | Pressed actions and dark emphasis |
-| Sea Glass | `#DCEBE7` | Selected and supporting surfaces |
-| Limestone | `#F6F7F2` | App background |
+| Deep Teal Blue | `#0B4A6B` | The ring, primary actions, app icon ground |
+| Warm Orange | `#FF9F2E` | The destination node, focus, highlights. Never text on white |
+| Light Background | `#E6F1F7` | Muted surfaces and the light icon ground |
+| Navy | `#082F45` | Primary text, the road and the wordmark |
 | White | `#FFFFFF` | Cards and elevated surfaces |
-| Sun Amber | `#F2B84B` | Focus and journey highlights |
-| Stone | `#4E615D` | Secondary text |
-| Border | `#CBD8D4` | Dividers and control outlines |
 
-### Semantic palette
+### Core semantic palette, light
+
+| Role | Value | Purpose |
+|---|---|---|
+| Background | `#F4F8FB` | App background |
+| Surface | `#FFFFFF` | Cards |
+| Surface muted | `#E6F1F7` | Selected and supporting surfaces |
+| Text primary | `#082F45` | Body text, 13.1:1 on the background |
+| Text secondary | `#45596A` | Secondary text, 6.8:1 on the background |
+| Primary | `#0B4A6B` | Actions and links, 8.9:1 on the background |
+| Primary pressed | `#083A55` | Pressed actions and the focus ring |
+| Border | `#C9D8E1` | Dividers |
+
+### Status palette
 
 | State | Surface | Text |
 |---|---|---|
 | Verified or success | `#E3F3E9` | `#185C38` |
 | Information | `#E5F0FA` | `#174F83` |
-| Warning or stale | `#FFF1C9` | `#4A2E00` |
+| Warning or stale | `#FFE9CC` | `#4A2800` |
 | Error or cancelled | `#FCE8E5` | `#8F2F25` |
 
 Important states always include text and an icon. Color is never the only
@@ -62,15 +82,16 @@ signal.
 
 ### Dark mode
 
-Dark mode uses Aegean black rather than pure black:
+Dark mode uses a deep navy rather than pure black:
 
-- Background: `#0D1B1A`
-- Surface: `#142522`
-- Raised surface: `#1C302D`
-- Primary text: `#F4F8F6`
-- Secondary text: `#B8C9C5`
-- Primary action: `#52C8BC`
-- Action text: `#08201E`
+- Background: `#06131C`
+- Surface: `#0C1F2B`
+- Raised surface: `#12293A`
+- Primary text: `#F2F7FA`
+- Secondary text: `#B3C6D3`
+- Primary action: `#7CC4E8`
+- Action text: `#04202E`
+- The mark is drawn in white with the orange node, as on the app icon.
 
 ## Typography
 
@@ -209,8 +230,8 @@ Tapping a coach, predicted coach, or journey opens a bottom sheet containing:
 - `Contact KTEL`.
 - `Journey details`.
 
-The bottom sheet stays inside Poravia. Official-store checkout opens outside
-Poravia in the device browser.
+The bottom sheet stays inside Odivrelo. Official-store checkout opens outside
+Odivrelo in the device browser.
 
 ### Saved trip card
 
@@ -286,14 +307,14 @@ Shows geography or operator, release date, size, freshness and update action.
 
 ### Home
 
-Use an Aegean Ink header with the Poravia mark, a plain-language promise and a
+Use a deep teal blue header with the Odivrelo mark, a plain-language promise and a
 white journey search panel overlapping the lower edge. Below it, show recent
 journeys, nearby terminals and national coverage status.
 
 ### Results
 
 Keep the service date and route summary pinned. Results use white cards on
-Limestone. A Web desktop layout can pair the list with a map, but the list
+the light background. A Web desktop layout can pair the list with a map, but the list
 remains complete without the map.
 
 ### Journey detail
@@ -314,7 +335,7 @@ ticket-office card.
 
 ## Voice and writing
 
-Poravia is direct, calm and honest.
+Odivrelo is direct, calm and honest.
 
 Use:
 
@@ -326,7 +347,7 @@ Use:
 Avoid:
 
 - `Guaranteed`
-- `Official Poravia ticket`
+- `Official Odivrelo ticket`
 - `Live` when the value is scheduled or cached
 - Technical provider names in primary passenger copy
 
@@ -345,10 +366,10 @@ Avoid:
 ## Implementation
 
 The canonical tokens live in
-`design/tokens/poravia.tokens.json`.
+`design/tokens/odivrelo.tokens.json`.
 
 The Web variables live in
-`design/tokens/poravia.css`.
+`design/tokens/odivrelo.css`.
 
 Platform themes should be generated from the semantic token layer. Features
 must not import primitive color values directly.

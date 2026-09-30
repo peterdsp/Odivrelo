@@ -93,6 +93,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: No stray old-brand strings and no unresolved placeholders
         run: bash scripts/check-brand.sh
+      - name: Generated colours match the design tokens and pass the contrast audit
+        run: bash scripts/generate-design-tokens.sh --check
 
   web:
     name: Web application

@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="poravia-mono-title">
-  <title id="poravia-mono-title">Poravia</title>
-  <path d="M16 53V30a16 16 0 0 1 32 0v23"
-        fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round"/>
-  <circle cx="32" cy="34" r="5.5" fill="currentColor"/>
-</svg>

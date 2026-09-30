@@ -13,7 +13,16 @@ const brand = JSON.parse(readFileSync(join(repoRoot, 'brand.json'), 'utf8')) as 
   slug: string;
   version: string;
   tagline: Record<string, string>;
+  description: Record<string, string>;
   defaultLanguage: string;
+};
+
+/*
+ * The manifest's colours come from the design tokens, the same file the
+ * stylesheets, iOS and Android are generated from.
+ */
+const tokens = JSON.parse(readFileSync(join(repoRoot, 'design', 'tokens', 'odivrelo.tokens.json'), 'utf8')) as {
+  color: { brand: Record<string, { $value: string }>; primitive: Record<string, { $value: string }> };
 };
 
 function gitCommit(): string {
@@ -31,7 +40,7 @@ function gitCommit(): string {
 const buildTime = new Date().toISOString();
 
 export default defineConfig({
-  // Served from the site root of https://poravia.peterdsp.dev, so absolute paths
+  // Served from the site root of https://odivrelo.peterdsp.dev, so absolute paths
   // are correct and a deep link resolves its assets from anywhere in the app.
   base: '/',
   define: {
@@ -50,9 +59,9 @@ export default defineConfig({
      * A .map file embeds the absolute build path, and this working tree still
      * lives in a directory named after the rejected identity, so shipping maps
      * puts that string inside dist and fails scripts/check-brand.sh. Set
-     * PORAVIA_SOURCEMAPS=1 locally when a production stack trace needs reading.
+     * ODIVRELO_SOURCEMAPS=1 locally when a production stack trace needs reading.
      */
-    sourcemap: process.env.PORAVIA_SOURCEMAPS === '1',
+    sourcemap: process.env.ODIVRELO_SOURCEMAPS === '1',
     cssCodeSplit: true,
     // Budgets. These are warnings at the Rollup level; scripts/check-budgets.mjs
     // turns an overrun into a build failure, because a warning nobody reads is
@@ -83,15 +92,15 @@ export default defineConfig({
         id: '/',
         name: brand.name,
         short_name: brand.name,
-        description: brand.tagline[brand.defaultLanguage] ?? brand.tagline.en ?? '',
+        description: brand.description[brand.defaultLanguage] ?? brand.description.en ?? '',
         lang: brand.defaultLanguage,
         dir: 'ltr',
         start_url: '/search',
         scope: '/',
         display: 'standalone',
         orientation: 'any',
-        background_color: '#f6f7f2',
-        theme_color: '#0b6b63',
+        background_color: tokens.color.primitive.canvas.$value.toLowerCase(),
+        theme_color: tokens.color.brand.deepTealBlue.$value.toLowerCase(),
         categories: ['travel', 'navigation', 'utilities'],
         icons: [
           { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
@@ -117,6 +126,8 @@ export default defineConfig({
         // the first time a map is actually opened, and works offline after that.
         globIgnores: [
           'data/**',
+          // The link-preview image is for crawlers, never needed offline.
+          'icons/og-image.png',
           '**/node_modules/**',
           'assets/maplibre-*.js',
           'assets/maplibre-*.css',
@@ -134,7 +145,7 @@ export default defineConfig({
             urlPattern: /\/assets\/maplibre-.*\.(js|css)$/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'poravia-map-v1',
+              cacheName: 'odivrelo-map-v1',
               expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] },
             },
@@ -145,7 +156,7 @@ export default defineConfig({
             urlPattern: /\/data\/packs\/.*$/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'poravia-packs-v1',
+              cacheName: 'odivrelo-packs-v1',
               expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] },
             },
@@ -156,7 +167,7 @@ export default defineConfig({
             urlPattern: /\/data\/manifest\.json$/,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'poravia-manifest-v1',
+              cacheName: 'odivrelo-manifest-v1',
               expiration: { maxEntries: 4 },
               cacheableResponse: { statuses: [0, 200] },
             },
