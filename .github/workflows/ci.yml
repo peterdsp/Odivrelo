@@ -201,8 +201,13 @@ jobs:
         run: brew install xcodegen
       - name: Build the shared XCFramework
         run: bash scripts/shared-build-xcframework.sh
+      # Runner images change which simulators they carry, so use the first
+      # available iPhone rather than a name that may not exist on the image.
       - name: Build and test
-        run: bash scripts/ios-ci-build.sh
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -m1 -oE 'iPhone [^(]+' | sed 's/ *$//')
+          echo "Using simulator: $DEVICE"
+          DEVICE="$DEVICE" bash scripts/ios-ci-build.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
