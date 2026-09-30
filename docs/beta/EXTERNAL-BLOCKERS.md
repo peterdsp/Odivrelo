@@ -48,6 +48,14 @@ permitted to go looking for credentials.
   loudly rather than reporting a green deployment that is not live.
 - `apps/web/public/CNAME` contains `poravia.peterdsp.dev`.
 
+**Interim deployment, 30 September 2026.** The same production artifact is
+live on Cloudflare Pages at https://poravia.pages.dev (project `poravia` on the
+owner's account, deployed with `npx wrangler pages deploy apps/web/dist
+--project-name poravia --branch main`). `scripts/verify-deployment.sh
+https://poravia.pages.dev` passes every check, including the full security
+header set from `_headers`, which GitHub Pages cannot apply. The custom domain
+is still unset, so this entry stays open until `poravia.peterdsp.dev` resolves.
+
 **Exact action needed.** One of these, then re-run
 `bash scripts/verify-deployment.sh https://poravia.peterdsp.dev`.
 

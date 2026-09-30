@@ -131,6 +131,10 @@ function emit(routePath, html) {
   const directory = routePath === '/' ? dist : join(dist, routePath.replace(/^\//, ''));
   mkdirSync(directory, { recursive: true });
   writeFileSync(join(directory, 'index.html'), html);
+  // A static host answers /search with a redirect to /search/ when only the
+  // directory exists. A sibling search.html lets GitHub Pages and Cloudflare
+  // Pages serve the extensionless deep link directly with a 200.
+  if (routePath !== '/') writeFileSync(`${directory}.html`, html);
 }
 
 // --------------------------------------------------------------------------
