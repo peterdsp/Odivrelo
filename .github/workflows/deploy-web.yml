@@ -25,8 +25,17 @@ jobs:
     name: Build the release artifact
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
+      # Creates the Pages site on first run so no manual dashboard step is
+      # needed, and records the base URL the build is stamped with.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

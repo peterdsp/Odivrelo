@@ -6,6 +6,9 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"
 PY="${PY:-python3}"
+# Resolve a relative interpreter against the repository root, since the script
+# changes directory below.
+case "$PY" in /*) ;; *) [ -x "$ROOT/$PY" ] && PY="$ROOT/$PY" ;; esac
 ARTIFACTS="$ROOT/artifacts"
 rm -rf "$ARTIFACTS/ingest.db" "$ARTIFACTS/public.db" "$ARTIFACTS/releases"
 mkdir -p "$ARTIFACTS/releases"
