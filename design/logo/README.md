@@ -1,6 +1,6 @@
 # Poravia brand assets
 
-Original marks for Poravia. No HodoMap artwork survives here.
+Original marks for Poravia. No artwork from the rejected former identity survives here.
 
 | File | Use |
 |---|---|

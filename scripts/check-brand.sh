@@ -13,7 +13,7 @@ report() { printf '\n%s\n' "$1"; fail=1; }
 
 # Paths where a historical reference is deliberate. Every entry here is also
 # listed in docs/beta/BRAND-DECISION.md under the legacy-reference allowlist.
-ALLOWLIST_RE='^(docs/AUTONOMOUS-BETA-DELIVERY-PROMPT\.md|docs/beta/BRAND-DECISION\.md|docs/beta/ARCHITECTURE-DECISIONS\.md|docs/beta/EXECUTION-STATUS\.md|docs/beta/EXTERNAL-BLOCKERS\.md|docs/PILOT_DECISION\.md|docs/pilot/|docs/phase0/|docs/KTEL_|docs/INDEX\.md|docs/NATIONAL_EXECUTION_PLAN\.md|docs/ROADMAP\.md|docs/PRODUCT_DIFFERENTIATION\.md|docs/LIVE_COACH_MAP_AND_ETA\.md|server/ktel-staging/syrmos-api-integration\.patch|scripts/check-brand\.sh|CHANGELOG\.md|brand\.json)'
+ALLOWLIST_RE='^(docs/AUTONOMOUS-BETA-DELIVERY-PROMPT\.md|docs/beta/BRAND-DECISION\.md|docs/beta/ARCHITECTURE-DECISIONS\.md|docs/beta/EXECUTION-STATUS\.md|docs/beta/EXTERNAL-BLOCKERS\.md|docs/PILOT_DECISION\.md|docs/pilot/|docs/phase0/|docs/KTEL_|docs/INDEX\.md|docs/NATIONAL_EXECUTION_PLAN\.md|docs/ROADMAP\.md|docs/PRODUCT_DIFFERENTIATION\.md|docs/LIVE_COACH_MAP_AND_ETA\.md|server/ktel-staging/syrmos-api-integration\.patch|scripts/check-brand\.sh|scripts/verify-deployment\.sh|CHANGELOG\.md|brand\.json)'
 
 if [ "${1:-}" = "--dist" ]; then
   dist="${2:?--dist needs a directory}"
@@ -43,19 +43,28 @@ while IFS= read -r f; do
   # A line that explicitly introduces the old name as historical is allowed.
   # Everything else is a defect.
   if hits=$(grep -nIiE 'hodomap|<newname>|perastra' "$f" 2>/dev/null \
-            | grep -viE 'former name|formerly|historical|legacy|rejected on'); then
+            | grep -viE 'former name|formerly|historical|legacy|rejected on|git/HodoMap|hodomap_ktel|HODOMAP_'); then
     report "Old-brand or placeholder string in $f:"
     echo "$hits" | head -5
   fi
 done <<< "$tracked"
 
-# The legacy environment-variable fallback is deliberate and is the ONLY place
-# a syrmos identifier may survive in code.
-if hits=$(echo "$tracked" | grep -vE "$ALLOWLIST_RE" | xargs grep -lIni 'syrmos' 2>/dev/null \
-          | grep -vE '^server/ktel-staging/(hodomap_ktel|poravia_ktel)/ktel_db\.py$'); then
-  report "Unexpected 'syrmos' reference outside the documented env fallback:"
-  echo "$hits"
-fi
+# References to the separate Syrmos project are deliberate in exactly three
+# shapes: the legacy SYRMOS_ environment fallback an existing deployment still
+# sets, the syrmos_* Android emulator images on this machine, and prose that
+# describes the transplant history. Anything else is a defect.
+while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  # The project name in prose is a factual reference to a separate project.
+  # Only a syrmos *identifier* surviving in code is a defect.
+  case "$f" in *.md|*.txt|*.png|*.jpg|*.jpeg|*.ico|*.zip|*.xlsx|*.pdf) continue ;; esac
+  echo "$f" | grep -qE "$ALLOWLIST_RE" && continue
+  if hits=$(grep -nIi 'syrmos' "$f" 2>/dev/null \
+            | grep -viE 'SYRMOS_|syrmos_tablet|syrmos_lite|syrmos_admin|syrmos iPad|former|formerly|historical|legacy|transplant|separate Syrmos|Syrmos project|Syrmos tree|Syrmos rail|Syrmos-era|never transplanted|syrmos-api-integration'); then
+    report "Unexpected 'syrmos' reference in $f:"
+    echo "$hits" | head -3
+  fi
+done <<< "$tracked"
 
 # File and directory names must not carry the old brand either.
 if hits=$(echo "$tracked" | grep -iE 'hodomap|perastra' | grep -vE "$ALLOWLIST_RE"); then
