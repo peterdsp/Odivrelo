@@ -175,6 +175,9 @@ struct JourneyCard: View {
         parts.append(FreshnessBadge.text(journey.freshness))
         parts.append(Formatters.freshnessAge(journey.freshness))
         parts.append(ConfidenceBadge.text(journey.confidence))
+        // The card shows three chips and this spoke only two of them, so a
+        // VoiceOver reader was told one fewer fact than a sighted reader.
+        parts.append(PositionQualityBadge.text(journey.positionQuality))
         if let fare = journey.fare {
             parts.append(Formatters.fare(fare))
         } else {
@@ -256,6 +259,18 @@ struct PositionQualityBadge: View {
 
     init(_ quality: PositionQuality) {
         self.quality = quality
+    }
+
+    /// The badge's words, so a screen reader is told the same thing the badge
+    /// shows. Reading them from here rather than repeating them means the two
+    /// cannot drift apart.
+    static func text(_ quality: PositionQuality) -> String {
+        switch quality {
+        case .scheduled: L10n.qualityScheduled
+        case .predicted: L10n.qualityPredicted
+        case .estimated: L10n.qualityEstimated
+        case .live: L10n.qualityLive
+        }
     }
 
     var body: some View {

@@ -126,12 +126,19 @@ public enum L10n {
         "error.cancelled",
         "error.coreUnavailable",
         "error.decoding",
+        "error.incompleteData",
+        "error.incompleteDataHint",
         "error.integrity",
         "error.interrupted",
         "error.invalidRequest",
+        "error.noDataInstalled",
+        "error.noDataInstalledHint",
+        "error.noOfflineDataForDate",
+        "error.noOfflineDataForDateHint",
         "error.notFound",
         "error.offline",
         "error.offlineHint",
+        "error.openOffline",
         "error.packIo",
         "error.packNotInManifest",
         "error.packStorageFull",
@@ -140,6 +147,8 @@ public enum L10n {
         "error.storage",
         "error.unauthorized",
         "error.unavailable",
+        "error.unreadableData",
+        "error.unreadableDataHint",
         "favourites.add",
         "favourites.empty",
         "favourites.remove",
@@ -396,7 +405,7 @@ public extension L10n {
     /// Spoken when results finish loading. %lld is the number of results.
     static func a11yLoadedAnnouncement(_ a0: Int) -> String { format("a11y.loadedAnnouncement", a0) }
 
-    /// VoiceOver hint telling the reader the list holds the same facts
+    /// VoiceOver hint telling the reader the stop list, which is above the map on this screen, holds the same facts
     static var a11yMapHint: String { string("a11y.mapHint") }
 
     /// VoiceOver value for a download progress bar. %lld is a percentage.
@@ -618,6 +627,12 @@ public extension L10n {
     /// The answer did not match the published contract
     static var errorDecoding: String { string("error.decoding") }
 
+    /// Title when a release is installed but some of its packs are missing
+    static var errorIncompleteData: String { string("error.incompleteData") }
+
+    /// What to do: finish the install from the Offline screen
+    static var errorIncompleteDataHint: String { string("error.incompleteDataHint") }
+
     /// A downloaded pack failed its SHA-256 check
     static var errorIntegrity: String { string("error.integrity") }
 
@@ -627,6 +642,18 @@ public extension L10n {
     /// The request was rejected. %@ names the field.
     static func errorInvalidRequest(_ a0: String) -> String { format("error.invalidRequest", a0) }
 
+    /// Title when the device holds no offline release at all, which is the first screen of a new installation
+    static var errorNoDataInstalled: String { string("error.noDataInstalled") }
+
+    /// What to do about it: go to the Offline screen and install a release
+    static var errorNoDataInstalledHint: String { string("error.noDataInstalledHint") }
+
+    /// Title when no timetable pack is held for the requested date. Never says no service runs that date
+    static var errorNoOfflineDataForDate: String { string("error.noOfflineDataForDate") }
+
+    /// Explains that this says nothing about whether service runs, and offers the Offline screen
+    static var errorNoOfflineDataForDateHint: String { string("error.noOfflineDataForDateHint") }
+
     /// The requested record no longer exists in this release
     static var errorNotFound: String { string("error.notFound") }
 
@@ -635,6 +662,9 @@ public extension L10n {
 
     /// What still works offline
     static var errorOfflineHint: String { string("error.offlineHint") }
+
+    /// Button that takes the person to the Offline packs screen
+    static var errorOpenOffline: String { string("error.openOffline") }
 
     /// A pack could not be written to the device
     static var errorPackIo: String { string("error.packIo") }
@@ -659,6 +689,12 @@ public extension L10n {
 
     /// Service is reachable but cannot answer
     static var errorUnavailable: String { string("error.unavailable") }
+
+    /// Title when installed data cannot be decoded and must be installed again
+    static var errorUnreadableData: String { string("error.unreadableData") }
+
+    /// What to do: reinstall from the Offline screen
+    static var errorUnreadableDataHint: String { string("error.unreadableDataHint") }
 
     /// Action
     static var favouritesAdd: String { string("favourites.add") }

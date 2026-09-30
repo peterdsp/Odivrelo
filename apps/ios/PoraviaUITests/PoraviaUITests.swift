@@ -75,8 +75,12 @@ final class PoraviaUITests: XCTestCase {
         let app = launch()
         completeOnboarding(app)
 
+        // The notice is localised, so in Greek the region reads "Αλορία".
         let notice = app.staticTexts.containing(
-            NSPredicate(format: "label CONTAINS[c] %@", "Aloria")
+            NSPredicate(
+                format: "label CONTAINS[c] %@ OR label CONTAINS[c] %@",
+                "Aloria", "Αλορία"
+            )
         ).firstMatch
         XCTAssertTrue(notice.waitForExistence(timeout: 10), "the demonstration notice must be shown")
 
@@ -266,10 +270,15 @@ final class PoraviaUITests: XCTestCase {
         completeOnboarding(app)
         app.tabBars.buttons.element(boundBy: 3).tap()
 
-        XCTAssertTrue(
-            app.buttons["settings.copyDiagnostics"].waitForExistence(timeout: 10),
-            "diagnostics should be available"
-        )
+        // Diagnostics sit at the foot of a lazy list, so they only exist once
+        // scrolled into view.
+        let diagnostics = app.buttons["settings.copyDiagnostics"]
+        var swipes = 0
+        while !diagnostics.waitForExistence(timeout: 2), swipes < 8 {
+            app.swipeUp()
+            swipes += 1
+        }
+        XCTAssertTrue(diagnostics.exists, "diagnostics should be available")
     }
 
     @MainActor

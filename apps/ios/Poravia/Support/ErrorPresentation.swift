@@ -14,19 +14,38 @@ public struct ErrorPresentation: Equatable, Sendable {
     public var isRetryable: Bool
     /// A secondary hint, such as what still works offline.
     public var hint: String?
+    /// Where the person can go to put this right, when somewhere exists.
+    ///
+    /// An error that names no route leaves someone stuck on a screen that only
+    /// apologises, which is the state a new installation was in: it said the
+    /// service could not answer and offered nowhere to go.
+    public var recovery: Recovery?
+
+    /// The one place in this application that can resolve a data failure.
+    public enum Recovery: Hashable, Sendable {
+        case offlinePacks
+
+        public var label: String {
+            switch self {
+            case .offlinePacks: L10n.errorOpenOffline
+            }
+        }
+    }
 
     public init(
         title: String,
         message: String,
         systemImage: String,
         isRetryable: Bool,
-        hint: String? = nil
+        hint: String? = nil,
+        recovery: Recovery? = nil
     ) {
         self.title = title
         self.message = message
         self.systemImage = systemImage
         self.isRetryable = isRetryable
         self.hint = hint
+        self.recovery = recovery
     }
 
     public static func of(_ error: CoreError) -> ErrorPresentation {
@@ -39,13 +58,71 @@ public struct ErrorPresentation: Equatable, Sendable {
                 isRetryable: true,
                 hint: L10n.errorOfflineHint
             )
-        case .unavailable:
-            ErrorPresentation(
-                title: L10n.errorUnavailable,
-                message: L10n.errorOfflineHint,
-                systemImage: "clock.badge.exclamationmark",
-                isRetryable: true
-            )
+        case let .unavailable(kind):
+            // The core says which kind of unavailability this is, and each one
+            // has a different useful next step. Collapsing them into one
+            // apology is what left a new installation with a screen that only
+            // said the service could not answer.
+            switch kind {
+            case .noDataInstalled:
+                ErrorPresentation(
+                    title: L10n.errorNoDataInstalled,
+                    message: L10n.errorNoDataInstalledHint,
+                    systemImage: "arrow.down.circle",
+                    isRetryable: false,
+                    recovery: .offlinePacks
+                )
+            case .incompleteData:
+                ErrorPresentation(
+                    title: L10n.errorIncompleteData,
+                    message: L10n.errorIncompleteDataHint,
+                    systemImage: "exclamationmark.arrow.triangle.2.circlepath",
+                    isRetryable: false,
+                    recovery: .offlinePacks
+                )
+            case .unreadableData:
+                ErrorPresentation(
+                    title: L10n.errorUnreadableData,
+                    message: L10n.errorUnreadableDataHint,
+                    systemImage: "doc.badge.gearshape",
+                    isRetryable: false,
+                    recovery: .offlinePacks
+                )
+            case .noOfflinePackForDate:
+                // This is a statement about what the device holds, never about
+                // whether a service runs. The two are different answers and the
+                // wording keeps them apart.
+                ErrorPresentation(
+                    title: L10n.errorNoOfflineDataForDate,
+                    message: L10n.errorNoOfflineDataForDateHint,
+                    systemImage: "calendar.badge.exclamationmark",
+                    isRetryable: false,
+                    recovery: .offlinePacks
+                )
+            case .storageFull:
+                ErrorPresentation(
+                    title: L10n.errorPackStorageFull,
+                    message: L10n.offlineStorageUsedLabel,
+                    systemImage: "externaldrive.badge.exclamationmark",
+                    isRetryable: false,
+                    recovery: .offlinePacks
+                )
+            case .networkUnavailable:
+                ErrorPresentation(
+                    title: L10n.errorOffline,
+                    message: L10n.errorOfflineHint,
+                    systemImage: "wifi.slash",
+                    isRetryable: true,
+                    hint: L10n.errorOfflineHint
+                )
+            case .general, .releaseMismatch, .notFound, .invalidRequest:
+                ErrorPresentation(
+                    title: L10n.errorUnavailable,
+                    message: L10n.errorOfflineHint,
+                    systemImage: "clock.badge.exclamationmark",
+                    isRetryable: true
+                )
+            }
         case .notFound:
             ErrorPresentation(
                 title: L10n.errorNotFound,
@@ -160,6 +237,7 @@ public struct ErrorPresentation: Equatable, Sendable {
 /// Presents a `CoreError` with the shared state view and, when the error is
 /// worth retrying, a retry action.
 public struct CoreErrorView: View {
+    @Environment(AppModel.self) private var model
     private let error: CoreError
     private let retry: (() -> Void)?
 
@@ -170,18 +248,34 @@ public struct CoreErrorView: View {
 
     public var body: some View {
         let presentation = ErrorPresentation.of(error)
-        StateMessageView(
-            kind: .failure(systemImage: presentation.systemImage),
-            title: presentation.title,
-            message: presentation.message.isEmpty ? nil : presentation.message,
-            retry: presentation.isRetryable ? retry : nil
-        )
+        VStack(spacing: Theme.Space.medium) {
+            StateMessageView(
+                kind: .failure(systemImage: presentation.systemImage),
+                title: presentation.title,
+                message: presentation.message.isEmpty ? nil : presentation.message,
+                retry: presentation.isRetryable ? retry : nil
+            )
+            // A failure that can be put right says where. Without this the
+            // first screen of a new installation only apologised.
+            if let recovery = presentation.recovery {
+                Button(recovery.label) { take(recovery) }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("error.recovery")
+            }
+        }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(L10n.a11yErrorAnnouncement(presentation.title))
         .onAppear {
             // VoiceOver is told about a failure rather than leaving the reader
             // to discover a silently changed screen.
             AccessibilityAnnouncer.announce(L10n.a11yErrorAnnouncement(presentation.title))
+        }
+    }
+
+    private func take(_ recovery: ErrorPresentation.Recovery) {
+        switch recovery {
+        case .offlinePacks:
+            model.session.selectedTab = .offline
         }
     }
 }

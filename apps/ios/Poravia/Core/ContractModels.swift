@@ -248,15 +248,76 @@ public struct Attribution: Hashable, Codable, Sendable, Identifiable {
     }
 }
 
+/// The span of service dates a release actually names, as `PoraviaServiceDateRange`.
+///
+/// Both ends are optional because a release may name no dates at all. An absent
+/// range means the release says nothing about which dates it holds, which is not
+/// the same as holding none, so it is rendered as "not stated".
+public struct ServiceDateRange: Hashable, Codable, Sendable {
+    public var from: ServiceDate?
+    public var to: ServiceDate?
+
+    public init(from: ServiceDate?, to: ServiceDate?) {
+        self.from = from
+        self.to = to
+    }
+}
+
+/// `PoraviaOperatorCoverageSummary`: what one operator contributes to a release.
+///
+/// Distinct from `OperatorCoverage`, which is one operator's own view of its
+/// routes on the operator screen. This one is the release's view of that
+/// operator's share of the whole.
+public struct OperatorCoverageSummary: Hashable, Codable, Sendable, Identifiable {
+    public var operatorId: String?
+    public var name: LocalisedText?
+    public var journeyCount: Int
+    public var routeCount: Int
+    public var stopCount: Int
+    public var state: CoverageState
+    public var id: String { operatorId ?? (name?.en ?? "") }
+
+    public init(
+        operatorId: String?,
+        name: LocalisedText?,
+        journeyCount: Int,
+        routeCount: Int,
+        stopCount: Int,
+        state: CoverageState
+    ) {
+        self.operatorId = operatorId
+        self.name = name
+        self.journeyCount = journeyCount
+        self.routeCount = routeCount
+        self.stopCount = stopCount
+        self.state = state
+    }
+}
+
 /// `PoraviaCoverage`, including the explicit statement of what is not covered.
+///
+/// `note` and `notCovered` are localised objects rather than strings: they are
+/// sentences a person reads, so they exist in each of the three languages and
+/// the interface resolves them for the chosen one. Rendering an English string
+/// to a Greek reader would be the release speaking a language it was not asked
+/// to speak.
 public struct CoverageSummary: Hashable, Codable, Sendable {
     public var state: CoverageState
     public var operatorCount: Int
     public var corridorCount: Int
-    public var note: String?
+    public var journeyCount: Int
+    public var stopCount: Int
+    public var note: LocalisedText?
     /// What the release explicitly does not cover. An empty list is rendered as
     /// "not stated", never as "everything is covered".
-    public var notCovered: [String]
+    public var notCovered: [LocalisedText]
+    /// What an absence means, keyed by the kind of absence. The core owns these
+    /// words because only the data can say whether a gap means "no service" or
+    /// "no data held for that date", and the interface must never guess.
+    public var absenceSemantics: [String: String]
+    public var operators: [OperatorCoverageSummary]
+    public var serviceDates: ServiceDateRange?
+    public var freshness: Freshness?
     public var releaseId: String
     public var publishedAt: Date?
     public var dataMode: DataMode
@@ -265,8 +326,14 @@ public struct CoverageSummary: Hashable, Codable, Sendable {
         state: CoverageState,
         operatorCount: Int,
         corridorCount: Int,
-        note: String?,
-        notCovered: [String],
+        journeyCount: Int,
+        stopCount: Int,
+        note: LocalisedText?,
+        notCovered: [LocalisedText],
+        absenceSemantics: [String: String],
+        operators: [OperatorCoverageSummary],
+        serviceDates: ServiceDateRange?,
+        freshness: Freshness?,
         releaseId: String,
         publishedAt: Date?,
         dataMode: DataMode
@@ -274,8 +341,14 @@ public struct CoverageSummary: Hashable, Codable, Sendable {
         self.state = state
         self.operatorCount = operatorCount
         self.corridorCount = corridorCount
+        self.journeyCount = journeyCount
+        self.stopCount = stopCount
         self.note = note
         self.notCovered = notCovered
+        self.absenceSemantics = absenceSemantics
+        self.operators = operators
+        self.serviceDates = serviceDates
+        self.freshness = freshness
         self.releaseId = releaseId
         self.publishedAt = publishedAt
         self.dataMode = dataMode

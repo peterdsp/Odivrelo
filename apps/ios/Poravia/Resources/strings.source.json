@@ -26,10 +26,10 @@
       "sq": "U ngarkuan %lld udhëtime"
     },
     "a11y.mapHint": {
-      "comment": "VoiceOver hint telling the reader the list holds the same facts",
-      "el": "Κάθε πληροφορία του χάρτη υπάρχει και στον κατάλογο στάσεων παρακάτω.",
-      "en": "Every fact on the map is also in the stop list below.",
-      "sq": "Çdo fakt në hartë ndodhet edhe në listën e ndalesave më poshtë."
+      "comment": "VoiceOver hint telling the reader the stop list, which is above the map on this screen, holds the same facts",
+      "el": "Κάθε πληροφορία του χάρτη υπάρχει και στον κατάλογο στάσεων πιο πάνω.",
+      "en": "Every fact on the map is also in the stop list above.",
+      "sq": "Çdo fakt në hartë ndodhet edhe në listën e ndalesave më sipër."
     },
     "a11y.progressPercent": {
       "comment": "VoiceOver value for a download progress bar. %lld is a percentage.",
@@ -491,6 +491,18 @@
       "en": "The answer did not match the published data contract.",
       "sq": "Përgjigjja nuk përputhej me kontratën e publikuar të të dhënave."
     },
+    "error.incompleteData": {
+      "comment": "Title when a release is installed but some of its packs are missing",
+      "el": "Τα εγκατεστημένα δεδομένα είναι ελλιπή.",
+      "en": "The installed data is incomplete.",
+      "sq": "Të dhënat e instaluara janë të paplota."
+    },
+    "error.incompleteDataHint": {
+      "comment": "What to do: finish the install from the Offline screen",
+      "el": "Ανοίξτε τα Εκτός σύνδεσης για να ολοκληρώσετε την εγκατάσταση των πακέτων που λείπουν.",
+      "en": "Open Offline to finish installing the packs that are missing.",
+      "sq": "Hapni Jashtë linje për të përfunduar instalimin e paketave që mungojnë."
+    },
     "error.integrity": {
       "comment": "A downloaded pack failed its SHA-256 check",
       "el": "Το ληφθέν πακέτο απέτυχε στον έλεγχο ακεραιότητας και δεν εγκαταστάθηκε.",
@@ -509,6 +521,30 @@
       "en": "The request was rejected on the field %@.",
       "sq": "Kërkesa u refuzua te fusha %@."
     },
+    "error.noDataInstalled": {
+      "comment": "Title when the device holds no offline release at all, which is the first screen of a new installation",
+      "el": "Δεν έχουν εγκατασταθεί ακόμη δεδομένα.",
+      "en": "No data is installed yet.",
+      "sq": "Ende nuk janë instaluar të dhëna."
+    },
+    "error.noDataInstalledHint": {
+      "comment": "What to do about it: go to the Offline screen and install a release",
+      "el": "Ανοίξτε τα Εκτός σύνδεσης και εγκαταστήστε μια έκδοση δεδομένων. Μετά μπορείτε να αναζητήσετε χωρίς σύνδεση.",
+      "en": "Open Offline and install a data release. After that you can search without a connection.",
+      "sq": "Hapni Jashtë linje dhe instaloni një version të dhënash. Më pas mund të kërkoni pa lidhje."
+    },
+    "error.noOfflineDataForDate": {
+      "comment": "Title when no timetable pack is held for the requested date. Never says no service runs that date",
+      "el": "Δεν υπάρχουν δεδομένα εκτός σύνδεσης για αυτή την ημερομηνία.",
+      "en": "No offline data for this date.",
+      "sq": "Nuk ka të dhëna jashtë linje për këtë datë."
+    },
+    "error.noOfflineDataForDateHint": {
+      "comment": "Explains that this says nothing about whether service runs, and offers the Offline screen",
+      "el": "Αυτό δεν σημαίνει ότι δεν εκτελείται δρομολόγιο. Η συσκευή απλώς δεν κρατά πρόγραμμα για αυτή την ημερομηνία. Ανοίξτε τα Εκτός σύνδεσης για να κατεβάσετε την ημέρα.",
+      "en": "This does not mean no service runs. The device simply holds no timetable for this date. Open Offline to download the day.",
+      "sq": "Kjo nuk do të thotë se nuk ka shërbim. Pajisja thjesht nuk mban orar për këtë datë. Hapni Jashtë linje për ta shkarkuar ditën."
+    },
     "error.notFound": {
       "comment": "The requested record no longer exists in this release",
       "el": "Αυτή η εγγραφή δεν υπάρχει σε αυτή την έκδοση δεδομένων.",
@@ -526,6 +562,12 @@
       "el": "Τα αποθηκευμένα ταξίδια και τα κατεβασμένα δεδομένα εξακολουθούν να λειτουργούν.",
       "en": "Saved trips and downloaded data still work.",
       "sq": "Udhëtimet e ruajtura dhe të dhënat e shkarkuara ende funksionojnë."
+    },
+    "error.openOffline": {
+      "comment": "Button that takes the person to the Offline packs screen",
+      "el": "Άνοιγμα Εκτός σύνδεσης",
+      "en": "Open Offline",
+      "sq": "Hap Jashtë linje"
     },
     "error.packIo": {
       "comment": "A pack could not be written to the device",
@@ -574,6 +616,18 @@
       "el": "Η υπηρεσία δεν μπορεί να απαντήσει αυτή τη στιγμή.",
       "en": "The service cannot answer right now.",
       "sq": "Shërbimi nuk mund të përgjigjet tani."
+    },
+    "error.unreadableData": {
+      "comment": "Title when installed data cannot be decoded and must be installed again",
+      "el": "Τα εγκατεστημένα δεδομένα δεν διαβάζονται.",
+      "en": "The installed data cannot be read.",
+      "sq": "Të dhënat e instaluara nuk mund të lexohen."
+    },
+    "error.unreadableDataHint": {
+      "comment": "What to do: reinstall from the Offline screen",
+      "el": "Ανοίξτε τα Εκτός σύνδεσης και εγκαταστήστε ξανά την έκδοση δεδομένων.",
+      "en": "Open Offline and install the data release again.",
+      "sq": "Hapni Jashtë linje dhe instaloni përsëri versionin e të dhënave."
     },
     "favourites.add": {
       "comment": "Action",

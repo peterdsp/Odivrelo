@@ -298,7 +298,7 @@ struct ErrorPresentationTests {
     @Test("Each contract code gets a distinct title")
     func contractCodesAreDistinct() {
         let errors: [CoreError] = [
-            .notFound, .invalidRequest(field: "date"), .unavailable,
+            .notFound, .invalidRequest(field: "date"), .unavailable(kind: .noDataInstalled),
             .releaseMismatch, .unauthorized, .offline,
             .coreUnavailable(reason: "missing"),
         ]

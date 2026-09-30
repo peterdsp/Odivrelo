@@ -242,17 +242,22 @@ struct OfflineScreen: View {
             }
 
         case let .failed(error):
+            let presentation = ErrorPresentation.of(error)
             VStack(alignment: .leading, spacing: Theme.Space.xSmall) {
                 InlineNotice(
-                    text: ErrorPresentation.of(error).title,
-                    systemImage: ErrorPresentation.of(error).systemImage,
+                    text: presentation.title,
+                    systemImage: presentation.systemImage,
                     tone: .error
                 )
-                Button(L10n.commonRetry) {
-                    downloads.start(packName: pack.name) { Task { await load() } }
+                // Retrying cannot help with some failures, a full disk being
+                // the plain case, so the button is offered only when it can.
+                if presentation.isRetryable {
+                    Button(L10n.commonRetry) {
+                        downloads.start(packName: pack.name) { Task { await load() } }
+                    }
+                    .buttonStyle(PoraviaSecondaryButtonStyle())
+                    .accessibilityIdentifier("offline.retry.\(pack.name)")
                 }
-                .buttonStyle(PoraviaSecondaryButtonStyle())
-                .accessibilityIdentifier("offline.retry.\(pack.name)")
             }
         }
     }

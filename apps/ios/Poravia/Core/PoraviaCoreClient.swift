@@ -12,8 +12,14 @@ public enum CoreError: Error, Hashable, Sendable {
     case notFound
     /// `PoraviaErrorCode.invalidRequest`, with the field the core named.
     case invalidRequest(field: String?)
-    /// `PoraviaErrorCode.unavailable`.
-    case unavailable
+    /// `PoraviaErrorCode.unavailable`, with the core's own account of why.
+    ///
+    /// The code alone cannot be acted on: "no data installed", "data
+    /// incomplete", "data unreadable" and "no pack for that date" all arrive as
+    /// `unavailable`, and each has a different useful next step. The core says
+    /// which one it is, so the interface carries that answer rather than
+    /// flattening four situations into one apology.
+    case unavailable(kind: CoreFailureKind = .general)
     /// `PoraviaErrorCode.releaseMismatch`: packs in hand disagree with the
     /// answer offered.
     case releaseMismatch
@@ -197,4 +203,30 @@ public extension PoraviaCoreClient {
     /// Most clients have no seeded release to adopt. Only the adapter over the
     /// shared core does, so it is the only one that overrides this.
     func adoptSeededRelease() async throws -> Bool { false }
+}
+
+/// `PoraviaFailureKind`: what kind of failure the core is reporting.
+///
+/// This exists so the interface can offer "install data", "reinstall data",
+/// "download this date" or "retry" from the core's own judgement instead of
+/// guessing from the wording of a message.
+public enum CoreFailureKind: String, ContractEnum {
+    case general
+    /// No release is installed and none could be fetched.
+    case noDataInstalled
+    /// A release is installed but packs are missing from it.
+    case incompleteData
+    /// Installed data could not be decoded and needs reinstalling.
+    case unreadableData
+    /// Installed packs, or an API answer, disagree about the release.
+    case releaseMismatch
+    /// The installed release publishes no timetable for the requested date.
+    /// This is not "no service runs", and must never be shown as though it were.
+    case noOfflinePackForDate
+    case networkUnavailable
+    case storageFull
+    case notFound
+    case invalidRequest
+
+    public static var unrecognised: CoreFailureKind { .general }
 }

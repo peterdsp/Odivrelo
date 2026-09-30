@@ -52,7 +52,7 @@
 		<string>dev.peterdsp.poravia.journey</string>
 	</array>
 	<key>PoraviaSourceCommit</key>
-	<string>93c12e42820c</string>
+	<string>8fe61b2bbdc9</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

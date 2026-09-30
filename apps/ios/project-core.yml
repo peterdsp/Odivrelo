@@ -9,10 +9,14 @@ targets:
     settings:
       base:
         PORAVIA_CORE_CONDITION: PORAVIA_CORE_AVAILABLE
-        # The static core embeds SQLDelight's native SQLite driver, which
-        # references the system libsqlite3. A static framework carries no link
-        # dependencies of its own, so the app target states it.
-        OTHER_LDFLAGS: "$(inherited) -lsqlite3"
+        # There is deliberately no -lsqlite3 here. The core embeds SQLDelight's
+        # native driver, which needs the system SQLite, but each slice's module
+        # map now declares link "sqlite3" and clang autolinking supplies it.
+        # Checked rather than assumed: the Release simulator build, the Release
+        # device build and the test build all link, and otool on the device
+        # binary shows /usr/lib/libsqlite3.dylib among its load commands. If a
+        # future build path bypasses autolinking, the symptom is an undefined
+        # _sqlite3_step at link time and the flag comes back here.
     dependencies:
       - framework: Frameworks/PoraviaCore.xcframework
         embed: false

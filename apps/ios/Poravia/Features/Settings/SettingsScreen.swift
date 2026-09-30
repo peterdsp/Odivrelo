@@ -338,6 +338,9 @@ struct CoverageScreen: View {
 
     @State private var state: State = .loading
 
+    /// The language the release's own sentences are resolved for.
+    private var language: String { model.settings.effectiveLanguageTag }
+
     private enum State: Equatable {
         case loading
         case loaded(CoverageSummary)
@@ -374,7 +377,12 @@ struct CoverageScreen: View {
                                     value: Formatters.timestamp(publishedAt)
                                 )
                             }
-                            if let note = coverage.note {
+                            // The release states this in each language. It is
+                            // resolved for the one in use so a Greek reader is
+                            // not handed the English sentence.
+                            if let note = coverage.note?
+                                .resolved(for: language),
+                                !note.isEmpty {
                                 Text(note)
                                     .font(.subheadline)
                                     .foregroundStyle(Theme.Palette.textPrimary)
@@ -399,7 +407,7 @@ struct CoverageScreen: View {
                                         Image(systemName: "xmark.circle")
                                             .foregroundStyle(Theme.Palette.errorText)
                                             .accessibilityHidden(true)
-                                        Text(line)
+                                        Text(line.resolved(for: language))
                                             .font(.subheadline)
                                             .fixedSize(horizontal: false, vertical: true)
                                         Spacer(minLength: 0)

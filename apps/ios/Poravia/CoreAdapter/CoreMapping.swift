@@ -15,6 +15,10 @@ enum CoreMapping {
         LocalisedText(el: value?.el, en: value?.en, sq: value?.sq)
     }
 
+    static func failureKind(_ value: PoraviaFailureKind) -> CoreFailureKind {
+        CoreFailureKind.fromKotlinName(value.name)
+    }
+
     static func url(_ value: String?) -> URL? {
         guard let value, !value.isEmpty else { return nil }
         return URL(string: value)
@@ -134,11 +138,40 @@ enum CoreMapping {
             state: coverageState(value.state),
             operatorCount: Int(value.operatorCount),
             corridorCount: Int(value.corridorCount),
-            note: value.note,
-            notCovered: value.notCovered,
+            journeyCount: Int(value.journeyCount),
+            stopCount: Int(value.stopCount),
+            // A missing note is left absent rather than turned into an empty
+            // localised object, so the interface can say "not stated" instead of
+            // rendering a blank line.
+            note: value.note.map(text),
+            notCovered: value.notCovered.map { text($0) },
+            absenceSemantics: value.absenceSemantics,
+            operators: value.operators.map(operatorCoverageSummary),
+            serviceDates: value.serviceDates.map(serviceDateRange),
+            freshness: value.freshness.map(freshness),
             releaseId: value.releaseId,
             publishedAt: date(value.publishedAt),
             dataMode: dataMode(value.dataMode)
+        )
+    }
+
+    static func serviceDateRange(_ value: PoraviaServiceDateRange) -> ServiceDateRange {
+        ServiceDateRange(
+            from: value.from.map(serviceDate),
+            to: value.to.map(serviceDate)
+        )
+    }
+
+    static func operatorCoverageSummary(
+        _ value: PoraviaOperatorCoverageSummary
+    ) -> OperatorCoverageSummary {
+        OperatorCoverageSummary(
+            operatorId: value.operatorId,
+            name: value.name.map(text),
+            journeyCount: Int(value.journeyCount),
+            routeCount: Int(value.routeCount),
+            stopCount: Int(value.stopCount),
+            state: coverageState(value.state)
         )
     }
 

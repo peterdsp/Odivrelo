@@ -26,7 +26,19 @@ struct FixtureFlowTests {
         let core = FixtureCoreClient(scenario: .normal)
         let coverage = try await core.coverage()
         #expect(!coverage.notCovered.isEmpty)
-        #expect(coverage.notCovered.contains { $0.lowercased().contains("no ticket sales") })
+        #expect(
+            coverage.notCovered.contains {
+                ($0.en ?? "").lowercased().contains("no ticket sales")
+            }
+        )
+        // Each statement is a sentence a person reads, so it has to exist in
+        // all three languages. An English-only statement would silently become
+        // the Greek and Albanian text too.
+        for statement in coverage.notCovered {
+            #expect(statement.el?.isEmpty == false)
+            #expect(statement.en?.isEmpty == false)
+            #expect(statement.sq?.isEmpty == false)
+        }
     }
 
     @Test("A place search finds terminals and their boarding points")

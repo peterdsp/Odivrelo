@@ -37,7 +37,8 @@ public enum CoreErrorTranslation {
             )
             return fromContract(
                 code: CoreMapping.errorCode(thrown.code),
-                field: thrown.field
+                field: thrown.field,
+                kind: CoreMapping.failureKind(thrown.kind)
             )
         }
         #endif
@@ -55,7 +56,9 @@ public enum CoreErrorTranslation {
             case NSURLErrorCancelled:
                 return .cancelled
             default:
-                return .unavailable
+                // A transport failure the core never saw, so it has no kind to
+                // offer. It is not a statement about installed data.
+                return .unavailable(kind: .networkUnavailable)
             }
         }
 
@@ -68,12 +71,17 @@ public enum CoreErrorTranslation {
         return .unexpected(nsError.localizedDescription)
     }
 
-    /// Maps one of the five contract codes onto a presentable error.
-    public static func fromContract(code: ContractErrorCode, field: String?) -> CoreError {
+    /// Maps one of the five contract codes onto a presentable error, keeping
+    /// the core's account of the failure so the interface can act on it.
+    public static func fromContract(
+        code: ContractErrorCode,
+        field: String?,
+        kind: CoreFailureKind = .general
+    ) -> CoreError {
         switch code {
         case .notFound: .notFound
         case .invalidRequest: .invalidRequest(field: field)
-        case .unavailable: .unavailable
+        case .unavailable: .unavailable(kind: kind)
         case .releaseMismatch: .releaseMismatch
         case .unauthorized: .unauthorized
         }

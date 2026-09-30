@@ -149,23 +149,79 @@ public enum AloriaFixture {
 
     // MARK: - Coverage
 
+    /// The fixture states these in all three languages, exactly as a real
+    /// release does, so a run in Greek or Albanian exercises the same resolution
+    /// path the shipped data takes rather than falling back to English.
     static let notCoveredStatements = [
-        "No real Greek coach service is represented.",
-        "No ticket sales of any kind.",
-        "No live vehicle tracking.",
+        LocalisedText(
+            el: "Δεν αναπαρίσταται καμία πραγματική ελληνική υπεραστική γραμμή.",
+            en: "No real Greek coach service is represented.",
+            sq: "Nuk përfaqësohet asnjë linjë reale autobusash greke."
+        ),
+        LocalisedText(
+            el: "Καμία πώληση εισιτηρίων οποιουδήποτε είδους.",
+            en: "No ticket sales of any kind.",
+            sq: "Asnjë shitje biletash e asnjë lloji."
+        ),
+        LocalisedText(
+            el: "Καμία ζωντανή παρακολούθηση οχημάτων.",
+            en: "No live vehicle tracking.",
+            sq: "Asnjë gjurmim i drejtpërdrejtë i automjeteve."
+        ),
     ]
+
+    static let unreviewedEvening = LocalisedText(
+        el: "Μη ελεγμένα βραδινά δρομολόγια.",
+        en: "Unreviewed evening services.",
+        sq: "Shërbime mbrëmjeje të pashqyrtuara."
+    )
 
     public static func coverage(state: CoverageState) -> CoverageSummary {
         CoverageSummary(
             state: state,
             operatorCount: state == .notCovered ? 0 : 2,
             corridorCount: state == .notCovered ? 0 : 4,
+            journeyCount: state == .notCovered ? 0 : 12,
+            stopCount: state == .notCovered ? 0 : 5,
             note: state == .partial
-                ? "Partial coverage: some services on this date have not been reviewed."
-                : "Demonstration data for the invented region of Aloria.",
+                ? LocalisedText(
+                    el: "Μερική κάλυψη: ορισμένα δρομολόγια αυτής της ημερομηνίας δεν έχουν ελεγχθεί.",
+                    en: "Partial coverage: some services on this date have not been reviewed.",
+                    sq: "Mbulim i pjesshëm: disa shërbime të kësaj date nuk janë shqyrtuar."
+                )
+                : LocalisedText(
+                    el: "Δεδομένα επίδειξης για την επινοημένη περιοχή Aloria.",
+                    en: "Demonstration data for the invented region of Aloria.",
+                    sq: "Të dhëna demonstrimi për rajonin e shpikur Aloria."
+                ),
             notCovered: state == .partial
-                ? notCoveredStatements + ["Unreviewed evening services."]
+                ? notCoveredStatements + [unreviewedEvening]
                 : notCoveredStatements,
+            absenceSemantics: [
+                "noPackForDate": "noOfflineDataForDate",
+                "noJourneys": "noServiceOnDate",
+            ],
+            operators: state == .notCovered ? [] : [
+                OperatorCoverageSummary(
+                    operatorId: "op.aloria-coastal",
+                    name: LocalisedText(
+                        el: "Ακτοπλοϊκή Aloria",
+                        en: "Aloria Coastal Lines",
+                        sq: "Linjat Bregdetare Aloria"
+                    ),
+                    journeyCount: 12,
+                    routeCount: 4,
+                    stopCount: 5,
+                    state: state
+                ),
+            ],
+            serviceDates: state == .notCovered
+                ? nil
+                : ServiceDateRange(
+                    from: ServiceDate(iso: "2026-09-28"),
+                    to: ServiceDate(iso: "2026-10-04")
+                ),
+            freshness: nil,
             releaseId: releaseId,
             publishedAt: publishedAt,
             dataMode: .demo

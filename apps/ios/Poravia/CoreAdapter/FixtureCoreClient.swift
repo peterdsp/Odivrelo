@@ -71,7 +71,7 @@ public final class FixtureCoreClient: PoraviaCoreClient {
     private func gate() throws {
         switch scenario {
         case .offline: throw CoreError.offline
-        case .serverError: throw CoreError.unavailable
+        case .serverError: throw CoreError.unavailable(kind: .general)
         case .releaseMismatch: throw CoreError.releaseMismatch
         case .coreUnavailable:
             throw CoreError.coreUnavailable(reason: CoreClientFactory.missingCoreReason)
