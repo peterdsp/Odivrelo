@@ -911,8 +911,10 @@ components:
             from: { type: [string, 'null'] }
             to: { type: [string, 'null'] }
           additionalProperties: false
-        note: { type: string }
-        notCovered: { type: array, items: { type: string } }
+        note: { $ref: '#/components/schemas/LocalizedText' }
+        notCovered:
+          type: array
+          items: { $ref: '#/components/schemas/LocalizedText' }
         freshness: { $ref: '#/components/schemas/Freshness' }
         absenceSemantics: { type: object, additionalProperties: { type: string } }
         operators:
@@ -995,7 +997,7 @@ components:
                 state: { $ref: '#/components/schemas/CoverageState' }
                 operatorCount: { type: integer, minimum: 0 }
                 corridorCount: { type: integer, minimum: 0 }
-                note: { type: string }
+                note: { $ref: '#/components/schemas/LocalizedText' }
               additionalProperties: false
             offlineManifestUrl: { type: string }
             gtfsUrl: { type: string }

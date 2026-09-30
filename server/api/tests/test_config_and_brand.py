@@ -277,3 +277,39 @@ def test_derived_paths_point_where_the_release_generator_writes(seeded):
 def test_the_page_limits_match_the_contract():
     assert MAX_PAGE_LIMIT == 200
     assert 1 <= DEFAULT_PAGE_LIMIT <= MAX_PAGE_LIMIT
+
+
+def test_every_user_visible_sentence_exists_in_every_language():
+    """A traveller reads these. An English sentence on a Greek page is a defect."""
+    from publicapi import copy
+
+    languages = set(BRAND.languages)
+    texts = copy.all_localised_texts()
+    assert texts, "no localised texts are exposed"
+    for text in texts:
+        assert set(text) == languages, text
+        for language in languages:
+            assert text[language].strip(), (language, text)
+        # Not the same sentence repeated under every key, which would be an
+        # English fallback wearing a translation's clothes.
+        assert len(set(text.values())) == len(languages), text
+
+
+def test_a_partial_translation_is_refused_rather_than_falling_back():
+    from publicapi import copy
+
+    with pytest.raises(ValueError, match="missing"):
+        copy.localised(**{language: "x" for language in list(BRAND.languages)[:-1]})
+    with pytest.raises(ValueError, match="unknown languages"):
+        copy.localised(**{language: "x" for language in BRAND.languages}, de="y")
+
+
+def test_the_coverage_note_changes_with_the_data_mode():
+    from publicapi import copy
+
+    demo = copy.coverage_note("demo")
+    real = copy.coverage_note("real")
+    assert demo != real
+    assert "Aloria" in demo["en"]
+    assert "Aloria" not in real["en"]
+    assert copy.not_covered("demo")[0] != copy.not_covered("real")[0]

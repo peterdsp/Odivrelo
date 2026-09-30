@@ -47,10 +47,21 @@ Poravia says so in the app rather than implying the wallet is a backup.
 | Request | To | Contains |
 |---|---|---|
 | Release manifest and data packs | the Poravia origin | no personal data; a standard HTTP request |
-| Map tiles, when you open a map | the configured map tile provider | your approximate map viewport, as any map requires |
-| Booking handoff | the operator's own website, opened in a browser or Custom Tab | nothing Poravia adds; from that point the operator's own privacy policy applies |
+| Booking handoff | the operator's own website, opened in a browser, a Custom Tab or Safari | nothing Poravia adds; from that point the operator's own privacy policy applies |
 
 Poravia adds no identifier, no advertising id and no fingerprint to any request.
+
+**There is no map tile provider in the 1.0.0 Web release.** The map draws route
+geometry and stop markers on a plain styled background and loads no basemap, so
+the Web app makes **no third-party request at all**. That is asserted by an
+automated test, not just stated here. It is a consequence of not holding a tile
+licence, and it is why the map is deliberately schematic rather than a street
+map.
+
+The native apps render with the platform's own map component, MapKit on iOS and
+the reviewed native map SDK on Android. Those are operating-system services
+governed by Apple's and Google's own privacy terms, not a Poravia request, and
+they receive the map viewport as any map necessarily does.
 
 ## Permissions
 

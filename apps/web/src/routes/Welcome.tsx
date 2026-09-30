@@ -1,0 +1,107 @@
+import { useNavigate } from 'react-router-dom';
+import { LANGUAGES, type Language } from '../data/contract';
+import { useI18n } from '../i18n/I18nProvider';
+import { BRAND } from '../brand/brand';
+import { Mark } from '../brand/Marks';
+import { useHead } from '../hooks/useHead';
+import { useDataMode } from '../app/DataProvider';
+import { Button, Card, Section } from '../components/primitives';
+import { markOnboarded } from '../features/onboarding';
+import { useAnnouncer } from '../components/Announcer';
+import type { MessageKey } from '../i18n/catalogues';
+
+const DOES: readonly MessageKey[] = ['welcome.does1', 'welcome.does2', 'welcome.does3', 'welcome.does4', 'welcome.does5'];
+const DOES_NOT: readonly MessageKey[] = ['welcome.doesNot1', 'welcome.doesNot2', 'welcome.doesNot3', 'welcome.doesNot4'];
+const LANGUAGE_KEYS: Readonly<Record<Language, MessageKey>> = {
+  el: 'language.el',
+  en: 'language.en',
+  sq: 'language.sq',
+};
+
+/**
+ * First launch.
+ *
+ * No account, no permission prompt, no network-only trap: this page is part of
+ * the app shell, so it renders from cache with no connection at all. It asks for
+ * a language, states plainly what the product does and does not do (including
+ * that it never sells tickets), and then gets out of the way.
+ *
+ * It can also be skipped. A reader who arrived from a deep link has already been
+ * sent to their destination and is never made to pass through here.
+ */
+export function Welcome() {
+  const { t, language, setLanguage } = useI18n();
+  const { announce } = useAnnouncer();
+  const navigate = useNavigate();
+  const dataMode = useDataMode();
+
+  useHead({
+    title: t('welcome.title'),
+    description: t('meta.home.description'),
+    path: '/welcome',
+    language,
+    dataMode,
+  });
+
+  const go = () => {
+    markOnboarded();
+    navigate('/search', { replace: true });
+  };
+
+  return (
+    <div className="pv-page pv-page--narrow">
+      <div className="pv-welcome__hero">
+        <Mark size={56} decorative />
+        <h1 className="pv-welcome__title">{t('welcome.title')}</h1>
+        <p className="pv-welcome__tagline">{BRAND.tagline[language]}</p>
+        <p className="pv-welcome__intro">{t('welcome.intro')}</p>
+      </div>
+
+      <Section title={t('welcome.chooseLanguage')} description={t('welcome.languageHelp')} className="pv-welcome__languages">
+        <fieldset className="pv-language-choice">
+          <legend className="pv-visually-hidden">{t('welcome.chooseLanguage')}</legend>
+          {LANGUAGES.map((code) => (
+            <label key={code} className="pv-language-choice__option">
+              <input
+                type="radio"
+                name="language"
+                value={code}
+                checked={language === code}
+                onChange={() => {
+                  setLanguage(code);
+                  announce(t('a11y.languageChanged', { language: t(LANGUAGE_KEYS[code]) }));
+                }}
+              />
+              <span lang={code}>{t(LANGUAGE_KEYS[code])}</span>
+            </label>
+          ))}
+        </fieldset>
+      </Section>
+
+      <div className="pv-welcome__promises">
+        <Card as="section" tone="muted">
+          <h2 className="pv-welcome__promiseTitle">{t('welcome.doesTitle')}</h2>
+          <ul className="pv-list pv-list--check">
+            {DOES.map((key) => (
+              <li key={key}>{t(key)}</li>
+            ))}
+          </ul>
+        </Card>
+        <Card as="section" tone="muted">
+          <h2 className="pv-welcome__promiseTitle">{t('welcome.doesNotTitle')}</h2>
+          <ul className="pv-list pv-list--cross">
+            {DOES_NOT.map((key) => (
+              <li key={key}>{t(key)}</li>
+            ))}
+          </ul>
+        </Card>
+      </div>
+
+      <div className="pv-welcome__actions">
+        <Button tone="primary" onClick={go} full>
+          {t('welcome.start')}
+        </Button>
+      </div>
+    </div>
+  );
+}

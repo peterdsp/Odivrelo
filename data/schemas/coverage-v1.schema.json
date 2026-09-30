@@ -60,12 +60,12 @@
       "additionalProperties": false
     },
     "note": {
-      "type": "string"
+      "$ref": "#/$defs/LocalizedText"
     },
     "notCovered": {
       "type": "array",
       "items": {
-        "type": "string"
+        "$ref": "#/$defs/LocalizedText"
       }
     },
     "freshness": {

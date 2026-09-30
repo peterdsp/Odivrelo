@@ -232,8 +232,24 @@ def test_coverage_states_what_is_not_covered(client, seeded):
     assert coverage["stopCount"] == 5
     assert coverage["journeyCount"] == 4
     assert coverage["serviceDates"] == {"from": "2026-03-29", "to": "2026-10-02"}
-    assert "Aloria" in coverage["note"]
-    assert any("Aloria is an invented region" in item for item in coverage["notCovered"])
+    # The note and every not-covered line are localised, and every product
+    # language must be present: a traveller reads these, so an English
+    # sentence on a Greek page would be a defect, not a fallback.
+    languages = set(BRAND.languages)
+    assert set(coverage["note"]) == languages
+    assert all(coverage["note"][language].strip() for language in languages)
+    assert "Aloria" in coverage["note"]["en"]
+    assert "Aloria" in coverage["note"]["el"]
+    assert "Aloria" in coverage["note"]["sq"]
+    for item in coverage["notCovered"]:
+        assert set(item) == languages
+        assert all(item[language].strip() for language in languages)
+    assert any(
+        "Aloria is an invented region" in item["en"]
+        for item in coverage["notCovered"]
+    )
+    # The same sentence must not be the English one repeated under every key.
+    assert len({coverage["note"][language] for language in languages}) == len(languages)
     assert coverage["absenceSemantics"]
     assert coverage["operators"][0]["operatorId"] == DEMO_OPERATOR
 

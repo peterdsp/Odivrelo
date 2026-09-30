@@ -18,7 +18,7 @@ the shipping build before submitting.
 | Social or login SDKs | none |
 | Accounts | none; the app has no sign-in |
 | Server-side user records | none; there is no Poravia user store |
-| Outbound requests | release manifest and data packs from the Poravia origin, map tiles from the configured tile provider, and the operator's own site opened for booking |
+| Outbound requests | release manifest and data packs from the Poravia origin, and the operator's own site opened for booking. **No tile provider on Web**: the map loads no basemap, so the Web app makes no third-party request at all, asserted by test. The native apps use the platform map component, which is an OS service rather than a Poravia request. |
 | Identifiers attached to requests | none added by Poravia |
 | Device permissions requested | location (optional), notifications (optional), file import (optional) |
 | Permissions never requested | contacts, calendar, camera, microphone, broad storage, background location |
@@ -38,9 +38,9 @@ Notes to keep with the submission:
 - Location is used **on device only**, to centre a map and sort nearby stops.
   It is never transmitted to Poravia. If the reviewer asks, the answer is
   device-only use, not collection.
-- Map tile requests necessarily reveal a viewport to the tile provider. That is
-  the provider's processing, disclosed in the privacy policy, not Poravia
-  collection.
+- The iOS app renders with MapKit, an operating-system service governed by
+  Apple's own terms. That is not a Poravia request and not Poravia collection.
+  The Web app loads no basemap at all.
 - Imported ticket documents are user content that never leaves the device.
 
 **Encryption export compliance:** the app uses only standard HTTPS and platform
@@ -91,6 +91,6 @@ These require the account holder and were **not** filled in:
    every departure is invented would misrepresent the product.
 2. That the shipping build still contains no analytics or advertising
    dependency: run the dependency inventory again, do not assume.
-3. That the map tile provider named in the privacy policy is the one the
-   shipping build actually calls.
+3. That the map behaviour still matches the shipping build: no tile provider on
+   Web, platform map components on the native apps.
 4. That the privacy manifest still matches the APIs the code calls.

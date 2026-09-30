@@ -69,7 +69,7 @@
               "minimum": 0
             },
             "note": {
-              "type": "string"
+              "$ref": "#/$defs/LocalizedText"
             }
           },
           "additionalProperties": false
@@ -173,6 +173,27 @@
         "en",
         "sq"
       ]
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

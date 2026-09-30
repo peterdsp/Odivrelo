@@ -16,6 +16,7 @@ from typing import Any, Iterable, Sequence
 from . import _staging  # noqa: F401  (installs the staging import path)
 from . import attributes as attrs  # noqa: E402
 from .brand import BRAND  # noqa: E402
+from . import copy
 from .errors import invalid_request, not_found  # noqa: E402
 from .timeutil import (  # noqa: E402
     ATHENS,
@@ -1156,13 +1157,8 @@ def coverage(
     route_total = sum(item.get("routeCount", 0) for item in counts.values())
     state = "demo" if data_mode == "demo" else ("covered" if counts else "not_covered")
     absence = ktel_api.coverage_payload(connection).get("journeyAbsenceSemantics", {})
-    note = (
-        "This release carries an invented demonstration dataset for the "
-        f"fictional region of Aloria. No row describes a real departure."
-        if data_mode == "demo"
-        else "Coverage is limited to reviewed rows from sources with documented "
-        "reuse rights."
-    )
+    # Localised, because a traveller reads this sentence. See publicapi/copy.py.
+    note = copy.coverage_note(data_mode)
     return {
         "coverage": {
             "state": state,
@@ -1192,21 +1188,8 @@ def coverage(
     }
 
 
-def _not_covered(data_mode: str) -> list[str]:
-    shared = [
-        "Real-time vehicle positions and delays are not covered.",
-        "Fares are indicative where present and are never a quotation.",
-        "Absence of a journey is not proof that no service operates.",
-    ]
-    if data_mode == "demo":
-        return [
-            "No real Greek operator is covered. Aloria is an invented region.",
-            *shared,
-        ]
-    return [
-        "Operators whose sources have no documented reuse rights are excluded.",
-        *shared,
-    ]
+def _not_covered(data_mode: str) -> list[dict[str, str]]:
+    return copy.not_covered(data_mode)
 
 
 def sources(

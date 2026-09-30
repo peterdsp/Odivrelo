@@ -309,8 +309,8 @@ export interface components {
             corridorCount: number;
             freshness: components["schemas"]["Freshness"];
             journeyCount: number;
-            notCovered: string[];
-            note: string;
+            notCovered: components["schemas"]["LocalizedText"][];
+            note: components["schemas"]["LocalizedText"];
             operatorCount: number;
             operators: components["schemas"]["CoverageOperator"][];
             serviceDates: {
@@ -478,7 +478,7 @@ export interface components {
             attribution: components["schemas"]["Attribution"][];
             coverage: {
                 corridorCount: number;
-                note: string;
+                note: components["schemas"]["LocalizedText"];
                 operatorCount: number;
                 state: components["schemas"]["CoverageState"];
             };
