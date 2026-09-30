@@ -1,13 +1,9 @@
 # Security headers Poravia requires.
 #
-# GitHub Pages cannot set response headers, so on the 1.0.0 deployment these are
-# NOT applied: only the Content-Security-Policy is in force, via the
-# <meta http-equiv> in index.html, and a meta CSP cannot carry frame-ancestors.
-# apps/web/README.md documents that limitation honestly.
-#
-# This file is in the Netlify/Cloudflare Pages `_headers` format and is here so
-# that any host which can set headers applies the full set unchanged. An nginx or
-# Caddy translation is in the README.
+# The site is served by Cloudflare Pages, which applies this file, so the full
+# set is in force on https://poravia.peterdsp.dev, including frame-ancestors.
+# The format is shared with Netlify; an nginx or Caddy translation is in the
+# README for any other host.
 
 /*
   Content-Security-Policy: default-src 'self'; base-uri 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; child-src blob:; frame-src blob:; object-src 'none'; form-action 'none'; frame-ancestors 'none'; manifest-src 'self'; upgrade-insecure-requests

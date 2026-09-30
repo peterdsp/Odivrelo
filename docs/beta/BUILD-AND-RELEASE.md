@@ -129,38 +129,40 @@ git tag -a v1.0.0 -m "Poravia 1.0.0 beta" && git push origin v1.0.0
 gh workflow run deploy-web.yml -f reason="1.0.0 beta"
 ```
 
-The workflow enables the Pages site on first run, builds, publishes, then runs
+The workflow builds, publishes `apps/web/dist` to the Cloudflare Pages project
+`poravia` with `wrangler pages deploy`, then runs
 `scripts/verify-deployment.sh https://poravia.peterdsp.dev`, which checks DNS,
 HTTPS, the HTTP redirect, the homepage, the release manifest, three deep-link
 loads and the PWA files, and **fails the job** rather than reporting a green
-deployment that is not live.
+deployment that is not live. Cloudflare Pages applies `_headers`, so the full
+security header set is served.
 
-### The DNS record this needs, which does not exist yet
+It needs two repository secrets, both set:
 
-`poravia.peterdsp.dev` does not resolve. This is **EB-01** and it is the one
-thing standing between this and a verified `1.0.0`.
+- `CLOUDFLARE_API_TOKEN`: a token with Account, Cloudflare Pages, Edit.
+- `CLOUDFLARE_ACCOUNT_ID`: the account that owns the `poravia` project.
+
+### DNS
+
+`poravia.peterdsp.dev` is a custom domain on the Pages project, with a proxied
+record on the `peterdsp.dev` zone:
 
 ```
 Zone:    peterdsp.dev  (Cloudflare)
 Type:    CNAME
 Name:    poravia
-Target:  peterdsp.github.io
-Proxy:   Proxied, matching every sibling subdomain
-TTL:     Auto
+Target:  poravia.pages.dev
+Proxy:   Proxied
 ```
 
-Then:
-
-```bash
-gh api -X PUT repos/peterdsp/Poravia/pages -f cname=poravia.peterdsp.dev
-gh api -X POST repos/peterdsp/Poravia/pages/https_certificate
-bash scripts/verify-deployment.sh https://poravia.peterdsp.dev
-```
+The project also answers at `https://poravia.pages.dev`, and every deployment
+gets its own `https://<hash>.poravia.pages.dev` URL.
 
 ### Rollback
 
-Re-run the deploy workflow from the previous tag, or re-publish the previous
-Pages deployment from the repository's deployments view. Packs are content
+Re-run the deploy workflow from the previous tag, or roll back to the previous
+deployment in the Cloudflare Pages project (`npx wrangler pages deployment
+list --project-name poravia` lists them). Packs are content
 addressed, so a rolled-back site keeps serving valid data.
 
 ---
