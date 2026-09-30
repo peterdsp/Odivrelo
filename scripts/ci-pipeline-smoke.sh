@@ -1,72 +1,102 @@
 #!/usr/bin/env bash
-# Prove the whole data path runs: migrate, seed, import, review, publish,
-# generate packs, verify. Produces artifacts/releases/poravia/.
+# Prove the whole data path runs, then assert the properties a release must
+# have before anything is allowed to ship on top of it.
+#
+# The seed, import, review, compile and pack steps live in
+# scripts/api-seed-demo.sh so there is exactly one code path for them. This
+# script runs that, then checks the result independently.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 ROOT="$PWD"
-PY="${PY:-python3}"
-# Resolve a relative interpreter against the repository root, since the script
-# changes directory below.
+PY="${PY:-$ROOT/.venv/bin/python}"
 case "$PY" in /*) ;; *) [ -x "$ROOT/$PY" ] && PY="$ROOT/$PY" ;; esac
-ARTIFACTS="$ROOT/artifacts"
-rm -rf "$ARTIFACTS/ingest.db" "$ARTIFACTS/public.db" "$ARTIFACTS/releases"
-mkdir -p "$ARTIFACTS/releases"
+export PY
 
-export PORAVIA_KTEL_DB_PATH="$ARTIFACTS/ingest.db"
-export PORAVIA_KTEL_PUBLIC_DB_PATH="$ARTIFACTS/public.db"
+SLUG=$("$PY" -c 'import json;print(json.load(open("brand.json"))["slug"])')
+RELEASE_DIR="${RELEASE_DIR:-$ROOT/artifacts/releases/$SLUG}"
 
-FIXTURE="$ROOT/data/fixtures/aloria-demo-snapshot.json"
-if [ ! -f "$FIXTURE" ]; then
-  echo "FAIL: demonstration fixture missing at $FIXTURE" >&2
-  exit 1
-fi
+echo "== building the demonstration release =="
+bash scripts/api-seed-demo.sh
 
+echo
+echo "== asserting release properties =="
 cd server/ktel-staging
-PYTHONPATH=. "$PY" - "$FIXTURE" "$ARTIFACTS/releases" <<'PYCODE'
-import json, os, sys
-from hodomap_ktel import ktel_db, ktel_release
-from hodomap_ktel.ktel_ingest import import_normalized_snapshot, review_entity
-from hodomap_ktel.ktel_registry import seed_registry
+PYTHONPATH=. "$PY" - "$RELEASE_DIR" <<'PYCODE'
+import json, sys
+from pathlib import Path
+from hodomap_ktel import ktel_release
 
-fixture_path, releases_dir = sys.argv[1], sys.argv[2]
-ingest = os.environ["PORAVIA_KTEL_DB_PATH"]
-public = os.environ["PORAVIA_KTEL_PUBLIC_DB_PATH"]
+root = Path(sys.argv[1])
+manifest = ktel_release.verify_release(root)
+print(f"  manifest verifies: {len(manifest['files'])} packs, "
+      f"release {manifest['releaseId']}")
 
-conn = ktel_db.connect(ingest)
-ktel_db.migrate(conn)
-seed_registry(conn)
+failures = []
 
-payload = json.loads(open(fixture_path, encoding="utf-8").read())
-for snapshot in (payload if isinstance(payload, list) else [payload]):
-    summary = import_normalized_snapshot(conn, snapshot)
-    print("imported:", summary)
+# 1. The manifest must be the last thing written, so every pack it names has
+#    to exist and match. verify_release above already enforces that.
 
-for kind, table in (
-    ("stop_place", "ktel_stop_places"),
-    ("stop", "ktel_stops"),
-    ("line", "ktel_lines"),
-    ("journey_pattern", "ktel_journey_patterns"),
-    ("service_calendar", "ktel_service_calendars"),
-    ("trip", "ktel_trips"),
-):
-    for row in conn.execute(
-        f"SELECT id FROM {table} WHERE publication_state='candidate'"
-    ).fetchall():
-        try:
-            review_entity(conn, entity_kind=kind, entity_id=row["id"],
-                          action="publish", reviewer="ci")
-        except ValueError as exc:
-            # A quarantined coordinate must NOT become publishable. Refusal is
-            # the correct behaviour, so record it and carry on.
-            print(f"  review refused {kind} {row['id']}: {exc}")
-conn.commit()
-conn.close()
+# 2. Content addressing: a pack's file name must carry its own digest, or a
+#    stale cached copy could be served for new bytes.
+for name, meta in manifest["files"].items():
+    if meta["sha256"][:16] not in Path(meta["path"]).name:
+        failures.append(f"pack {name} is not content addressed")
 
-result = ktel_release.generate_public_release(releases_dir, ingest, public)
-print("release:", result["releaseId"], "packs:", len(result["files"]))
-manifest = ktel_release.verify_release(os.path.join(releases_dir, "poravia"))
-assert manifest["releaseId"] == result["releaseId"], "manifest release mismatch"
-print("verified", len(manifest["files"]), "packs against the manifest")
+# 3. Nothing rights-pending or unreviewed may appear in any public pack.
+forbidden = ("Rights pending", "rights-pending", "candidate-only")
+for name, meta in manifest["files"].items():
+    if not meta["path"].endswith(".json"):
+        continue
+    body = (root / meta["path"]).read_text(encoding="utf-8")
+    for needle in forbidden:
+        if needle in body:
+            failures.append(f"pack {name} leaks a withheld row: {needle!r}")
+
+# 4. The GTFS feed must be present and must carry the release id.
+if "gtfs" not in manifest["files"]:
+    failures.append("no GTFS pack in the release")
+else:
+    import io, zipfile
+    blob = (root / manifest["files"]["gtfs"]["path"]).read_bytes()
+    with zipfile.ZipFile(io.BytesIO(blob)) as archive:
+        members = set(archive.namelist())
+        required = {"agency.txt", "stops.txt", "routes.txt", "trips.txt",
+                    "stop_times.txt", "feed_info.txt"}
+        missing = required - members
+        if missing:
+            failures.append(f"GTFS feed missing {sorted(missing)}")
+        else:
+            feed_info = archive.read("feed_info.txt").decode("utf-8")
+            if manifest["releaseId"] not in feed_info:
+                failures.append("GTFS feed_version is not the release id")
+            stop_times = archive.read("stop_times.txt").decode("utf-8")
+            past_midnight = [
+                line for line in stop_times.splitlines()[1:]
+                if line.split(",")[2][:2].isdigit()
+                and int(line.split(",")[2][:2]) >= 24
+            ]
+            print(f"  GTFS ok, {len(past_midnight)} stop times past 24:00")
+
+# 5. The demonstration dataset must be unmistakable.
+registry = json.loads(
+    (root / manifest["files"]["registry"]["path"]).read_text(encoding="utf-8")
+)
+names = " ".join(json.dumps(registry, ensure_ascii=False).split())
+if "demonstration" not in names.lower() and "demo" not in names.lower():
+    failures.append("the registry pack does not label itself as demonstration data")
+
+if failures:
+    for line in failures:
+        print(f"  FAIL {line}")
+    raise SystemExit(1)
+print("  all release assertions passed")
 PYCODE
+
+cd "$ROOT"
+echo
+echo "== artifact manifest =="
+"$PY" scripts/artifact-manifest.py
+
+echo
 echo "Pipeline smoke passed."
