@@ -18,7 +18,7 @@ Version `1.0.0`. Data contract `1.0.0`. Data mode `demo`.
 | Xcode | 27.0, iOS 27 SDK, Swift 6.4 | |
 
 ```bash
-cd /Users/peterdsp/git/HodoMap
+cd /Users/peterdsp/git/Poravia
 python3.12 -m venv .venv
 .venv/bin/pip install -r server/api/requirements.txt -r server/api/requirements-dev.txt
 export JAVA_HOME=/opt/homebrew/opt/openjdk@21

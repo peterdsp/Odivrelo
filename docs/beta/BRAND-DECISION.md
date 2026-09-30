@@ -146,7 +146,7 @@ new name, so the palette survives and the naming around it changes:
 |---|---|---|---|
 | Product display name | HodoMap | Poravia | migrated |
 | Public hostname | none published | `poravia.peterdsp.dev` | configured |
-| Repository (local checkout) | `/Users/peterdsp/git/HodoMap` | unchanged, deliberately | retained |
+| Repository (local checkout) | `/Users/peterdsp/git/HodoMap` | `/Users/peterdsp/git/Poravia` | migrated |
 | Repository (GitHub) | `peterdsp/HodoMap` | `peterdsp/Poravia` | see note below |
 | Python staging package | `syrmos_admin` | `hodomap_ktel` then `poravia_ktel` | migrated |
 | Python pipeline package | `hodomap_pipeline` | `poravia_pipeline` | migrated |
@@ -181,8 +181,9 @@ the built artifacts and the deployed site for `hodomap`, `hodo` and unresolved
 
 ## Note on the GitHub repository rename
 
-The local checkout stays at `/Users/peterdsp/git/HodoMap`, deliberately, so no
-existing tooling or path breaks. The **remote** repository name is public
+The local checkout was first kept at `/Users/peterdsp/git/HodoMap` so no
+existing tooling would break, and was moved to `/Users/peterdsp/git/Poravia` on
+30 September 2026 at the owner's request (see AD-007). The **remote** repository name is public
 branding and is renamed to `peterdsp/Poravia`. GitHub keeps permanent
 redirects for the old URL, so:
 

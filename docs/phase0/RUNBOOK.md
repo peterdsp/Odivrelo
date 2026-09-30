@@ -6,7 +6,7 @@ Aloria demonstration fixture. Every command is idempotent.
 Prerequisites: Python 3.12 and the repository virtual environment.
 
 ```bash
-cd /Users/peterdsp/git/HodoMap
+cd /Users/peterdsp/git/Poravia
 python3.12 -m venv .venv          # once
 export PY=.venv/bin/python
 export STAGING=server/ktel-staging

@@ -162,7 +162,7 @@ approves the row. No assertion was removed to obtain a green suite.
 
 ---
 
-## AD-007, 30 September 2026: the GitHub repository is renamed, the local checkout is not
+## AD-007, 30 September 2026: the GitHub repository is renamed, and later the local checkout
 
 **Decision.** The remote repository is renamed to `peterdsp/Poravia` because a
 public repository URL is user-facing branding. The local checkout stays at
@@ -174,6 +174,12 @@ treating the checkout path as the product identity.
 for a renamed repository, so existing clones, `git remote` entries and the
 fifteen issue links cross-referenced from `docs/pilot/` and `docs/phase0/`
 continue to resolve. `brand.json.repository` records the current URL.
+
+**Update, 30 September 2026.** At the owner's request the local checkout was
+moved to `/Users/peterdsp/git/Poravia`. Nothing in the repository depends on
+the checkout path: scripts resolve the root from their own location. The one
+casualty was the local `.venv`, whose interpreter paths are absolute; it was
+recreated from the pinned requirements.
 
 ---
 
