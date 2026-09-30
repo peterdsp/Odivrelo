@@ -79,6 +79,34 @@ These are not unit tests; they are real requests over HTTP.
 | B23 | Ticket-office fallback where there is no online sale | passed | overnight journey returns `purchase.kind: ticket_office` with a phone, not a booking URL |
 | B24 | Offline manifest and GTFS served | passed | manifest lists 9 packs for release `f004e5669e013f6f`; `/v1/gtfs` returns `application/zip`, 2,483 bytes, 9 members |
 
+## S. Shared Kotlin Multiplatform core
+
+Verified independently on 30 September 2026 with
+`./gradlew :shared:core:testDebugUnitTest :shared:features:testDebugUnitTest`,
+then by parsing the JUnit XML rather than trusting the console.
+
+| # | Scenario | Status | Evidence |
+|---|---|---|---|
+| S1 | Core and feature suites, JVM debug | passed | **158 tests, 0 failures, 0 errors** |
+| S2 | Same suites, JVM release | passed | 158 tests, 0 failures, 0 errors |
+| S3 | Same suites, iOS simulator arm64 | passed | 158 tests, 0 failures, 0 errors |
+| S4 | Both 2026 Greek clock changes | passed | the same wall-clock span is 75 real minutes in October and 195 in March |
+| S5 | Overnight keeps the earlier service date | passed | |
+| S6 | SHA-256 against the four standard vectors | passed | |
+| S7 | A corrupted pack that is still valid JSON is refused on digest alone, and not retried | passed | |
+| S8 | A foreign-release pack is refused despite a valid digest | passed | |
+| S9 | A day pack covering the wrong date is refused | passed | |
+| S10 | Bounded retry, exactly three, and `Range` resume | passed | |
+| S11 | Cancellation installs nothing | passed | |
+| S12 | Saved trips survive the v1 to v2 migration, new column reads null not false | passed | |
+| S13 | A saved trip is still readable after its release is removed | passed | |
+| S14 | **No pack for a date is not "no service on that date"** | passed | four tests, including one asserting zero HTTP requests for a date the manifest omits |
+| S15 | **Transport equality**: bundled vs downloaded, and static origin vs API origin | passed | `TransportEqualityTest` over search, journey detail, stop detail, meta, coverage, sources and place search |
+| S16 | A first run downloads only the day it searched, not every published date | passed | |
+| S17 | `iosX64` execution | not-run | compiles and links into the simulator slice, but an x86_64 simulator cannot boot on this arm64 host. Stated, not counted as a pass. |
+| S18 | XCFramework produced with both slices | passed | `ios-arm64` and `ios-arm64_x86_64-simulator`, static, 1811 `swift_name` attributes |
+| S19 | `:apps:android:assembleDebug` links both shared modules | passed | 22 MB debug APK carrying exactly the 11 packs the manifest names, pruned from 124 files and 748 KB to 11 and 54 KB |
+
 ## C. Rename and brand gates
 
 | # | Scenario | Status | Command | Evidence |
