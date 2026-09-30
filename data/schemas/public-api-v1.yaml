@@ -1,0 +1,1145 @@
+openapi: 3.1.0
+info:
+  title: Public transport data API, version 1
+  version: 1.0.0
+  summary: Read-only reviewed coach timetable, place and coverage data.
+  description: |
+    The machine-readable form of `data/schemas/CONTRACT-v1.md`, which remains the
+    authoritative prose. Every response carries the release it was served from;
+    a client holding offline packs from another release must not mix the two.
+
+    The product name is deliberately absent from this document. Identity comes
+    from `brand.json` at runtime and a rename must not be a contract change.
+
+    The private administrative surface is not described here. It is mounted on a
+    separate origin, requires a bearer token, and is never public.
+  license:
+    name: See repository LICENSE
+servers:
+  - url: /
+    description: Same-origin mount used by every client.
+tags:
+  - name: public
+    description: Public read surface.
+  - name: operations
+    description: Liveness and readiness probes.
+paths:
+  /v1/meta:
+    get:
+      tags: [public]
+      operationId: getMeta
+      summary: Release and product metadata
+      parameters:
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: Release metadata for the currently served release.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MetaResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/places:
+    get:
+      tags: [public]
+      operationId: searchPlaces
+      summary: Place disambiguation
+      description: |
+        Returns stop places (terminals) and their boarding points. `q` is matched
+        case- and accent-insensitively across the `el` and `en` names.
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Case- and accent-insensitive search term.
+          schema: { type: string, maxLength: 200 }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: Matching places, most relevant name order.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlacesResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/journeys:
+    get:
+      tags: [public]
+      operationId: searchJourneys
+      summary: Journey search
+      description: |
+        `origin` and `destination` accept a place id of either kind. A journey
+        that departs before midnight and arrives after it keeps the earlier
+        service date and reports `crossesMidnight`.
+      parameters:
+        - name: origin
+          in: query
+          required: true
+          description: Place id of either kind.
+          schema: { type: string, minLength: 1, maxLength: 128 }
+        - name: destination
+          in: query
+          required: true
+          description: Place id of either kind.
+          schema: { type: string, minLength: 1, maxLength: 128 }
+        - name: date
+          in: query
+          required: false
+          description: Service date in Europe/Athens. Defaults to today.
+          schema: { $ref: '#/components/schemas/ServiceDate' }
+        - name: accessible
+          in: query
+          required: false
+          description: Restrict to journeys with a reviewed step-free boarding point.
+          schema: { type: boolean, default: false }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: Journeys for the service date, earliest departure first.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JourneysResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/journeys/{journey_id}:
+    get:
+      tags: [public]
+      operationId: getJourney
+      summary: Journey detail
+      parameters:
+        - name: journey_id
+          in: path
+          required: true
+          description: Opaque journey id. Clients must not parse it.
+          schema: { type: string, minLength: 1, maxLength: 128 }
+        - name: date
+          in: query
+          required: false
+          description: Service date in Europe/Athens. Defaults to the journey's own.
+          schema: { $ref: '#/components/schemas/ServiceDate' }
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: The journey, its stops, geometry, provenance and purchase action.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JourneyResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/operators:
+    get:
+      tags: [public]
+      operationId: listOperators
+      summary: Operators carrying published content
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: Operators with at least one published, rights-cleared row.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OperatorsResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/operators/{operator_id}:
+    get:
+      tags: [public]
+      operationId: getOperator
+      summary: Operator detail
+      parameters:
+        - name: operator_id
+          in: path
+          required: true
+          description: Opaque operator id.
+          schema: { type: string, minLength: 1, maxLength: 128 }
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: One operator, its coverage and its sources.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OperatorResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/stops/{stop_id}:
+    get:
+      tags: [public]
+      operationId: getStop
+      summary: Station page
+      description: |
+        Names, coordinates, parent terminal, boarding points, operators serving
+        the stop, next departures for a service date, provenance and the
+        correction path.
+      parameters:
+        - name: stop_id
+          in: path
+          required: true
+          description: Opaque stop id.
+          schema: { type: string, minLength: 1, maxLength: 128 }
+        - name: date
+          in: query
+          required: false
+          description: Service date in Europe/Athens. Defaults to today.
+          schema: { $ref: '#/components/schemas/ServiceDate' }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: The station page for one stop.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StopResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/coverage:
+    get:
+      tags: [public]
+      operationId: getCoverage
+      summary: Coverage and freshness summary
+      description: |
+        Includes the explicit statement of what is not covered, so a client can
+        show the limits of the dataset rather than implying completeness.
+      parameters:
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: Machine-readable coverage, freshness and exclusions.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CoverageResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/sources:
+    get:
+      tags: [public]
+      operationId: listSources
+      summary: Public source registry
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: Every source with its rights status and licence.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SourcesResponse' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/offline/manifest:
+    get:
+      tags: [public]
+      operationId: getOfflineManifest
+      summary: Offline release manifest
+      parameters:
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: The generated release manifest, byte-for-byte equivalent.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/CacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OfflineManifest' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/offline/packs/{filename}:
+    get:
+      tags: [public]
+      operationId: getOfflinePack
+      summary: Content-addressed offline pack
+      description: |
+        Served byte-for-byte with a strong ETag equal to the manifest digest.
+        The file name contains the digest, so the response is immutable.
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          description: Content-addressed pack file name taken from the manifest.
+          schema: { type: string, pattern: '^[a-z0-9][a-z0-9.\-]{0,95}\.(json|zip)$' }
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: The pack bytes.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/ImmutableCacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+            application/zip:
+              schema: { type: string, contentEncoding: binary }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/gtfs:
+    get:
+      tags: [public]
+      operationId: getGtfs
+      summary: Reviewed GTFS feed for the current release
+      parameters:
+        - $ref: '#/components/parameters/Release'
+      responses:
+        '200':
+          description: The GTFS zip for the current release.
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+            Cache-Control: { $ref: '#/components/headers/ImmutableCacheControl' }
+            X-Release-Id: { $ref: '#/components/headers/ReleaseId' }
+          content:
+            application/zip:
+              schema: { type: string, contentEncoding: binary }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '400': { $ref: '#/components/responses/InvalidRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/ReleaseMismatch' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /healthz:
+    get:
+      tags: [operations]
+      operationId: getHealth
+      summary: Process liveness
+      responses:
+        '200':
+          description: The process is running. No database is consulted.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HealthResponse' }
+  /readyz:
+    get:
+      tags: [operations]
+      operationId: getReadiness
+      summary: Release readiness
+      description: |
+        Fails when the compiled public database is missing, carries no published
+        release, or disagrees with the generated manifest and its packs.
+      responses:
+        '200':
+          description: This process can serve the contract.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReadinessResponse' }
+        '503':
+          description: This process must not receive traffic.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReadinessResponse' }
+components:
+  headers:
+    ETag:
+      description: Strong entity tag for the response body.
+      schema: { type: string }
+    CacheControl:
+      description: Short freshness window with revalidation.
+      schema: { type: string }
+    ImmutableCacheControl:
+      description: 'public, max-age=31536000, immutable'
+      schema: { type: string }
+    ReleaseId:
+      description: The release this response was served from.
+      schema: { type: string }
+  parameters:
+    Lang:
+      name: lang
+      in: query
+      required: false
+      description: Preferred display language. Every language is still returned.
+      schema: { $ref: '#/components/schemas/Language' }
+    Release:
+      name: release
+      in: query
+      required: false
+      description: |
+        The release the client already holds packs for. A mismatch is refused
+        with 409 rather than mixing two snapshots.
+      schema: { type: string, maxLength: 64 }
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum rows to return. Values above 200 are refused.
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    Offset:
+      name: offset
+      in: query
+      required: false
+      description: Rows to skip.
+      schema: { type: integer, minimum: 0, default: 0 }
+  responses:
+    NotModified:
+      description: The client's cached copy is still current.
+      headers:
+        ETag: { $ref: '#/components/headers/ETag' }
+    InvalidRequest:
+      description: invalid_request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: unauthorized
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: not_found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ReleaseMismatch:
+      description: release_mismatch
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unavailable:
+      description: unavailable
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Language:
+      type: string
+      enum: [el, en, sq]
+    ServiceDate:
+      type: string
+      pattern: '^\d{4}-\d{2}-\d{2}$'
+      description: A service date interpreted in Europe/Athens.
+    Instant:
+      type: string
+      description: ISO-8601 instant with an explicit offset.
+    ContractVersion:
+      type: string
+      const: 1.0.0
+    DataMode:
+      type: string
+      enum: [real, demo]
+      description: |
+        When `demo`, every client must show a persistent, non-dismissible notice
+        that the services shown are invented and are not real departures, and
+        must send `noindex` on web.
+    RightsStatus:
+      type: string
+      enum: [allowed, permission_pending, prohibited, unknown]
+    ReviewState:
+      type: string
+      enum: [candidate, verified, published, stale, withdrawn, quarantined]
+    TimeQuality:
+      type: string
+      enum: [scheduled, approximate, unknown]
+    PositionQuality:
+      type: string
+      enum: [scheduled, predicted, estimated, live]
+    GeometryConfidence:
+      type: string
+      enum: [unverified, ordered_stops_only, osm_candidate, reviewed, rejected]
+    PurchaseKind:
+      type: string
+      enum: [online, ticket_office, phone, onboard, unavailable]
+    CoverageState:
+      type: string
+      enum: [covered, partial, not_covered, demo]
+    BoardingRule:
+      type: string
+      enum: [allowed, not_allowed, request, unknown]
+    FreshnessState:
+      type: string
+      enum: [fresh, aging, stale]
+    Confidence:
+      type: string
+      enum: [reviewed, candidate]
+    UnavailableReason:
+      type: [string, 'null']
+      enum: [no_service_on_date, outside_coverage, origin_equals_destination, null]
+    LocalizedText:
+      type: object
+      description: Every supported language is always present.
+      required: [el, en, sq]
+      properties:
+        el: { type: string }
+        en: { type: string }
+        sq: { type: string }
+      additionalProperties: false
+    Envelope:
+      type: object
+      required: [contractVersion, releaseId, publishedAt, dataMode]
+      properties:
+        contractVersion: { $ref: '#/components/schemas/ContractVersion' }
+        releaseId: { type: [string, 'null'] }
+        publishedAt: { type: [string, 'null'] }
+        dataMode: { $ref: '#/components/schemas/DataMode' }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum: [not_found, invalid_request, unavailable, release_mismatch, unauthorized]
+            message: { type: string }
+            field: { type: [string, 'null'] }
+          additionalProperties: false
+      additionalProperties: false
+    Attribution:
+      type: object
+      required: [name, url, licence]
+      properties:
+        name: { type: string }
+        url: { type: [string, 'null'] }
+        licence: { type: [string, 'null'] }
+      additionalProperties: false
+    Provenance:
+      type: object
+      required: [sourceId, sourceName, sourceUrl, retrievedAt, rightsStatus, licence]
+      properties:
+        sourceId: { type: string }
+        sourceName: { type: string }
+        sourceUrl: { type: [string, 'null'] }
+        retrievedAt: { type: [string, 'null'] }
+        rightsStatus: { $ref: '#/components/schemas/RightsStatus' }
+        licence: { type: [string, 'null'] }
+      additionalProperties: false
+    Freshness:
+      type: object
+      required: [checkedAt, ageHours, state]
+      properties:
+        checkedAt: { type: [string, 'null'] }
+        ageHours: { type: [integer, 'null'], minimum: 0 }
+        state: { $ref: '#/components/schemas/FreshnessState' }
+      additionalProperties: false
+    Fare:
+      type: [object, 'null']
+      required: [amount, currency, isIndicative]
+      properties:
+        amount: { type: number }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        isIndicative: { type: boolean }
+      additionalProperties: false
+    PurchaseSummary:
+      type: object
+      required: [kind, url, label]
+      properties:
+        kind: { $ref: '#/components/schemas/PurchaseKind' }
+        url: { type: [string, 'null'] }
+        label:
+          oneOf:
+            - { $ref: '#/components/schemas/LocalizedText' }
+            - { type: 'null' }
+      additionalProperties: false
+    Purchase:
+      type: object
+      required: [kind, url, phone, address, openingHours, label, disclaimer]
+      properties:
+        kind: { $ref: '#/components/schemas/PurchaseKind' }
+        url: { type: [string, 'null'] }
+        phone: { type: [string, 'null'] }
+        address: { type: [string, 'null'] }
+        openingHours: { type: [string, 'null'] }
+        label:
+          oneOf:
+            - { $ref: '#/components/schemas/LocalizedText' }
+            - { type: 'null' }
+        disclaimer:
+          oneOf:
+            - { $ref: '#/components/schemas/LocalizedText' }
+            - { type: 'null' }
+      additionalProperties: false
+    Restriction:
+      type: object
+      required: [code, text]
+      properties:
+        code: { type: string }
+        text:
+          oneOf:
+            - { $ref: '#/components/schemas/LocalizedText' }
+            - { type: 'null' }
+      additionalProperties: false
+    OperatorRef:
+      type: object
+      required: [id, name, logoAvailable]
+      properties:
+        id: { type: string }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        logoAvailable: { type: boolean }
+      additionalProperties: false
+    Place:
+      type: object
+      required:
+        [id, kind, name, parentId, municipality, latitude, longitude,
+         coordinateStatus, boardingPointCount, operatorIds, coverage]
+      properties:
+        id: { type: string }
+        kind: { type: string, enum: [stop_place, stop] }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        parentId: { type: [string, 'null'] }
+        municipality: { type: [string, 'null'] }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        coordinateStatus: { type: string }
+        boardingPointCount: { type: integer, minimum: 0 }
+        operatorIds: { type: array, items: { type: string } }
+        coverage: { $ref: '#/components/schemas/CoverageState' }
+      additionalProperties: false
+    JourneyEndpoint:
+      type: object
+      required: [at, stopId, stopName, quality]
+      properties:
+        at: { type: [string, 'null'] }
+        stopId: { type: string }
+        stopName: { $ref: '#/components/schemas/LocalizedText' }
+        quality: { $ref: '#/components/schemas/TimeQuality' }
+      additionalProperties: false
+    JourneyCore:
+      description: |
+        The fields a journey carries in both its list and detail forms. It is
+        factored out rather than inherited with `additionalProperties: false`,
+        because a closed base cannot be extended by `allOf`. The two concrete
+        shapes below close themselves with `unevaluatedProperties`, which is
+        composition aware.
+      type: object
+      required:
+        [id, operator, departure, arrival, durationMinutes,
+         intermediateStopCount, serviceDate, crossesMidnight, positionQuality,
+         fare, freshness, confidence]
+      properties:
+        id: { type: string }
+        operator: { $ref: '#/components/schemas/OperatorRef' }
+        departure: { $ref: '#/components/schemas/JourneyEndpoint' }
+        arrival: { $ref: '#/components/schemas/JourneyEndpoint' }
+        durationMinutes: { type: [integer, 'null'] }
+        intermediateStopCount: { type: integer, minimum: 0 }
+        serviceDate: { $ref: '#/components/schemas/ServiceDate' }
+        crossesMidnight: { type: boolean }
+        positionQuality: { $ref: '#/components/schemas/PositionQuality' }
+        fare: { $ref: '#/components/schemas/Fare' }
+        freshness: { $ref: '#/components/schemas/Freshness' }
+        confidence: { $ref: '#/components/schemas/Confidence' }
+    JourneySummary:
+      description: A journey as it appears in a search result or a station page.
+      allOf:
+        - { $ref: '#/components/schemas/JourneyCore' }
+        - type: object
+          required: [purchase]
+          properties:
+            purchase: { $ref: '#/components/schemas/PurchaseSummary' }
+      unevaluatedProperties: false
+    BoardingPoint:
+      type: [object, 'null']
+      required:
+        [stopId, name, terminalName, bay, latitude, longitude, instructions,
+         reviewState, reviewedAt, stepFree]
+      properties:
+        stopId: { type: string }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        terminalName:
+          oneOf:
+            - { $ref: '#/components/schemas/LocalizedText' }
+            - { type: 'null' }
+        bay: { type: [string, 'null'] }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        instructions:
+          oneOf:
+            - { $ref: '#/components/schemas/LocalizedText' }
+            - { type: 'null' }
+        reviewState: { $ref: '#/components/schemas/ReviewState' }
+        reviewedAt: { type: [string, 'null'] }
+        stepFree: { type: [boolean, 'null'] }
+      additionalProperties: false
+    JourneyStop:
+      type: object
+      required:
+        [stopId, sequence, name, arrivalAt, departureAt, timeQuality, pickup, dropoff]
+      properties:
+        stopId: { type: string }
+        sequence: { type: integer, minimum: 1 }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        arrivalAt: { type: [string, 'null'] }
+        departureAt: { type: [string, 'null'] }
+        timeQuality: { $ref: '#/components/schemas/TimeQuality' }
+        pickup: { $ref: '#/components/schemas/BoardingRule' }
+        dropoff: { $ref: '#/components/schemas/BoardingRule' }
+      additionalProperties: false
+    Geometry:
+      type: [object, 'null']
+      required: [type, coordinates, confidence, method, attribution]
+      properties:
+        type: { type: string, const: LineString }
+        coordinates:
+          type: array
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items: { type: number }
+        confidence: { $ref: '#/components/schemas/GeometryConfidence' }
+        method: { type: [string, 'null'] }
+        attribution: { type: [string, 'null'] }
+      additionalProperties: false
+    Journey:
+      description: |
+        A journey in its detail form. It carries the full purchase action rather
+        than the summary one, plus the stop list, geometry, restrictions and
+        provenance a station or journey page needs.
+      allOf:
+        - { $ref: '#/components/schemas/JourneyCore' }
+        - type: object
+          required:
+            [boardingPoint, stops, geometry, restrictions, provenance, purchase,
+             correctionUrl]
+          properties:
+            boardingPoint: { $ref: '#/components/schemas/BoardingPoint' }
+            stops:
+              type: array
+              items: { $ref: '#/components/schemas/JourneyStop' }
+            geometry: { $ref: '#/components/schemas/Geometry' }
+            restrictions:
+              type: array
+              items: { $ref: '#/components/schemas/Restriction' }
+            provenance:
+              type: array
+              items: { $ref: '#/components/schemas/Provenance' }
+            purchase: { $ref: '#/components/schemas/Purchase' }
+            correctionUrl: { type: string }
+      unevaluatedProperties: false
+    Contact:
+      type: [object, 'null']
+      required: [phone, email, address]
+      properties:
+        phone: { type: [string, 'null'] }
+        email: { type: [string, 'null'] }
+        address: { type: [string, 'null'] }
+      additionalProperties: false
+    Operator:
+      type: object
+      required:
+        [id, name, logoAvailable, federationNumber, officialSiteUrl,
+         directoryUrl, contact, coverage, sources, verifiedAt, correctionUrl]
+      properties:
+        id: { type: string }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        logoAvailable: { type: boolean }
+        federationNumber: { type: [integer, 'null'] }
+        officialSiteUrl: { type: [string, 'null'] }
+        directoryUrl: { type: [string, 'null'] }
+        contact: { $ref: '#/components/schemas/Contact' }
+        coverage:
+          type: object
+          required: [state, routeCount, stopCount]
+          properties:
+            state: { $ref: '#/components/schemas/CoverageState' }
+            routeCount: { type: integer, minimum: 0 }
+            stopCount: { type: integer, minimum: 0 }
+          additionalProperties: false
+        sources:
+          type: array
+          items: { $ref: '#/components/schemas/Provenance' }
+        verifiedAt: { type: [string, 'null'] }
+        correctionUrl: { type: string }
+      additionalProperties: false
+    StopBoardingPoint:
+      type: object
+      required: [stopId, name, bay, stepFree, reviewedAt, latitude, longitude]
+      properties:
+        stopId: { type: string }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        bay: { type: [string, 'null'] }
+        stepFree: { type: [boolean, 'null'] }
+        reviewedAt: { type: [string, 'null'] }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+      additionalProperties: false
+    Stop:
+      type: object
+      required:
+        [id, kind, name, municipality, latitude, longitude, coordinateStatus,
+         address, phone, bay, stepFree, instructions, terminal, boardingPoints,
+         operatorIds, operators, coverage, serviceDate, departures, provenance,
+         correctionUrl]
+      properties:
+        id: { type: string }
+        kind: { type: string, const: stop }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        municipality: { type: [string, 'null'] }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        coordinateStatus: { type: string }
+        address: { type: [string, 'null'] }
+        phone: { type: [string, 'null'] }
+        bay: { type: [string, 'null'] }
+        stepFree: { type: [boolean, 'null'] }
+        instructions:
+          oneOf:
+            - { $ref: '#/components/schemas/LocalizedText' }
+            - { type: 'null' }
+        terminal:
+          type: [object, 'null']
+          required: [id, name]
+          properties:
+            id: { type: string }
+            name: { $ref: '#/components/schemas/LocalizedText' }
+          additionalProperties: false
+        boardingPoints:
+          type: array
+          items: { $ref: '#/components/schemas/StopBoardingPoint' }
+        operatorIds: { type: array, items: { type: string } }
+        operators:
+          type: array
+          items: { $ref: '#/components/schemas/OperatorRef' }
+        coverage: { $ref: '#/components/schemas/CoverageState' }
+        serviceDate: { $ref: '#/components/schemas/ServiceDate' }
+        departures:
+          type: array
+          items: { $ref: '#/components/schemas/JourneySummary' }
+        provenance:
+          type: array
+          items: { $ref: '#/components/schemas/Provenance' }
+        correctionUrl: { type: string }
+      additionalProperties: false
+    CoverageOperator:
+      type: object
+      required: [operatorId, name, state, routeCount, stopCount, journeyCount]
+      properties:
+        operatorId: { type: string }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+        state: { $ref: '#/components/schemas/CoverageState' }
+        routeCount: { type: integer, minimum: 0 }
+        stopCount: { type: integer, minimum: 0 }
+        journeyCount: { type: integer, minimum: 0 }
+      additionalProperties: false
+    Coverage:
+      type: object
+      required:
+        [state, operatorCount, corridorCount, stopCount, journeyCount,
+         serviceDates, note, notCovered, freshness, absenceSemantics, operators]
+      properties:
+        state: { $ref: '#/components/schemas/CoverageState' }
+        operatorCount: { type: integer, minimum: 0 }
+        corridorCount: { type: integer, minimum: 0 }
+        stopCount: { type: integer, minimum: 0 }
+        journeyCount: { type: integer, minimum: 0 }
+        serviceDates:
+          type: object
+          required: [from, to]
+          properties:
+            from: { type: [string, 'null'] }
+            to: { type: [string, 'null'] }
+          additionalProperties: false
+        note: { type: string }
+        notCovered: { type: array, items: { type: string } }
+        freshness: { $ref: '#/components/schemas/Freshness' }
+        absenceSemantics: { type: object, additionalProperties: { type: string } }
+        operators:
+          type: array
+          items: { $ref: '#/components/schemas/CoverageOperator' }
+      additionalProperties: false
+    Source:
+      type: object
+      required:
+        [id, name, url, sourceKind, authorityLevel, rightsStatus, licence,
+         termsUrl, termsStatus, refreshPolicy, legalReviewedAt, enabled]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        url: { type: [string, 'null'] }
+        sourceKind: { type: string }
+        authorityLevel: { type: string }
+        rightsStatus: { $ref: '#/components/schemas/RightsStatus' }
+        licence: { type: [string, 'null'] }
+        termsUrl: { type: [string, 'null'] }
+        termsStatus: { type: string }
+        refreshPolicy: { type: string }
+        legalReviewedAt: { type: [string, 'null'] }
+        enabled: { type: boolean }
+      additionalProperties: false
+    OfflineManifestFile:
+      type: object
+      required: [path, sha256, bytes, mediaType]
+      properties:
+        path: { type: string }
+        sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+        bytes: { type: integer, minimum: 0 }
+        mediaType: { type: string }
+      additionalProperties: false
+    PackName:
+      description: |
+        The canonical logical pack names. A release carries exactly these, plus
+        one `journeys-<serviceDate>` entry per materialised service date. There
+        is one generator, so this list and it cannot drift.
+      type: string
+      pattern: '^(meta|coverage|sources|places|operators|stops|gtfs|journeys-\d{4}-\d{2}-\d{2})$'
+    OfflineManifest:
+      type: object
+      required: [contractVersion, product, releaseId, publishedAt, counts, files]
+      properties:
+        contractVersion: { $ref: '#/components/schemas/ContractVersion' }
+        product: { type: string }
+        releaseId: { type: string }
+        publishedAt: { type: [string, 'null'] }
+        counts: { type: object, additionalProperties: { type: integer } }
+        files:
+          description: Keyed by logical pack name.
+          type: object
+          propertyNames: { $ref: '#/components/schemas/PackName' }
+          additionalProperties: { $ref: '#/components/schemas/OfflineManifestFile' }
+      additionalProperties: false
+    MetaResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required:
+            [product, languages, coverage, offlineManifestUrl, gtfsUrl, attribution]
+          properties:
+            product:
+              type: object
+              required: [name, version, commit, builtAt]
+              properties:
+                name: { type: string }
+                version: { type: string }
+                commit: { type: string }
+                builtAt: { type: string }
+              additionalProperties: false
+            languages:
+              type: array
+              items: { $ref: '#/components/schemas/Language' }
+            coverage:
+              type: object
+              required: [state, operatorCount, corridorCount, note]
+              properties:
+                state: { $ref: '#/components/schemas/CoverageState' }
+                operatorCount: { type: integer, minimum: 0 }
+                corridorCount: { type: integer, minimum: 0 }
+                note: { type: string }
+              additionalProperties: false
+            offlineManifestUrl: { type: string }
+            gtfsUrl: { type: string }
+            attribution:
+              type: array
+              items: { $ref: '#/components/schemas/Attribution' }
+    PlacesResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [places, total]
+          properties:
+            places:
+              type: array
+              items: { $ref: '#/components/schemas/Place' }
+            total: { type: integer, minimum: 0 }
+    JourneysResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [query, coverage, results, unavailableReason]
+          properties:
+            query:
+              type: object
+              required: [originId, destinationId, date]
+              properties:
+                originId: { type: string }
+                destinationId: { type: string }
+                date: { $ref: '#/components/schemas/ServiceDate' }
+              additionalProperties: false
+            coverage: { $ref: '#/components/schemas/CoverageState' }
+            results:
+              type: array
+              items: { $ref: '#/components/schemas/JourneySummary' }
+            unavailableReason: { $ref: '#/components/schemas/UnavailableReason' }
+    JourneyResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [journey]
+          properties:
+            journey: { $ref: '#/components/schemas/Journey' }
+    OperatorsResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [operators, total]
+          properties:
+            operators:
+              type: array
+              items: { $ref: '#/components/schemas/Operator' }
+            total: { type: integer, minimum: 0 }
+    OperatorResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [operator]
+          properties:
+            operator: { $ref: '#/components/schemas/Operator' }
+    StopResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [stop]
+          properties:
+            stop: { $ref: '#/components/schemas/Stop' }
+    CoverageResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [coverage]
+          properties:
+            coverage: { $ref: '#/components/schemas/Coverage' }
+    SourcesResponse:
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [sources, total]
+          properties:
+            sources:
+              type: array
+              items: { $ref: '#/components/schemas/Source' }
+            total: { type: integer, minimum: 0 }
+    OperatorsPack:
+      description: |
+        The `operators` pack. Each value is exactly what
+        `GET /v1/operators/{operator_id}` returns in its `operator` member.
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [operators]
+          properties:
+            operators:
+              type: object
+              additionalProperties: { $ref: '#/components/schemas/Operator' }
+    StopsPack:
+      description: |
+        The `stops` pack. Each value is exactly what `GET /v1/stops/{stop_id}`
+        returns in its `stop` member, for the release's earliest materialised
+        service date.
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [serviceDate, stops]
+          properties:
+            serviceDate: { $ref: '#/components/schemas/ServiceDate' }
+            stops:
+              type: object
+              additionalProperties: { $ref: '#/components/schemas/Stop' }
+    JourneysPack:
+      description: |
+        One `journeys-<serviceDate>` pack. `results` carries every journey on the
+        date in the shape `GET /v1/journeys` returns, end to end rather than for
+        a requested pair. `journeys` carries the matching
+        `GET /v1/journeys/{journey_id}` detail, keyed by journey id.
+      allOf:
+        - { $ref: '#/components/schemas/Envelope' }
+        - type: object
+          required: [serviceDate, coverage, results, journeys]
+          properties:
+            serviceDate: { $ref: '#/components/schemas/ServiceDate' }
+            coverage: { $ref: '#/components/schemas/CoverageState' }
+            results:
+              type: array
+              items: { $ref: '#/components/schemas/JourneySummary' }
+            journeys:
+              type: object
+              additionalProperties: { $ref: '#/components/schemas/Journey' }
+    HealthResponse:
+      type: object
+      required: [status, product, contractVersion]
+      properties:
+        status: { type: string, const: ok }
+        product: { type: string }
+        contractVersion: { $ref: '#/components/schemas/ContractVersion' }
+      additionalProperties: false
+    ReadinessResponse:
+      type: object
+      required: [status, releaseId, checks, problems, dataMode, contractVersion]
+      properties:
+        status: { type: string, enum: [ready, not_ready] }
+        releaseId: { type: [string, 'null'] }
+        checks: { type: object, additionalProperties: { type: string } }
+        problems: { type: array, items: { type: string } }
+        dataMode: { $ref: '#/components/schemas/DataMode' }
+        contractVersion: { $ref: '#/components/schemas/ContractVersion' }
+      additionalProperties: false

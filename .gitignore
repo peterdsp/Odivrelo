@@ -137,6 +137,13 @@ terraform.tfstate.*
 *.tfvars
 !*.tfvars.example
 
+# Generated offline release packs bundled into a client. These are produced by
+# scripts/api-seed-demo.sh and copied in by scripts/web-sync-packs.sh and
+# scripts/android-sync-packs.sh. They are build output: reproducible from
+# data/fixtures/ and verifiable against the manifest, so they are not committed.
+/apps/web/public/data/
+/apps/android/src/main/assets/release/
+
 # Local artifacts from the beta delivery (binaries, screenshots, logs, datasets)
 /artifacts/
 apps/*/artifacts/

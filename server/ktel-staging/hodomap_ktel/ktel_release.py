@@ -21,7 +21,7 @@ import os
 import shutil
 import sqlite3
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Protocol
 
 from . import branding, ktel_api, ktel_db, ktel_gtfs
 from .ktel_publish import compile_public_database
@@ -34,6 +34,22 @@ PACK_ROW_LIMIT = 50_000
 
 class ReleaseConsistencyError(RuntimeError):
     """Raised when a manifest and its packs disagree."""
+
+
+class PayloadProvider(Protocol):
+    """Builds the logical pack name to body mapping for one release.
+
+    The release mechanism below owns content addressing, digesting, the trailing
+    manifest and rollback. It does not own the *shape* of what goes inside a
+    pack. Passing a provider is how the public API service publishes packs in
+    the published contract shape, so an offline client sees exactly what the
+    matching endpoint would have returned, without forking this mechanism.
+    """
+
+    def __call__(
+        self, conn: sqlite3.Connection, release_id: str
+    ) -> dict[str, bytes]:  # pragma: no cover - structural type only
+        ...
 
 
 def _canonical_json(payload: Any) -> bytes:
@@ -94,8 +110,14 @@ def generate_public_release(
     public_db_path: str = ktel_db.DEFAULT_KTEL_PUBLIC_DB_PATH,
     *,
     compile_first: bool = True,
+    payload_provider: PayloadProvider | Callable[..., dict[str, bytes]] | None = None,
 ) -> dict[str, Any]:
-    """Compile, then publish content-addressed packs and a trailing manifest."""
+    """Compile, then publish content-addressed packs and a trailing manifest.
+
+    ``payload_provider`` substitutes another set of pack payloads while keeping
+    every release guarantee documented above. Omitting it keeps the historical
+    staging payload shapes.
+    """
     root = Path(out_dir) / branding.PRODUCT_SLUG
     packs_dir = root / "packs"
     packs_dir.mkdir(parents=True, exist_ok=True)
@@ -124,7 +146,7 @@ def generate_public_release(
                 f"{published_release}; refusing to publish a mixed snapshot"
             )
         metadata = ktel_api.release_metadata(public)
-        payloads = _collect_payloads(public, release_id)
+        payloads = (payload_provider or _collect_payloads)(public, release_id)
 
     files: dict[str, dict[str, Any]] = {}
     for name in sorted(payloads):

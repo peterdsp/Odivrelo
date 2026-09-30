@@ -1,0 +1,89 @@
+{
+  "$comment": "INVENTED DEMONSTRATION DATA sourced from a rights-pending provider. It is approved by review on purpose, so the release pipeline can prove that review alone is never enough: the rights gate must still keep it out of every public response.",
+  "dataset": "demo",
+  "operatorId": "demo-aloria-coach",
+  "demoOperators": [
+    {
+      "id": "demo-aloria-coach",
+      "slug": "demo-aloria-coach",
+      "nameEn": "Aloria Coach Lines (demonstration operator)",
+      "nameEl": "Λεωφορεία Αλόρια (επίδειξη)",
+      "operatorKind": "other",
+      "federationNumber": null,
+      "directoryUrl": null,
+      "officialSiteUrl": null,
+      "registryVerifiedAt": "2026-09-20T06:00:00Z",
+      "publicAttributes": {
+        "nameSq": "Autobusët Aloria (demonstrim)",
+        "logoAvailable": false,
+        "contact": {
+          "phone": "+00 000 000 001",
+          "email": "info@peterdsp.dev",
+          "address": "1 Harbour Approach, Aloria City (fictional address)"
+        }
+      }
+    }
+  ],
+  "sourceId": "ticketweb",
+  "retrievedAt": "2026-09-20T06:30:00Z",
+  "importRunId": "demo-aloria-rights-pending",
+  "stopPlaces": [],
+  "stops": [
+    {
+      "externalId": "stop-kalvara-pier-pending",
+      "name": "Kalvara Pier (rights pending, must never be published)",
+      "nameEl": "Προβλήτα Καλβάρα (εκκρεμούν δικαιώματα)",
+      "latitude": 0.3302,
+      "longitude": -0.4488,
+      "webActive": true,
+      "publicAttributes": {
+        "nameSq": "Skela e Kalvarës (të drejta në pritje)"
+      }
+    }
+  ],
+  "lines": [
+    {
+      "externalId": "line-pending",
+      "publicCode": "P1",
+      "name": "Kalvara Pier shuttle (rights pending, must never be published)",
+      "dataStatus": "observed"
+    }
+  ],
+  "journeyPatterns": [
+    {
+      "externalId": "pattern-pending",
+      "lineExternalId": "line-pending",
+      "name": "Kalvara shuttle",
+      "geometryStatus": "unverified",
+      "stops": [
+        {
+          "stopExternalId": "stop-kalvara-pier-pending",
+          "sequence": 1,
+          "pickupType": "allowed",
+          "dropoffType": "allowed"
+        }
+      ]
+    }
+  ],
+  "trips": [
+    {
+      "externalId": "trip-pending",
+      "lineExternalId": "line-pending",
+      "patternExternalId": "pattern-pending",
+      "serviceDate": "2026-10-02",
+      "departureAt": "2026-10-02T10:30:00+03:00",
+      "approximateArrivalAt": "2026-10-02T10:55:00+03:00",
+      "commercialState": "bookable",
+      "scheduleScope": "date_specific_bookable",
+      "observedAt": "2026-09-20T06:30:00Z",
+      "stopTimes": [
+        {
+          "stopExternalId": "stop-kalvara-pier-pending",
+          "sequence": 1,
+          "departureAt": "2026-10-02T10:30:00+03:00",
+          "timeStatus": "scheduled"
+        }
+      ]
+    }
+  ]
+}

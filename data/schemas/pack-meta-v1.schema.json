@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-meta-v1.schema.json",
+  "title": "Offline pack: meta, version 1",
+  "description": "The `meta` pack, identical to the GET /v1/meta body.",
+  "allOf": [
+    {
+      "$ref": "#/$defs/Envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "product",
+        "languages",
+        "coverage",
+        "offlineManifestUrl",
+        "gtfsUrl",
+        "attribution"
+      ],
+      "properties": {
+        "product": {
+          "type": "object",
+          "required": [
+            "name",
+            "version",
+            "commit",
+            "builtAt"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "commit": {
+              "type": "string"
+            },
+            "builtAt": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "languages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Language"
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "required": [
+            "state",
+            "operatorCount",
+            "corridorCount",
+            "note"
+          ],
+          "properties": {
+            "state": {
+              "$ref": "#/$defs/CoverageState"
+            },
+            "operatorCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "corridorCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "offlineManifestUrl": {
+          "type": "string"
+        },
+        "gtfsUrl": {
+          "type": "string"
+        },
+        "attribution": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Attribution"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Attribution": {
+      "type": "object",
+      "required": [
+        "name",
+        "url",
+        "licence"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "licence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ContractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "DataMode": {
+      "type": "string",
+      "enum": [
+        "real",
+        "demo"
+      ],
+      "description": "When `demo`, every client must show a persistent, non-dismissible notice\nthat the services shown are invented and are not real departures, and\nmust send `noindex` on web.\n"
+    },
+    "Envelope": {
+      "type": "object",
+      "required": [
+        "contractVersion",
+        "releaseId",
+        "publishedAt",
+        "dataMode"
+      ],
+      "properties": {
+        "contractVersion": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "releaseId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataMode": {
+          "$ref": "#/$defs/DataMode"
+        }
+      }
+    },
+    "Language": {
+      "type": "string",
+      "enum": [
+        "el",
+        "en",
+        "sq"
+      ]
+    }
+  }
+}

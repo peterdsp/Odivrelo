@@ -7,9 +7,9 @@ from __future__ import annotations
 
 import os
 
-PRODUCT_NAME = os.environ.get("PRODUCT_NAME", "Perastra")
-PRODUCT_SLUG = os.environ.get("PRODUCT_SLUG", "perastra")
-PRODUCT_URL = os.environ.get("PRODUCT_URL", "https://perastra.peterdsp.dev")
+PRODUCT_NAME = os.environ.get("PRODUCT_NAME", "Poravia")
+PRODUCT_SLUG = os.environ.get("PRODUCT_SLUG", "poravia")
+PRODUCT_URL = os.environ.get("PRODUCT_URL", "https://poravia.peterdsp.dev")
 PRODUCT_SUPPORT_EMAIL = os.environ.get(
     "PRODUCT_SUPPORT_EMAIL", "info@peterdsp.dev"
 )

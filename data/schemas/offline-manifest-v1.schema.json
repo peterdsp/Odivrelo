@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/offline-manifest-v1.schema.json",
+  "title": "Offline release manifest, version 1",
+  "description": "The generated release manifest. It is written last, after every pack, so a reader never sees a manifest that points at a half-written file.",
+  "type": "object",
+  "required": [
+    "contractVersion",
+    "product",
+    "releaseId",
+    "publishedAt",
+    "counts",
+    "files"
+  ],
+  "properties": {
+    "contractVersion": {
+      "$ref": "#/$defs/ContractVersion"
+    },
+    "product": {
+      "type": "string"
+    },
+    "releaseId": {
+      "type": "string"
+    },
+    "publishedAt": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "files": {
+      "description": "Keyed by logical pack name.",
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/PackName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/OfflineManifestFile"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ContractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "OfflineManifestFile": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256",
+        "bytes",
+        "mediaType"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mediaType": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PackName": {
+      "description": "The canonical logical pack names. A release carries exactly these, plus\none `journeys-<serviceDate>` entry per materialised service date. There\nis one generator, so this list and it cannot drift.\n",
+      "type": "string",
+      "pattern": "^(meta|coverage|sources|places|operators|stops|gtfs|journeys-\\d{4}-\\d{2}-\\d{2})$"
+    }
+  }
+}

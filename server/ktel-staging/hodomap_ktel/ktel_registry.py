@@ -195,10 +195,29 @@ def normalize_stop_name(value: str) -> str:
     return " ".join(text.split())
 
 
+#: Dataset kinds a normalized snapshot may declare. ``real`` is the default and
+#: keeps every gate exactly as it was. ``demo`` is the explicit, opt-in flag for
+#: a synthetic engineering dataset whose region does not exist, so a Greek
+#: bounding box says nothing useful about it.
+DATASET_KINDS = ("real", "demo")
+
+
 def coordinate_status(
     latitude: float | int | str | None,
     longitude: float | int | str | None,
+    *,
+    dataset: str = "real",
 ) -> str:
+    """Classify a coordinate pair for the publication gate.
+
+    ``dataset="demo"`` relaxes exactly one check: the Greek bounding box, which
+    is a plausibility test for real Greek operator data and is meaningless for
+    an invented region. Every other gate (missing, unparseable, outside the
+    global range, null-island placeholder) still applies, so a demo snapshot
+    cannot smuggle in a broken coordinate either.
+    """
+    if dataset not in DATASET_KINDS:
+        raise ValueError(f"unknown dataset kind: {dataset}")
     if latitude in (None, "") or longitude in (None, ""):
         return "missing"
     try:
@@ -210,6 +229,8 @@ def coordinate_status(
         return "out_of_range"
     if abs(lat) < 0.0001 and abs(lon) < 0.0001:
         return "placeholder"
+    if dataset == "demo":
+        return "valid"
     if not (
         GREECE_LAT_RANGE[0] <= lat <= GREECE_LAT_RANGE[1]
         and GREECE_LON_RANGE[0] <= lon <= GREECE_LON_RANGE[1]

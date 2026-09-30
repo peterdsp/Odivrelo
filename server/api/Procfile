@@ -1,0 +1,5 @@
+# Procfile-style run command. The working directory is the repository root, so
+# there is one code path for running this service: scripts/api-run.sh, which
+# validates the interpreter, resolves the brand prefix and sets the worker and
+# timeout settings. Override HOST, PORT and WEB_CONCURRENCY in the environment.
+web: scripts/api-run.sh

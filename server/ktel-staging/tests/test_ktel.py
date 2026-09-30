@@ -64,7 +64,15 @@ class KtelTestCase(unittest.TestCase):
         )
 
     def test_migration_and_seed_are_idempotent(self):
-        self.assertEqual(ktel_db.migrate(self.conn), 1)
+        # The expected version is the highest numbered file in
+        # ktel_migrations/, so a new migration has to be added deliberately
+        # here as well as on disk.
+        latest = max(
+            int(path.stem.split("_", 1)[0])
+            for path in ktel_db.KTEL_MIGRATIONS_DIR.glob("[0-9]*.sql")
+        )
+        self.assertEqual(latest, 2)
+        self.assertEqual(ktel_db.migrate(self.conn), 2)
         seed_registry(self.conn)
         rows = operator_rows(self.conn, official_only=False)
         self.assertEqual(len(rows), 64)

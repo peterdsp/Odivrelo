@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-sources-v1.schema.json",
+  "title": "Offline pack: sources, version 1",
+  "description": "The `sources` pack, identical to the GET /v1/sources body.",
+  "allOf": [
+    {
+      "$ref": "#/$defs/Envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "sources",
+        "total"
+      ],
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "ContractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "DataMode": {
+      "type": "string",
+      "enum": [
+        "real",
+        "demo"
+      ],
+      "description": "When `demo`, every client must show a persistent, non-dismissible notice\nthat the services shown are invented and are not real departures, and\nmust send `noindex` on web.\n"
+    },
+    "Envelope": {
+      "type": "object",
+      "required": [
+        "contractVersion",
+        "releaseId",
+        "publishedAt",
+        "dataMode"
+      ],
+      "properties": {
+        "contractVersion": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "releaseId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataMode": {
+          "$ref": "#/$defs/DataMode"
+        }
+      }
+    },
+    "RightsStatus": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "permission_pending",
+        "prohibited",
+        "unknown"
+      ]
+    },
+    "Source": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "url",
+        "sourceKind",
+        "authorityLevel",
+        "rightsStatus",
+        "licence",
+        "termsUrl",
+        "termsStatus",
+        "refreshPolicy",
+        "legalReviewedAt",
+        "enabled"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourceKind": {
+          "type": "string"
+        },
+        "authorityLevel": {
+          "type": "string"
+        },
+        "rightsStatus": {
+          "$ref": "#/$defs/RightsStatus"
+        },
+        "licence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "termsUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "termsStatus": {
+          "type": "string"
+        },
+        "refreshPolicy": {
+          "type": "string"
+        },
+        "legalReviewedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

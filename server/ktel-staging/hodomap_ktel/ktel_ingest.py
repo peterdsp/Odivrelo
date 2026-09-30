@@ -12,7 +12,12 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
-from .ktel_registry import content_hash, coordinate_status, stable_entity_id
+from .ktel_registry import (
+    DATASET_KINDS,
+    content_hash,
+    coordinate_status,
+    stable_entity_id,
+)
 
 PUBLICATION_STATES = {
     "candidate",
@@ -64,11 +69,18 @@ def import_normalized_snapshot(
     operator_id = str(payload["operatorId"])
     source_id = str(payload["sourceId"])
     retrieved_at = str(payload.get("retrievedAt") or _now_iso())
+    # An explicit, opt-in declaration. Absent means real operator data, so the
+    # full coordinate gate applies exactly as before.
+    dataset = str(payload.get("dataset") or "real")
+    if dataset not in DATASET_KINDS:
+        raise ValueError(f"unknown dataset kind: {dataset}")
+    demo_operators = _register_demo_operators(conn, payload, dataset, retrieved_at)
     _ensure_registry_row(conn, "ktel_operators", operator_id)
     _ensure_registry_row(conn, "ktel_sources", source_id)
 
     run_id = str(payload.get("importRunId") or uuid.uuid4())
     counters = {
+        "demoOperators": demo_operators,
         "stopPlaces": 0,
         "stops": 0,
         "lines": 0,
@@ -105,8 +117,9 @@ def import_normalized_snapshot(
                 INSERT INTO ktel_stop_places(
                     id, operator_id, name, name_el, source_id, external_id,
                     default_stop_id, web_active, publication_state,
-                    content_hash, first_seen_at, last_seen_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    content_hash, first_seen_at, last_seen_at,
+                    public_attributes
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(operator_id, source_id, external_id) DO UPDATE SET
                     name=excluded.name,
                     name_el=excluded.name_el,
@@ -114,7 +127,8 @@ def import_normalized_snapshot(
                     web_active=excluded.web_active,
                     publication_state=excluded.publication_state,
                     content_hash=excluded.content_hash,
-                    last_seen_at=excluded.last_seen_at
+                    last_seen_at=excluded.last_seen_at,
+                    public_attributes=excluded.public_attributes
                 """,
                 (
                     entity_id,
@@ -129,6 +143,7 @@ def import_normalized_snapshot(
                     content_hash(item),
                     retrieved_at,
                     retrieved_at,
+                    _public_attributes(item),
                 ),
             )
             _record_source_row(
@@ -145,7 +160,7 @@ def import_normalized_snapshot(
             )
             stop_ids[external_id] = entity_id
             coord_status = coordinate_status(
-                item.get("latitude"), item.get("longitude")
+                item.get("latitude"), item.get("longitude"), dataset=dataset
             )
             quarantine = coord_status not in {"valid", "missing"}
             state = _state(
@@ -173,8 +188,8 @@ def import_normalized_snapshot(
                     id, operator_id, stop_place_id, name, name_el, address,
                     phone, latitude, longitude, coordinate_status, web_active,
                     publication_state, source_id, external_id, content_hash,
-                    first_seen_at, last_seen_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    first_seen_at, last_seen_at, public_attributes
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(operator_id, source_id, external_id) DO UPDATE SET
                     stop_place_id=excluded.stop_place_id,
                     name=excluded.name,
@@ -187,7 +202,8 @@ def import_normalized_snapshot(
                     web_active=excluded.web_active,
                     publication_state=excluded.publication_state,
                     content_hash=excluded.content_hash,
-                    last_seen_at=excluded.last_seen_at
+                    last_seen_at=excluded.last_seen_at,
+                    public_attributes=excluded.public_attributes
                 """,
                 (
                     entity_id,
@@ -207,6 +223,7 @@ def import_normalized_snapshot(
                     content_hash(item),
                     retrieved_at,
                     retrieved_at,
+                    _public_attributes(item),
                 ),
             )
             _record_source_row(
@@ -348,8 +365,8 @@ def import_normalized_snapshot(
                     departure_at, approximate_arrival_at, source_id,
                     external_id, commercial_state, schedule_scope,
                     publication_state, fare_amount, fare_currency, booking_url,
-                    observed_at, expires_at, content_hash
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    observed_at, expires_at, content_hash, public_attributes
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(operator_id, source_id, external_id, service_date)
                 DO UPDATE SET
                     line_id=excluded.line_id,
@@ -364,7 +381,8 @@ def import_normalized_snapshot(
                     booking_url=excluded.booking_url,
                     observed_at=excluded.observed_at,
                     expires_at=excluded.expires_at,
-                    content_hash=excluded.content_hash
+                    content_hash=excluded.content_hash,
+                    public_attributes=excluded.public_attributes
                 """,
                 (
                     entity_id,
@@ -385,6 +403,7 @@ def import_normalized_snapshot(
                     item.get("observedAt", retrieved_at),
                     item.get("expiresAt"),
                     content_hash(item),
+                    _public_attributes(item),
                 ),
             )
             conn.execute("DELETE FROM ktel_stop_times WHERE trip_id=?", (entity_id,))
@@ -512,6 +531,96 @@ def review_entity(
     except Exception:
         conn.execute("ROLLBACK")
         raise
+
+
+#: Every synthetic operator id must carry this prefix. It is what keeps the
+#: demonstration path from ever shadowing or inventing a real operator: a real
+#: federation member is seeded from the national registry and can never match.
+DEMO_OPERATOR_ID_PREFIX = "demo-"
+
+
+def _register_demo_operators(
+    conn: sqlite3.Connection,
+    payload: dict[str, Any],
+    dataset: str,
+    retrieved_at: str,
+) -> int:
+    """Register the invented operators a demonstration snapshot declares.
+
+    The national registry describes the real federation members and must not
+    gain an invented entry, so a labelled demo dataset carries its own operator
+    rows and registers them here, before the usual registry check runs.
+
+    The real-data path is untouched. A ``demoOperators`` block is refused unless
+    the snapshot is explicitly flagged ``dataset='demo'``, every id must be
+    prefixed ``demo-``, and no federation number is ever assigned. An unknown
+    real operator id therefore still fails the registry check exactly as before.
+    """
+    operators = payload.get("demoOperators") or []
+    if not operators:
+        return 0
+    if dataset != "demo":
+        raise ValueError(
+            "demoOperators is only accepted in a snapshot flagged "
+            "dataset='demo'; a real dataset must reference a registered operator"
+        )
+    if not isinstance(operators, list):
+        raise ValueError("demoOperators must be a list of operator objects")
+    for item in operators:
+        if not isinstance(item, dict):
+            raise ValueError("each demoOperators entry must be an object")
+        identifier = str(item["id"])
+        if not identifier.startswith(DEMO_OPERATOR_ID_PREFIX):
+            raise ValueError(
+                f"demo operator id {identifier!r} must start with "
+                f"{DEMO_OPERATOR_ID_PREFIX!r} so it can never collide with a "
+                "registered operator"
+            )
+        if item.get("federationNumber") is not None:
+            raise ValueError(
+                f"demo operator {identifier!r} must not claim a federation number"
+            )
+        conn.execute(
+            """
+            INSERT INTO ktel_operators(
+                id, federation_number, slug, name_en, name_el, operator_kind,
+                federation_status, directory_url, official_site_url,
+                registry_verified_at, public_attributes
+            ) VALUES (?, NULL, ?, ?, ?, ?, 'not_listed', ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET
+                slug=excluded.slug,
+                name_en=excluded.name_en,
+                name_el=excluded.name_el,
+                operator_kind=excluded.operator_kind,
+                federation_status=excluded.federation_status,
+                directory_url=excluded.directory_url,
+                official_site_url=excluded.official_site_url,
+                registry_verified_at=excluded.registry_verified_at,
+                public_attributes=excluded.public_attributes
+            """,
+            (
+                identifier,
+                str(item.get("slug") or identifier),
+                str(item["nameEn"]),
+                str(item["nameEl"]),
+                item.get("operatorKind", "other"),
+                item.get("directoryUrl"),
+                item.get("officialSiteUrl"),
+                item.get("registryVerifiedAt") or retrieved_at,
+                _public_attributes(item),
+            ),
+        )
+    return len(operators)
+
+
+def _public_attributes(item: dict[str, Any]) -> str | None:
+    """Serialise the optional public presentation object, or return NULL."""
+    attributes = item.get("publicAttributes")
+    if attributes is None:
+        return None
+    if not isinstance(attributes, dict):
+        raise ValueError("publicAttributes must be an object")
+    return json.dumps(attributes, ensure_ascii=False, sort_keys=True)
 
 
 def _record_source_row(

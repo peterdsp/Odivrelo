@@ -79,12 +79,12 @@ else:
             print(f"  GTFS ok, {len(past_midnight)} stop times past 24:00")
 
 # 5. The demonstration dataset must be unmistakable.
-registry = json.loads(
-    (root / manifest["files"]["registry"]["path"]).read_text(encoding="utf-8")
+meta = json.loads(
+    (root / manifest["files"]["meta"]["path"]).read_text(encoding="utf-8")
 )
-names = " ".join(json.dumps(registry, ensure_ascii=False).split())
+names = " ".join(json.dumps(meta, ensure_ascii=False).split())
 if "demonstration" not in names.lower() and "demo" not in names.lower():
-    failures.append("the registry pack does not label itself as demonstration data")
+    failures.append("the meta pack does not label itself as demonstration data")
 
 if failures:
     for line in failures:

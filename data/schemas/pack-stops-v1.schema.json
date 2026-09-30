@@ -1,0 +1,611 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-stops-v1.schema.json",
+  "title": "Offline pack: stops, version 1",
+  "description": "The `stops` pack. Each value is exactly what `GET /v1/stops/{stop_id}`\nreturns in its `stop` member, for the release's earliest materialised\nservice date.\n",
+  "allOf": [
+    {
+      "$ref": "#/$defs/Envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "serviceDate",
+        "stops"
+      ],
+      "properties": {
+        "serviceDate": {
+          "$ref": "#/$defs/ServiceDate"
+        },
+        "stops": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Stop"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Confidence": {
+      "type": "string",
+      "enum": [
+        "reviewed",
+        "candidate"
+      ]
+    },
+    "ContractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "DataMode": {
+      "type": "string",
+      "enum": [
+        "real",
+        "demo"
+      ],
+      "description": "When `demo`, every client must show a persistent, non-dismissible notice\nthat the services shown are invented and are not real departures, and\nmust send `noindex` on web.\n"
+    },
+    "Envelope": {
+      "type": "object",
+      "required": [
+        "contractVersion",
+        "releaseId",
+        "publishedAt",
+        "dataMode"
+      ],
+      "properties": {
+        "contractVersion": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "releaseId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataMode": {
+          "$ref": "#/$defs/DataMode"
+        }
+      }
+    },
+    "Fare": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "amount",
+        "currency",
+        "isIndicative"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3
+        },
+        "isIndicative": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Freshness": {
+      "type": "object",
+      "required": [
+        "checkedAt",
+        "ageHours",
+        "state"
+      ],
+      "properties": {
+        "checkedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ageHours": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "state": {
+          "$ref": "#/$defs/FreshnessState"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FreshnessState": {
+      "type": "string",
+      "enum": [
+        "fresh",
+        "aging",
+        "stale"
+      ]
+    },
+    "JourneyCore": {
+      "description": "The fields a journey carries in both its list and detail forms. It is\nfactored out rather than inherited with `additionalProperties: false`,\nbecause a closed base cannot be extended by `allOf`. The two concrete\nshapes below close themselves with `unevaluatedProperties`, which is\ncomposition aware.\n",
+      "type": "object",
+      "required": [
+        "id",
+        "operator",
+        "departure",
+        "arrival",
+        "durationMinutes",
+        "intermediateStopCount",
+        "serviceDate",
+        "crossesMidnight",
+        "positionQuality",
+        "fare",
+        "freshness",
+        "confidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "operator": {
+          "$ref": "#/$defs/OperatorRef"
+        },
+        "departure": {
+          "$ref": "#/$defs/JourneyEndpoint"
+        },
+        "arrival": {
+          "$ref": "#/$defs/JourneyEndpoint"
+        },
+        "durationMinutes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "intermediateStopCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "serviceDate": {
+          "$ref": "#/$defs/ServiceDate"
+        },
+        "crossesMidnight": {
+          "type": "boolean"
+        },
+        "positionQuality": {
+          "$ref": "#/$defs/PositionQuality"
+        },
+        "fare": {
+          "$ref": "#/$defs/Fare"
+        },
+        "freshness": {
+          "$ref": "#/$defs/Freshness"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        }
+      }
+    },
+    "JourneyEndpoint": {
+      "type": "object",
+      "required": [
+        "at",
+        "stopId",
+        "stopName",
+        "quality"
+      ],
+      "properties": {
+        "at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stopId": {
+          "type": "string"
+        },
+        "stopName": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "quality": {
+          "$ref": "#/$defs/TimeQuality"
+        }
+      },
+      "additionalProperties": false
+    },
+    "JourneySummary": {
+      "description": "A journey as it appears in a search result or a station page.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/JourneyCore"
+        },
+        {
+          "type": "object",
+          "required": [
+            "purchase"
+          ],
+          "properties": {
+            "purchase": {
+              "$ref": "#/$defs/PurchaseSummary"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "OperatorRef": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "logoAvailable"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "logoAvailable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PositionQuality": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "predicted",
+        "estimated",
+        "live"
+      ]
+    },
+    "Provenance": {
+      "type": "object",
+      "required": [
+        "sourceId",
+        "sourceName",
+        "sourceUrl",
+        "retrievedAt",
+        "rightsStatus",
+        "licence"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceName": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retrievedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rightsStatus": {
+          "$ref": "#/$defs/RightsStatus"
+        },
+        "licence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "PurchaseKind": {
+      "type": "string",
+      "enum": [
+        "online",
+        "ticket_office",
+        "phone",
+        "onboard",
+        "unavailable"
+      ]
+    },
+    "PurchaseSummary": {
+      "type": "object",
+      "required": [
+        "kind",
+        "url",
+        "label"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/PurchaseKind"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/LocalizedText"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "RightsStatus": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "permission_pending",
+        "prohibited",
+        "unknown"
+      ]
+    },
+    "ServiceDate": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "A service date interpreted in Europe/Athens."
+    },
+    "Stop": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "municipality",
+        "latitude",
+        "longitude",
+        "coordinateStatus",
+        "address",
+        "phone",
+        "bay",
+        "stepFree",
+        "instructions",
+        "terminal",
+        "boardingPoints",
+        "operatorIds",
+        "operators",
+        "coverage",
+        "serviceDate",
+        "departures",
+        "provenance",
+        "correctionUrl"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "const": "stop"
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "municipality": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "coordinateStatus": {
+          "type": "string"
+        },
+        "address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bay": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stepFree": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "instructions": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/LocalizedText"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "$ref": "#/$defs/LocalizedText"
+            }
+          },
+          "additionalProperties": false
+        },
+        "boardingPoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StopBoardingPoint"
+          }
+        },
+        "operatorIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperatorRef"
+          }
+        },
+        "coverage": {
+          "$ref": "#/$defs/CoverageState"
+        },
+        "serviceDate": {
+          "$ref": "#/$defs/ServiceDate"
+        },
+        "departures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JourneySummary"
+          }
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Provenance"
+          }
+        },
+        "correctionUrl": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "StopBoardingPoint": {
+      "type": "object",
+      "required": [
+        "stopId",
+        "name",
+        "bay",
+        "stepFree",
+        "reviewedAt",
+        "latitude",
+        "longitude"
+      ],
+      "properties": {
+        "stopId": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "bay": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stepFree": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "reviewedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "TimeQuality": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "approximate",
+        "unknown"
+      ]
+    }
+  }
+}

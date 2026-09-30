@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/coverage-v1.schema.json",
+  "title": "Coverage, version 1",
+  "description": "Coverage and freshness summary, including the explicit statement of what is not covered.",
+  "type": "object",
+  "required": [
+    "state",
+    "operatorCount",
+    "corridorCount",
+    "stopCount",
+    "journeyCount",
+    "serviceDates",
+    "note",
+    "notCovered",
+    "freshness",
+    "absenceSemantics",
+    "operators"
+  ],
+  "properties": {
+    "state": {
+      "$ref": "#/$defs/CoverageState"
+    },
+    "operatorCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "corridorCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "stopCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "journeyCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "serviceDates": {
+      "type": "object",
+      "required": [
+        "from",
+        "to"
+      ],
+      "properties": {
+        "from": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "note": {
+      "type": "string"
+    },
+    "notCovered": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "freshness": {
+      "$ref": "#/$defs/Freshness"
+    },
+    "absenceSemantics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "operators": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/CoverageOperator"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CoverageOperator": {
+      "type": "object",
+      "required": [
+        "operatorId",
+        "name",
+        "state",
+        "routeCount",
+        "stopCount",
+        "journeyCount"
+      ],
+      "properties": {
+        "operatorId": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "state": {
+          "$ref": "#/$defs/CoverageState"
+        },
+        "routeCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stopCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "journeyCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "Freshness": {
+      "type": "object",
+      "required": [
+        "checkedAt",
+        "ageHours",
+        "state"
+      ],
+      "properties": {
+        "checkedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ageHours": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "state": {
+          "$ref": "#/$defs/FreshnessState"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FreshnessState": {
+      "type": "string",
+      "enum": [
+        "fresh",
+        "aging",
+        "stale"
+      ]
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

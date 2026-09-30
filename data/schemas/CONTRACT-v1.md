@@ -187,10 +187,44 @@ Mirrors the generated release manifest:
 ```json
 { "contractVersion": "1.0.0", "product": "…", "releaseId": "…",
   "publishedAt": "…", "counts": {…},
-  "files": { "stops": { "path": "packs/stops-<digest16>.json",
-                        "sha256": "…", "bytes": 1234,
-                        "mediaType": "application/json" }, … } }
+  "files": { "places": { "path": "packs/places-<digest16>.json",
+                         "sha256": "…", "bytes": 1234,
+                         "mediaType": "application/json" }, … } }
 ```
+
+`files` is keyed by logical pack name. **There is exactly one generator of
+packs, and a pack carries this contract's shapes, not the shape of any internal
+staging table.** A pack holds precisely what the corresponding `/v1/…` endpoint
+would have returned for the same input, so an offline client and an online
+client decode the same payloads with the same code and cannot disagree.
+
+The permitted logical pack names are exactly:
+
+| Pack | Contents |
+| --- | --- |
+| `meta` | the `GET /v1/meta` body |
+| `coverage` | the `GET /v1/coverage` body |
+| `sources` | the `GET /v1/sources` body |
+| `places` | the `GET /v1/places` body, unfiltered and unpaged |
+| `operators` | every operator in the `GET /v1/operators/{id}` shape, keyed by id |
+| `stops` | every stop in the `GET /v1/stops/{id}` shape, keyed by id |
+| `journeys-<serviceDate>` | the `GET /v1/journeys` result list for that service date, plus the `GET /v1/journeys/{id}` detail for each result keyed by journey id |
+| `gtfs` | the reviewed GTFS feed for the release |
+
+A manifest carrying any other name is invalid, and a generator that produces one
+must fail rather than publish it.
+
+A release materialises one `journeys-<serviceDate>` pack per service date it
+declares: the service date of every date-specific journey, the template date of
+every calendar-backed journey, and every date an `added` calendar exception names.
+Further recurrences of a weekday calendar are resolved by `GET /v1/journeys` on
+request and are deliberately not materialised, because a year of packs per
+calendar is not a release. A client asking offline for a date with no pack has no
+cached answer for that date and must say so rather than report no service.
+
+Every pack body carries the same envelope as an API response, so a client can
+tell which release a cached pack came from and must not mix it with responses
+from another.
 
 ### `GET /v1/offline/packs/{filename}`
 
