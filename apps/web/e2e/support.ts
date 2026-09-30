@@ -93,8 +93,8 @@ export async function skipOnboarding(page: Page, language: 'el' | 'en' | 'sq' = 
   await page.addInitScript(
     ([lang]) => {
       try {
-        globalThis.localStorage.setItem('poravia.v1.onboarded', 'true');
-        globalThis.localStorage.setItem('poravia.v1.language', JSON.stringify(lang));
+        globalThis.localStorage.setItem('odivrelo.v1.onboarded', 'true');
+        globalThis.localStorage.setItem('odivrelo.v1.language', JSON.stringify(lang));
       } catch {
         // A browser refusing storage is a scenario of its own, tested separately.
       }
@@ -107,7 +107,7 @@ export async function setLanguage(page: Page, language: 'el' | 'en' | 'sq'): Pro
   await page.addInitScript(
     ([lang]) => {
       try {
-        globalThis.localStorage.setItem('poravia.v1.language', JSON.stringify(lang));
+        globalThis.localStorage.setItem('odivrelo.v1.language', JSON.stringify(lang));
       } catch {
         /* see above */
       }
@@ -121,7 +121,7 @@ export async function setTheme(page: Page, theme: 'light' | 'dark'): Promise<voi
   await page.addInitScript(
     ([value]) => {
       try {
-        globalThis.localStorage.setItem('poravia.v1.theme', JSON.stringify(value));
+        globalThis.localStorage.setItem('odivrelo.v1.theme', JSON.stringify(value));
       } catch {
         /* see above */
       }
@@ -175,7 +175,7 @@ export async function shoot(page: Page, testInfo: TestInfo, scenario: string): P
 /** Waits for the app shell to have replaced the no-JavaScript boot message. */
 export async function waitForApp(page: Page): Promise<void> {
   await expect(page.getByRole('main')).toBeVisible();
-  await expect(page.locator('#pv-boot')).toHaveCount(0);
+  await expect(page.locator('#od-boot')).toHaveCount(0);
 }
 
 /**
@@ -228,7 +228,7 @@ export async function linksAreFocusable(page: Page): Promise<boolean> {
   // nothing. What matters is whether pressing Tab reaches one.
   await page.evaluate(() => {
     const probe = document.createElement('a');
-    probe.id = 'pv-tab-probe';
+    probe.id = 'od-tab-probe';
     probe.href = '#probe';
     probe.textContent = 'probe';
     document.body.prepend(probe);
@@ -237,8 +237,8 @@ export async function linksAreFocusable(page: Page): Promise<boolean> {
   });
   await page.keyboard.press('Tab');
   const reached = await page.evaluate(() => {
-    const landed = document.activeElement?.id === 'pv-tab-probe';
-    document.querySelector('#pv-tab-probe')?.remove();
+    const landed = document.activeElement?.id === 'od-tab-probe';
+    document.querySelector('#od-tab-probe')?.remove();
     return landed;
   });
   return reached;

@@ -163,7 +163,7 @@ describeRelease('the demonstration notice', () => {
     );
     await waitFor(() => {
       expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
-        'https://poravia.peterdsp.dev/operators',
+        'https://odivrelo.peterdsp.dev/operators',
       );
       expect(document.head.querySelector('meta[property="og:title"]')).not.toBeNull();
     });

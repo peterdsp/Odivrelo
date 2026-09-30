@@ -1,7 +1,7 @@
 """Service-date and timezone arithmetic, delegated to the staging layer.
 
 The GTFS service-day definition (noon minus twelve hours, ``Europe/Athens``) is
-already implemented once in ``poravia_ktel.ktel_gtfs`` and is what makes
+already implemented once in ``odivrelo_ktel.ktel_gtfs`` and is what makes
 daylight-saving days and past-midnight departures come out right. This module
 reuses it rather than restating it, and adds only what the public contract needs
 on top: projecting a template journey onto another service date, and deciding
@@ -12,7 +12,7 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta, timezone
 
 from . import _staging  # noqa: F401  (installs the staging import path)
-from poravia_ktel.ktel_gtfs import (  # noqa: E402
+from odivrelo_ktel.ktel_gtfs import (  # noqa: E402
     ATHENS,
     GtfsExportError,
     parse_instant,

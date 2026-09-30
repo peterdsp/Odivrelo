@@ -101,6 +101,8 @@ describe('the message catalogues', () => {
      */
     const forbidden = [
       ['hodo', 'map'].join(''),
+      ['pora', 'via'].join(''),
+      ['drom', 'iqo'].join(''),
       ['per', 'astra'].join(''),
       ['<new', 'name>'].join(''),
     ];
@@ -113,7 +115,7 @@ describe('the message catalogues', () => {
     }
   });
 
-  it('never claims Poravia is a Greek word or translates it', () => {
+  it('never claims Odivrelo is a Greek word or translates it', () => {
     // The name is invented. The About copy has to say so in all three languages.
     expect((el as unknown as Record<string, string>)['settings.aboutBody']).toContain('εφευρημένο');
     expect((en as unknown as Record<string, string>)['settings.aboutBody']).toContain('invented');

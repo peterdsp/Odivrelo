@@ -47,21 +47,21 @@ export function Licences() {
   useHead({ title: t('meta.licences.title'), description: t('licences.intro'), path: '/licences', language, dataMode });
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('licences.title')}</h1>
-      <p className="pv-page__lede">{t('licences.intro')}</p>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('licences.title')}</h1>
+      <p className="od-page__lede">{t('licences.intro')}</p>
 
       <Section title={t('licences.software')} level={2}>
-        <ul className="pv-list pv-list--plain">
+        <ul className="od-list od-list--plain">
           {[...RUNTIME, ...BUILD].map((notice) => (
             <li key={notice.name}>
               <ExternalLink href={notice.url} accessibleLabel={notice.name}>
                 {notice.name}
               </ExternalLink>
               {' · '}
-              <span className="pv-mono">{notice.licence}</span>
+              <span className="od-mono">{notice.licence}</span>
               {' · '}
-              <span className="pv-muted">{notice.role}</span>
+              <span className="od-muted">{notice.role}</span>
             </li>
           ))}
         </ul>
@@ -69,7 +69,7 @@ export function Licences() {
 
       <Section title={t('licences.data')} level={2}>
         {sources.state.status === 'ready' ? (
-          <ul className="pv-list pv-list--plain">
+          <ul className="od-list od-list--plain">
             {sources.state.value.sources.map((entry, index) => {
               const view = provenanceView(entry, index);
               return (
@@ -82,13 +82,13 @@ export function Licences() {
                     view.name
                   )}
                   {' · '}
-                  <span className="pv-mono">{view.licence}</span>
+                  <span className="od-mono">{view.licence}</span>
                 </li>
               );
             })}
           </ul>
         ) : (
-          <p className="pv-muted">{t('app.loading')}</p>
+          <p className="od-muted">{t('app.loading')}</p>
         )}
       </Section>
 
@@ -99,7 +99,7 @@ export function Licences() {
       <Card tone="muted">
         <FactList>
           <Fact label={t('settings.support')}>
-            <a className="pv-link" href={`mailto:${BRAND.supportEmail}`}>
+            <a className="od-link" href={`mailto:${BRAND.supportEmail}`}>
               {BRAND.supportEmail}
             </a>
           </Fact>

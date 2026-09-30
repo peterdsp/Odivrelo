@@ -33,7 +33,7 @@ const NAV: readonly NavEntry[] = [
 
 function NavIcon({ path }: { path: string }) {
   return (
-    <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true" focusable="false" className="pv-nav__icon">
+    <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true" focusable="false" className="od-nav__icon">
       <path d={path} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -77,24 +77,24 @@ export function Layout() {
   return (
     <LayoutContext.Provider value={layout}>
       {/* Reads the four safe-area insets so the hook can report real numbers. */}
-      <div id="pv-safe-area-probe" aria-hidden="true" />
+      <div id="od-safe-area-probe" aria-hidden="true" />
 
-      <div className="pv-shell" ref={layout.containerRef} data-mode={layout.mode} data-two-pane={layout.twoPane ? '' : undefined}>
-        <a className="pv-skip-link" href="#main">
+      <div className="od-shell" ref={layout.containerRef} data-mode={layout.mode} data-two-pane={layout.twoPane ? '' : undefined}>
+        <a className="od-skip-link" href="#main">
           {t('app.skipToContent')}
         </a>
 
-        <header className="pv-header" role="banner">
-          <div className="pv-header__inner">
-            <NavLink to="/search" className="pv-header__brand" aria-label={BRAND.name}>
+        <header className="od-header" role="banner">
+          <div className="od-header__inner">
+            <NavLink to="/search" className="od-header__brand" aria-label={BRAND.name}>
               <Wordmark height={30} />
             </NavLink>
             {layout.mode !== 'compact' ? (
-              <nav className="pv-nav pv-nav--inline" aria-label={t('app.primaryNav')}>
-                <ul className="pv-nav__list">
+              <nav className="od-nav od-nav--inline" aria-label={t('app.primaryNav')}>
+                <ul className="od-nav__list">
                   {NAV.map((entry) => (
                     <li key={entry.to}>
-                      <NavLink to={entry.to} className="pv-nav__link">
+                      <NavLink to={entry.to} className="od-nav__link">
                         <NavIcon path={entry.icon} />
                         <span>{t(entry.labelKey)}</span>
                       </NavLink>
@@ -104,7 +104,7 @@ export function Layout() {
               </nav>
             ) : null}
             {!online ? (
-              <p className="pv-header__offline" role="status">
+              <p className="od-header__offline" role="status">
                 {t('state.offlineTitle')}
               </p>
             ) : null}
@@ -113,7 +113,7 @@ export function Layout() {
 
         <DemoBanner />
 
-        <main className="pv-main" id="main" ref={mainRef} tabIndex={-1}>
+        <main className="od-main" id="main" ref={mainRef} tabIndex={-1}>
           {/*
             Scoped to the route, so a failure in one page keeps the header, the
             demonstration notice, the navigation and the footer. The boundary in
@@ -129,11 +129,11 @@ export function Layout() {
 
         {layout.mode === 'compact' ? (
           <>
-            <nav className="pv-nav pv-nav--bar" aria-label={t('app.primaryNav')}>
-              <ul className="pv-nav__list">
+            <nav className="od-nav od-nav--bar" aria-label={t('app.primaryNav')}>
+              <ul className="od-nav__list">
                 {primary.map((entry) => (
                   <li key={entry.to}>
-                    <NavLink to={entry.to} className="pv-nav__link">
+                    <NavLink to={entry.to} className="od-nav__link">
                       <NavIcon path={entry.icon} />
                       <span>{t(entry.labelKey)}</span>
                     </NavLink>
@@ -141,11 +141,11 @@ export function Layout() {
                 ))}
               </ul>
             </nav>
-            <nav className="pv-nav pv-nav--utility" aria-label={t('app.utilityNav')}>
-              <ul className="pv-nav__list">
+            <nav className="od-nav od-nav--utility" aria-label={t('app.utilityNav')}>
+              <ul className="od-nav__list">
                 {secondary.map((entry) => (
                   <li key={entry.to}>
-                    <NavLink to={entry.to} className="pv-nav__link pv-nav__link--text">
+                    <NavLink to={entry.to} className="od-nav__link od-nav__link--text">
                       {t(entry.labelKey)}
                     </NavLink>
                   </li>
@@ -155,28 +155,28 @@ export function Layout() {
           </>
         ) : null}
 
-        <footer className="pv-footer" role="contentinfo" aria-label={t('app.footer')}>
-          <div className="pv-footer__inner">
-            <p className="pv-footer__statement">{t('app.neverSellsTickets')}</p>
-            <p className="pv-footer__statement">{t('app.independence')}</p>
-            <ul className="pv-footer__links">
+        <footer className="od-footer" role="contentinfo" aria-label={t('app.footer')}>
+          <div className="od-footer__inner">
+            <p className="od-footer__statement">{t('app.neverSellsTickets')}</p>
+            <p className="od-footer__statement">{t('app.independence')}</p>
+            <ul className="od-footer__links">
               <li>
-                <NavLink to="/coverage" className="pv-link">
+                <NavLink to="/coverage" className="od-link">
                   {t('nav.coverage')}
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/licences" className="pv-link">
+                <NavLink to="/licences" className="od-link">
                   {t('nav.licences')}
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/settings" className="pv-link">
+                <NavLink to="/settings" className="od-link">
                   {t('nav.settings')}
                 </NavLink>
               </li>
               <li>
-                <a className="pv-link" href={`mailto:${BRAND.supportEmail}`}>
+                <a className="od-link" href={`mailto:${BRAND.supportEmail}`}>
                   {BRAND.supportEmail}
                 </a>
               </li>

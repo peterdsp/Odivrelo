@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/place-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/place-v1.schema.json",
   "title": "Place, version 1",
   "description": "A stop place (terminal) or one of its boarding points.",
   "type": "object",

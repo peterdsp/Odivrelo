@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Final step of the brand migration: rename the staging Python package from
-# poravia_ktel to poravia_ktel.
+# Final step of a brand migration: rename the staging Python package. The last
+# run moved the former name's package, poravia_ktel, to odivrelo_ktel.
 #
 # This is deliberately LAST. The package is imported by the API service, the
 # seed script, the release generator and the test suites, so renaming it while
@@ -9,14 +9,15 @@
 #   bash scripts/finalize-package-rename.sh            # do it
 #   bash scripts/finalize-package-rename.sh --check     # report only
 #
-# The legacy HODOMAP_KTEL_* and SYRMOS_KTEL_* environment names are NOT touched.
+# The legacy PORAVIA_KTEL_*, HODOMAP_KTEL_* and SYRMOS_KTEL_* environment names
+# are NOT touched: the package name is lowercase and the variables are not.
 # They are the documented compatibility fallback for an existing deployment and
 # are listed in the allowlist in docs/beta/BRAND-DECISION.md.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-OLD=poravia_ktel
-NEW=poravia_ktel
+OLD=poravia_ktel  # legacy package name
+NEW=odivrelo_ktel
 PKG_DIR="server/ktel-staging/$OLD"
 
 if [ "${1:-}" = "--check" ]; then
@@ -44,11 +45,7 @@ git ls-files -z | while IFS= read -r -d '' f; do
   esac
   [ -f "$f" ] || continue
   if grep -qI "$OLD" "$f" 2>/dev/null; then
-    # Protect the env-var fallbacks, which keep their historical spelling.
-    sed -i '' \
-      -e 's/HODOMAP_KTEL_/HODOMAP_KTEL_/g' \
-      -e "s/$OLD/$NEW/g" \
-      -e 's/HODOMAP_KTEL_/HODOMAP_KTEL_/g' "$f"
+    sed -i '' -e "s/$OLD/$NEW/g" "$f"
     echo "  $f"
   fi
 done

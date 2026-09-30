@@ -110,11 +110,11 @@ test.describe('prerendered entry points', () => {
     // Different pages, genuinely different metadata.
     expect(titleOf(search)).not.toBe(titleOf(operator));
     expect(descriptionOf(search)).not.toBe(descriptionOf(operator));
-    expect(canonicalOf(search)).toBe('https://poravia.peterdsp.dev/search');
-    expect(canonicalOf(operator)).toBe(`https://poravia.peterdsp.dev/operators/${facts.operatorIds[0]}`);
+    expect(canonicalOf(search)).toBe('https://odivrelo.peterdsp.dev/search');
+    expect(canonicalOf(operator)).toBe(`https://odivrelo.peterdsp.dev/operators/${facts.operatorIds[0]}`);
 
     // Open Graph follows the page, not the shell.
-    expect(/<meta property="og:title" content="([^"]*)"/.exec(operator)?.[1]).toContain('Poravia');
+    expect(/<meta property="og:title" content="([^"]*)"/.exec(operator)?.[1]).toContain('Odivrelo');
     expect(/<meta property="og:url" content="([^"]*)"/.exec(operator)?.[1]).toContain(facts.operatorIds[0]!);
 
     // And the entity page carries structured data for that entity.

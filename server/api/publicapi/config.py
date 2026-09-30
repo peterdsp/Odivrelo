@@ -1,8 +1,9 @@
 """Environment validation. The service fails fast and says exactly what is wrong.
 
 Variable names are derived from ``brand.json.envPrefix``. The documented legacy
-``HODOMAP_*`` spelling is accepted as a fallback for every variable so the Pi
-deployment can migrate without a flag day.
+``PORAVIA_*`` and ``HODOMAP_*`` spellings, from the product's former names, are
+accepted as a fallback for every variable so the Pi deployment can migrate
+without a flag day.
 """
 from __future__ import annotations
 
@@ -13,7 +14,10 @@ from typing import Mapping
 
 from .brand import BRAND
 
-LEGACY_PREFIX = "HODOMAP"
+#: The most recent former prefix, reported in error messages.
+LEGACY_PREFIX = "PORAVIA"
+#: Every former prefix still honoured, newest first.
+LEGACY_PREFIXES = (LEGACY_PREFIX, "HODOMAP")
 
 #: Hard upper bound for every list endpoint, per the v1 contract.
 MAX_PAGE_LIMIT = 200
@@ -32,8 +36,9 @@ def env_names(suffix: str) -> tuple[str, str]:
 
 
 def _lookup(environ: Mapping[str, str], suffix: str) -> str | None:
-    branded, legacy = env_names(suffix)
-    for name in (branded, legacy):
+    branded, _ = env_names(suffix)
+    names = (branded, *(f"{prefix}_{suffix}" for prefix in LEGACY_PREFIXES))
+    for name in names:
         value = environ.get(name)
         if value is not None and value.strip() != "":
             return value.strip()

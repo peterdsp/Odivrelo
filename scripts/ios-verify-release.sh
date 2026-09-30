@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifies a Release build of Poravia against the claims the product makes.
+# Verifies a Release build of Odivrelo against the claims the product makes.
 #
 # Every check below is a fact about the built artefact, not about the source:
 #
@@ -12,11 +12,11 @@
 #   * the three localisations really shipped;
 #   * the app icon carries all three appearances with no alpha.
 #
-# Usage: bash scripts/ios-verify-release.sh [path/to/Poravia.app]
+# Usage: bash scripts/ios-verify-release.sh [path/to/Odivrelo.app]
 set -uo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP="${1:-/tmp/poravia-release/Build/Products/Release-iphonesimulator/Poravia.app}"
+APP="${1:-/tmp/odivrelo-release/Build/Products/Release-iphonesimulator/Odivrelo.app}"
 
 FAILURES=0
 pass() { printf '  PASS  %s\n' "$1"; }
@@ -29,7 +29,7 @@ if [[ ! -d "${APP}" ]]; then
   exit 1
 fi
 
-BINARY="${APP}/Poravia"
+BINARY="${APP}/Odivrelo"
 PLIST="${APP}/Info.plist"
 
 section "Artefact"
@@ -42,36 +42,36 @@ section "Shared Kotlin core is linked"
 # the symbol table where there is one, and falls back to the dSYM plus the
 # class table for a stripped archive. Both prove the core is really linked.
 SYMBOLS="$(nm -a "${BINARY}" 2>/dev/null || true)"
-CORE_SYMBOLS="$(grep -c 'kfun:dev.peterdsp.poravia.core' <<<"${SYMBOLS}" || true)"
+CORE_SYMBOLS="$(grep -c 'kfun:dev.peterdsp.odivrelo.core' <<<"${SYMBOLS}" || true)"
 SYMBOL_SOURCE="the binary"
 
 if [[ "${CORE_SYMBOLS}" -lt 100 ]]; then
   ARCHIVE_ROOT="$(cd "$(dirname "${APP}")/../.." 2>/dev/null && pwd || true)"
-  DSYM="$(find "${ARCHIVE_ROOT}" -maxdepth 2 -name 'Poravia.app.dSYM' -print -quit 2>/dev/null || true)"
-  if [[ -n "${DSYM}" && -f "${DSYM}/Contents/Resources/DWARF/Poravia" ]]; then
-    SYMBOLS="$(nm -a "${DSYM}/Contents/Resources/DWARF/Poravia" 2>/dev/null || true)"
-    CORE_SYMBOLS="$(grep -c 'kfun:dev.peterdsp.poravia.core' <<<"${SYMBOLS}" || true)"
+  DSYM="$(find "${ARCHIVE_ROOT}" -maxdepth 2 -name 'Odivrelo.app.dSYM' -print -quit 2>/dev/null || true)"
+  if [[ -n "${DSYM}" && -f "${DSYM}/Contents/Resources/DWARF/Odivrelo" ]]; then
+    SYMBOLS="$(nm -a "${DSYM}/Contents/Resources/DWARF/Odivrelo" 2>/dev/null || true)"
+    CORE_SYMBOLS="$(grep -c 'kfun:dev.peterdsp.odivrelo.core' <<<"${SYMBOLS}" || true)"
     SYMBOL_SOURCE="the dSYM (the archived binary is stripped)"
   fi
 fi
 
 if [[ "${CORE_SYMBOLS}" -gt 100 ]]; then
-  pass "PoraviaCore symbols present in ${SYMBOL_SOURCE} (${CORE_SYMBOLS} kfun symbols)"
+  pass "OdivreloCore symbols present in ${SYMBOL_SOURCE} (${CORE_SYMBOLS} kfun symbols)"
 else
-  fail "PoraviaCore symbols missing (found ${CORE_SYMBOLS})"
+  fail "OdivreloCore symbols missing (found ${CORE_SYMBOLS})"
 fi
 
-FACTORY="$(grep -c 'createPoraviaCore' <<<"${SYMBOLS}" || true)"
+FACTORY="$(grep -c 'createOdivreloCore' <<<"${SYMBOLS}" || true)"
 [[ "${FACTORY}" -gt 0 ]] \
-  && pass "createPoraviaCore is linked in (${FACTORY} references)" \
-  || fail "createPoraviaCore is absent"
+  && pass "createOdivreloCore is linked in (${FACTORY} references)" \
+  || fail "createOdivreloCore is absent"
 
 # The Objective-C class table survives stripping, so this holds for an archive
 # as well as for a plain build.
-CORE_CLASSES="$(otool -oV "${BINARY}" 2>/dev/null | grep -c 'PoraviaCorePoravia' || true)"
+CORE_CLASSES="$(otool -oV "${BINARY}" 2>/dev/null | grep -c 'OdivreloCoreOdivrelo' || true)"
 [[ "${CORE_CLASSES}" -gt 50 ]] \
-  && pass "${CORE_CLASSES} PoraviaCore Objective-C classes in the binary" \
-  || fail "the binary carries only ${CORE_CLASSES} PoraviaCore classes"
+  && pass "${CORE_CLASSES} OdivreloCore Objective-C classes in the binary" \
+  || fail "the binary carries only ${CORE_CLASSES} OdivreloCore classes"
 
 section "The Debug fixture contributes no code"
 # Only defined symbols count. `nm -a` also lists debug-map entries (type "-")
@@ -116,14 +116,14 @@ fi
 
 section "Bundle identity"
 BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "${PLIST}" 2>/dev/null || echo '')"
-[[ "${BUNDLE_ID}" == "dev.peterdsp.poravia" ]] \
+[[ "${BUNDLE_ID}" == "dev.peterdsp.odivrelo" ]] \
   && pass "bundle identifier ${BUNDLE_ID}" \
-  || fail "bundle identifier is '${BUNDLE_ID}', expected dev.peterdsp.poravia"
+  || fail "bundle identifier is '${BUNDLE_ID}', expected dev.peterdsp.odivrelo"
 
 DISPLAY_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "${PLIST}" 2>/dev/null || echo '')"
-[[ "${DISPLAY_NAME}" == "Poravia" ]] \
+[[ "${DISPLAY_NAME}" == "Odivrelo" ]] \
   && pass "display name ${DISPLAY_NAME}" \
-  || fail "display name is '${DISPLAY_NAME}', expected Poravia"
+  || fail "display name is '${DISPLAY_NAME}', expected Odivrelo"
 
 VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "${PLIST}" 2>/dev/null || echo '')"
 BUILD="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "${PLIST}" 2>/dev/null || echo '')"
@@ -131,15 +131,15 @@ BUILD="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "${PLIST}" 2>/dev/n
   && pass "marketing version ${VERSION}, build ${BUILD}" \
   || fail "marketing version is '${VERSION}', expected 1.0.0"
 
-COMMIT="$(/usr/libexec/PlistBuddy -c 'Print :PoraviaSourceCommit' "${PLIST}" 2>/dev/null || echo '')"
+COMMIT="$(/usr/libexec/PlistBuddy -c 'Print :OdivreloSourceCommit' "${PLIST}" 2>/dev/null || echo '')"
 [[ -n "${COMMIT}" && "${COMMIT}" != "unknown" ]] \
   && pass "source commit ${COMMIT}" \
   || fail "no source commit was recorded"
 
 SCHEME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleURLTypes:0:CFBundleURLSchemes:0' "${PLIST}" 2>/dev/null || echo '')"
-[[ "${SCHEME}" == "poravia" ]] \
+[[ "${SCHEME}" == "odivrelo" ]] \
   && pass "URL scheme ${SCHEME}" \
-  || fail "URL scheme is '${SCHEME}', expected poravia"
+  || fail "URL scheme is '${SCHEME}', expected odivrelo"
 
 DEPLOYMENT="$(/usr/libexec/PlistBuddy -c 'Print :MinimumOSVersion' "${PLIST}" 2>/dev/null || echo '')"
 [[ "${DEPLOYMENT}" == "17.0" ]] \
@@ -183,14 +183,14 @@ section "Entitlements"
 ENTITLEMENTS="$(codesign -d --entitlements - --xml "${APP}" 2>/dev/null | plutil -convert xml1 -o - - 2>/dev/null || true)"
 if [[ -z "${ENTITLEMENTS}" ]]; then
   info "the simulator build carries no signed entitlements; checking the source file"
-  ENTITLEMENTS="$(cat "${REPO_ROOT}/apps/ios/Poravia/Resources/Poravia.entitlements")"
+  ENTITLEMENTS="$(cat "${REPO_ROOT}/apps/ios/Odivrelo/Resources/Odivrelo.entitlements")"
 fi
-if grep -q 'applinks:poravia.peterdsp.dev' <<<"${ENTITLEMENTS}"; then
-  pass "associated domain is applinks:poravia.peterdsp.dev"
+if grep -q 'applinks:odivrelo.peterdsp.dev' <<<"${ENTITLEMENTS}"; then
+  pass "associated domain is applinks:odivrelo.peterdsp.dev"
 else
-  fail "the associated-domain entitlement does not name poravia.peterdsp.dev"
+  fail "the associated-domain entitlement does not name odivrelo.peterdsp.dev"
 fi
-OTHER_DOMAINS="$(grep -oE 'applinks:[a-z0-9.-]+' <<<"${ENTITLEMENTS}" | grep -cv 'poravia.peterdsp.dev' || true)"
+OTHER_DOMAINS="$(grep -oE 'applinks:[a-z0-9.-]+' <<<"${ENTITLEMENTS}" | grep -cv 'odivrelo.peterdsp.dev' || true)"
 [[ "${OTHER_DOMAINS}" -eq 0 ]] \
   && pass "no domain other than the controlled one is claimed" \
   || fail "${OTHER_DOMAINS} uncontrolled domains are claimed"
@@ -261,7 +261,7 @@ if [[ -f "${APP}/Assets.car" ]]; then
   done
   # An app icon must be fully opaque.
   for variant in AppIcon-1024 AppIcon-1024-Dark AppIcon-1024-Tinted; do
-    SRC="${REPO_ROOT}/apps/ios/Poravia/Resources/Assets.xcassets/AppIcon.appiconset/${variant}.png"
+    SRC="${REPO_ROOT}/apps/ios/Odivrelo/Resources/Assets.xcassets/AppIcon.appiconset/${variant}.png"
     if [[ -f "${SRC}" ]]; then
       ALPHA="$(sips -g hasAlpha "${SRC}" 2>/dev/null | awk '/hasAlpha/{print $2}')"
       SIZE="$(sips -g pixelWidth "${SRC}" 2>/dev/null | awk '/pixelWidth/{print $2}')"

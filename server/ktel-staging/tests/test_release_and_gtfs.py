@@ -11,9 +11,9 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from poravia_ktel import branding, ktel_api, ktel_db, ktel_gtfs, ktel_release
-from poravia_ktel.ktel_ingest import import_normalized_snapshot, review_entity
-from poravia_ktel.ktel_registry import seed_registry
+from odivrelo_ktel import branding, ktel_api, ktel_db, ktel_gtfs, ktel_release
+from odivrelo_ktel.ktel_ingest import import_normalized_snapshot, review_entity
+from odivrelo_ktel.ktel_registry import seed_registry
 
 
 def _snapshot(*, operator_id="ktel-kavala", source_id="manual-review", trips):

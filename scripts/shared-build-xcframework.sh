@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Builds the static PoraviaCore XCFramework consumed by the iOS application.
+# Builds the static OdivreloCore XCFramework consumed by the iOS application.
 #
 #   bash scripts/shared-build-xcframework.sh            # Debug and Release
 #   bash scripts/shared-build-xcframework.sh --release  # Release only
 #
 # Output:
-#   shared/core/build/XCFramework/debug/PoraviaCore.xcframework
-#   shared/core/build/XCFramework/release/PoraviaCore.xcframework
+#   shared/core/build/XCFramework/debug/OdivreloCore.xcframework
+#   shared/core/build/XCFramework/release/OdivreloCore.xcframework
 #
 # Slices: ios-arm64 (device) and ios-arm64_x86_64-simulator.
 # There is no system Java on this machine, so JAVA_HOME is set explicitly.
@@ -23,9 +23,9 @@ fi
 export JAVA_HOME
 export PATH="${JAVA_HOME}/bin:${PATH}"
 
-task=":shared:core:assemblePoraviaCoreXCFramework"
+task=":shared:core:assembleOdivreloCoreXCFramework"
 if [[ "${1:-}" == "--release" ]]; then
-  task=":shared:core:assemblePoraviaCoreReleaseXCFramework"
+  task=":shared:core:assembleOdivreloCoreReleaseXCFramework"
 fi
 
 echo "JAVA_HOME=${JAVA_HOME}"
@@ -42,7 +42,7 @@ echo
 echo "XCFramework output:"
 find "${out_dir}" -maxdepth 2 -name '*.xcframework' -print
 echo
-for framework in "${out_dir}"/*/PoraviaCore.xcframework; do
+for framework in "${out_dir}"/*/OdivreloCore.xcframework; do
   [[ -d "${framework}" ]] || continue
   echo "== ${framework}"
   /usr/libexec/PlistBuddy -c 'Print :AvailableLibraries' "${framework}/Info.plist" 2>/dev/null \

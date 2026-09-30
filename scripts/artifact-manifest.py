@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the machine-readable artifact manifest for a Poravia release.
+"""Build the machine-readable artifact manifest for a Odivrelo release.
 
 Every row is derived from a file that exists on disk right now. A platform with
 no artifact is reported as absent rather than assumed, and signing and

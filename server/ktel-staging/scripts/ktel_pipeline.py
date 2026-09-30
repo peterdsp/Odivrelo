@@ -11,11 +11,11 @@ from typing import Any
 
 from openpyxl import load_workbook
 
-from poravia_ktel import ktel_db
-from poravia_ktel.ktel_ingest import import_normalized_snapshot, review_entity
-from poravia_ktel.ktel_publish import compile_public_database
-from poravia_ktel.ktel_registry import content_hash, seed_registry, stable_entity_id
-from poravia_ktel.ktel_ticketweb import bounded_execution_plan
+from odivrelo_ktel import ktel_db
+from odivrelo_ktel.ktel_ingest import import_normalized_snapshot, review_entity
+from odivrelo_ktel.ktel_publish import compile_public_database
+from odivrelo_ktel.ktel_registry import content_hash, seed_registry, stable_entity_id
+from odivrelo_ktel.ktel_ticketweb import bounded_execution_plan
 
 
 def _now_iso() -> str:
@@ -239,7 +239,7 @@ def _json_value(value: Any) -> Any:
 
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(description=__doc__)
-    root.add_argument("--db", help="override HODOMAP_KTEL_DB_PATH")
+    root.add_argument("--db", help="override ODIVRELO_KTEL_DB_PATH")
     commands = root.add_subparsers(dest="command", required=True)
 
     seed = commands.add_parser("seed", help="seed the 62-operator registry")

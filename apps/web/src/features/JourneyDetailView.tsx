@@ -93,7 +93,7 @@ export function JourneyDetailView({
 
   if (!valid) {
     return (
-      <div className={embedded ? 'pv-detail pv-detail--embedded' : 'pv-page pv-page--narrow'}>
+      <div className={embedded ? 'od-detail od-detail--embedded' : 'od-page od-page--narrow'}>
         <StateBlock
           kind="invalid"
           title={t('journey.invalidTitle')}
@@ -111,8 +111,8 @@ export function JourneyDetailView({
   if (!journey) {
     if (loaded.state.status === 'loading') {
       return embedded ? <Loading /> : (
-        <div className="pv-page pv-page--narrow">
-          <Heading className="pv-page__title">{t('app.loadingData')}</Heading>
+        <div className="od-page od-page--narrow">
+          <Heading className="od-page__title">{t('app.loadingData')}</Heading>
           <Loading />
         </div>
       );
@@ -131,10 +131,10 @@ export function JourneyDetailView({
       // a screen-reader user landing on a broken deep link has nothing to orient
       // by.
       return embedded ? (
-        <div className="pv-detail pv-detail--embedded">{error}</div>
+        <div className="od-detail od-detail--embedded">{error}</div>
       ) : (
-        <div className="pv-page pv-page--narrow">
-          <Heading className="pv-page__title">{t('journey.notFoundTitle')}</Heading>
+        <div className="od-page od-page--narrow">
+          <Heading className="od-page__title">{t('journey.notFoundTitle')}</Heading>
           {error}
         </div>
       );
@@ -165,19 +165,19 @@ export function JourneyDetailView({
   };
 
   return (
-    <article className={embedded ? 'pv-detail pv-detail--embedded' : 'pv-page pv-page--narrow pv-detail'}>
-      <Heading className="pv-page__title">
+    <article className={embedded ? 'od-detail od-detail--embedded' : 'od-page od-page--narrow od-detail'}>
+      <Heading className="od-page__title">
         {t('journey.title', { origin: name(journey.departure.stopName), destination: name(journey.arrival.stopName) })}
       </Heading>
 
-      <p className="pv-detail__times">
+      <p className="od-detail__times">
         <time dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>
         <span aria-hidden="true"> {'→'} </span>
         <time dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>
-        <span className="pv-detail__duration"> {formatDuration(journey.durationMinutes)}</span>
+        <span className="od-detail__duration"> {formatDuration(journey.durationMinutes)}</span>
       </p>
 
-      <p className="pv-detail__badges">
+      <p className="od-detail__badges">
         {journey.crossesMidnight ? <OvernightBadge /> : null}
         <FreshnessBadge freshness={journey.freshness} />
         <ConfidenceBadge confidence={journey.confidence} />
@@ -198,15 +198,15 @@ export function JourneyDetailView({
         />
       ) : null}
 
-      <FactList className="pv-detail__facts">
+      <FactList className="od-detail__facts">
         <Fact label={t('journey.operatingDate')}>
           <time dateTime={journey.serviceDate}>{formatServiceDate(journey.serviceDate)}</time>
           {journey.crossesMidnight ? (
-            <span className="pv-detail__note"> {t('results.overnightExplain', { date: journey.serviceDate })}</span>
+            <span className="od-detail__note"> {t('results.overnightExplain', { date: journey.serviceDate })}</span>
           ) : null}
         </Fact>
         <Fact label={t('journey.operator')}>
-          <Link to={`/operators/${encodeURIComponent(journey.operator.id)}`} className="pv-link">
+          <Link to={`/operators/${encodeURIComponent(journey.operator.id)}`} className="od-link">
             {name(journey.operator.name)}
           </Link>
         </Fact>
@@ -223,18 +223,18 @@ export function JourneyDetailView({
           {journey.fare ? (
             <>
               {formatMoney(journey.fare.amount, journey.fare.currency)}
-              {journey.fare.isIndicative ? <span className="pv-detail__note"> {t('results.fareIndicative')}</span> : null}
+              {journey.fare.isIndicative ? <span className="od-detail__note"> {t('results.fareIndicative')}</span> : null}
             </>
           ) : (
             <>
               {t('results.fareUnknown')}
-              <span className="pv-detail__note"> {t('results.fareUnknownHelp')}</span>
+              <span className="od-detail__note"> {t('results.fareUnknownHelp')}</span>
             </>
           )}
         </Fact>
       </FactList>
 
-      <div className="pv-detail__actions">
+      <div className="od-detail__actions">
         <ButtonLink tone="primary" to={bookingHref}>
           {t('booking.title')}
         </ButtonLink>
@@ -248,36 +248,36 @@ export function JourneyDetailView({
           </Button>
         )}
       </div>
-      <p className="pv-detail__note">{t('journey.saveTripHelp')}</p>
-      {saveError ? <p className="pv-field__error">{saveError}</p> : null}
-      <p className="pv-detail__note pv-detail__note--strong">{t('app.neverSellsTickets')}</p>
+      <p className="od-detail__note">{t('journey.saveTripHelp')}</p>
+      {saveError ? <p className="od-field__error">{saveError}</p> : null}
+      <p className="od-detail__note od-detail__note--strong">{t('app.neverSellsTickets')}</p>
 
       {/* -- Boarding point ------------------------------------------------- */}
       <Section title={t('journey.boarding')} level={sectionLevel} id="boarding">
         <Card tone="accent">
-          <p className="pv-boarding__name">{name(journey.boardingPoint.name)}</p>
-          <p className="pv-boarding__terminal">
+          <p className="od-boarding__name">{name(journey.boardingPoint.name)}</p>
+          <p className="od-boarding__terminal">
             {t('journey.boardingAt', { terminal: name(journey.boardingPoint.terminalName) })}
           </p>
-          <p className="pv-boarding__bay">
+          <p className="od-boarding__bay">
             {journey.boardingPoint.bay
               ? t('journey.boardingBay', { bay: journey.boardingPoint.bay })
               : t('journey.boardingNoBay')}
           </p>
-          <p className="pv-boarding__badges">
+          <p className="od-boarding__badges">
             <StepFreeBadge stepFree={journey.boardingPoint.stepFree} />
             <ReviewStateBadge state={journey.boardingPoint.reviewState} />
           </p>
           {journey.boardingPoint.instructions ? (
-            <p className="pv-boarding__instructions">{name(journey.boardingPoint.instructions)}</p>
+            <p className="od-boarding__instructions">{name(journey.boardingPoint.instructions)}</p>
           ) : null}
-          <p className="pv-boarding__review">
+          <p className="od-boarding__review">
             {journey.boardingPoint.reviewedAt
               ? t('journey.boardingReviewed', { when: formatDateTime(journey.boardingPoint.reviewedAt) })
               : t('journey.boardingNotReviewed')}
           </p>
           <p>
-            <Link to={`/stations/${encodeURIComponent(journey.boardingPoint.stopId)}`} className="pv-link">
+            <Link to={`/stations/${encodeURIComponent(journey.boardingPoint.stopId)}`} className="od-link">
               {t('station.boardingPoints')}
             </Link>
           </p>
@@ -299,7 +299,7 @@ export function JourneyDetailView({
           </Button>
         }
       >
-        <p className="pv-detail__note">
+        <p className="od-detail__note">
           <GeometryBadge confidence={journey.geometry?.confidence ?? 'unverified'} />
         </p>
         <div id="journey-map">
@@ -320,7 +320,7 @@ export function JourneyDetailView({
       {/* -- Restrictions -------------------------------------------------- */}
       {journey.restrictions.length > 0 ? (
         <Section title={t('journey.restrictions')} level={sectionLevel} id="restrictions">
-          <ul className="pv-list pv-list--plain">
+          <ul className="od-list od-list--plain">
             {journey.restrictions.map((restriction) => (
               <li key={restriction.code}>{name(restriction.text)}</li>
             ))}
@@ -330,7 +330,7 @@ export function JourneyDetailView({
 
       {/* -- Provenance ---------------------------------------------------- */}
       <Section title={t('journey.provenance')} description={t('journey.provenanceHelp')} level={sectionLevel} id="provenance">
-        <ul className="pv-list pv-list--plain pv-provenance">
+        <ul className="od-list od-list--plain od-provenance">
           {journey.provenance.map((entry, index) => {
             const view = provenanceView(entry, index);
             return (
@@ -338,7 +338,7 @@ export function JourneyDetailView({
                 <FactList>
                   <Fact label={t('journey.source')}>
                     {view.url ? (
-                      <a className="pv-link" href={view.url} target="_blank" rel="noopener noreferrer external">
+                      <a className="od-link" href={view.url} target="_blank" rel="noopener noreferrer external">
                         {view.name}
                       </a>
                     ) : (
@@ -362,17 +362,17 @@ export function JourneyDetailView({
         {safeHref(journey.correctionUrl) ? (
           <p>
             <a
-              className="pv-link"
+              className="od-link"
               href={safeHref(journey.correctionUrl)!}
               target="_blank"
               rel="noopener noreferrer external"
             >
               {t('journey.correction')}
             </a>
-            <span className="pv-detail__note"> {t('journey.correctionHelp')}</span>
+            <span className="od-detail__note"> {t('journey.correctionHelp')}</span>
           </p>
         ) : null}
-        {releaseId ? <p className="pv-detail__note">{t('saved.fromRelease', { releaseId })}</p> : null}
+        {releaseId ? <p className="od-detail__note">{t('saved.fromRelease', { releaseId })}</p> : null}
       </Section>
     </article>
   );

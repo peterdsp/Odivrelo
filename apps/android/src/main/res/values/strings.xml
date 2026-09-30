@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Poravia user-visible text, Greek (the default language).
+  Odivrelo user-visible text, Greek (the default language).
 
   All three languages carry exactly the same keys. A unit test
   (LocalisationCompletenessTest) fails the build if one of them is missing a
@@ -8,7 +8,7 @@
   half-translated release cannot ship.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Poravia</string>
+    <string name="app_name">Odivrelo</string>
     <string name="app_tagline">Ταξίδεψε με βεβαιότητα.</string>
     <string name="app_purpose">Υπεραστικά λεωφορεία, με σαφή προέλευση δεδομένων.</string>
     <string name="action_retry">Δοκίμασε ξανά</string>
@@ -61,7 +61,7 @@
     <string name="demo_notice_title">Δεδομένα επίδειξης</string>
     <string name="demo_notice_body">Αυτά τα δεδομένα είναι επινοημένα. Η Αλόρια δεν υπάρχει και κανένα δρομολόγιο εδώ δεν είναι αληθινό.</string>
     <string name="demo_notice_a11y">Ειδοποίηση: δεδομένα επίδειξης. Η Αλόρια δεν υπάρχει και κανένα δρομολόγιο δεν είναι αληθινό.</string>
-    <string name="no_tickets_sold">Το Poravia δεν πουλά και δεν εκδίδει εισιτήρια.</string>
+    <string name="no_tickets_sold">Το Odivrelo δεν πουλά και δεν εκδίδει εισιτήρια.</string>
     <string name="no_tickets_sold_short">Δεν πουλάμε εισιτήρια</string>
     <string name="freshness_fresh">Πρόσφατο</string>
     <string name="freshness_aging">Παλαιώνει</string>
@@ -94,10 +94,10 @@
     <string name="step_free_no">Με σκαλοπάτια</string>
     <string name="step_free_unknown">Δεν έχει ελεγχθεί</string>
     <string name="step_free_unknown_help">Κανείς δεν έχει ελέγξει αν αυτό το σημείο είναι προσβάσιμο. Αυτό δεν σημαίνει ότι δεν είναι.</string>
-    <string name="welcome_title">Καλώς όρισες στο Poravia</string>
+    <string name="welcome_title">Καλώς όρισες στο Odivrelo</string>
     <string name="welcome_language_title">Διάλεξε γλώσσα</string>
     <string name="welcome_no_account">Δεν χρειάζεται λογαριασμός. Δεν ζητάμε τίποτα για εσένα.</string>
-    <string name="welcome_no_tickets">Το Poravia δεν πουλά εισιτήρια. Σε στέλνει στον μεταφορέα ή στο εκδοτήριο.</string>
+    <string name="welcome_no_tickets">Το Odivrelo δεν πουλά εισιτήρια. Σε στέλνει στον μεταφορέα ή στο εκδοτήριο.</string>
     <string name="welcome_offline">Λειτουργεί χωρίς σύνδεση, με δεδομένα που κατεβάζεις εσύ.</string>
     <string name="welcome_start">Ξεκίνα</string>
     <string name="nav_search">Αναζήτηση</string>
@@ -337,8 +337,8 @@
     <string name="settings_support_body">Στείλε μήνυμα στο %1$s</string>
     <string name="settings_licences">Άδειες</string>
     <string name="settings_about">Σχετικά</string>
-    <string name="settings_about_mark">Το σήμα είναι μια αψίδα: ένα πέρασμα. Το κεχριμπαρένιο σημείο μέσα του είναι το ακριβές σημείο επιβίβασης.</string>
-    <string name="settings_about_name">Το όνομα Poravia είναι επινοημένο. Το υποβάλλει η ελληνική λέξη πόρος, ένα πέρασμα ή στενό. Δεν είναι ελληνική λέξη και δεν έχει επιβεβαιωμένη μετάφραση.</string>
+    <string name="settings_about_mark">Το σήμα είναι ένας κύκλος που τον διασχίζει ένας δρόμος προς ένα πορτοκαλί σημείο: η διαδρομή και ο προορισμός της.</string>
+    <string name="settings_about_name">Το Odivrelo είναι εφευρημένο όνομα. Δεν είναι ελληνική λέξη και δεν είναι μετάφραση κάποιας λέξης.</string>
     <string name="settings_version">Έκδοση</string>
     <string name="settings_commit">Commit</string>
     <string name="settings_release_id">Ταυτότητα έκδοσης δεδομένων</string>
@@ -357,7 +357,7 @@
     <string name="sources_licence">Άδεια: %1$s</string>
     <string name="sources_retrieved">Ανακτήθηκε %1$s</string>
     <string name="licences_title">Άδειες</string>
-    <string name="licences_body">Το Poravia χρησιμοποιεί βιβλιοθήκες ανοιχτού κώδικα και δημόσια δεδομένα.</string>
+    <string name="licences_body">Το Odivrelo χρησιμοποιεί βιβλιοθήκες ανοιχτού κώδικα και δημόσια δεδομένα.</string>
     <string name="diagnostics_title">Διαγνωστικά</string>
     <string name="diagnostics_body">Τεχνικές πληροφορίες για αναφορά προβλήματος. Δεν περιλαμβάνουν προσωπικά δεδομένα, εισιτήρια ή μυστικά.</string>
     <string name="diagnostics_copied">Αντιγράφηκε.</string>
@@ -376,8 +376,8 @@
     <string name="deeplink_unknown_body">Ο σύνδεσμος δεν αντιστοιχεί σε κάτι σε αυτή την εφαρμογή. Ξεκίνα από την αναζήτηση.</string>
     <string name="deeplink_expired_title">Ο σύνδεσμος αφορά περασμένη ημέρα</string>
     <string name="deeplink_expired_body">Άνοιξε την αναζήτηση για σημερινή ημερομηνία.</string>
-    <string name="deeplink_foreign_host_title">Ο σύνδεσμος δεν ανήκει στο Poravia</string>
-    <string name="a11y_app_mark">Σήμα Poravia: αψίδα με σημείο επιβίβασης</string>
+    <string name="deeplink_foreign_host_title">Ο σύνδεσμος δεν ανήκει στο Odivrelo</string>
+    <string name="a11y_app_mark">Σήμα Odivrelo: κύκλος που τον διασχίζει δρόμος, με πορτοκαλί σημείο προορισμού</string>
     <string name="a11y_journey_summary">%1$s, αναχώρηση %2$s από %3$s, άφιξη %4$s στο %5$s, διάρκεια %6$s</string>
     <string name="a11y_expand">Άνοιγμα</string>
     <string name="a11y_collapse">Σύμπτυξη</string>
@@ -389,8 +389,8 @@
     <string name="privacy_version">Έκδοση 1.0.0 · 30 Σεπτεμβρίου 2026</string>
     <string name="privacy_contact">Επικοινωνία: %1$s</string>
     <string name="privacy_short_title">Με λίγα λόγια</string>
-    <string name="privacy_short_body">Το Poravia δεν έχει λογαριασμούς, ούτε αναλυτικά, ούτε ιχνηλάτες τρίτων. Οι αναζητήσεις σου, τα αποθηκευμένα ταξίδια και τα εισιτήρια που εισάγεις μένουν στη συσκευή σου. Το Poravia δεν πουλά και δεν εκδίδει εισιτήρια, και δεν βλέπει ποτέ την κράτησή σου.</string>
-    <string name="privacy_storage_title">Τι αποθηκεύει το Poravia, και πού</string>
+    <string name="privacy_short_body">Το Odivrelo δεν έχει λογαριασμούς, ούτε αναλυτικά, ούτε ιχνηλάτες τρίτων. Οι αναζητήσεις σου, τα αποθηκευμένα ταξίδια και τα εισιτήρια που εισάγεις μένουν στη συσκευή σου. Το Odivrelo δεν πουλά και δεν εκδίδει εισιτήρια, και δεν βλέπει ποτέ την κράτησή σου.</string>
+    <string name="privacy_storage_title">Τι αποθηκεύει το Odivrelo, και πού</string>
     <string name="privacy_storage_intro">Όλα όσα ακολουθούν αποθηκεύονται μόνο στη συσκευή σου.</string>
     <string name="privacy_storage_preferences">Γλώσσα, θέμα και ρυθμίσεις προσβασιμότητας, στις προτιμήσεις της ίδιας της εφαρμογής. Διαγράφονται από τις Ρυθμίσεις ή με απεγκατάσταση.</string>
     <string name="privacy_storage_recents">Πρόσφατες αναζητήσεις, σε τοπική βάση δεδομένων, για να μην τις ξαναγράφεις.</string>
@@ -398,45 +398,45 @@
     <string name="privacy_storage_packs">Αρχεία δεδομένων εκτός σύνδεσης, στον χώρο της εφαρμογής, για να λειτουργούν τα δρομολόγια χωρίς σύνδεση. Διαγράφονται ανά αρχείο.</string>
     <string name="privacy_storage_tickets">Αρχεία εισιτηρίων που εισάγεις, σε ιδιωτικό κρυπτογραφημένο χώρο της εφαρμογής, για να δείχνεις εισιτήριο που ήδη έχεις. Η διαγραφή είναι πραγματική.</string>
     <string name="privacy_storage_reminders">Προγραμματισμένες υπενθυμίσεις, στο σύστημα ειδοποιήσεων, για να εμφανιστεί η υπενθύμιση που ζήτησες. Σβήνουν όταν κλείσεις την υπενθύμιση.</string>
-    <string name="privacy_storage_footer">Τίποτα από τα παραπάνω δεν στέλνεται στο Poravia ή σε οποιονδήποτε άλλον. Δεν υπάρχει λογαριασμός Poravia και δεν υπάρχει προφίλ σου σε κανέναν διακομιστή.</string>
+    <string name="privacy_storage_footer">Τίποτα από τα παραπάνω δεν στέλνεται στο Odivrelo ή σε οποιονδήποτε άλλον. Δεν υπάρχει λογαριασμός Odivrelo και δεν υπάρχει προφίλ σου σε κανέναν διακομιστή.</string>
     <string name="privacy_wallet_title">Το πορτοφόλι ταξιδιού</string>
     <string name="privacy_wallet_body">Τα αρχεία εισιτηρίων που εισάγεις αντιμετωπίζονται ως ευαίσθητα έγγραφα. Αποθηκεύονται στον ιδιωτικό χώρο της εφαρμογής, κρυπτογραφημένα με κλειδί που δεν βγαίνει από τη συσκευή, και εξαιρούνται από τα αντίγραφα ασφαλείας. Δεν ανεβαίνουν ποτέ, δεν στέλνονται σε υπηρεσία ειδοποιήσεων, δεν γράφονται σε αρχείο καταγραφής, δεν μπαίνουν στα διαγνωστικά και δεν μπαίνουν σε κοινόχρηστη μνήμη. Κανένας κωδικός εισιτηρίου δεν καταγράφεται και δεν μπαίνει ποτέ σε διεύθυνση. Η διαγραφή ενός εισιτηρίου διαγράφει το αρχείο.</string>
-    <string name="privacy_network_title">Τι αιτήματα κάνει το Poravia</string>
-    <string name="privacy_network_packs">Κατάλογος έκδοσης και αρχεία δεδομένων, προς την προέλευση του Poravia. Δεν περιέχουν προσωπικά δεδομένα.</string>
-    <string name="privacy_network_booking">Παραπομπή για κράτηση, προς τον ιστότοπο του ίδιου του μεταφορέα σε καρτέλα περιήγησης. Το Poravia δεν προσθέτει τίποτα. Από εκεί και πέρα ισχύει η πολιτική του μεταφορέα.</string>
-    <string name="privacy_network_maps">Άνοιγμα χάρτη, στην εφαρμογή χαρτών της συσκευής σου. Το Poravia δεν κατεβάζει υπόβαθρο χάρτη και δεν στέλνει θέση.</string>
-    <string name="privacy_network_footer">Το Poravia δεν προσθέτει αναγνωριστικό, διαφημιστικό αναγνωριστικό ή αποτύπωμα σε κανένα αίτημα.</string>
+    <string name="privacy_network_title">Τι αιτήματα κάνει το Odivrelo</string>
+    <string name="privacy_network_packs">Κατάλογος έκδοσης και αρχεία δεδομένων, προς την προέλευση του Odivrelo. Δεν περιέχουν προσωπικά δεδομένα.</string>
+    <string name="privacy_network_booking">Παραπομπή για κράτηση, προς τον ιστότοπο του ίδιου του μεταφορέα σε καρτέλα περιήγησης. Το Odivrelo δεν προσθέτει τίποτα. Από εκεί και πέρα ισχύει η πολιτική του μεταφορέα.</string>
+    <string name="privacy_network_maps">Άνοιγμα χάρτη, στην εφαρμογή χαρτών της συσκευής σου. Το Odivrelo δεν κατεβάζει υπόβαθρο χάρτη και δεν στέλνει θέση.</string>
+    <string name="privacy_network_footer">Το Odivrelo δεν προσθέτει αναγνωριστικό, διαφημιστικό αναγνωριστικό ή αποτύπωμα σε κανένα αίτημα.</string>
     <string name="privacy_permissions_title">Άδειες</string>
     <string name="privacy_permissions_notifications">Ειδοποιήσεις, για τις υπενθυμίσεις που ζητάς εσύ. Αν αρνηθείς, οι υπενθυμίσεις απλώς δεν λειτουργούν και η εφαρμογή το λέει.</string>
     <string name="privacy_permissions_files">Επιλογή αρχείου, μόνο για το εισιτήριο που διαλέγεις εσύ. Δεν ζητείται ποτέ πρόσβαση σε όλα τα αρχεία.</string>
-    <string name="privacy_permissions_none">Το Poravia δεν ζητά τοποθεσία, επαφές, ημερολόγιο, κάμερα, μικρόφωνο ούτε πρόσβαση σε όλο τον αποθηκευτικό χώρο.</string>
+    <string name="privacy_permissions_none">Το Odivrelo δεν ζητά τοποθεσία, επαφές, ημερολόγιο, κάμερα, μικρόφωνο ούτε πρόσβαση σε όλο τον αποθηκευτικό χώρο.</string>
     <string name="privacy_notifications_title">Περιεχόμενο ειδοποιήσεων</string>
     <string name="privacy_notifications_body">Η υπενθύμιση περιέχει μόνο την ώρα και το σημείο επιβίβασης. Ποτέ όνομα επιβάτη, κωδικό κράτησης, εικόνα εισιτηρίου ή κωδικό ραβδώσεων.</string>
     <string name="privacy_third_parties_title">Τρίτα μέρη</string>
-    <string name="privacy_third_parties_body">Το Poravia δεν ενσωματώνει SDK αναλυτικών, διαφημίσεων, αναφοράς σφαλμάτων ή κοινωνικών δικτύων. Η πλήρης λίστα κώδικα τρίτων είναι οι άδειες ανοιχτού κώδικα σε αυτές τις ρυθμίσεις.</string>
+    <string name="privacy_third_parties_body">Το Odivrelo δεν ενσωματώνει SDK αναλυτικών, διαφημίσεων, αναφοράς σφαλμάτων ή κοινωνικών δικτύων. Η πλήρης λίστα κώδικα τρίτων είναι οι άδειες ανοιχτού κώδικα σε αυτές τις ρυθμίσεις.</string>
     <string name="privacy_children_title">Παιδιά</string>
-    <string name="privacy_children_body">Το Poravia δεν απευθύνεται σε παιδιά και δεν συλλέγει τίποτα από κανέναν.</string>
+    <string name="privacy_children_body">Το Odivrelo δεν απευθύνεται σε παιδιά και δεν συλλέγει τίποτα από κανέναν.</string>
     <string name="privacy_service_data_title">Δεδομένα για τα δρομολόγια</string>
-    <string name="privacy_service_data_body">Το Poravia δημοσιεύει πληροφορίες δημόσιων συγκοινωνιών μαζί με την πηγή, την ώρα ανάκτησης, την κατάσταση δικαιωμάτων και την κατάσταση ελέγχου. Αυτό είναι πληροφορία για δρομολόγια, όχι για εσένα. Διορθώσεις και αιτήματα απόσυρσης στο %1$s.</string>
+    <string name="privacy_service_data_body">Το Odivrelo δημοσιεύει πληροφορίες δημόσιων συγκοινωνιών μαζί με την πηγή, την ώρα ανάκτησης, την κατάσταση δικαιωμάτων και την κατάσταση ελέγχου. Αυτό είναι πληροφορία για δρομολόγια, όχι για εσένα. Διορθώσεις και αιτήματα απόσυρσης στο %1$s.</string>
     <string name="privacy_changes_title">Αλλαγές</string>
     <string name="privacy_changes_body">Ουσιώδεις αλλαγές δημοσιεύονται εδώ και στις σημειώσεις έκδοσης, με ημερομηνία.</string>
     <string name="support_demo_title">Πριν από οτιδήποτε άλλο: αυτή η δοκιμαστική έκδοση δείχνει επινοημένα δεδομένα</string>
-    <string name="support_demo_body">Κάθε δρομολόγιο, σταθμός, μεταφορέας και τιμή στο Poravia 1.0.0 ανήκει σε μια φανταστική περιοχή που λέγεται Αλόρια και δεν υπάρχει. Μη χρησιμοποιήσεις αυτή την έκδοση για να προγραμματίσεις ταξίδι. Η εφαρμογή το λέει σε κάθε οθόνη, και αυτή η ειδοποίηση δεν είναι σφάλμα.</string>
+    <string name="support_demo_body">Κάθε δρομολόγιο, σταθμός, μεταφορέας και τιμή στο Odivrelo 1.0.0 ανήκει σε μια φανταστική περιοχή που λέγεται Αλόρια και δεν υπάρχει. Μη χρησιμοποιήσεις αυτή την έκδοση για να προγραμματίσεις ταξίδι. Η εφαρμογή το λέει σε κάθε οθόνη, και αυτή η ειδοποίηση δεν είναι σφάλμα.</string>
     <string name="support_questions_title">Συχνές ερωτήσεις</string>
     <string name="support_q_missing">Γιατί δεν βρίσκω το δρομολόγιό μου;</string>
     <string name="support_a_missing">Γιατί αυτή η δοκιμαστική έκδοση δεν περιέχει πραγματικά ελληνικά δεδομένα υπεραστικών. Δες παραπάνω.</string>
-    <string name="support_q_tickets">Γιατί το Poravia δεν πουλά εισιτήρια;</string>
+    <string name="support_q_tickets">Γιατί το Odivrelo δεν πουλά εισιτήρια;</string>
     <string name="support_a_tickets">Δεν είναι πωλητής εισιτηρίων και δεν θα γίνει χωρίς γραπτή άδεια από μεταφορέα. Σε στέλνει στη σελίδα κράτησης του μεταφορέα, ή στο επιβεβαιωμένο εκδοτήριό του όταν δεν υπάρχει διαδικτυακή πώληση.</string>
     <string name="support_q_freshness">Τι σημαίνει η ένδειξη φρεσκάδας;</string>
     <string name="support_a_freshness">Πότε ελέγχθηκε τελευταία αυτό το στοιχείο σε σχέση με την πηγή του και πόσο παλιό είναι. Πρόσφατο, παλαιώνει και παλιό είναι κατώφλια, όχι εγγυήσεις. Παλιό σημαίνει επιβεβαίωσε πριν ταξιδέψεις.</string>
     <string name="support_q_map">Γιατί ο χάρτης δείχνει κατά προσέγγιση;</string>
-    <string name="support_a_map">Η χάραξη διαδρομής σε αυτή την έκδοση είναι μόνο ευθείες μεταξύ διαδοχικών στάσεων και σημειώνεται ως τέτοια. Δεν είναι ακριβής χάραξη δρόμου και το Poravia δεν προσποιείται το αντίθετο.</string>
+    <string name="support_a_map">Η χάραξη διαδρομής σε αυτή την έκδοση είναι μόνο ευθείες μεταξύ διαδοχικών στάσεων και σημειώνεται ως τέτοια. Δεν είναι ακριβής χάραξη δρόμου και το Odivrelo δεν προσποιείται το αντίθετο.</string>
     <string name="support_q_live">Πού είναι η ζωντανή παρακολούθηση;</string>
-    <string name="support_a_live">Δεν υπάρχει σε αυτή την έκδοση. Δεν υπάρχει εξουσιοδοτημένη ζωντανή ροή, άρα το Poravia δείχνει το πρόγραμμα και λέει ότι η ζωντανή παρακολούθηση δεν είναι διαθέσιμη, αντί να κινεί ένα λεωφορείο που δεν βλέπει.</string>
+    <string name="support_a_live">Δεν υπάρχει σε αυτή την έκδοση. Δεν υπάρχει εξουσιοδοτημένη ζωντανή ροή, άρα το Odivrelo δείχνει το πρόγραμμα και λέει ότι η ζωντανή παρακολούθηση δεν είναι διαθέσιμη, αντί να κινεί ένα λεωφορείο που δεν βλέπει.</string>
     <string name="support_q_pack">Το αρχείο εκτός σύνδεσης δεν εγκαθίσταται.</string>
-    <string name="support_a_pack">Το Poravia ελέγχει το SHA-256 ενός αρχείου πριν το χρησιμοποιήσει και απορρίπτει ένα χαλασμένο. Διάγραψέ το και κατέβασέ το ξανά. Αν συνεχίζει να αποτυγχάνει, η έκδοση δεδομένων μπορεί να αντικαταστάθηκε στη μέση της λήψης. Ανανέωσε και δοκίμασε ξανά.</string>
+    <string name="support_a_pack">Το Odivrelo ελέγχει το SHA-256 ενός αρχείου πριν το χρησιμοποιήσει και απορρίπτει ένα χαλασμένο. Διάγραψέ το και κατέβασέ το ξανά. Αν συνεχίζει να αποτυγχάνει, η έκδοση δεδομένων μπορεί να αντικαταστάθηκε στη μέση της λήψης. Ανανέωσε και δοκίμασε ξανά.</string>
     <string name="support_q_delete">Μπορώ να πάρω πίσω τα εισιτήρια που διέγραψα;</string>
-    <string name="support_a_delete">Όχι. Η διαγραφή είναι πραγματική και το Poravia δεν κρατά αντίγραφο πουθενά.</string>
+    <string name="support_a_delete">Όχι. Η διαγραφή είναι πραγματική και το Odivrelo δεν κρατά αντίγραφο πουθενά.</string>
     <string name="support_report_title">Αναφορά προβλήματος</string>
     <string name="support_report_body">Στείλε στο %1$s τι περίμενες και τι έγινε, την πλατφόρμα και την έκδοση από τις Ρυθμίσεις, που δείχνουν και το commit και την ταυτότητα έκδοσης δεδομένων, και την οθόνη μαζί με την ταυτότητα δρομολογίου ή μεταφορέα αν χρειάζεται.</string>
     <string name="support_report_warning">Μη στείλεις αρχεία εισιτηρίων, κωδικούς κράτησης ή ονόματα επιβατών. Δεν χρειάζονται ποτέ για να εντοπιστεί ένα πρόβλημα.</string>
@@ -445,7 +445,7 @@
     <string name="support_accessibility_title">Προσβασιμότητα</string>
     <string name="support_accessibility_body">Η προσβασιμότητα είναι προϋπόθεση έκδοσης, όχι αίτημα στην ουρά. Αν κάτι δεν χρησιμοποιείται με TalkBack, με πληκτρολόγιο, με μεγάλα γράμματα ή με λιγότερη κίνηση, ανέφερέ το ως σφάλμα και θα αντιμετωπιστεί ως σφάλμα.</string>
     <string name="support_email_action">Στείλε μήνυμα</string>
-    <string name="support_email_subject">Αναφορά Poravia %1$s</string>
+    <string name="support_email_subject">Αναφορά Odivrelo %1$s</string>
     <string name="settings_open_source_title">Βιβλιοθήκες ανοιχτού κώδικα</string>
     <string name="settings_data_release_title">Έκδοση δεδομένων</string>
     <string name="settings_signing_note">Αυτή η εγκατάσταση δεν είναι υπογεγραμμένη με κλειδί διανομής.</string>

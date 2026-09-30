@@ -122,16 +122,16 @@ export function Saved() {
 
   if (!storageAvailable) {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('saved.title')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('saved.title')}</h1>
         <StateBlock kind="unavailable" title={t('saved.storageUnavailable')} body={<p>{t('offline.storageUnavailableBody')}</p>} />
       </div>
     );
   }
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('saved.title')}</h1>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('saved.title')}</h1>
 
       {reminderNotice ? (
         <StateBlock kind="empty" headingLevel={2} title={reminderNotice} announce={false} />
@@ -140,9 +140,9 @@ export function Saved() {
       {/* -- Reminders, with the limitation stated before the opt-in ------- */}
       <Section title={t('reminders.title')} level={2} description={t('reminders.intro')}>
         <Card tone="muted">
-          <h3 className="pv-card__title">{t('reminders.backgroundLimitation')}</h3>
+          <h3 className="od-card__title">{t('reminders.backgroundLimitation')}</h3>
           <p>{t('reminders.backgroundLimitationBody')}</p>
-          <p className="pv-muted">{t('reminders.privacy')}</p>
+          <p className="od-muted">{t('reminders.privacy')}</p>
           {permission === 'unsupported' ? (
             <StateBlock
               kind="unavailable"
@@ -175,14 +175,14 @@ export function Saved() {
               {t('settings.notifications')}
             </Badge>
           )}
-          {!backgroundCapable ? <p className="pv-muted">{t('reminders.backgroundLimitationBody')}</p> : null}
+          {!backgroundCapable ? <p className="od-muted">{t('reminders.backgroundLimitationBody')}</p> : null}
         </Card>
       </Section>
 
       {/* -- Saved trips --------------------------------------------------- */}
       <Section title={t('saved.tripsHeading')} level={2}>
         {trips === null ? (
-          <p className="pv-muted">{t('app.loading')}</p>
+          <p className="od-muted">{t('app.loading')}</p>
         ) : trips.length === 0 ? (
           <StateBlock
             kind="empty"
@@ -192,7 +192,7 @@ export function Saved() {
             announce={false}
           />
         ) : (
-          <ul className="pv-list pv-list--cards">
+          <ul className="od-list od-list--cards">
             {trips.map((trip) => {
               const readiness = readinessOf(trip);
               const ageHours = hoursSince(trip.savedAt);
@@ -201,10 +201,10 @@ export function Saved() {
               return (
                 <li key={trip.id}>
                   <Card as="article">
-                    <h3 className="pv-card__title">
+                    <h3 className="od-card__title">
                       <Link
                         to={`/journey/${encodeURIComponent(trip.journeyId)}?date=${trip.serviceDate}`}
-                        className="pv-link"
+                        className="od-link"
                       >
                         {name(trip.detail.departure.stopName)} {'→'} {name(trip.detail.arrival.stopName)}
                       </Link>
@@ -223,7 +223,7 @@ export function Saved() {
 
                     <FactList>
                       <Fact label={t('saved.fromRelease', { releaseId: '' }).trim()}>
-                        <span className="pv-mono">{trip.releaseId}</span>
+                        <span className="od-mono">{trip.releaseId}</span>
                       </Fact>
                       <Fact label={t('saved.savedAt', { when: '' }).trim()}>
                         <time dateTime={trip.savedAt}>{formatDateTime(trip.savedAt)}</time>
@@ -236,19 +236,19 @@ export function Saved() {
                       </Fact>
                     </FactList>
 
-                    <p className="pv-notice pv-notice--warning">
+                    <p className="od-notice od-notice--warning">
                       {t('saved.ageWarning', { age: t('freshness.age_other', { count: ageHours }) })}
                     </p>
-                    {stale ? <p className="pv-notice pv-notice--info">{t('saved.staleRelease')}</p> : null}
+                    {stale ? <p className="od-notice od-notice--info">{t('saved.staleRelease')}</p> : null}
                     {checked[trip.id] === 'changed' ? (
-                      <p className="pv-notice pv-notice--warning">{t('saved.changed')}</p>
+                      <p className="od-notice od-notice--warning">{t('saved.changed')}</p>
                     ) : checked[trip.id] === 'unchanged' ? (
-                      <p className="pv-notice pv-notice--info">{t('saved.unchanged')}</p>
+                      <p className="od-notice od-notice--info">{t('saved.unchanged')}</p>
                     ) : null}
 
                     {/* -- Trip Ready --------------------------------------- */}
                     <Disclosure summary={t('tripReady.title')} defaultOpen>
-                      <p className="pv-muted">{t('tripReady.help')}</p>
+                      <p className="od-muted">{t('tripReady.help')}</p>
                       <FactList>
                         <Fact label={t('tripReady.schedule')}>
                           <ReadyMark ready={readiness.schedule} />
@@ -260,16 +260,16 @@ export function Saved() {
                           <ReadyMark ready={readiness.contacts} />
                         </Fact>
                         <Fact label={t('tripReady.ticket')}>
-                          {readiness.ticket ? <ReadyMark ready /> : <span className="pv-muted">{t('tripReady.ticketNone')}</span>}
+                          {readiness.ticket ? <ReadyMark ready /> : <span className="od-muted">{t('tripReady.ticketNone')}</span>}
                         </Fact>
                         <Fact label={t('tripReady.mapData')}>
                           <ReadyMark ready={readiness.mapData} />
                         </Fact>
                         <Fact label={t('tripReady.mapTiles')}>
-                          <span className="pv-muted">{t('tripReady.mapTilesNever')}</span>
+                          <span className="od-muted">{t('tripReady.mapTilesNever')}</span>
                         </Fact>
                         <Fact label={t('tripReady.live')}>
-                          <span className="pv-muted">{t('tripReady.liveNever')}</span>
+                          <span className="od-muted">{t('tripReady.liveNever')}</span>
                         </Fact>
                       </FactList>
                       {attached.length > 0 ? (
@@ -278,7 +278,7 @@ export function Saved() {
                         </p>
                       ) : (
                         <p>
-                          <Link to="/wallet" className="pv-link">
+                          <Link to="/wallet" className="od-link">
                             {t('wallet.import')}
                           </Link>
                         </p>
@@ -305,7 +305,7 @@ export function Saved() {
                       ))}
                     </SelectField>
 
-                    <div className="pv-pack__actions">
+                    <div className="od-pack__actions">
                       {online ? (
                         <Button tone="secondary" onClick={() => void checkForChanges(trip)}>
                           {t('saved.refresh')}
@@ -337,14 +337,14 @@ export function Saved() {
       {/* -- Favourites ---------------------------------------------------- */}
       <Section title={t('saved.favoritesHeading')} level={2}>
         {favorites.length === 0 ? (
-          <p className="pv-muted">{t('saved.favoritesEmpty')}</p>
+          <p className="od-muted">{t('saved.favoritesEmpty')}</p>
         ) : (
-          <ul className="pv-list pv-list--plain">
+          <ul className="od-list od-list--plain">
             {favorites.map((favorite) => (
               <li key={favorite.id}>
                 <Link
                   to={favorite.kind === 'operator' ? `/operators/${encodeURIComponent(favorite.ref)}` : `/stations/${encodeURIComponent(favorite.ref)}`}
-                  className="pv-link"
+                  className="od-link"
                 >
                   {name(favorite.label)}
                 </Link>{' '}

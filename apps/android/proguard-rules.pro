@@ -1,4 +1,4 @@
-# Poravia release shrinking rules.
+# Odivrelo release shrinking rules.
 #
 # The aim is to keep the release build genuinely shrunk and obfuscated while
 # keeping the few things that are looked up by name at runtime. Every rule below
@@ -34,8 +34,8 @@
 
 # The contract model itself. These types are the product's agreement with the
 # server, and they are decoded by name.
--keep class dev.peterdsp.poravia.core.model.** { *; }
--keep class dev.peterdsp.poravia.features.** { *; }
+-keep class dev.peterdsp.odivrelo.core.model.** { *; }
+-keep class dev.peterdsp.odivrelo.features.** { *; }
 
 # -- SQLDelight and SQLite ----------------------------------------------------
 # The Android driver reaches the framework SQLite classes through androidx.sqlite,
@@ -75,7 +75,7 @@
 -dontwarn javax.annotation.**
 
 # Tink also carries an optional cloud key-downloader that pulls in the Google
-# HTTP client and Joda-Time. Nothing in Poravia touches remote key material:
+# HTTP client and Joda-Time. Nothing in Odivrelo touches remote key material:
 # the wallet's key is generated on the device and never leaves the Keystore. So
 # those classes are absent on purpose, and the whole KeysDownloader path is left
 # to be shrunk away rather than kept.

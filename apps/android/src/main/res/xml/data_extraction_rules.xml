@@ -8,13 +8,13 @@
     <cloud-backup>
         <exclude domain="file" path="wallet/" />
         <exclude domain="file" path="packs/" />
-        <exclude domain="database" path="poravia.db" />
-        <exclude domain="sharedpref" path="poravia_wallet_keys.xml" />
+        <exclude domain="database" path="odivrelo.db" />
+        <exclude domain="sharedpref" path="odivrelo_wallet_keys.xml" />
     </cloud-backup>
     <device-transfer>
         <exclude domain="file" path="wallet/" />
         <exclude domain="file" path="packs/" />
-        <exclude domain="database" path="poravia.db" />
-        <exclude domain="sharedpref" path="poravia_wallet_keys.xml" />
+        <exclude domain="database" path="odivrelo.db" />
+        <exclude domain="sharedpref" path="odivrelo_wallet_keys.xml" />
     </device-transfer>
 </data-extraction-rules>

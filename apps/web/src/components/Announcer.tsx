@@ -42,10 +42,10 @@ export function AnnouncerProvider({ children }: { children: ReactNode }) {
   return (
     <AnnouncerContext.Provider value={api}>
       {children}
-      <div className="pv-visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+      <div className="od-visually-hidden" role="status" aria-live="polite" aria-atomic="true">
         {status}
       </div>
-      <div className="pv-visually-hidden" role="alert" aria-live="assertive" aria-atomic="true">
+      <div className="od-visually-hidden" role="alert" aria-live="assertive" aria-atomic="true">
         {assertive}
       </div>
     </AnnouncerContext.Provider>

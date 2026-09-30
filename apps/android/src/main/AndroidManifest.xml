@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!--
-      Poravia asks for as little as it can.
+      Odivrelo asks for as little as it can.
 
       INTERNET and ACCESS_NETWORK_STATE are needed to fetch published data packs
       and to tell a person honestly whether the origin is reachable.
@@ -21,7 +21,7 @@
       requested here, and they are named rather than left to be discovered in a
       store listing: WorkManager contributes FOREGROUND_SERVICE and WAKE_LOCK
       for its own scheduler, and AndroidX core declares a private
-      DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION. Poravia starts no foreground
+      DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION. Odivrelo starts no foreground
       service and takes no wake lock; WorkManager is here only as the backstop
       for a reminder an alarm was deferred past.
     -->
@@ -50,11 +50,11 @@
     </queries>
 
     <application
-        android:name=".PoraviaApplication"
+        android:name=".OdivreloApplication"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Poravia.Starting"
+        android:theme="@style/Theme.Odivrelo.Starting"
         android:localeConfig="@xml/locales_config"
         android:supportsRtl="false"
         android:enableOnBackInvokedCallback="true"
@@ -82,7 +82,7 @@
             android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.Poravia.Starting">
+            android:theme="@style/Theme.Odivrelo.Starting">
             <!--
               No android:configChanges and no android:screenOrientation. Rotation,
               resize and folding all recreate the activity, which is the harder

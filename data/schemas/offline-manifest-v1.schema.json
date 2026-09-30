@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/offline-manifest-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/offline-manifest-v1.schema.json",
   "title": "Offline release manifest, version 1",
   "description": "The generated release manifest. It is written last, after every pack, so a reader never sees a manifest that points at a half-written file.",
   "type": "object",

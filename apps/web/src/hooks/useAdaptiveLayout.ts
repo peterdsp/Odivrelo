@@ -70,7 +70,7 @@ function readRootFontSize(): number {
 function readSafeArea(): SafeArea {
   const fallback: SafeArea = { top: 0, right: 0, bottom: 0, left: 0 };
   try {
-    const probe = globalThis.document?.getElementById('pv-safe-area-probe');
+    const probe = globalThis.document?.getElementById('od-safe-area-probe');
     if (!probe) return fallback;
     const style = globalThis.getComputedStyle(probe);
     const pick = (value: string) => {
@@ -218,7 +218,7 @@ export function useAdaptiveLayout(): UseAdaptiveLayoutResult {
   // every component subscribing to this hook.
   useEffect(() => {
     const root = globalThis.document?.documentElement;
-    if (root) root.style.setProperty('--pv-keyboard-inset', `${keyboardInset}px`);
+    if (root) root.style.setProperty('--od-keyboard-inset', `${keyboardInset}px`);
   }, [keyboardInset]);
 
   return useMemo<UseAdaptiveLayoutResult>(() => {

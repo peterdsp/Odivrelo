@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "poravia-pipeline"
+name = "odivrelo-pipeline"
 version = "0.1.0"
-description = "Bounded, rights-aware acquisition pipeline for Poravia"
+description = "Bounded, rights-aware acquisition pipeline for Odivrelo"
 requires-python = ">=3.9"
 license = { text = "Apache-2.0" }
 authors = [
@@ -14,7 +14,7 @@ authors = [
 dependencies = []
 
 [project.scripts]
-poravia-pipeline = "poravia_pipeline.cli:main"
+odivrelo-pipeline = "odivrelo_pipeline.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

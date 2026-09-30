@@ -19,7 +19,7 @@
 # Run scripts/api-seed-demo.sh first to produce one.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-DEST="apps/ios/Poravia/Resources/release"
+DEST="apps/ios/Odivrelo/Resources/release"
 bash scripts/api-sync-packs.sh "$DEST" ${1:+"$1"}
 
 # Ship exactly the packs the manifest names, and nothing else.

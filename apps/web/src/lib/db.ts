@@ -105,7 +105,7 @@ export interface MetaRecord {
   value: unknown;
 }
 
-interface PoraviaSchema extends DBSchema {
+interface OdivreloSchema extends DBSchema {
   packFiles: { key: string; value: StoredPackFile; indexes: { byRelease: string } };
   installedPacks: { key: string; value: InstalledPack; indexes: { byRelease: string } };
   downloads: { key: string; value: DownloadProgress };
@@ -115,9 +115,9 @@ interface PoraviaSchema extends DBSchema {
   meta: { key: string; value: MetaRecord };
 }
 
-export type PoraviaDB = IDBPDatabase<PoraviaSchema>;
+export type OdivreloDB = IDBPDatabase<OdivreloSchema>;
 
-let dbPromise: Promise<PoraviaDB | null> | null = null;
+let dbPromise: Promise<OdivreloDB | null> | null = null;
 
 export function indexedDbAvailable(): boolean {
   try {
@@ -127,12 +127,12 @@ export function indexedDbAvailable(): boolean {
   }
 }
 
-export function getDb(): Promise<PoraviaDB | null> {
+export function getDb(): Promise<OdivreloDB | null> {
   if (!dbPromise) {
     dbPromise = (async () => {
       if (!indexedDbAvailable()) return null;
       try {
-        return await openDB<PoraviaSchema>(DB_NAME, DB_VERSION, {
+        return await openDB<OdivreloSchema>(DB_NAME, DB_VERSION, {
           upgrade(db) {
             if (!db.objectStoreNames.contains('packFiles')) {
               const store = db.createObjectStore('packFiles', { keyPath: 'path' });

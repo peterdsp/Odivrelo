@@ -1,4 +1,4 @@
-# Poravia dependency catalogue.
+# Odivrelo dependency catalogue.
 # Every version is pinned exactly. No dynamic versions, no version ranges,
 # no `latest.release`. A dependency bump is an explicit edit to this file.
 [versions]

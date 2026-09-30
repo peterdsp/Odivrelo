@@ -27,15 +27,15 @@ export function Coverage() {
   useHead({ title: t('meta.coverage.title'), description: t('coverage.notCoveredTitle'), path: '/coverage', language, dataMode });
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('coverage.title')}</h1>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('coverage.title')}</h1>
 
       {coverage.state.status === 'loading' ? <Loading /> : null}
       {coverage.state.status === 'error' ? <DataError error={coverage.state.error} onRetry={coverage.reload} /> : null}
 
       {coverage.state.status === 'ready' ? (
         <>
-          <p className="pv-page__lede">
+          <p className="od-page__lede">
             <CoverageBadge state={coverage.state.value.coverage.state} />
           </p>
           <Card tone="muted">
@@ -65,7 +65,7 @@ export function Coverage() {
 
           {coverage.state.value.notCovered && coverage.state.value.notCovered.length > 0 ? (
             <Section title={t('coverage.notCoveredTitle')} level={2}>
-              <ul className="pv-list pv-list--cross">
+              <ul className="od-list od-list--cross">
                 {coverage.state.value.notCovered.map((statement) => (
                   <li key={statement.code}>{name(statement.text)}</li>
                 ))}
@@ -91,13 +91,13 @@ export function Coverage() {
         {sources.state.status === 'loading' ? <Loading /> : null}
         {sources.state.status === 'error' ? <DataError error={sources.state.error} onRetry={sources.reload} /> : null}
         {sources.state.status === 'ready' ? (
-          <ul className="pv-list pv-list--cards pv-provenance">
+          <ul className="od-list od-list--cards od-provenance">
             {sources.state.value.sources.map((entry, index) => {
               const view = provenanceView(entry, index);
               return (
                 <li key={view.key}>
                   <Card as="article">
-                    <h3 className="pv-card__title">
+                    <h3 className="od-card__title">
                       {view.url ? (
                         <ExternalLink href={view.url} accessibleLabel={view.name}>
                           {view.name}
@@ -117,7 +117,7 @@ export function Coverage() {
                       </Fact>
                       <Fact label={t('journey.licence')}>{view.licence}</Fact>
                     </FactList>
-                    {entry.note ? <p className="pv-muted">{name(entry.note)}</p> : null}
+                    {entry.note ? <p className="od-muted">{name(entry.note)}</p> : null}
                   </Card>
                 </li>
               );

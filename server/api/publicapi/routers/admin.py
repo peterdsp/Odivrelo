@@ -23,8 +23,8 @@ from ..dependencies import Pagination, SettingsDep  # noqa: E402
 from ..errors import invalid_request, not_found, unauthorized, unavailable  # noqa: E402
 from ..logging_setup import get_logger  # noqa: E402
 from ..responses import no_store  # noqa: E402
-from poravia_ktel import ktel_db, ktel_release  # noqa: E402
-from poravia_ktel.ktel_ingest import REVIEWABLE_TABLES, review_entity  # noqa: E402
+from odivrelo_ktel import ktel_db, ktel_release  # noqa: E402
+from odivrelo_ktel.ktel_ingest import REVIEWABLE_TABLES, review_entity  # noqa: E402
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 

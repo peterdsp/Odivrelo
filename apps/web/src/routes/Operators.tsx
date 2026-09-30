@@ -53,28 +53,28 @@ export function Operators() {
   });
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('operators.title')}</h1>
-      <p className="pv-page__lede">{t('operators.intro')}</p>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('operators.title')}</h1>
+      <p className="od-page__lede">{t('operators.intro')}</p>
 
       {operators.state.status === 'loading' ? <Loading /> : null}
       {operators.state.status === 'error' ? <DataError error={operators.state.error} onRetry={operators.reload} /> : null}
 
       {operators.state.status === 'ready' ? (
         <Section title={t('operators.count_other', { count: operators.state.value.operators.length })} level={2}>
-          <ul className="pv-list pv-list--cards">
+          <ul className="od-list od-list--cards">
             {operators.state.value.operators.map((operator) => (
               <li key={operator.id}>
                 <Card as="article">
-                  <h3 className="pv-card__title">
-                    <Link to={`/operators/${encodeURIComponent(operator.id)}`} className="pv-link">
+                  <h3 className="od-card__title">
+                    <Link to={`/operators/${encodeURIComponent(operator.id)}`} className="od-link">
                       {name(operator.name)}
                     </Link>
                   </h3>
                   <p>
                     <CoverageBadge state={operator.coverage.state} />
                   </p>
-                  <p className="pv-muted">
+                  <p className="od-muted">
                     {t(
                       operator.coverage.routeCount === 1 ? 'operator.routeCount_one' : 'operator.routeCount_other',
                       { count: operator.coverage.routeCount },
@@ -90,7 +90,7 @@ export function Operators() {
           </ul>
         </Section>
       ) : null}
-      <p className="pv-muted">{t('operator.noLogo')}</p>
+      <p className="od-muted">{t('operator.noLogo')}</p>
     </div>
   );
 }
@@ -130,8 +130,8 @@ export function OperatorDetail() {
   if (loaded.state.status === 'loading') return <Loading />;
   if (loaded.state.status === 'error') {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('operator.notFoundTitle')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('operator.notFoundTitle')}</h1>
         <DataError
           error={loaded.state.error}
           onRetry={loaded.reload}
@@ -144,15 +144,15 @@ export function OperatorDetail() {
   if (!operator) return null;
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <nav aria-label={t('a11y.breadcrumb')} className="pv-breadcrumb">
-        <Link to="/operators" className="pv-link">
+    <div className="od-page od-page--narrow">
+      <nav aria-label={t('a11y.breadcrumb')} className="od-breadcrumb">
+        <Link to="/operators" className="od-link">
           {t('operators.title')}
         </Link>
       </nav>
 
-      <h1 className="pv-page__title">{operatorName}</h1>
-      <p className="pv-page__lede">
+      <h1 className="od-page__title">{operatorName}</h1>
+      <p className="od-page__lede">
         <CoverageBadge state={operator.coverage.state} />
       </p>
 
@@ -163,14 +163,14 @@ export function OperatorDetail() {
           <FactList>
             {operator.contact.phone ? (
               <Fact label={t('booking.phone')}>
-                <a className="pv-link" href={`tel:${operator.contact.phone.replace(/\s+/g, '')}`}>
+                <a className="od-link" href={`tel:${operator.contact.phone.replace(/\s+/g, '')}`}>
                   {operator.contact.phone}
                 </a>
               </Fact>
             ) : null}
             {operator.contact.email ? (
               <Fact label={t('settings.supportEmail')}>
-                <a className="pv-link" href={`mailto:${operator.contact.email}`}>
+                <a className="od-link" href={`mailto:${operator.contact.email}`}>
                   {operator.contact.email}
                 </a>
               </Fact>
@@ -192,9 +192,9 @@ export function OperatorDetail() {
             ) : null}
           </FactList>
         ) : (
-          <p className="pv-muted">{t('operator.noContact')}</p>
+          <p className="od-muted">{t('operator.noContact')}</p>
         )}
-        <p className="pv-detail__note">{t('operator.verifiedAt', { when: formatDateTime(operator.verifiedAt) })}</p>
+        <p className="od-detail__note">{t('operator.verifiedAt', { when: formatDateTime(operator.verifiedAt) })}</p>
       </Section>
 
       <Section title={t('operator.coverage')} level={2}>
@@ -213,7 +213,7 @@ export function OperatorDetail() {
       </Section>
 
       <Section title={t('operator.attribution')} level={2}>
-        <ul className="pv-list pv-list--plain pv-provenance">
+        <ul className="od-list od-list--plain od-provenance">
           {operator.sources.map((entry, index) => {
             const view = provenanceView(entry, index);
             return (
@@ -249,7 +249,7 @@ export function OperatorDetail() {
             </ExternalLink>
           </p>
         ) : null}
-        <p className="pv-muted">{t('operator.noLogo')}</p>
+        <p className="od-muted">{t('operator.noLogo')}</p>
       </Section>
 
       <Card tone="muted">

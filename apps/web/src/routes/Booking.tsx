@@ -14,7 +14,7 @@ import { readPref, writePref } from '../lib/prefs';
 /**
  * The official booking handoff.
  *
- * Poravia sells nothing, so the only thing this page can honestly do is take the
+ * Odivrelo sells nothing, so the only thing this page can honestly do is take the
  * reader to the operator, or tell them exactly where to buy in person. Both
  * outcomes are complete: the online case names the operator and its own domain,
  * the offline case gives the verified office, telephone, address and opening
@@ -87,8 +87,8 @@ export function Booking() {
 
   if (!serviceDate || !shapeValid) {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('state.invalidLinkTitle')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('state.invalidLinkTitle')}</h1>
         <StateBlock
           kind="invalid"
           title={t('state.invalidLinkTitle')}
@@ -106,8 +106,8 @@ export function Booking() {
   if (loaded.state.status === 'loading') return <Loading />;
   if (loaded.state.status === 'error') {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('booking.title')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('booking.title')}</h1>
         <DataError
           error={loaded.state.error}
           onRetry={loaded.reload}
@@ -129,17 +129,17 @@ export function Booking() {
   const hasOffice = Boolean(purchase.address || purchase.phone || purchase.openingHours);
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <nav aria-label={t('a11y.breadcrumb')} className="pv-breadcrumb">
-        <Link to={`/journey/${encodeURIComponent(journeyId)}?date=${serviceDate}`} className="pv-link">
+    <div className="od-page od-page--narrow">
+      <nav aria-label={t('a11y.breadcrumb')} className="od-breadcrumb">
+        <Link to={`/journey/${encodeURIComponent(journeyId)}?date=${serviceDate}`} className="od-link">
           {t('journey.title', { origin: name(journey.departure.stopName), destination: name(journey.arrival.stopName) })}
         </Link>
       </nav>
 
-      <h1 className="pv-page__title">{t('booking.title')}</h1>
+      <h1 className="od-page__title">{t('booking.title')}</h1>
 
       <Card tone="muted">
-        <p className="pv-booking__journey">
+        <p className="od-booking__journey">
           <time dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>
           <span aria-hidden="true"> {'→'} </span>
           <time dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>
@@ -165,29 +165,29 @@ export function Booking() {
             >
               {t('booking.onlineAction', { operator: operatorName })}
             </ExternalLink>
-            <p className="pv-detail__note">{t('booking.onlineBody', { operator: operatorName })}</p>
-            {officialDomain ? <p className="pv-mono pv-detail__note">{officialDomain}</p> : null}
-            <p className="pv-detail__note">{t('booking.returnHere')}</p>
+            <p className="od-detail__note">{t('booking.onlineBody', { operator: operatorName })}</p>
+            {officialDomain ? <p className="od-mono od-detail__note">{officialDomain}</p> : null}
+            <p className="od-detail__note">{t('booking.returnHere')}</p>
           </>
         ) : null}
 
         {kind === 'ticket_office' ? (
           <>
-            <h3 className="pv-booking__subtitle">{t('booking.officeAction')}</h3>
+            <h3 className="od-booking__subtitle">{t('booking.officeAction')}</h3>
             <p>{t('booking.officeBody')}</p>
           </>
         ) : null}
 
         {kind === 'phone' ? (
           <>
-            <h3 className="pv-booking__subtitle">{t('booking.phoneAction', { operator: operatorName })}</h3>
+            <h3 className="od-booking__subtitle">{t('booking.phoneAction', { operator: operatorName })}</h3>
             <p>{t('booking.phoneBody')}</p>
           </>
         ) : null}
 
         {kind === 'onboard' ? (
           <>
-            <h3 className="pv-booking__subtitle">{t('booking.onboardTitle')}</h3>
+            <h3 className="od-booking__subtitle">{t('booking.onboardTitle')}</h3>
             <p>{t('booking.onboardBody')}</p>
           </>
         ) : null}
@@ -202,7 +202,7 @@ export function Booking() {
           />
         ) : null}
 
-        {kind !== 'online' ? <p className="pv-detail__note">{t('booking.noSaleTitle')}</p> : null}
+        {kind !== 'online' ? <p className="od-detail__note">{t('booking.noSaleTitle')}</p> : null}
       </Section>
 
       {/* -- The verified fallback, always shown when it exists ------------- */}
@@ -217,7 +217,7 @@ export function Booking() {
               ) : null}
               {purchase.phone ? (
                 <Fact label={t('booking.phone')}>
-                  <a className="pv-link" href={`tel:${purchase.phone.replace(/\s+/g, '')}`}>
+                  <a className="od-link" href={`tel:${purchase.phone.replace(/\s+/g, '')}`}>
                     {purchase.phone}
                   </a>{' '}
                   <CopyButton value={purchase.phone} />
@@ -232,22 +232,22 @@ export function Booking() {
                 </Fact>
               ) : null}
             </FactList>
-            {verifiedAt ? <p className="pv-detail__note">{t('booking.verifiedAt', { when: formatDateTime(verifiedAt) })}</p> : null}
+            {verifiedAt ? <p className="od-detail__note">{t('booking.verifiedAt', { when: formatDateTime(verifiedAt) })}</p> : null}
           </Card>
         </Section>
       ) : (
         <Section title={t('booking.office')} level={2}>
-          <p className="pv-muted">{t('operator.noContact')}</p>
+          <p className="od-muted">{t('operator.noContact')}</p>
         </Section>
       )}
 
       {/* -- The statement, on this screen as on every other --------------- */}
-      <Card tone="muted" className="pv-booking__disclaimer">
+      <Card tone="muted" className="od-booking__disclaimer">
         <p>{t('booking.disclaimer')}</p>
         <p>{t('app.independence')}</p>
       </Card>
 
-      <div className="pv-detail__actions">
+      <div className="od-detail__actions">
         <ButtonLink tone="secondary" to={`/journey/${encodeURIComponent(journeyId)}?date=${serviceDate}`}>
           {t('app.back')}
         </ButtonLink>

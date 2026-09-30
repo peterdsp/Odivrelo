@@ -29,8 +29,8 @@ from .timeutil import (  # noqa: E402
     project_onto_service_date,
     weekday_column,
 )
-from poravia_ktel import ktel_api  # noqa: E402
-from poravia_ktel.ktel_registry import normalize_stop_name, source_rows  # noqa: E402
+from odivrelo_ktel import ktel_api  # noqa: E402
+from odivrelo_ktel.ktel_registry import normalize_stop_name, source_rows  # noqa: E402
 
 PUBLISHED = "published"
 ALLOWED = "allowed"

@@ -28,8 +28,8 @@ export function NotFound() {
   });
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('state.notFoundTitle')}</h1>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('state.notFoundTitle')}</h1>
       <StateBlock
         kind="not_found"
         headingLevel={2}
@@ -37,7 +37,7 @@ export function NotFound() {
         body={
           <>
             <p>{t('state.notFoundBody404')}</p>
-            <p className="pv-mono pv-muted">{location.pathname}</p>
+            <p className="od-mono od-muted">{location.pathname}</p>
           </>
         }
         action={
@@ -49,7 +49,7 @@ export function NotFound() {
 
       <Section title={t('app.primaryNav')} level={2}>
         <Card>
-          <ul className="pv-list pv-list--plain">
+          <ul className="od-list od-list--plain">
             <li>
               <ButtonLink tone="quiet" to="/search">
                 {t('nav.search')}

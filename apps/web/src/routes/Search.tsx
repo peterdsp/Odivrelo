@@ -196,18 +196,18 @@ export function Search() {
   if (manifest.status === 'error') return <DataError error={manifest.error} onRetry={reload} />;
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('search.title')}</h1>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('search.title')}</h1>
 
       {metaValue ? (
-        <p className="pv-page__lede">
+        <p className="od-page__lede">
           <CoverageBadge state={metaValue.coverage.state} />{' '}
           <span>{name(metaValue.coverage.note)}</span>
         </p>
       ) : null}
 
-      <Card as="form" className="pv-search-form">
-        <div className="pv-search-form__places">
+      <Card as="form" className="od-search-form">
+        <div className="od-search-form__places">
           <PlaceField
             name="origin"
             label={t('search.origin')}
@@ -221,7 +221,7 @@ export function Search() {
             error={errors.origin ?? null}
             required
           />
-          <div className="pv-search-form__swap">
+          <div className="od-search-form__swap">
             <Button
               tone="quiet"
               aria-label={t('search.swap')}
@@ -290,7 +290,7 @@ export function Search() {
         />
 
         <Disclosure summary={`${t('search.filters')} · ${t(filterCount === 0 ? 'search.filtersApplied_zero' : filterCount === 1 ? 'search.filtersApplied_one' : 'search.filtersApplied_other', { count: filterCount })}`}>
-          <div className="pv-filters">
+          <div className="od-filters">
             {operators.state.status === 'ready' ? (
               <SelectField
                 id="filter-operator"
@@ -315,7 +315,7 @@ export function Search() {
               onChange={(event) => setAccessible(event.target.checked)}
             />
 
-            <div className="pv-filters__window">
+            <div className="od-filters__window">
               <TextField
                 id="filter-from"
                 label={t('search.departFrom')}
@@ -372,13 +372,13 @@ export function Search() {
         }
       >
         {recent.length === 0 ? (
-          <p className="pv-muted">{t('search.noRecent')}</p>
+          <p className="od-muted">{t('search.noRecent')}</p>
         ) : (
-          <ul className="pv-list pv-list--plain">
+          <ul className="od-list od-list--plain">
             {recent.map((entry) => (
               <li key={`${entry.originId}-${entry.destinationId}-${entry.date}`}>
                 <Link
-                  className="pv-recent"
+                  className="od-recent"
                   to={{
                     pathname: '/results',
                     search: `?${writeSearchState({
@@ -394,10 +394,10 @@ export function Search() {
                     }).toString()}`,
                   }}
                 >
-                  <span className="pv-recent__route">
+                  <span className="od-recent__route">
                     {entry.originLabel} {'→'} {entry.destinationLabel}
                   </span>
-                  <span className="pv-recent__date">{entry.date}</span>
+                  <span className="od-recent__date">{entry.date}</span>
                 </Link>
               </li>
             ))}

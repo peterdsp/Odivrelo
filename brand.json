@@ -1,29 +1,40 @@
 {
   "$comment": "Single source of product identity. Every platform reads or generates its constants from this file, so a rename touches one place. Regenerate platform constants with scripts/generate-brand.sh.",
-  "name": "Poravia",
-  "slug": "poravia",
+  "name": "Odivrelo",
+  "slug": "odivrelo",
   "tagline": {
     "el": "Ταξίδεψε με βεβαιότητα.",
     "en": "Travel with certainty.",
     "sq": "Udhëto me siguri."
   },
-  "domain": "poravia.peterdsp.dev",
-  "url": "https://poravia.peterdsp.dev",
+  "description": {
+    "el": "Βρες υπεραστικά δρομολόγια λεωφορείων στην Ελλάδα, μάθε ακριβώς πού επιβιβάζεσαι και φτάσε στη σωστή σελίδα αγοράς εισιτηρίων του μεταφορέα.",
+    "en": "Find intercity coach journeys in Greece, understand exactly where to board, and reach the correct operator's ticket purchase page.",
+    "sq": "Gjej udhëtime me autobus ndërqytetës në Greqi, kupto saktësisht ku të hipësh dhe arri te faqja e duhur e blerjes së biletave të operatorit."
+  },
+  "domain": "odivrelo.peterdsp.dev",
+  "url": "https://odivrelo.peterdsp.dev",
   "supportEmail": "info@peterdsp.dev",
-  "bundleId": "dev.peterdsp.poravia",
-  "androidApplicationId": "dev.peterdsp.poravia",
-  "androidPackage": "dev.peterdsp.poravia",
-  "urlScheme": "poravia",
-  "envPrefix": "PORAVIA",
+  "bundleId": "dev.peterdsp.odivrelo",
+  "androidApplicationId": "dev.peterdsp.odivrelo",
+  "androidPackage": "dev.peterdsp.odivrelo",
+  "urlScheme": "odivrelo",
+  "envPrefix": "ODIVRELO",
   "contractVersion": "1.0.0",
   "version": "1.0.0",
-  "repository": "https://github.com/peterdsp/Poravia",
+  "repository": "https://github.com/peterdsp/Odivrelo",
   "legacyNames": [
+    "Poravia",
+    "poravia",
+    "PORAVIA",
+    "Dromiqo",
+    "dromiqo",
     "HodoMap",
     "Hodo",
     "hodomap",
     "syrmos_admin",
-    "hodomap_ktel"
+    "hodomap_ktel",
+    "poravia_ktel"
   ],
   "languages": [
     "el",

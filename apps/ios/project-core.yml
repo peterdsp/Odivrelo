@@ -1,14 +1,14 @@
-# Overlay spec used only when shared/core has produced PoraviaCore.xcframework.
+# Overlay spec used only when shared/core has produced OdivreloCore.xcframework.
 # scripts/ios-bootstrap.sh selects this spec automatically; it is never used
 # when the framework is absent, so the base spec always stays buildable.
 include:
   - project.yml
 
 targets:
-  Poravia:
+  Odivrelo:
     settings:
       base:
-        PORAVIA_CORE_CONDITION: PORAVIA_CORE_AVAILABLE
+        ODIVRELO_CORE_CONDITION: ODIVRELO_CORE_AVAILABLE
         # There is deliberately no -lsqlite3 here. The core embeds SQLDelight's
         # native driver, which needs the system SQLite, but each slice's module
         # map now declares link "sqlite3" and clang autolinking supplies it.
@@ -18,10 +18,10 @@ targets:
         # future build path bypasses autolinking, the symptom is an undefined
         # _sqlite3_step at link time and the flag comes back here.
     dependencies:
-      - framework: Frameworks/PoraviaCore.xcframework
+      - framework: Frameworks/OdivreloCore.xcframework
         embed: false
         link: true
-  PoraviaTests:
+  OdivreloTests:
     settings:
       base:
-        PORAVIA_CORE_CONDITION: PORAVIA_CORE_AVAILABLE
+        ODIVRELO_CORE_CONDITION: ODIVRELO_CORE_AVAILABLE

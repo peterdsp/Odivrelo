@@ -38,8 +38,8 @@ export const sq: Catalogue = {
   'app.errorDetail': 'Detaj teknik',
   'app.goToSearch': 'Shko te kërkimi',
   'app.neverSellsTickets':
-    'Poravia nuk shet dhe nuk lëshon bileta. Çdo blerje bëhet te operatori, i cili merret me pagesën, ndryshimet dhe rimbursimet.',
-  'app.independence': 'Poravia është e pavarur. Nuk operohet nga, nuk miratohet nga dhe nuk lidhet me asnjë operator transporti.',
+    'Odivrelo nuk shet dhe nuk lëshon bileta. Çdo blerje bëhet te operatori, i cili merret me pagesën, ndryshimet dhe rimbursimet.',
+  'app.independence': 'Odivrelo është e pavarur. Nuk operohet nga, nuk miratohet nga dhe nuk lidhet me asnjë operator transporti.',
 
   // -- Navigation ----------------------------------------------------------
   'nav.search': 'Kërko',
@@ -58,21 +58,21 @@ export const sq: Catalogue = {
     'Çdo gjë që shfaqet këtu është e shpikur. Aloria është një rajon i sajuar: nuk ekziston. Asnjë nisje, operator, terminal, çmim apo numër telefoni në këtë faqe nuk është real, dhe asnjë prej tyre nuk përshkruan mbulim të Greqisë apo të ndonjë vendi tjetër.',
   'demo.why': 'Pse janë të shpikura të dhënat?',
   'demo.whyBody':
-    'Asnjë operator autobusësh nuk i ka dhënë deri tani Poravia të drejta të dokumentuara për ripublikimin e orareve. Në vend që të publikojmë të dhëna që nuk lejohemi t’i publikojmë, ose t’i hamendësojmë, versioni beta 1.0.0 sjell një rajon të shpikur, kështu që produkti mund të kontrollohet nga fillimi në fund.',
+    'Asnjë operator autobusësh nuk i ka dhënë deri tani Odivrelo të drejta të dokumentuara për ripublikimin e orareve. Në vend që të publikojmë të dhëna që nuk lejohemi t’i publikojmë, ose t’i hamendësojmë, versioni beta 1.0.0 sjell një rajon të shpikur, kështu që produkti mund të kontrollohet nga fillimi në fund.',
   'demo.label': 'Demonstrim',
 
   // -- First launch --------------------------------------------------------
   'welcome.title': 'Udhëto me siguri',
-  'welcome.intro': 'Poravia të thotë nga ku hipesh, në çfarë orë, nga cili burim, dhe sa e vjetër është ajo informacion.',
+  'welcome.intro': 'Odivrelo të thotë nga ku hipesh, në çfarë orë, nga cili burim, dhe sa e vjetër është ajo informacion.',
   'welcome.chooseLanguage': 'Zgjidh gjuhën',
   'welcome.languageHelp': 'Mund ta ndryshosh në çdo kohë nga Cilësimet.',
-  'welcome.doesTitle': 'Çfarë bën Poravia',
+  'welcome.doesTitle': 'Çfarë bën Odivrelo',
   'welcome.does1': 'Gjen udhëtime të planifikuara me autobus ndërqytetës midis dy vendeve, për një datë shërbimi.',
   'welcome.does2': 'Shfaq pikën e saktë të hipjes, bashkë me vendin e parkimit dhe nëse ka qasje pa shkallë, kur kjo është kontrolluar.',
   'welcome.does3': 'Emërton burimin e çdo fakti, kur është marrë, dhe sa i vjetër është tani.',
   'welcome.does4': 'Të dërgon te operatori për të blerë, ose të jep sportelin e verifikuar, telefonin dhe orarin e hapjes.',
   'welcome.does5': 'Punon pa lidhje internet, pasi ke shkarkuar të dhënat.',
-  'welcome.doesNotTitle': 'Çfarë nuk bën Poravia',
+  'welcome.doesNotTitle': 'Çfarë nuk bën Odivrelo',
   'welcome.doesNot1': 'Nuk shet dhe nuk lëshon kurrë bileta, dhe nuk pranon kurrë pagesë.',
   'welcome.doesNot2': 'Nuk gjurmon automjete. Çdo orar që shfaqet është i planifikuar, jo pozicion në kohë reale.',
   'welcome.doesNot3': 'Nuk kërkon llogari, dhe nuk kërkon asnjë leje që nuk ke zgjedhur ta dhurosh.',
@@ -176,7 +176,7 @@ export const sq: Catalogue = {
   'position.scheduledHelp': 'Ky version nuk ka të dhëna automjetesh në kohë reale. Asgjë këtu nuk tregon ku ndodhet vërtet një autobus.',
   'position.liveUnavailable': 'Gjurmimi në kohë reale nuk është i disponueshëm',
   'position.liveUnavailableHelp':
-    'Poravia 1.0.0 mban vetëm informacion të planifikuar. Nuk ka burim në kohë reale, pra nuk shfaqet asnjë parashikim mbërritjeje apo pozicion automjeti.',
+    'Odivrelo 1.0.0 mban vetëm informacion të planifikuar. Nuk ka burim në kohë reale, pra nuk shfaqet asnjë parashikim mbërritjeje apo pozicion automjeti.',
   'confidence.reviewed': 'I rishikuar',
   'confidence.candidate': 'Ende i parishikuar',
   'confidence.reviewedHelp': 'Një person e ka kontrolluar kundrejt burimit.',
@@ -257,7 +257,7 @@ export const sq: Catalogue = {
   // -- Booking handoff -----------------------------------------------------
   'booking.title': 'Si blihet kjo biletë',
   'booking.onlineAction': 'Bli nga {operator}',
-  'booking.onlineBody': 'Kjo hap faqen e vetë {operator} në një skedë të re. Poravia nuk pranon pagesë dhe nuk lëshon biletë.',
+  'booking.onlineBody': 'Kjo hap faqen e vetë {operator} në një skedë të re. Odivrelo nuk pranon pagesë dhe nuk lëshon biletë.',
   'booking.officeAction': 'Bli në sportelin e biletave',
   'booking.officeBody': 'Ky operator nuk ka shitje online të verifikuar. Bli në sportelin më poshtë.',
   'booking.phoneAction': 'Telefono {operator}',
@@ -276,7 +276,7 @@ export const sq: Catalogue = {
   'booking.markReturned': 'Kam përfunduar te operatori',
   'booking.noSaleTitle': 'Nuk ekziston shitje online për këtë udhëtim',
   'booking.disclaimer':
-    'Poravia nuk shet dhe nuk lëshon bileta. Operatori është përgjegjës për çmimin, biletën, ndryshimet dhe rimbursimet.',
+    'Odivrelo nuk shet dhe nuk lëshon bileta. Operatori është përgjegjës për çmimin, biletën, ndryshimet dhe rimbursimet.',
 
   // -- Operators -----------------------------------------------------------
   'operators.title': 'Operatorët',
@@ -355,7 +355,7 @@ export const sq: Catalogue = {
   'tripReady.ticketNone': 'Nuk është importuar skedar biletë',
   'tripReady.mapData': 'Linja e itinerarit dhe pozicionet e ndalesave',
   'tripReady.mapTiles': 'Sfondi i hartës',
-  'tripReady.mapTilesNever': 'Nuk shpërndahet. Poravia nuk shkarkon sfond harte për përdorim offline, pra nuk do ta pretendojë.',
+  'tripReady.mapTilesNever': 'Nuk shpërndahet. Odivrelo nuk shkarkon sfond harte për përdorim offline, pra nuk do ta pretendojë.',
   'tripReady.live': 'Përditësime në kohë reale',
   'tripReady.liveNever': 'Të padisponueshme në këtë version, as online as offline.',
 
@@ -364,7 +364,7 @@ export const sq: Catalogue = {
   'offline.intro': 'Shkarko versionin në këtë pajisje, kështu që kërkimi, udhëtimet, pikat e hipjes dhe kontaktet punojnë pa lidhje internet.',
   'offline.release': 'Versioni i të dhënave {releaseId}, publikuar {when}',
   'offline.tilesNotice':
-    'Këto pako përmbajnë vetëm të dhëna. Poravia nuk shpërndan sfond harte për offline, pra pa lidhje interneti harta vizaton linjën e itinerarit dhe ndalesat mbi një sfond të thjeshtë.',
+    'Këto pako përmbajnë vetëm të dhëna. Odivrelo nuk shpërndan sfond harte për offline, pra pa lidhje interneti harta vizaton linjën e itinerarit dhe ndalesat mbi një sfond të thjeshtë.',
   'offline.download': 'Shkarko',
   'offline.downloading': 'Po shkarkohet',
   'offline.resume': 'Vazhdo shkarkimin',
@@ -402,7 +402,7 @@ export const sq: Catalogue = {
     'Një pako për çdo datë shërbimi që mbulon ky version, secila me udhëtimet e ditës dhe detajet e plota të secilit: ndalesat me radhë, pika e hipjes, kushtet dhe prejardhja.',
   'offline.packGtfs': 'Arkivi GTFS',
   'offline.packGtfsBody':
-    'GTFS i rishikuar i këtij versioni, për përdorim në mjete të tjera. Nuk nevojitet për ta përdorur Poravia offline.',
+    'GTFS i rishikuar i këtij versioni, për përdorim në mjete të tjera. Nuk nevojitet për ta përdorur Odivrelo offline.',
   'offline.packNames': '{count} pako',
   'offline.legacyRelease': 'Ky version të dhënash u ndërtua nga një generator më i vjetër',
   'offline.legacyReleaseBody':
@@ -423,7 +423,7 @@ export const sq: Catalogue = {
   'wallet.privacyTitle': 'Ku shkojnë këta skedarë',
   'wallet.privacy1': 'Skedarët që importon mbeten në këtë shfletues, në këtë pajisje, dhe asgjëkund tjetër.',
   'wallet.privacy2': 'Nuk ngarkohen kurrë, nuk futen kurrë në cache-in offline, nuk shkruhen kurrë në regjistër, dhe nuk futen kurrë në një lidhje.',
-  'wallet.privacy3': 'Fshirja këtu fshin vërtet. Nuk ka kopje asgjëkund që Poravia të mund ta fshijë.',
+  'wallet.privacy3': 'Fshirja këtu fshin vërtet. Nuk ka kopje asgjëkund që Odivrelo të mund ta fshijë.',
   'wallet.privacy4': 'Kjo nuk është kopje rezervë. Nëse pastron të dhënat e shfletuesit, ose shfletuesi liron hapësirë, këta skedarë shkojnë bashkë me ato.',
   'wallet.import': 'Shto një skedar biletë',
   'wallet.importHelp': 'PDF, PNG ose JPEG, deri {max}.',
@@ -478,14 +478,14 @@ export const sq: Catalogue = {
   // -- Settings ------------------------------------------------------------
   'settings.title': 'Cilësimet',
   'settings.language': 'Gjuha',
-  'settings.languageHelp': 'Poravia zbulon gjuhën e shfletuesit në vizitën e parë. Kjo e mbivendos.',
+  'settings.languageHelp': 'Odivrelo zbulon gjuhën e shfletuesit në vizitën e parë. Kjo e mbivendos.',
   'settings.appearance': 'Paraqitja',
   'settings.themeSystem': 'Ndiq sistemin',
   'settings.themeLight': 'E hapur',
   'settings.themeDark': 'E errët',
   'settings.accessibility': 'Aksesueshmëria',
   'settings.reduceMotion': 'Zvogëlo lëvizjen',
-  'settings.reduceMotionHelp': 'Poravia ndjek tashmë cilësimin e sistemit tënd. Kjo e detyron pavarësisht.',
+  'settings.reduceMotionHelp': 'Odivrelo ndjek tashmë cilësimin e sistemit tënd. Kjo e detyron pavarësisht.',
   'settings.underline': 'Nënvizo të gjitha lidhjet',
   'settings.storage': 'Hapësira ruajtjeje në këtë pajisje',
   'settings.storageUsed': '{used} në përdorim',
@@ -498,12 +498,12 @@ export const sq: Catalogue = {
   'settings.storageUnknown': 'Ky shfletues nuk raporton sa hapësirë ruajtjeje i jep kësaj faqeje.',
   'settings.clearOffline': 'Fshi të gjitha të dhënat offline',
   'settings.clearOfflineConfirm': 'Të fshihet çdo pako e shkarkuar nga kjo pajisje? Udhëtimet e ruajtura dhe skedarët e biletave mbeten.',
-  'settings.clearEverything': 'Fshi çdo gjë që Poravia ka ruajtur',
+  'settings.clearEverything': 'Fshi çdo gjë që Odivrelo ka ruajtur',
   'settings.clearEverythingConfirm':
     'Të fshihet çdo pako e shkarkuar, udhëtim i ruajtur, i preferuar, skedar biletë dhe cilësim nga kjo pajisje? Kjo nuk mund të zhbëhet.',
   'settings.cleared': 'U fshi nga kjo pajisje.',
   'settings.privacy': 'Privatësia',
-  'settings.privacy1': 'Poravia nuk ka llogari, nuk ka analitikë, nuk ka gjurmues, dhe nuk ngarkon asnjë skript të palës së tretë.',
+  'settings.privacy1': 'Odivrelo nuk ka llogari, nuk ka analitikë, nuk ka gjurmues, dhe nuk ngarkon asnjë skript të palës së tretë.',
   'settings.privacy2': 'Kërkimet, udhëtimet e ruajtura, të preferuarat dhe skedarët e biletave nuk largohen kurrë nga kjo pajisje.',
   'settings.privacy3': 'Kërkesat e vetme të rrjetit që bën kjo faqe janë për skedarët e vetë saj dhe për versionin e të dhënave.',
   'settings.notifications': 'Njoftimet',
@@ -515,11 +515,11 @@ export const sq: Catalogue = {
   'settings.support': 'Mbështetja',
   'settings.supportEmail': 'Email',
   'settings.licences': 'Licencat dhe shënimet e kodit të hapur',
-  'settings.about': 'Rreth Poravia',
+  'settings.about': 'Rreth Odivrelo',
   'settings.aboutBody':
-    'Poravia është emër i shpikur. U zgjodh për të sugjeruar një kalim ose një pasazh, dhe nuk është fjalë në greqisht as në ndonjë gjuhë tjetër, pra nuk përkthehet në asgjë.',
+    'Odivrelo është emër i shpikur. Nuk është fjalë greke dhe nuk është përkthim i ndonjë fjale.',
   'settings.markMeaning':
-    'Shenja është një hark: një kalim nëpër të cilin udhëton. Pika e verdhë brenda hapjes është pika e saktë e hipjes, i vetmi fakt për të cilin produkti ekziston ta bëjë siç duhet.',
+    'Shenja është një rreth që e përshkon një rrugë drejt një pike portokalli: udhëtimi dhe vendi ku të çon.',
   'settings.version': 'Versioni',
   'settings.commit': 'Commit i ndërtimit',
   'settings.builtAt': 'Ndërtuar',
@@ -553,13 +553,13 @@ export const sq: Catalogue = {
   'licences.software': 'Programet',
   'licences.data': 'Të dhënat',
   'licences.fonts': 'Shkronjat',
-  'licences.fontsBody': 'Nuk shkarkohet asnjë shkronjë nga rrjeti. Poravia përdor shkronjat që ndodhen tashmë në pajisjen tënde.',
+  'licences.fontsBody': 'Nuk shkarkohet asnjë shkronjë nga rrjeti. Odivrelo përdor shkronjat që ndodhen tashmë në pajisjen tënde.',
 
   // -- Errors and states ---------------------------------------------------
   'state.loading': 'Po ngarkohet',
   'state.empty': 'Nuk ka asgjë për të shfaqur',
   'state.offlineTitle': 'Jeni offline',
-  'state.offlineBody': 'Poravia nuk mund të arrijë versionin e të dhënave. Ajo që ke shkarkuar punon normalisht.',
+  'state.offlineBody': 'Odivrelo nuk mund të arrijë versionin e të dhënave. Ajo që ke shkarkuar punon normalisht.',
   'state.offlineBodyWithPacks': 'Jeni offline, pra kjo vjen nga versioni që shkarkoi.',
   'state.serverErrorTitle': 'Të dhënat nuk mund të lexohen',
   'state.serverErrorBody': 'Versioni u përgjigj, por jo me diçka që aplikacioni mund të përdorë. Provo përsëri pas një momenti.',
@@ -582,12 +582,12 @@ export const sq: Catalogue = {
   'state.reload': 'Rifresko',
 
   // -- Update flow ---------------------------------------------------------
-  'update.available': 'Një version i re i Poravia është gati',
+  'update.available': 'Një version i re i Odivrelo është gati',
   'update.body': 'Rifresko për ta përdorur. Ajo që ke ruajtur mbetet ku është.',
   'update.action': 'Rifresko tani',
   'update.later': 'Më vonë',
-  'update.offlineReady': 'Poravia është gati të punojë offline.',
-  'update.storageEvicted': 'Shfletuesi rikuperoi hapësirën që Poravia kishte ruajtur. Shkarko përsëri pakot offline nëse i ke nevojë.',
+  'update.offlineReady': 'Odivrelo është gati të punojë offline.',
+  'update.storageEvicted': 'Shfletuesi rikuperoi hapësirën që Odivrelo kishte ruajtur. Shkarko përsëri pakot offline nëse i ke nevojë.',
 
   // -- Accessibility -------------------------------------------------------
   'a11y.status': 'Statusi',
@@ -601,7 +601,7 @@ export const sq: Catalogue = {
   'a11y.zoomIn': 'Zmadho',
   'a11y.zoomOut': 'Zvogëlo',
   'a11y.recentre': 'Qendro mbi itinerarin',
-  'a11y.logo': 'Poravia: një hark, me pikën e hipjes të shënuar brenda tij',
+  'a11y.logo': 'Shenja Odivrelo: një rreth i përshkuar nga një rrugë, me një pikë portokalli destinacioni',
   'a11y.themeChanged': 'Paraqitja u caktua në {theme}.',
   'a11y.languageChanged': 'Gjuha u caktua në {language}.',
   'a11y.sortedList': 'Listë e renditur',
@@ -616,9 +616,9 @@ export const sq: Catalogue = {
   'language.sqName': 'Shqip',
 
   // -- Document titles and descriptions ------------------------------------
-  'meta.home.title': 'Poravia: informacion autobusi ndërqytetës që mund ta kontrollosh',
+  'meta.home.title': 'Odivrelo: informacion autobusi ndërqytetës që mund ta kontrollosh',
   'meta.home.description':
-    'Udhëtime të planifikuara me autobus, me pikën e saktë të hipjes, burimin e çdo fakti dhe sa i vjetër është. Poravia nuk shet kurrë bileta.',
+    'Udhëtime të planifikuara me autobus, me pikën e saktë të hipjes, burimin e çdo fakti dhe sa i vjetër është. Odivrelo nuk shet kurrë bileta.',
   'meta.search.title': 'Gjej një udhëtim',
   'meta.results.title': '{origin} për {destination} më {date}',
   'meta.results.description': 'Udhëtime të planifikuara me autobus nga {origin} për {destination} më {date}, me burime dhe freski.',

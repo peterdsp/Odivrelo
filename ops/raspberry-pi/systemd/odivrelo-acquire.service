@@ -1,0 +1,24 @@
+[Unit]
+Description=Odivrelo bounded daily source acquisition
+Documentation=https://github.com/peterdsp/Odivrelo
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=%h/odivrelo/data/operators/registry.json
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/odivrelo
+EnvironmentFile=-%h/.config/odivrelo/acquisition.env
+ExecStart=%h/odivrelo/ops/raspberry-pi/run-acquisition.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=default.target

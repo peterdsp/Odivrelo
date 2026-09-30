@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-coverage-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/pack-coverage-v1.schema.json",
   "title": "Offline pack: coverage, version 1",
   "description": "The `coverage` pack, identical to the GET /v1/coverage body.",
   "allOf": [

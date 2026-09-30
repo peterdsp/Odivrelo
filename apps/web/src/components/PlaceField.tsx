@@ -142,15 +142,15 @@ export function PlaceField({
   const activeId = open && active >= 0 && options[active] ? `${id}-option-${options[active].id}` : undefined;
 
   return (
-    <div className={['pv-field', 'pv-place-field', error ? 'pv-field--invalid' : ''].filter(Boolean).join(' ')}>
-      <label className="pv-field__label" htmlFor={inputId}>
+    <div className={['od-field', 'od-place-field', error ? 'od-field--invalid' : ''].filter(Boolean).join(' ')}>
+      <label className="od-field__label" htmlFor={inputId}>
         {label}
       </label>
-      <div className="pv-place-field__control">
+      <div className="od-place-field__control">
         <input
           id={inputId}
           name={name}
-          className="pv-input"
+          className="od-input"
           type="text"
           role="combobox"
           autoComplete="off"
@@ -179,7 +179,7 @@ export function PlaceField({
           onKeyDown={onKeyDown}
         />
         {value ? (
-          <span className="pv-place-field__chosen">
+          <span className="od-place-field__chosen">
             {value.kind === 'stop_place' ? (
               <Badge tone="info" icon="route">
                 {t('search.terminal')}
@@ -194,17 +194,17 @@ export function PlaceField({
       </div>
 
       {hint ? (
-        <p className="pv-field__hint" id={`${id}-hint`}>
+        <p className="od-field__hint" id={`${id}-hint`}>
           {hint}
         </p>
       ) : null}
       {error ? (
-        <p className="pv-field__error" id={`${id}-error`}>
+        <p className="od-field__error" id={`${id}-error`}>
           {error}
         </p>
       ) : null}
 
-      <p className="pv-visually-hidden" id={statusId} role="status" aria-live="polite">
+      <p className="od-visually-hidden" id={statusId} role="status" aria-live="polite">
         {open
           ? searching
             ? t('search.searching')
@@ -215,7 +215,7 @@ export function PlaceField({
       </p>
 
       <ul
-        className="pv-place-field__list"
+        className="od-place-field__list"
         id={listId}
         role="listbox"
         aria-label={t('search.results')}
@@ -228,9 +228,9 @@ export function PlaceField({
             role="option"
             aria-selected={index === active}
             className={[
-              'pv-place-option',
-              index === active ? 'pv-place-option--active' : '',
-              place.kind === 'stop' ? 'pv-place-option--child' : '',
+              'od-place-option',
+              index === active ? 'od-place-option--active' : '',
+              place.kind === 'stop' ? 'od-place-option--child' : '',
             ]
               .filter(Boolean)
               .join(' ')}
@@ -242,8 +242,8 @@ export function PlaceField({
             }}
             onMouseEnter={() => setActive(index)}
           >
-            <span className="pv-place-option__name">{localName(place.name)}</span>
-            <span className="pv-place-option__meta">
+            <span className="od-place-option__name">{localName(place.name)}</span>
+            <span className="od-place-option__meta">
               {place.kind === 'stop_place' ? t('search.terminal') : t('search.boardingPoint')}
               {' · '}
               {place.municipality}

@@ -11,9 +11,11 @@ cd "$(dirname "$0")/.."
 fail=0
 report() { printf '\n%s\n' "$1"; fail=1; }
 
-# A line that enumerates every rejected pattern at once is, by construction, a
-# guard against them rather than branding: no real slip contains "hodomap",
-# "perastra" and "<newname>" together. Those lines are skipped, which is how the
+# The rejected identities are the product's former names, HodoMap and then
+# Poravia, the Dromiqo candidate, and the unresolved-placeholder and screened-out
+# names. A line that enumerates the rejected patterns at once is, by
+# construction, a guard against them rather than branding: no real slip
+# contains "hodomap", "perastra" and "<newname>" together. Those lines are skipped, which is how the
 # client-side rename tests can assert on the same strings this script hunts for.
 #
 # Paths where a historical reference is deliberate. Every entry here is also
@@ -25,12 +27,12 @@ if [ "${1:-}" = "--dist" ]; then
   [ -d "$dist" ] || { echo "no such directory: $dist" >&2; exit 2; }
   echo "Scanning built artifact: $dist"
   # A built site has no historical documents in it, so nothing is allowed.
-  if hits=$(grep -rIlniE 'hodomap|(^|[^a-z])hodo([^a-z]|$)|<newname>|perastra' "$dist" 2>/dev/null); then
+  if hits=$(grep -rIlniE 'hodomap|poravia|dromiqo|(^|[^a-z])hodo([^a-z]|$)|<newname>|perastra' "$dist" 2>/dev/null); then
     report "Old-brand or placeholder strings in the built artifact:"
     echo "$hits"
   fi
   # Binary assets too.
-  if hits=$(grep -rlaiE 'hodomap|<newname>' "$dist" 2>/dev/null); then
+  if hits=$(grep -rlaiE 'hodomap|poravia|dromiqo|<newname>' "$dist" 2>/dev/null); then
     report "Old-brand strings inside binary assets:"
     echo "$hits"
   fi
@@ -47,8 +49,8 @@ while IFS= read -r f; do
   echo "$f" | grep -qE "$ALLOWLIST_RE" && continue
   # A line that explicitly introduces the old name as historical is allowed.
   # Everything else is a defect.
-  if hits=$(grep -nIiE 'hodomap|<newname>|perastra' "$f" 2>/dev/null \
-            | grep -viE 'former name|formerly|historical|legacy|rejected on|git/HodoMap|poravia_ktel|HODOMAP_' \
+  if hits=$(grep -nIiE 'hodomap|poravia|dromiqo|<newname>|perastra' "$f" 2>/dev/null \
+            | grep -viE 'former name|formerly|historical|legacy|rejected on|git/HodoMap|git/Poravia|HODOMAP_|PORAVIA_' \
             | grep -viE 'hodomap.*perastra.*<newname>|hodomap.*<newname>.*perastra|perastra.*hodomap.*<newname>'); then
     report "Old-brand or placeholder string in $f:"
     echo "$hits" | head -5
@@ -73,12 +75,12 @@ while IFS= read -r f; do
 done <<< "$tracked"
 
 # File and directory names must not carry the old brand either.
-if hits=$(echo "$tracked" | grep -iE 'hodomap|perastra' | grep -vE "$ALLOWLIST_RE"); then
+if hits=$(echo "$tracked" | grep -iE 'hodomap|poravia|dromiqo|perastra' | grep -vE "$ALLOWLIST_RE"); then
   report "Old-brand string in a tracked path:"
   echo "$hits"
 fi
 
 if [ "$fail" -eq 0 ]; then
-  echo "Clean. No unintended HodoMap, Hodo, syrmos or placeholder reference."
+  echo "Clean. No unintended Poravia, Dromiqo, HodoMap, Hodo, syrmos or placeholder reference."
 fi
 exit "$fail"

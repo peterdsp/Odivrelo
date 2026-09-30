@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Poravia Android release gate.
+# Odivrelo Android release gate.
 #
 # Builds every configuration that matters and then inspects the artifacts
 # themselves rather than trusting the build to have done what it said. A green
@@ -72,7 +72,7 @@ inspect() { # inspect <label> <apk> <expect-minified>
   local dump
   dump="$($AAPT2 dump badging "$apk")"
 
-  require "applicationId" "dev.peterdsp.poravia" \
+  require "applicationId" "dev.peterdsp.odivrelo" \
     "$(printf '%s' "$dump" | sed -n "s/^package: name='\([^']*\)'.*/\1/p")"
   require "versionName" "1.0.0${4:-}" \
     "$(printf '%s' "$dump" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p" | head -1)"
@@ -96,7 +96,7 @@ inspect() { # inspect <label> <apk> <expect-minified>
   # Three permissions arrive from merged library manifests rather than from
   # this application's own: WorkManager brings FOREGROUND_SERVICE and WAKE_LOCK
   # for its scheduler, and AndroidX core declares a private
-  # DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION. Poravia starts no foreground
+  # DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION. Odivrelo starts no foreground
   # service and holds no wake lock; they are listed here so their presence is a
   # known fact rather than a surprise in a store listing.
   for merged in FOREGROUND_SERVICE WAKE_LOCK DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION; do

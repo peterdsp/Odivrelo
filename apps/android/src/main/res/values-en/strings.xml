@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Poravia user-visible text, English.
+  Odivrelo user-visible text, English.
 
   All three languages carry exactly the same keys. A unit test
   (LocalisationCompletenessTest) fails the build if one of them is missing a
@@ -8,7 +8,7 @@
   half-translated release cannot ship.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Poravia</string>
+    <string name="app_name">Odivrelo</string>
     <string name="app_tagline">Travel with certainty.</string>
     <string name="app_purpose">Long-distance coaches, with the source of every fact shown.</string>
     <string name="action_retry">Try again</string>
@@ -61,7 +61,7 @@
     <string name="demo_notice_title">Demonstration data</string>
     <string name="demo_notice_body">This data is invented. Aloria does not exist and no departure shown here is real.</string>
     <string name="demo_notice_a11y">Notice: demonstration data. Aloria does not exist and no departure is real.</string>
-    <string name="no_tickets_sold">Poravia does not sell or issue tickets.</string>
+    <string name="no_tickets_sold">Odivrelo does not sell or issue tickets.</string>
     <string name="no_tickets_sold_short">We do not sell tickets</string>
     <string name="freshness_fresh">Fresh</string>
     <string name="freshness_aging">Aging</string>
@@ -94,10 +94,10 @@
     <string name="step_free_no">Has steps</string>
     <string name="step_free_unknown">Not reviewed</string>
     <string name="step_free_unknown_help">Nobody has checked whether this boarding point is step free. That is not the same as it having steps.</string>
-    <string name="welcome_title">Welcome to Poravia</string>
+    <string name="welcome_title">Welcome to Odivrelo</string>
     <string name="welcome_language_title">Choose a language</string>
     <string name="welcome_no_account">No account is needed. We do not ask anything about you.</string>
-    <string name="welcome_no_tickets">Poravia does not sell tickets. It sends you to the operator or the ticket office.</string>
+    <string name="welcome_no_tickets">Odivrelo does not sell tickets. It sends you to the operator or the ticket office.</string>
     <string name="welcome_offline">It works without a connection, using data you download yourself.</string>
     <string name="welcome_start">Start</string>
     <string name="nav_search">Search</string>
@@ -337,8 +337,8 @@
     <string name="settings_support_body">Write to %1$s</string>
     <string name="settings_licences">Licences</string>
     <string name="settings_about">About</string>
-    <string name="settings_about_mark">The mark is an arch: a passage. The amber point inside it is the exact boarding point.</string>
-    <string name="settings_about_name">The name Poravia is invented. It is suggested by the Greek word poros, a passage or strait. It is not itself a Greek word and has no verified translation.</string>
+    <string name="settings_about_mark">The mark is a ring crossed by a road that leads to an orange point: the journey, and where it takes you.</string>
+    <string name="settings_about_name">Odivrelo is an invented name. It is not a Greek word, and it is not a translation of anything.</string>
     <string name="settings_version">Version</string>
     <string name="settings_commit">Commit</string>
     <string name="settings_release_id">Data release id</string>
@@ -357,7 +357,7 @@
     <string name="sources_licence">Licence: %1$s</string>
     <string name="sources_retrieved">Retrieved %1$s</string>
     <string name="licences_title">Licences</string>
-    <string name="licences_body">Poravia uses open source libraries and public data.</string>
+    <string name="licences_body">Odivrelo uses open source libraries and public data.</string>
     <string name="diagnostics_title">Diagnostics</string>
     <string name="diagnostics_body">Technical information for a bug report. It contains no personal data, no ticket and no secret.</string>
     <string name="diagnostics_copied">Copied.</string>
@@ -376,8 +376,8 @@
     <string name="deeplink_unknown_body">The link does not point at anything in this application. Start from search.</string>
     <string name="deeplink_expired_title">That link is for a day that has passed</string>
     <string name="deeplink_expired_body">Open search for a current date.</string>
-    <string name="deeplink_foreign_host_title">That link is not a Poravia link</string>
-    <string name="a11y_app_mark">Poravia mark: an arch with a boarding point</string>
+    <string name="deeplink_foreign_host_title">That link is not a Odivrelo link</string>
+    <string name="a11y_app_mark">Odivrelo mark: a ring crossed by a road, with an orange destination point</string>
     <string name="a11y_journey_summary">%1$s, departs %2$s from %3$s, arrives %4$s at %5$s, %6$s</string>
     <string name="a11y_expand">Expand</string>
     <string name="a11y_collapse">Collapse</string>
@@ -389,8 +389,8 @@
     <string name="privacy_version">Version 1.0.0 · 30 September 2026</string>
     <string name="privacy_contact">Contact: %1$s</string>
     <string name="privacy_short_title">The short version</string>
-    <string name="privacy_short_body">Poravia has no accounts, no analytics and no third-party trackers. Your searches, saved trips and imported tickets stay on your device. Poravia does not sell or issue tickets, and it never sees your booking.</string>
-    <string name="privacy_storage_title">What Poravia stores, and where</string>
+    <string name="privacy_short_body">Odivrelo has no accounts, no analytics and no third-party trackers. Your searches, saved trips and imported tickets stay on your device. Odivrelo does not sell or issue tickets, and it never sees your booking.</string>
+    <string name="privacy_storage_title">What Odivrelo stores, and where</string>
     <string name="privacy_storage_intro">Everything below is stored on your device only.</string>
     <string name="privacy_storage_preferences">Language, theme and accessibility preferences, in the application\'s own preferences. Deleted from Settings, or by uninstalling.</string>
     <string name="privacy_storage_recents">Recent searches, in a local database, so you do not retype them.</string>
@@ -398,45 +398,45 @@
     <string name="privacy_storage_packs">Downloaded offline packs, in application storage, so timetables work without a connection. Deleted per pack.</string>
     <string name="privacy_storage_tickets">Imported ticket files, in app-private encrypted storage, so you can show a ticket you already have. Deletion is real.</string>
     <string name="privacy_storage_reminders">Reminder schedules, in the platform notification store, so an opt-in reminder fires. Removed by switching the reminder off.</string>
-    <string name="privacy_storage_footer">Nothing in that list is transmitted to Poravia or to anyone else. There is no Poravia account and no server-side profile of you.</string>
+    <string name="privacy_storage_footer">Nothing in that list is transmitted to Odivrelo or to anyone else. There is no Odivrelo account and no server-side profile of you.</string>
     <string name="privacy_wallet_title">The travel wallet</string>
     <string name="privacy_wallet_body">Ticket files you import are treated as sensitive documents. They are stored in app-private storage, encrypted with a key that cannot leave the device, and excluded from device backup. They are never uploaded, never sent to a notification service, never written to a log, never included in diagnostics and never placed in a shared cache. Barcodes are never logged and never put in a URL. Deleting a ticket deletes the file.</string>
-    <string name="privacy_network_title">Network requests Poravia makes</string>
-    <string name="privacy_network_packs">Release manifest and data packs, to the Poravia origin. They contain no personal data.</string>
-    <string name="privacy_network_booking">A booking handoff, to the operator\'s own website in a browser tab. Poravia adds nothing. From that point the operator\'s own privacy policy applies.</string>
-    <string name="privacy_network_maps">Opening a map, in your device\'s own maps application. Poravia downloads no map tiles and sends no location.</string>
-    <string name="privacy_network_footer">Poravia adds no identifier, no advertising id and no fingerprint to any request.</string>
+    <string name="privacy_network_title">Network requests Odivrelo makes</string>
+    <string name="privacy_network_packs">Release manifest and data packs, to the Odivrelo origin. They contain no personal data.</string>
+    <string name="privacy_network_booking">A booking handoff, to the operator\'s own website in a browser tab. Odivrelo adds nothing. From that point the operator\'s own privacy policy applies.</string>
+    <string name="privacy_network_maps">Opening a map, in your device\'s own maps application. Odivrelo downloads no map tiles and sends no location.</string>
+    <string name="privacy_network_footer">Odivrelo adds no identifier, no advertising id and no fingerprint to any request.</string>
     <string name="privacy_permissions_title">Permissions</string>
     <string name="privacy_permissions_notifications">Notifications, for the reminders you set yourself. If you refuse, reminders are simply unavailable and the application says so.</string>
     <string name="privacy_permissions_files">Choosing a file, only for the ticket you pick yourself. Broad file access is never requested.</string>
-    <string name="privacy_permissions_none">Poravia requests no location, contacts, calendar, camera, microphone or broad storage access.</string>
+    <string name="privacy_permissions_none">Odivrelo requests no location, contacts, calendar, camera, microphone or broad storage access.</string>
     <string name="privacy_notifications_title">Notification content</string>
     <string name="privacy_notifications_body">A reminder contains the journey time and the boarding point only. Never a passenger name, a booking reference, a ticket image or a barcode.</string>
     <string name="privacy_third_parties_title">Third parties</string>
-    <string name="privacy_third_parties_body">Poravia embeds no analytics, advertising, crash-reporting or social SDK. The complete list of third-party code is the open-source licence list in these settings.</string>
+    <string name="privacy_third_parties_body">Odivrelo embeds no analytics, advertising, crash-reporting or social SDK. The complete list of third-party code is the open-source licence list in these settings.</string>
     <string name="privacy_children_title">Children</string>
-    <string name="privacy_children_body">Poravia is not directed at children and collects nothing from anyone.</string>
+    <string name="privacy_children_body">Odivrelo is not directed at children and collects nothing from anyone.</string>
     <string name="privacy_service_data_title">Data about coach services</string>
-    <string name="privacy_service_data_body">Poravia publishes public transport information with its source, retrieval time, rights state and review state attached. That is information about services, not about you. Corrections and takedown requests go to %1$s.</string>
+    <string name="privacy_service_data_body">Odivrelo publishes public transport information with its source, retrieval time, rights state and review state attached. That is information about services, not about you. Corrections and takedown requests go to %1$s.</string>
     <string name="privacy_changes_title">Changes</string>
     <string name="privacy_changes_body">Material changes are published here and in the release notes, with a date.</string>
     <string name="support_demo_title">Before anything else: this beta shows invented data</string>
-    <string name="support_demo_body">Every journey, terminal, operator and fare in Poravia 1.0.0 belongs to a fictional region called Aloria, which does not exist. Do not use this build to plan a trip. The app says so on every screen, and that notice is not a bug.</string>
+    <string name="support_demo_body">Every journey, terminal, operator and fare in Odivrelo 1.0.0 belongs to a fictional region called Aloria, which does not exist. Do not use this build to plan a trip. The app says so on every screen, and that notice is not a bug.</string>
     <string name="support_questions_title">Common questions</string>
     <string name="support_q_missing">Why can I not find my journey?</string>
     <string name="support_a_missing">Because this beta contains no real Greek coach data. See above.</string>
-    <string name="support_q_tickets">Why does Poravia not sell tickets?</string>
+    <string name="support_q_tickets">Why does Odivrelo not sell tickets?</string>
     <string name="support_a_tickets">It is not a ticket seller and never will be without written authority from an operator. It sends you to the operator\'s own booking page, or to its verified ticket office where there is no online sale.</string>
     <string name="support_q_freshness">What does the freshness label mean?</string>
     <string name="support_a_freshness">When that fact was last checked against its source, and how old that is. Fresh, ageing and stale are thresholds, not guarantees. A stale label means verify before you travel.</string>
     <string name="support_q_map">Why does the map look approximate?</string>
-    <string name="support_a_map">Route geometry in this release is ordered-stops-only and is labelled as such. It is not an exact road alignment, and Poravia does not pretend otherwise.</string>
+    <string name="support_a_map">Route geometry in this release is ordered-stops-only and is labelled as such. It is not an exact road alignment, and Odivrelo does not pretend otherwise.</string>
     <string name="support_q_live">Where is live coach tracking?</string>
-    <string name="support_a_live">Not in this release. There is no authorised live feed, so Poravia shows the schedule and says live tracking is unavailable rather than animating a coach that is not there.</string>
+    <string name="support_a_live">Not in this release. There is no authorised live feed, so Odivrelo shows the schedule and says live tracking is unavailable rather than animating a coach that is not there.</string>
     <string name="support_q_pack">My offline pack will not install.</string>
-    <string name="support_a_pack">Poravia verifies a pack\'s SHA-256 before using it and refuses a corrupt one. Delete it and download again. If it keeps failing, the data release may have been replaced mid-download. Refresh and retry.</string>
+    <string name="support_a_pack">Odivrelo verifies a pack\'s SHA-256 before using it and refuses a corrupt one. Delete it and download again. If it keeps failing, the data release may have been replaced mid-download. Refresh and retry.</string>
     <string name="support_q_delete">Can I get my ticket files back after deleting them?</string>
-    <string name="support_a_delete">No. Deletion is real and Poravia holds no copy anywhere.</string>
+    <string name="support_a_delete">No. Deletion is real and Odivrelo holds no copy anywhere.</string>
     <string name="support_report_title">Reporting a problem</string>
     <string name="support_report_body">Send to %1$s what you expected and what happened, the platform and version from Settings, which also shows the build commit and the data release id, and the screen plus the journey or operator id if relevant.</string>
     <string name="support_report_warning">Do not send ticket files, booking references or passenger names. They are never needed to diagnose a problem.</string>
@@ -445,7 +445,7 @@
     <string name="support_accessibility_title">Accessibility</string>
     <string name="support_accessibility_body">Accessibility is a release gate, not a feature request queue. If something is unusable with TalkBack, a keyboard, large text or reduced motion, report it as a defect and it will be treated as one.</string>
     <string name="support_email_action">Send an email</string>
-    <string name="support_email_subject">Poravia report %1$s</string>
+    <string name="support_email_subject">Odivrelo report %1$s</string>
     <string name="settings_open_source_title">Open-source libraries</string>
     <string name="settings_data_release_title">Data release</string>
     <string name="settings_signing_note">This installation is not signed with a distribution key.</string>

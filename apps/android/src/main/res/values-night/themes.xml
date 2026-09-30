@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Poravia" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/poravia_window_background</item>
+    <style name="Theme.Odivrelo" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/odivrelo_window_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
@@ -10,7 +10,7 @@
         <item name="android:enforceStatusBarContrast">false</item>
     </style>
 
-    <style name="Theme.Poravia.Starting" parent="Theme.Poravia">
-        <item name="android:windowBackground">@color/poravia_splash_background</item>
+    <style name="Theme.Odivrelo.Starting" parent="Theme.Odivrelo">
+        <item name="android:windowBackground">@color/odivrelo_splash_background</item>
     </style>
 </resources>

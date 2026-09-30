@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-journeys-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/pack-journeys-v1.schema.json",
   "title": "Offline pack: journeys for one service date, version 1",
   "description": "One `journeys-<serviceDate>` pack. `results` carries every journey on the\ndate in the shape `GET /v1/journeys` returns, end to end rather than for\na requested pair. `journeys` carries the matching\n`GET /v1/journeys/{journey_id}` detail, keyed by journey id.\n",
   "allOf": [

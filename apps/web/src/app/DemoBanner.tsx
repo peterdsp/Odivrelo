@@ -23,9 +23,9 @@ export function DemoBanner() {
   const mode = useDataMode();
   if (mode !== 'demo') return null;
   return (
-    <aside className="pv-demo-banner" aria-label={t('demo.title')} data-testid="demo-banner">
-      <div className="pv-demo-banner__inner">
-        <p className="pv-demo-banner__title">
+    <aside className="od-demo-banner" aria-label={t('demo.title')} data-testid="demo-banner">
+      <div className="od-demo-banner__inner">
+        <p className="od-demo-banner__title">
           <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
             <path
               d="M8 5v4.5M8 11.6v.2M8 1.8 1.4 13.2h13.2L8 1.8Z"
@@ -38,11 +38,11 @@ export function DemoBanner() {
           </svg>
           {t('demo.title')}
         </p>
-        <p className="pv-demo-banner__body">{t('demo.body')}</p>
+        <p className="od-demo-banner__body">{t('demo.body')}</p>
         <Disclosure summary={t('demo.why')}>
           <p>{t('demo.whyBody')}</p>
           <p>
-            <Link to="/coverage" className="pv-link">
+            <Link to="/coverage" className="od-link">
               {t('nav.coverage')}
             </Link>
           </p>

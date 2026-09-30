@@ -49,19 +49,19 @@ export function Welcome() {
   };
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <div className="pv-welcome__hero">
+    <div className="od-page od-page--narrow">
+      <div className="od-welcome__hero">
         <Mark size={56} decorative />
-        <h1 className="pv-welcome__title">{t('welcome.title')}</h1>
-        <p className="pv-welcome__tagline">{BRAND.tagline[language]}</p>
-        <p className="pv-welcome__intro">{t('welcome.intro')}</p>
+        <h1 className="od-welcome__title">{t('welcome.title')}</h1>
+        <p className="od-welcome__tagline">{BRAND.tagline[language]}</p>
+        <p className="od-welcome__intro">{t('welcome.intro')}</p>
       </div>
 
-      <Section title={t('welcome.chooseLanguage')} description={t('welcome.languageHelp')} className="pv-welcome__languages">
-        <fieldset className="pv-language-choice">
-          <legend className="pv-visually-hidden">{t('welcome.chooseLanguage')}</legend>
+      <Section title={t('welcome.chooseLanguage')} description={t('welcome.languageHelp')} className="od-welcome__languages">
+        <fieldset className="od-language-choice">
+          <legend className="od-visually-hidden">{t('welcome.chooseLanguage')}</legend>
           {LANGUAGES.map((code) => (
-            <label key={code} className="pv-language-choice__option">
+            <label key={code} className="od-language-choice__option">
               <input
                 type="radio"
                 name="language"
@@ -78,18 +78,18 @@ export function Welcome() {
         </fieldset>
       </Section>
 
-      <div className="pv-welcome__promises">
+      <div className="od-welcome__promises">
         <Card as="section" tone="muted">
-          <h2 className="pv-welcome__promiseTitle">{t('welcome.doesTitle')}</h2>
-          <ul className="pv-list pv-list--check">
+          <h2 className="od-welcome__promiseTitle">{t('welcome.doesTitle')}</h2>
+          <ul className="od-list od-list--check">
             {DOES.map((key) => (
               <li key={key}>{t(key)}</li>
             ))}
           </ul>
         </Card>
         <Card as="section" tone="muted">
-          <h2 className="pv-welcome__promiseTitle">{t('welcome.doesNotTitle')}</h2>
-          <ul className="pv-list pv-list--cross">
+          <h2 className="od-welcome__promiseTitle">{t('welcome.doesNotTitle')}</h2>
+          <ul className="od-list od-list--cross">
             {DOES_NOT.map((key) => (
               <li key={key}>{t(key)}</li>
             ))}
@@ -97,7 +97,7 @@ export function Welcome() {
         </Card>
       </div>
 
-      <div className="pv-welcome__actions">
+      <div className="od-welcome__actions">
         <Button tone="primary" onClick={go} full>
           {t('welcome.start')}
         </Button>

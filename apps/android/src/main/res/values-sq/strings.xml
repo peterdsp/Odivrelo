@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Poravia user-visible text, Albanian.
+  Odivrelo user-visible text, Albanian.
 
   All three languages carry exactly the same keys. A unit test
   (LocalisationCompletenessTest) fails the build if one of them is missing a
@@ -8,7 +8,7 @@
   half-translated release cannot ship.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Poravia</string>
+    <string name="app_name">Odivrelo</string>
     <string name="app_tagline">Udhëto me siguri.</string>
     <string name="app_purpose">Autobusë ndërqytetas, me burimin e çdo fakti të treguar.</string>
     <string name="action_retry">Provo përsëri</string>
@@ -61,7 +61,7 @@
     <string name="demo_notice_title">Të dhëna demonstrimi</string>
     <string name="demo_notice_body">Këto të dhëna janë të trilluara. Aloria nuk ekziston dhe asnjë nisje e shfaqur këtu nuk është e vërtetë.</string>
     <string name="demo_notice_a11y">Vërejtje: të dhëna demonstrimi. Aloria nuk ekziston dhe asnjë nisje nuk është e vërtetë.</string>
-    <string name="no_tickets_sold">Poravia nuk shet dhe nuk lëshon bileta.</string>
+    <string name="no_tickets_sold">Odivrelo nuk shet dhe nuk lëshon bileta.</string>
     <string name="no_tickets_sold_short">Nuk shesim bileta</string>
     <string name="freshness_fresh">I freskët</string>
     <string name="freshness_aging">Po plaket</string>
@@ -94,10 +94,10 @@
     <string name="step_free_no">Me shkallë</string>
     <string name="step_free_unknown">Nuk është rishikuar</string>
     <string name="step_free_unknown_help">Askush nuk ka kontrolluar nëse kjo pikë është pa shkallë. Kjo nuk është e njëjta me të pasur shkallë.</string>
-    <string name="welcome_title">Mirë se vjen në Poravia</string>
+    <string name="welcome_title">Mirë se vjen në Odivrelo</string>
     <string name="welcome_language_title">Zgjidh një gjuhë</string>
     <string name="welcome_no_account">Nuk nevojitet llogari. Nuk kërkojmë asgjë për ty.</string>
-    <string name="welcome_no_tickets">Poravia nuk shet bileta. Ju dërgon te operatori ose te zyra e biletave.</string>
+    <string name="welcome_no_tickets">Odivrelo nuk shet bileta. Ju dërgon te operatori ose te zyra e biletave.</string>
     <string name="welcome_offline">Funksionon pa lidhje, me të dhëna që shkarkon vetë.</string>
     <string name="welcome_start">Fillo</string>
     <string name="nav_search">Kërko</string>
@@ -337,8 +337,8 @@
     <string name="settings_support_body">Shkruaj në %1$s</string>
     <string name="settings_licences">Licencat</string>
     <string name="settings_about">Rreth</string>
-    <string name="settings_about_mark">Shenja është një hark: një kalim. Pika qelibar brenda tij është pika e saktë e hipjes.</string>
-    <string name="settings_about_name">Emri Poravia është i trilluar. Sugjerohet nga fjala greke poros, një kalim ose ngushticë. Nuk është fjalë greke dhe nuk ka përkthim të verifikuar.</string>
+    <string name="settings_about_mark">Shenja është një rreth që e përshkon një rrugë drejt një pike portokalli: udhëtimi dhe vendi ku të çon.</string>
+    <string name="settings_about_name">Odivrelo është emër i shpikur. Nuk është fjalë greke dhe nuk është përkthim i ndonjë fjale.</string>
     <string name="settings_version">Versioni</string>
     <string name="settings_commit">Commit</string>
     <string name="settings_release_id">Identiteti i publikimit</string>
@@ -357,7 +357,7 @@
     <string name="sources_licence">Licenca: %1$s</string>
     <string name="sources_retrieved">Marrë %1$s</string>
     <string name="licences_title">Licencat</string>
-    <string name="licences_body">Poravia përdor biblioteka me kod të hapur dhe të dhëna publike.</string>
+    <string name="licences_body">Odivrelo përdor biblioteka me kod të hapur dhe të dhëna publike.</string>
     <string name="diagnostics_title">Diagnostikë</string>
     <string name="diagnostics_body">Informacion teknik për një raport. Nuk përmban të dhëna personale, biletë ose sekret.</string>
     <string name="diagnostics_copied">Kopjuar.</string>
@@ -376,8 +376,8 @@
     <string name="deeplink_unknown_body">Lidhja nuk tregon asgjë në këtë aplikacion. Fillo nga kërkimi.</string>
     <string name="deeplink_expired_title">Ajo lidhje është për një ditë që kaloi</string>
     <string name="deeplink_expired_body">Hap kërkimin për një datë aktuale.</string>
-    <string name="deeplink_foreign_host_title">Ajo lidhje nuk është e Poravia</string>
-    <string name="a11y_app_mark">Shenja Poravia: një hark me pikë hipjeje</string>
+    <string name="deeplink_foreign_host_title">Ajo lidhje nuk është e Odivrelo</string>
+    <string name="a11y_app_mark">Shenja Odivrelo: një rreth i përshkuar nga një rrugë, me një pikë portokalli destinacioni</string>
     <string name="a11y_journey_summary">%1$s, niset %2$s nga %3$s, mbërrin %4$s në %5$s, %6$s</string>
     <string name="a11y_expand">Zgjero</string>
     <string name="a11y_collapse">Zvogëlo</string>
@@ -389,8 +389,8 @@
     <string name="privacy_version">Versioni 1.0.0 · 30 shtator 2026</string>
     <string name="privacy_contact">Kontakti: %1$s</string>
     <string name="privacy_short_title">Shkurtimisht</string>
-    <string name="privacy_short_body">Poravia nuk ka llogari, nuk ka analitikë dhe nuk ka gjurmues të palëve të treta. Kërkimet e tua, udhëtimet e ruajtura dhe biletat e importuara mbeten në pajisjen tënde. Poravia nuk shet dhe nuk lëshon bileta, dhe nuk e sheh kurrë rezervimin tënd.</string>
-    <string name="privacy_storage_title">Çfarë ruan Poravia, dhe ku</string>
+    <string name="privacy_short_body">Odivrelo nuk ka llogari, nuk ka analitikë dhe nuk ka gjurmues të palëve të treta. Kërkimet e tua, udhëtimet e ruajtura dhe biletat e importuara mbeten në pajisjen tënde. Odivrelo nuk shet dhe nuk lëshon bileta, dhe nuk e sheh kurrë rezervimin tënd.</string>
+    <string name="privacy_storage_title">Çfarë ruan Odivrelo, dhe ku</string>
     <string name="privacy_storage_intro">Gjithçka më poshtë ruhet vetëm në pajisjen tënde.</string>
     <string name="privacy_storage_preferences">Gjuha, tema dhe preferencat e aksesueshmërisë, në preferencat e vetë aplikacionit. Fshihen nga Cilësimet ose duke çinstaluar.</string>
     <string name="privacy_storage_recents">Kërkimet e fundit, në një bazë të dhënash lokale, që të mos i rishkruash.</string>
@@ -398,45 +398,45 @@
     <string name="privacy_storage_packs">Paketat offline të shkarkuara, në hapësirën e aplikacionit, që oraret të funksionojnë pa lidhje. Fshihen paketë për paketë.</string>
     <string name="privacy_storage_tickets">Skedarët e biletave të importuara, në hapësirë private e të enkriptuar të aplikacionit, që të tregosh një biletë që e ke tashmë. Fshirja është e vërtetë.</string>
     <string name="privacy_storage_reminders">Planet e kujtesave, në sistemin e njoftimeve, që kujtesa e zgjedhur prej teje të bjerë. Hiqen kur e fik kujtesën.</string>
-    <string name="privacy_storage_footer">Asgjë nga lista më sipër nuk i dërgohet Poravia-s apo askujt tjetër. Nuk ka llogari Poravia dhe nuk ka profil tëndin në asnjë server.</string>
+    <string name="privacy_storage_footer">Asgjë nga lista më sipër nuk i dërgohet Odivrelo-s apo askujt tjetër. Nuk ka llogari Odivrelo dhe nuk ka profil tëndin në asnjë server.</string>
     <string name="privacy_wallet_title">Portofoli i udhëtimit</string>
     <string name="privacy_wallet_body">Skedarët e biletave që importon trajtohen si dokumente të ndjeshme. Ruhen në hapësirën private të aplikacionit, të enkriptuara me një çelës që nuk del dot nga pajisja, dhe përjashtohen nga kopjet rezervë. Nuk ngarkohen kurrë, nuk i dërgohen kurrë një shërbimi njoftimesh, nuk shkruhen kurrë në regjistër, nuk përfshihen kurrë në diagnostikë dhe nuk vendosen kurrë në një memorie të përbashkët. Barkodet nuk regjistrohen kurrë dhe nuk vendosen kurrë në një adresë. Fshirja e një bilete fshin skedarin.</string>
-    <string name="privacy_network_title">Çfarë kërkesash bën Poravia</string>
-    <string name="privacy_network_packs">Manifesti i botimit dhe paketat e të dhënave, drejt origjinës së Poravia-s. Nuk përmbajnë të dhëna personale.</string>
-    <string name="privacy_network_booking">Kalimi për rezervim, drejt faqes së vetë operatorit në një skedë shfletuesi. Poravia nuk shton asgjë. Nga ai çast vlen politika e vetë operatorit.</string>
-    <string name="privacy_network_maps">Hapja e hartës, në aplikacionin e hartave të pajisjes tënde. Poravia nuk shkarkon pllaka harte dhe nuk dërgon vendndodhje.</string>
-    <string name="privacy_network_footer">Poravia nuk shton asnjë identifikues, asnjë id reklamimi dhe asnjë gjurmë në asnjë kërkesë.</string>
+    <string name="privacy_network_title">Çfarë kërkesash bën Odivrelo</string>
+    <string name="privacy_network_packs">Manifesti i botimit dhe paketat e të dhënave, drejt origjinës së Odivrelo-s. Nuk përmbajnë të dhëna personale.</string>
+    <string name="privacy_network_booking">Kalimi për rezervim, drejt faqes së vetë operatorit në një skedë shfletuesi. Odivrelo nuk shton asgjë. Nga ai çast vlen politika e vetë operatorit.</string>
+    <string name="privacy_network_maps">Hapja e hartës, në aplikacionin e hartave të pajisjes tënde. Odivrelo nuk shkarkon pllaka harte dhe nuk dërgon vendndodhje.</string>
+    <string name="privacy_network_footer">Odivrelo nuk shton asnjë identifikues, asnjë id reklamimi dhe asnjë gjurmë në asnjë kërkesë.</string>
     <string name="privacy_permissions_title">Lejet</string>
     <string name="privacy_permissions_notifications">Njoftimet, për kujtesat që i cakton vetë. Nëse refuzon, kujtesat thjesht nuk funksionojnë dhe aplikacioni e thotë këtë.</string>
     <string name="privacy_permissions_files">Zgjedhja e një skedari, vetëm për biletën që e zgjedh vetë. Qasja e gjerë te skedarët nuk kërkohet kurrë.</string>
-    <string name="privacy_permissions_none">Poravia nuk kërkon vendndodhje, kontakte, kalendar, kamerë, mikrofon apo qasje të gjerë te ruajtja.</string>
+    <string name="privacy_permissions_none">Odivrelo nuk kërkon vendndodhje, kontakte, kalendar, kamerë, mikrofon apo qasje të gjerë te ruajtja.</string>
     <string name="privacy_notifications_title">Përmbajtja e njoftimeve</string>
     <string name="privacy_notifications_body">Një kujtesë përmban vetëm orën e udhëtimit dhe pikën e hipjes. Kurrë emrin e pasagjerit, referencën e rezervimit, imazhin e biletës apo barkodin.</string>
     <string name="privacy_third_parties_title">Palët e treta</string>
-    <string name="privacy_third_parties_body">Poravia nuk përfshin asnjë SDK analitike, reklamimi, raportimi defektesh apo rrjetesh sociale. Lista e plotë e kodit të palëve të treta janë licencat me burim të hapur në këto cilësime.</string>
+    <string name="privacy_third_parties_body">Odivrelo nuk përfshin asnjë SDK analitike, reklamimi, raportimi defektesh apo rrjetesh sociale. Lista e plotë e kodit të palëve të treta janë licencat me burim të hapur në këto cilësime.</string>
     <string name="privacy_children_title">Fëmijët</string>
-    <string name="privacy_children_body">Poravia nuk u drejtohet fëmijëve dhe nuk mbledh asgjë nga askush.</string>
+    <string name="privacy_children_body">Odivrelo nuk u drejtohet fëmijëve dhe nuk mbledh asgjë nga askush.</string>
     <string name="privacy_service_data_title">Të dhënat për linjat</string>
-    <string name="privacy_service_data_body">Poravia publikon informacion të transportit publik bashkë me burimin, kohën e marrjes, gjendjen e të drejtave dhe gjendjen e rishikimit. Ky është informacion për linjat, jo për ty. Korrigjimet dhe kërkesat për heqje shkojnë te %1$s.</string>
+    <string name="privacy_service_data_body">Odivrelo publikon informacion të transportit publik bashkë me burimin, kohën e marrjes, gjendjen e të drejtave dhe gjendjen e rishikimit. Ky është informacion për linjat, jo për ty. Korrigjimet dhe kërkesat për heqje shkojnë te %1$s.</string>
     <string name="privacy_changes_title">Ndryshimet</string>
     <string name="privacy_changes_body">Ndryshimet thelbësore publikohen këtu dhe në shënimet e botimit, me datë.</string>
     <string name="support_demo_title">Para çdo gjëje tjetër: ky beta tregon të dhëna të sajuara</string>
-    <string name="support_demo_body">Çdo udhëtim, terminal, operator dhe çmim në Poravia 1.0.0 i përket një rajoni imagjinar të quajtur Aloria, i cili nuk ekziston. Mos e përdor këtë version për të planifikuar një udhëtim. Aplikacioni e thotë këtë në çdo ekran, dhe ai njoftim nuk është defekt.</string>
+    <string name="support_demo_body">Çdo udhëtim, terminal, operator dhe çmim në Odivrelo 1.0.0 i përket një rajoni imagjinar të quajtur Aloria, i cili nuk ekziston. Mos e përdor këtë version për të planifikuar një udhëtim. Aplikacioni e thotë këtë në çdo ekran, dhe ai njoftim nuk është defekt.</string>
     <string name="support_questions_title">Pyetje të shpeshta</string>
     <string name="support_q_missing">Pse nuk e gjej dot udhëtimin tim?</string>
     <string name="support_a_missing">Sepse ky beta nuk përmban të dhëna reale të autobusëve grekë. Shih më lart.</string>
-    <string name="support_q_tickets">Pse Poravia nuk shet bileta?</string>
+    <string name="support_q_tickets">Pse Odivrelo nuk shet bileta?</string>
     <string name="support_a_tickets">Nuk është shitës biletash dhe nuk do të bëhet pa autorizim me shkrim nga një operator. Të dërgon te faqja e rezervimit e vetë operatorit, ose te zyra e verifikuar e biletave kur nuk ka shitje online.</string>
     <string name="support_q_freshness">Çfarë do të thotë etiketa e freskisë?</string>
     <string name="support_a_freshness">Kur u kontrollua për herë të fundit ai fakt kundrejt burimit të vet, dhe sa i vjetër është. I freskët, duke u vjetruar dhe i vjetër janë prag, jo garanci. Etiketa i vjetër do të thotë verifiko para se të udhëtosh.</string>
     <string name="support_q_map">Pse harta duket e përafërt?</string>
-    <string name="support_a_map">Gjeometria e linjës në këtë botim është vetëm midis ndalesave me radhë dhe etiketohet si e tillë. Nuk është shtrirje e saktë rruge, dhe Poravia nuk pretendon të kundërtën.</string>
+    <string name="support_a_map">Gjeometria e linjës në këtë botim është vetëm midis ndalesave me radhë dhe etiketohet si e tillë. Nuk është shtrirje e saktë rruge, dhe Odivrelo nuk pretendon të kundërtën.</string>
     <string name="support_q_live">Ku është ndjekja e drejtpërdrejtë?</string>
-    <string name="support_a_live">Jo në këtë botim. Nuk ka një burim të drejtpërdrejtë të autorizuar, prandaj Poravia tregon orarin dhe thotë se ndjekja e drejtpërdrejtë nuk ofrohet, në vend që të animojë një autobus që nuk është atje.</string>
+    <string name="support_a_live">Jo në këtë botim. Nuk ka një burim të drejtpërdrejtë të autorizuar, prandaj Odivrelo tregon orarin dhe thotë se ndjekja e drejtpërdrejtë nuk ofrohet, në vend që të animojë një autobus që nuk është atje.</string>
     <string name="support_q_pack">Paketa ime offline nuk instalohet.</string>
-    <string name="support_a_pack">Poravia verifikon SHA-256 e një pakete para se ta përdorë dhe refuzon një të dëmtuar. Fshije dhe shkarkoje sërish. Nëse vazhdon të dështojë, botimi i të dhënave mund të jetë zëvendësuar në mes të shkarkimit. Rifresko dhe provo sërish.</string>
+    <string name="support_a_pack">Odivrelo verifikon SHA-256 e një pakete para se ta përdorë dhe refuzon një të dëmtuar. Fshije dhe shkarkoje sërish. Nëse vazhdon të dështojë, botimi i të dhënave mund të jetë zëvendësuar në mes të shkarkimit. Rifresko dhe provo sërish.</string>
     <string name="support_q_delete">A mund t’i marr sërish biletat pasi i fshij?</string>
-    <string name="support_a_delete">Jo. Fshirja është e vërtetë dhe Poravia nuk mban kopje askund.</string>
+    <string name="support_a_delete">Jo. Fshirja është e vërtetë dhe Odivrelo nuk mban kopje askund.</string>
     <string name="support_report_title">Raportimi i një problemi</string>
     <string name="support_report_body">Dërgo te %1$s çfarë prisje dhe çfarë ndodhi, platformën dhe versionin nga Cilësimet, që tregojnë edhe commit-in e ndërtimit edhe identitetin e botimit të të dhënave, si dhe ekranin bashkë me identitetin e udhëtimit ose të operatorit nëse duhet.</string>
     <string name="support_report_warning">Mos dërgo skedarë biletash, referenca rezervimi apo emra pasagjerësh. Nuk nevojiten kurrë për të diagnostikuar një problem.</string>
@@ -445,7 +445,7 @@
     <string name="support_accessibility_title">Aksesueshmëria</string>
     <string name="support_accessibility_body">Aksesueshmëria është kusht botimi, jo kërkesë në radhë. Nëse diçka nuk përdoret dot me TalkBack, me tastierë, me shkronja të mëdha ose me lëvizje të reduktuar, raportoje si defekt dhe do të trajtohet si i tillë.</string>
     <string name="support_email_action">Dërgo një email</string>
-    <string name="support_email_subject">Raport Poravia %1$s</string>
+    <string name="support_email_subject">Raport Odivrelo %1$s</string>
     <string name="settings_open_source_title">Bibliotekat me burim të hapur</string>
     <string name="settings_data_release_title">Botimi i të dhënave</string>
     <string name="settings_signing_note">Ky instalim nuk është i nënshkruar me çelës shpërndarjeje.</string>

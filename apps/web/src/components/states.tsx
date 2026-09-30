@@ -75,12 +75,12 @@ export function StateBlock({
   useAnnounceOnChange(announce ? title : null, assertive);
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
-    <div className={`pv-state pv-state--${tone}`} data-state={kind}>
-      {kind === 'loading' ? <span className="pv-spinner" aria-hidden="true" /> : null}
-      <Heading className="pv-state__title">{title}</Heading>
-      {body ? <div className="pv-state__body">{body}</div> : null}
+    <div className={`od-state od-state--${tone}`} data-state={kind}>
+      {kind === 'loading' ? <span className="od-spinner" aria-hidden="true" /> : null}
+      <Heading className="od-state__title">{title}</Heading>
+      {body ? <div className="od-state__body">{body}</div> : null}
       {(onRetry || action) && (
-        <div className="pv-state__actions">
+        <div className="od-state__actions">
           {onRetry ? (
             <Button tone="primary" onClick={onRetry}>
               {retryLabel ?? t('app.retry')}
@@ -97,9 +97,9 @@ export function StateBlock({
 export function Loading({ label }: { label?: string }) {
   const { t } = useI18n();
   return (
-    <div className="pv-state pv-state--neutral" data-state="loading" aria-busy="true">
-      <span className="pv-spinner" aria-hidden="true" />
-      <p className="pv-state__title">{label ?? t('app.loadingData')}</p>
+    <div className="od-state od-state--neutral" data-state="loading" aria-busy="true">
+      <span className="od-spinner" aria-hidden="true" />
+      <p className="od-state__title">{label ?? t('app.loadingData')}</p>
     </div>
   );
 }
@@ -164,9 +164,9 @@ export function DataError({ error, onRetry, notFoundTitle, notFoundBody, heading
         <>
           {body ? <p>{body}</p> : null}
           {kind === 'release_mismatch' ? null : (
-            <details className="pv-state__detail">
+            <details className="od-state__detail">
               <summary>{t('app.errorDetail')}</summary>
-              <p className="pv-mono">{detail}</p>
+              <p className="od-mono">{detail}</p>
             </details>
           )}
         </>

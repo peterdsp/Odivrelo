@@ -146,9 +146,9 @@
     },
     {
       "id": "manual-review",
-      "label": "Poravia manual operator review",
+      "label": "Odivrelo manual operator review",
       "sourceKind": "manual_review",
-      "baseUrl": "https://poravia.peterdsp.dev/",
+      "baseUrl": "https://odivrelo.peterdsp.dev/",
       "authorityLevel": "manual",
       "accessMode": "file_import",
       "licenseId": null,

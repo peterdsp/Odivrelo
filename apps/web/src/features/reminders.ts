@@ -88,7 +88,7 @@ export function scheduleReminder(options: {
       new globalThis.Notification(options.title, {
         body: options.body,
         lang: globalThis.document?.documentElement.lang || 'el',
-        tag: `poravia-trip-${options.tripId}`,
+        tag: `odivrelo-trip-${options.tripId}`,
         requireInteraction: false,
         silent: false,
       });

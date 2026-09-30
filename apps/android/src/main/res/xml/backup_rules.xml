@@ -13,9 +13,9 @@
 <full-backup-content>
     <exclude domain="file" path="wallet/" />
     <exclude domain="file" path="packs/" />
-    <exclude domain="database" path="poravia.db" />
-    <exclude domain="database" path="poravia.db-journal" />
-    <exclude domain="database" path="poravia.db-wal" />
-    <exclude domain="database" path="poravia.db-shm" />
-    <exclude domain="sharedpref" path="poravia_wallet_keys.xml" />
+    <exclude domain="database" path="odivrelo.db" />
+    <exclude domain="database" path="odivrelo.db-journal" />
+    <exclude domain="database" path="odivrelo.db-wal" />
+    <exclude domain="database" path="odivrelo.db-shm" />
+    <exclude domain="sharedpref" path="odivrelo_wallet_keys.xml" />
 </full-backup-content>

@@ -44,11 +44,11 @@ export function ServiceDateField({ value, onChange, min, max, error, now }: Serv
   const describedBy = [`${id}-hint`, `${id}-readable`, error ? `${id}-error` : ''].filter(Boolean).join(' ');
 
   return (
-    <div className={['pv-field', 'pv-date-field', error ? 'pv-field--invalid' : ''].filter(Boolean).join(' ')}>
-      <label className="pv-field__label" htmlFor={inputId}>
+    <div className={['od-field', 'od-date-field', error ? 'od-field--invalid' : ''].filter(Boolean).join(' ')}>
+      <label className="od-field__label" htmlFor={inputId}>
         {t('search.date')}
       </label>
-      <div className="pv-date-field__row">
+      <div className="od-date-field__row">
         <Button
           tone="quiet"
           onClick={() => step(-1)}
@@ -60,7 +60,7 @@ export function ServiceDateField({ value, onChange, min, max, error, now }: Serv
         <input
           id={inputId}
           name="date"
-          className="pv-input pv-input--date"
+          className="od-input od-input--date"
           type="date"
           value={value}
           min={min}
@@ -84,7 +84,7 @@ export function ServiceDateField({ value, onChange, min, max, error, now }: Serv
           <span aria-hidden="true">+</span>
         </Button>
       </div>
-      <div className="pv-date-field__shortcuts">
+      <div className="od-date-field__shortcuts">
         <Button
           tone={value === today ? 'primary' : 'quiet'}
           aria-pressed={value === today}
@@ -106,14 +106,14 @@ export function ServiceDateField({ value, onChange, min, max, error, now }: Serv
       </div>
       {/* The machine-readable value is in the input; this is the sentence a
           reader actually understands, and it is what the input is described by. */}
-      <p className="pv-date-field__readable" id={`${id}-readable`}>
+      <p className="od-date-field__readable" id={`${id}-readable`}>
         {formatServiceDate(value)}
       </p>
-      <p className="pv-field__hint" id={`${id}-hint`}>
+      <p className="od-field__hint" id={`${id}-hint`}>
         {t('search.dateHelp')}
       </p>
       {error ? (
-        <p className="pv-field__error" id={`${id}-error`}>
+        <p className="od-field__error" id={`${id}-error`}>
           {error}
         </p>
       ) : null}

@@ -43,7 +43,7 @@ def test_the_brand_is_read_from_brand_json_and_nothing_is_hardcoded():
 #: with the product was the point of the brand migration, so its identifier is
 #: excluded from the hardcoded-identity scan. Every other occurrence of the
 #: product name, slug or domain in this package is still a defect.
-STAGING_PACKAGE = "poravia_ktel"
+STAGING_PACKAGE = "odivrelo_ktel"
 
 
 def test_no_product_name_is_hardcoded_in_the_package():
@@ -99,12 +99,12 @@ def test_the_correction_url_is_derived_from_the_brand():
 
 
 def test_the_staging_bootstrap_resolves_the_compiled_data_layer():
-    assert (_staging.STAGING_PATH / "poravia_ktel" / "__init__.py").is_file()
+    assert (_staging.STAGING_PATH / "odivrelo_ktel" / "__init__.py").is_file()
     assert _staging.STAGING_PATH.name == "ktel-staging"
 
 
 def test_the_staging_branding_module_follows_brand_json():
-    from poravia_ktel import branding
+    from odivrelo_ktel import branding
 
     # The release directory name and the GTFS publisher come from here, so a
     # rename in brand.json must reach them.
@@ -134,6 +134,18 @@ def test_the_legacy_prefix_is_still_accepted(seeded):
             f"{LEGACY_PREFIX}_PUBLIC_DB_PATH": str(seeded["publicDb"]),
             f"{LEGACY_PREFIX}_RELEASE_DIR": str(seeded["releaseDir"]),
             f"{LEGACY_PREFIX}_DATA_MODE": "demo",
+        }
+    )
+    assert settings.public_db_path == seeded["publicDb"]
+    assert settings.data_mode == "demo"
+
+
+def test_the_older_legacy_prefix_is_still_accepted(seeded):
+    settings = load_settings(
+        {
+            "HODOMAP_PUBLIC_DB_PATH": str(seeded["publicDb"]),
+            "HODOMAP_RELEASE_DIR": str(seeded["releaseDir"]),
+            "HODOMAP_DATA_MODE": "demo",
         }
     )
     assert settings.public_db_path == seeded["publicDb"]

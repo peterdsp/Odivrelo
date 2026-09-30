@@ -6,17 +6,17 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from poravia_ktel import branding, ktel_api, ktel_db, ktel_gtfs, ktel_release
-from poravia_ktel.ktel_ingest import import_normalized_snapshot, review_entity
-from poravia_ktel.ktel_publish import compile_public_database
-from poravia_ktel.ktel_registry import (
+from odivrelo_ktel import branding, ktel_api, ktel_db, ktel_gtfs, ktel_release
+from odivrelo_ktel.ktel_ingest import import_normalized_snapshot, review_entity
+from odivrelo_ktel.ktel_publish import compile_public_database
+from odivrelo_ktel.ktel_registry import (
     coordinate_status,
     coverage_summary,
     load_registry,
     operator_rows,
     seed_registry,
 )
-from poravia_ktel.ktel_ticketweb import (
+from odivrelo_ktel.ktel_ticketweb import (
     JsonDiskCache,
     RequestBudget,
     TicketWebReadClient,

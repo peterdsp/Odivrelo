@@ -127,7 +127,7 @@ test.describe('empty and unavailable results', () => {
 
     // It stays on the search page and names the problem.
     await expect(page).toHaveURL(/\/search/);
-    await expect(page.locator('.pv-field__error').first()).toBeVisible();
+    await expect(page.locator('.od-field__error').first()).toBeVisible();
     await shoot(page, testInfo, 'search-validation-error');
     await expectNoAxeViolations(page, testInfo, 'search-validation-error');
   });
@@ -215,7 +215,7 @@ test.describe('the travel wallet', () => {
       mimeType: 'image/png',
       buffer: Buffer.from('<script>alert(1)</script>'),
     });
-    await expect(page.locator('.pv-field__error')).toContainText('δεν μοιάζει πραγματικά');
+    await expect(page.locator('.od-field__error')).toContainText('δεν μοιάζει πραγματικά');
     await shoot(page, testInfo, 'wallet-rejected-file');
   });
 
@@ -239,7 +239,7 @@ test.describe('the travel wallet', () => {
 
     // Opening it renders it in an isolated viewer.
     await card.getByRole('button', { name: 'Άνοιγμα' }).click();
-    await expect(page.locator('.pv-viewer')).toBeVisible();
+    await expect(page.locator('.od-viewer')).toBeVisible();
     await expectNoAxeViolations(page, testInfo, 'wallet-viewer');
     await shoot(page, testInfo, 'wallet-viewer');
 

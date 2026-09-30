@@ -122,8 +122,8 @@ export function Results() {
 
   if (!effectiveQuery) {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('meta.search.title')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('meta.search.title')}</h1>
         <StateBlock
           kind="invalid"
           title={t('state.invalidLinkTitle')}
@@ -143,10 +143,10 @@ export function Results() {
   const expired = state.date ? isPastServiceDate(state.date) : false;
 
   const list = (
-    <div className="pv-results">
-      <div className="pv-results__head">
-        <h1 className="pv-page__title">{t('results.title', { origin: originName, destination: destinationName })}</h1>
-        <p className="pv-results__meta">
+    <div className="od-results">
+      <div className="od-results__head">
+        <h1 className="od-page__title">{t('results.title', { origin: originName, destination: destinationName })}</h1>
+        <p className="od-results__meta">
           <span>{state.date ? t('search.date') : ''}</span>{' '}
           {state.date ? <time dateTime={state.date}>{state.date}</time> : null}
           {value ? (
@@ -156,7 +156,7 @@ export function Results() {
             </>
           ) : null}
         </p>
-        <div className="pv-results__actions">
+        <div className="od-results__actions">
           <ButtonLink tone="secondary" to={searchHref}>
             {t('results.newSearch')}
           </ButtonLink>
@@ -218,7 +218,7 @@ export function Results() {
                       <span key={date}>
                         {index > 0 ? ', ' : ''}
                         <Link
-                          className="pv-link"
+                          className="od-link"
                           to={{ pathname: '/results', search: `?${writeSearchState({ ...state, date }).toString()}` }}
                         >
                           {date}
@@ -247,12 +247,12 @@ export function Results() {
               />
             ) : null}
             <Section title={plural('results.count', value.results.length)} description={t('results.sortedByDeparture')} level={2}>
-              <ul className="pv-list pv-list--cards" aria-label={t('a11y.sortedList')}>
+              <ul className="od-list od-list--cards" aria-label={t('a11y.sortedList')}>
                 {value.results.map((journey) => (
                   <li key={journey.id}>
                     {layout.twoPane ? (
                       <div
-                        className="pv-results__selectable"
+                        className="od-results__selectable"
                         onClick={(event) => {
                           // Selecting in the two-pane layout should not leave the
                           // page. The heading link still works for a new tab, a
@@ -287,12 +287,12 @@ export function Results() {
                 ))}
               </ul>
             </Section>
-            <p className="pv-results__footnote">
+            <p className="od-results__footnote">
               {t('saved.fromRelease', { releaseId: value.releaseId })}
               {manifestValue ? ` · ${t('offline.release', { releaseId: manifestValue.releaseId, when: manifestValue.publishedAt })}` : ''}
             </p>
-            <p className="pv-results__footnote">
-              <Link to="/coverage" className="pv-link">
+            <p className="od-results__footnote">
+              <Link to="/coverage" className="od-link">
                 {t('nav.coverage')}
               </Link>
             </p>
@@ -309,7 +309,7 @@ export function Results() {
     ) : null;
 
   return (
-    <div className="pv-page">
+    <div className="od-page">
       <TwoPane
         layout={layout}
         listLabel={t('results.title', { origin: originName, destination: destinationName })}

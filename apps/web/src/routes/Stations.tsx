@@ -52,9 +52,9 @@ export function Stations() {
   });
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('stations.title')}</h1>
-      <p className="pv-page__lede">{t('stations.intro')}</p>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('stations.title')}</h1>
+      <p className="od-page__lede">{t('stations.intro')}</p>
 
       {places.state.status === 'loading' ? <Loading /> : null}
       {places.state.status === 'error' ? <DataError error={places.state.error} onRetry={places.reload} /> : null}
@@ -62,22 +62,22 @@ export function Stations() {
       {grouped.map(({ terminal, children }) => (
         <Section key={terminal.id} title={name(terminal.name)} level={2} id={`terminal-${terminal.id}`}>
           <p>
-            <Link to={`/stations/${encodeURIComponent(terminal.id)}`} className="pv-link">
+            <Link to={`/stations/${encodeURIComponent(terminal.id)}`} className="od-link">
               {t('station.title', { name: name(terminal.name) })}
             </Link>{' '}
             <CoverageBadge state={terminal.coverage} />
           </p>
-          <p className="pv-muted">{terminal.municipality}</p>
+          <p className="od-muted">{terminal.municipality}</p>
           {children.length === 0 ? (
-            <p className="pv-muted">{t('search.boardingPointCount_zero')}</p>
+            <p className="od-muted">{t('search.boardingPointCount_zero')}</p>
           ) : (
-            <ul className="pv-list pv-list--plain">
+            <ul className="od-list od-list--plain">
               {children.map((child) => (
                 <li key={child.id}>
-                  <Link to={`/stations/${encodeURIComponent(child.id)}`} className="pv-link">
+                  <Link to={`/stations/${encodeURIComponent(child.id)}`} className="od-link">
                     {name(child.name)}
                   </Link>
-                  {child.bay ? <span className="pv-muted"> {t('journey.boardingBay', { bay: child.bay })}</span> : null}{' '}
+                  {child.bay ? <span className="od-muted"> {t('journey.boardingBay', { bay: child.bay })}</span> : null}{' '}
                   <StepFreeBadge stepFree={child.stepFree ?? null} />
                 </li>
               ))}
@@ -137,8 +137,8 @@ export function StationDetail() {
   if (loaded.state.status === 'loading') return <Loading />;
   if (loaded.state.status === 'error') {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('station.notFoundTitle')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('station.notFoundTitle')}</h1>
         <DataError
           error={loaded.state.error}
           onRetry={loaded.reload}
@@ -151,28 +151,28 @@ export function StationDetail() {
   if (!result || !place) return null;
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <nav aria-label={t('a11y.breadcrumb')} className="pv-breadcrumb">
-        <Link to="/stations" className="pv-link">
+    <div className="od-page od-page--narrow">
+      <nav aria-label={t('a11y.breadcrumb')} className="od-breadcrumb">
+        <Link to="/stations" className="od-link">
           {t('stations.title')}
         </Link>
         {result.terminal ? (
           <>
             <span aria-hidden="true"> / </span>
-            <Link to={`/stations/${encodeURIComponent(result.terminal.id)}`} className="pv-link">
+            <Link to={`/stations/${encodeURIComponent(result.terminal.id)}`} className="od-link">
               {name(result.terminal.name)}
             </Link>
           </>
         ) : null}
       </nav>
 
-      <h1 className="pv-page__title">{placeName}</h1>
-      <p className="pv-page__lede">
+      <h1 className="od-page__title">{placeName}</h1>
+      <p className="od-page__lede">
         <CoverageBadge state={place.coverage} />{' '}
         {place.kind === 'stop' ? <StepFreeBadge stepFree={place.stepFree} /> : null}{' '}
         {place.reviewState ? <ReviewStateBadge state={place.reviewState} /> : null}
       </p>
-      {result.terminal ? <p className="pv-muted">{t('station.partOf', { name: name(result.terminal.name) })}</p> : null}
+      {result.terminal ? <p className="od-muted">{t('station.partOf', { name: name(result.terminal.name) })}</p> : null}
 
       <FavoriteToggle kind="place" targetId={place.id} label={place.name} />
 
@@ -202,15 +202,15 @@ export function StationDetail() {
 
       {result.boardingPoints.length > 0 ? (
         <Section title={t('station.boardingPoints')} level={2}>
-          <ul className="pv-list pv-list--plain">
+          <ul className="od-list od-list--plain">
             {result.boardingPoints.map((point, index) => {
               const pointId = point.stopId ?? point.id ?? `${result.id}-bp-${index}`;
               return (
                 <li key={pointId}>
-                  <Link to={`/stations/${encodeURIComponent(pointId)}`} className="pv-link">
+                  <Link to={`/stations/${encodeURIComponent(pointId)}`} className="od-link">
                     {name(point.name)}
                   </Link>
-                  {point.bay ? <span className="pv-muted"> {t('journey.boardingBay', { bay: point.bay })}</span> : null}{' '}
+                  {point.bay ? <span className="od-muted"> {t('journey.boardingBay', { bay: point.bay })}</span> : null}{' '}
                   <StepFreeBadge stepFree={point.stepFree ?? null} />
                 </li>
               );
@@ -221,10 +221,10 @@ export function StationDetail() {
 
       {result.operators.length > 0 ? (
         <Section title={t('station.operators')} level={2}>
-          <ul className="pv-list pv-list--plain">
+          <ul className="od-list od-list--plain">
             {result.operators.map((operator) => (
               <li key={operator.id}>
-                <Link to={`/operators/${encodeURIComponent(operator.id)}`} className="pv-link">
+                <Link to={`/operators/${encodeURIComponent(operator.id)}`} className="od-link">
                   {name(operator.name)}
                 </Link>
               </li>
@@ -253,19 +253,19 @@ export function StationDetail() {
             announce={false}
           />
         ) : (
-          <ul className="pv-list pv-list--plain pv-departures">
+          <ul className="od-list od-list--plain od-departures">
             {result.departures.map((departure) => {
               const at = departure.departureAt ?? departure.arrivalAt;
               return (
                 <li key={departure.journeyId}>
                   <Link
                     to={`/journey/${encodeURIComponent(departure.journeyId)}?date=${departure.serviceDate}`}
-                    className="pv-link"
+                    className="od-link"
                   >
                     {at ? <time dateTime={at}>{formatClock(at)}</time> : t('journey.noTime')}{' '}
                     {t('station.towards', { destination: name(departure.headsign) })}
                   </Link>{' '}
-                  <span className="pv-muted">{name(departure.operator.name)}</span>{' '}
+                  <span className="od-muted">{name(departure.operator.name)}</span>{' '}
                   <TimeQualityBadge quality={departure.timeQuality} />
                 </li>
               );
@@ -275,7 +275,7 @@ export function StationDetail() {
       </Section>
 
       <Section title={t('journey.provenance')} level={2}>
-        <ul className="pv-list pv-list--plain pv-provenance">
+        <ul className="od-list od-list--plain od-provenance">
           {result.provenance.map((entry, index) => {
             const view = provenanceView(entry, index);
             return (

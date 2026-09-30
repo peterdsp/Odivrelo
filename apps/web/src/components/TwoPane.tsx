@@ -59,27 +59,27 @@ export function TwoPane({
       ? `${Math.round((layout.segments[0].width / layout.width) * 100)}%`
       : null;
 
-  const style = hingeSplit ? ({ '--pv-pane-split': hingeSplit } as React.CSSProperties) : undefined;
+  const style = hingeSplit ? ({ '--od-pane-split': hingeSplit } as React.CSSProperties) : undefined;
 
   return (
     <div
-      className="pv-two-pane"
+      className="od-two-pane"
       data-mode={layout.twoPane ? 'two' : 'one'}
       data-showing={detail ? 'detail' : 'list'}
       {...(style ? { style } : {})}
     >
-      <div className="pv-two-pane__list" role="region" aria-label={listLabel} hidden={showDetailOnly}>
+      <div className="od-two-pane__list" role="region" aria-label={listLabel} hidden={showDetailOnly}>
         {list}
       </div>
       {detail !== null ? (
         <div
-          className="pv-two-pane__detail"
+          className="od-two-pane__detail"
           role="region"
           aria-label={detailLabel}
           tabIndex={-1}
           ref={detailRef}
         >
-          <div className="pv-two-pane__detail-bar">
+          <div className="od-two-pane__detail-bar">
             <Button tone="quiet" onClick={onCloseDetail}>
               <span aria-hidden="true">{'←'} </span>
               {closeLabel ?? t('app.back')}

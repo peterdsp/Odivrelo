@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
-const KEY = 'poravia.scroll.v1';
+const KEY = 'odivrelo.scroll.v1';
 
 /**
  * Remembers scroll position per history entry.

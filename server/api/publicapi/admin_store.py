@@ -2,7 +2,7 @@
 
 These records belong to the API, not to the compiled-data layer, so they live in
 their own database rather than growing the staging schema. Review decisions
-themselves are still delegated to ``poravia_ktel.ktel_ingest.review_entity``,
+themselves are still delegated to ``odivrelo_ktel.ktel_ingest.review_entity``,
 which writes ``ktel_review_events`` in the ingestion database; the rows here are
 the API-level trail of who called what, from where, and with what outcome.
 """

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-stops-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/pack-stops-v1.schema.json",
   "title": "Offline pack: stops, version 1",
   "description": "The `stops` pack. Each value is exactly what `GET /v1/stops/{stop_id}`\nreturns in its `stop` member, for the release's earliest materialised\nservice date.\n",
   "allOf": [

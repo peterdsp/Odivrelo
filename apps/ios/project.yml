@@ -1,4 +1,4 @@
-name: Poravia
+name: Odivrelo
 options:
   bundleIdPrefix: dev.peterdsp
   deploymentTarget:
@@ -35,18 +35,18 @@ settingGroups:
       DEVELOPMENT_TEAM: ""
 
 targets:
-  Poravia:
+  Odivrelo:
     type: application
     platform: iOS
     settings:
       groups: [common]
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.peterdsp.poravia
-        PRODUCT_NAME: Poravia
+        PRODUCT_BUNDLE_IDENTIFIER: dev.peterdsp.odivrelo
+        PRODUCT_NAME: Odivrelo
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "10000"
-        INFOPLIST_FILE: Poravia/Resources/Info.plist
-        CODE_SIGN_ENTITLEMENTS: Poravia/Resources/Poravia.entitlements
+        INFOPLIST_FILE: Odivrelo/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Odivrelo/Resources/Odivrelo.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ENABLE_PREVIEWS: YES
@@ -56,10 +56,10 @@ targets:
         FRAMEWORK_SEARCH_PATHS: "$(inherited) $(PROJECT_DIR)/Frameworks"
       configs:
         Debug:
-          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(PORAVIA_CORE_CONDITION)"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(ODIVRELO_CORE_CONDITION)"
           ONLY_ACTIVE_ARCH: YES
         Release:
-          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(PORAVIA_CORE_CONDITION)"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(ODIVRELO_CORE_CONDITION)"
           SWIFT_COMPILATION_MODE: wholemodule
           VALIDATE_PRODUCT: YES
           # Coverage instrumentation belongs to the test action. Leaving it on
@@ -68,10 +68,10 @@ targets:
           CLANG_COVERAGE_MAPPING: NO
           SWIFT_USE_INTEGRATED_DRIVER: YES
     sources:
-      - path: Poravia
+      - path: Odivrelo
         excludes:
           - "Resources/Info.plist"
-          - "Resources/Poravia.entitlements"
+          - "Resources/Odivrelo.entitlements"
           # The trilingual source of truth is an input to
           # scripts/ios-generate-strings.sh, not a shipped resource. The
           # compiled String Catalog is what the app reads.
@@ -85,68 +85,68 @@ targets:
       # one generator by scripts/ios-sync-packs.sh. It lets a fresh install
       # search offline before any download. The core verifies every digest in
       # adoptSeededRelease(), so shipping it grants no extra trust.
-      - path: Poravia/Resources/release
+      - path: Odivrelo/Resources/release
         type: folder
     dependencies: []
     scheme:
       testTargets:
-        - PoraviaTests
-        - PoraviaUITests
+        - OdivreloTests
+        - OdivreloUITests
       gatherCoverageData: true
       environmentVariables:
-        - variable: PORAVIA_DISABLE_ANIMATIONS
+        - variable: ODIVRELO_DISABLE_ANIMATIONS
           value: "0"
           isEnabled: false
 
-  PoraviaTests:
+  OdivreloTests:
     type: bundle.unit-test
     platform: iOS
     settings:
       groups: [common]
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.peterdsp.poravia.tests
+        PRODUCT_BUNDLE_IDENTIFIER: dev.peterdsp.odivrelo.tests
         GENERATE_INFOPLIST_FILE: YES
         SWIFT_STRICT_CONCURRENCY: complete
       configs:
         Debug:
-          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(PORAVIA_CORE_CONDITION)"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(ODIVRELO_CORE_CONDITION)"
         Release:
-          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(PORAVIA_CORE_CONDITION)"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(ODIVRELO_CORE_CONDITION)"
     sources:
-      - path: PoraviaTests
+      - path: OdivreloTests
     dependencies:
-      - target: Poravia
+      - target: Odivrelo
 
-  PoraviaUITests:
+  OdivreloUITests:
     type: bundle.ui-testing
     platform: iOS
     settings:
       groups: [common]
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.peterdsp.poravia.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: dev.peterdsp.odivrelo.uitests
         GENERATE_INFOPLIST_FILE: YES
-        TEST_TARGET_NAME: Poravia
+        TEST_TARGET_NAME: Odivrelo
         SWIFT_STRICT_CONCURRENCY: minimal
     sources:
-      - path: PoraviaUITests
+      - path: OdivreloUITests
     dependencies:
-      - target: Poravia
+      - target: Odivrelo
 
 schemes:
-  Poravia:
+  Odivrelo:
     build:
       targets:
-        Poravia: all
-        PoraviaTests: [test]
-        PoraviaUITests: [test]
+        Odivrelo: all
+        OdivreloTests: [test]
+        OdivreloUITests: [test]
     run:
       config: Debug
     test:
       config: Debug
       gatherCoverageData: true
       targets:
-        - PoraviaTests
-        - PoraviaUITests
+        - OdivreloTests
+        - OdivreloUITests
     profile:
       config: Release
     analyze:

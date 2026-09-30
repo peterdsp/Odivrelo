@@ -3,15 +3,15 @@
   The platform theme. It exists only to own the splash screen and the window
   background before the first Compose frame; the application's actual colours,
   type and shapes come from the Compose theme, which is generated from
-  design/tokens/poravia.tokens.json.
+  design/tokens/odivrelo.tokens.json.
 
   Both bars are transparent because the application draws edge to edge and insets
   it applies itself.
 -->
 <resources>
 
-    <style name="Theme.Poravia" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/poravia_window_background</item>
+    <style name="Theme.Odivrelo" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/odivrelo_window_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
@@ -22,10 +22,10 @@
 
     <!--
       The launch theme. It shows the product mark on its own ground while the
-      process starts, and hands over to Theme.Poravia as soon as the activity is
+      process starts, and hands over to Theme.Odivrelo as soon as the activity is
       ready, so a cold start never flashes a blank white rectangle.
     -->
-    <style name="Theme.Poravia.Starting" parent="Theme.Poravia">
-        <item name="android:windowBackground">@color/poravia_splash_background</item>
+    <style name="Theme.Odivrelo.Starting" parent="Theme.Odivrelo">
+        <item name="android:windowBackground">@color/odivrelo_splash_background</item>
     </style>
 </resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Odivrelo collects nothing and tracks nobody.
+
+	  There is no account, no analytics SDK, no third-party tracker and no
+	  network call that carries anything about the person using the app. The
+	  only data the app stores is on the device: settings, favourites, saved
+	  trips, downloaded timetable packs, and ticket files the person imported
+	  themselves. Ticket files are never uploaded and never leave the container.
+
+	  The three accessed-API reasons below are each here because a specific
+	  piece of code calls that API. They are not a precaution:
+
+	    CA92.1  UserDefaults, read and written only for this app's own
+	            settings and restorable session (AppSettings, SessionStore).
+	    C617.1  File timestamps, read for files inside this app's own
+	            container: the import date shown for a stored ticket and the
+	            install date shown for an offline pack (TicketStore, the
+	            shared core's pack store).
+	    E174.1  Free disk space, checked before an offline pack download so a
+	            full disk is reported rather than a download failing part way
+	            (offline pack download).
+	-->
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>C617.1</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>E174.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

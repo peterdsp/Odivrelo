@@ -286,7 +286,7 @@ describeRelease('StaticPackSource integrity and offline behaviour', () => {
   it('refuses a release that does not carry the canonical packs', async () => {
     const legacy = {
       contractVersion: '1.0.0',
-      product: 'Poravia',
+      product: 'Odivrelo',
       releaseId: 'deadbeefdeadbeef',
       publishedAt: '2026-09-30T00:00:00Z',
       files: {
@@ -302,7 +302,7 @@ describeRelease('StaticPackSource integrity and offline behaviour', () => {
   });
 
   it('refuses a release built for a different contract version', async () => {
-    const future = { contractVersion: '2.0.0', releaseId: 'x', publishedAt: 'now', product: 'Poravia', files: {} };
+    const future = { contractVersion: '2.0.0', releaseId: 'x', publishedAt: 'now', product: 'Odivrelo', files: {} };
     const source = new StaticPackSource({
       baseUrl: '/data/',
       fetchImpl: (async () => new Response(JSON.stringify(future), { status: 200 })) as typeof fetch,

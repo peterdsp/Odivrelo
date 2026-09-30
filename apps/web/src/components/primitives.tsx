@@ -35,7 +35,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   ref,
 ) {
   const { alert } = useAnnouncer();
-  const classes = ['pv-button', `pv-button--${tone}`, full ? 'pv-button--full' : '', className ?? '']
+  const classes = ['od-button', `od-button--${tone}`, full ? 'od-button--full' : '', className ?? '']
     .filter(Boolean)
     .join(' ');
   return (
@@ -56,7 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {...rest}
     >
       {children}
-      {unavailableReason ? <span className="pv-visually-hidden">. {unavailableReason}</span> : null}
+      {unavailableReason ? <span className="od-visually-hidden">. {unavailableReason}</span> : null}
     </button>
   );
 });
@@ -71,7 +71,7 @@ export interface ButtonLinkProps extends LinkProps {
 }
 
 export function ButtonLink({ tone = 'secondary', full = false, className, ...rest }: ButtonLinkProps) {
-  const classes = ['pv-button', `pv-button--${tone}`, full ? 'pv-button--full' : '', className ?? '']
+  const classes = ['od-button', `od-button--${tone}`, full ? 'od-button--full' : '', className ?? '']
     .filter(Boolean)
     .join(' ');
   return <Link className={classes} {...rest} />;
@@ -96,8 +96,8 @@ export interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElemen
 export function ExternalLink({ href, tone, children, accessibleLabel, className, ...rest }: ExternalLinkProps) {
   const { t } = useI18n();
   const classes = tone
-    ? ['pv-button', `pv-button--${tone}`, 'pv-external', className ?? ''].filter(Boolean).join(' ')
-    : ['pv-link', 'pv-external', className ?? ''].filter(Boolean).join(' ');
+    ? ['od-button', `od-button--${tone}`, 'od-external', className ?? ''].filter(Boolean).join(' ')
+    : ['od-link', 'od-external', className ?? ''].filter(Boolean).join(' ');
   return (
     <a
       href={href}
@@ -108,7 +108,7 @@ export function ExternalLink({ href, tone, children, accessibleLabel, className,
       {...rest}
     >
       {children}
-      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false" className="pv-external__icon">
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false" className="od-external__icon">
         <path
           d="M6 3h7v7M13 3 6.5 9.5"
           fill="none"
@@ -119,7 +119,7 @@ export function ExternalLink({ href, tone, children, accessibleLabel, className,
         />
         <path d="M11 11.5V13H3V5h1.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
-      {accessibleLabel ? null : <span className="pv-visually-hidden">, {t('app.opensExternally')}</span>}
+      {accessibleLabel ? null : <span className="od-visually-hidden">, {t('app.opensExternally')}</span>}
     </a>
   );
 }
@@ -136,7 +136,7 @@ export interface CardProps {
 }
 
 export function Card({ as: Tag = 'div', children, className, tone = 'plain' }: CardProps) {
-  return <Tag className={['pv-card', `pv-card--${tone}`, className ?? ''].filter(Boolean).join(' ')}>{children}</Tag>;
+  return <Tag className={['od-card', `od-card--${tone}`, className ?? ''].filter(Boolean).join(' ')}>{children}</Tag>;
 }
 
 export interface SectionProps {
@@ -155,14 +155,14 @@ export function Section({ title, children, description, level = 2, id, className
   const headingId = id ? `${id}-heading` : generated;
   const Heading = `h${level}` as ElementType;
   return (
-    <section aria-labelledby={headingId} id={id} className={['pv-section', className ?? ''].filter(Boolean).join(' ')}>
-      <div className="pv-section__head">
-        <Heading id={headingId} className="pv-section__title">
+    <section aria-labelledby={headingId} id={id} className={['od-section', className ?? ''].filter(Boolean).join(' ')}>
+      <div className="od-section__head">
+        <Heading id={headingId} className="od-section__title">
           {title}
         </Heading>
-        {actions ? <div className="pv-section__actions">{actions}</div> : null}
+        {actions ? <div className="od-section__actions">{actions}</div> : null}
       </div>
-      {description ? <div className="pv-section__description">{description}</div> : null}
+      {description ? <div className="od-section__description">{description}</div> : null}
       {children}
     </section>
   );
@@ -178,14 +178,14 @@ export interface FactProps {
 }
 
 export function FactList({ children, className }: { children: ReactNode; className?: string }) {
-  return <dl className={['pv-facts', className ?? ''].filter(Boolean).join(' ')}>{children}</dl>;
+  return <dl className={['od-facts', className ?? ''].filter(Boolean).join(' ')}>{children}</dl>;
 }
 
 export function Fact({ label, children }: FactProps) {
   return (
-    <div className="pv-facts__row">
-      <dt className="pv-facts__label">{label}</dt>
-      <dd className="pv-facts__value">{children}</dd>
+    <div className="od-facts__row">
+      <dt className="od-facts__label">{label}</dt>
+      <dd className="od-facts__value">{children}</dd>
     </div>
   );
 }
@@ -220,7 +220,7 @@ const ICON_PATHS: Record<NonNullable<BadgeProps['icon']>, string> = {
  */
 export function Badge({ tone = 'neutral', children, icon, title }: BadgeProps) {
   return (
-    <span className={`pv-badge pv-badge--${tone}`} {...(title ? { title } : {})}>
+    <span className={`od-badge od-badge--${tone}`} {...(title ? { title } : {})}>
       {icon ? (
         <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" focusable="false">
           <path d={ICON_PATHS[icon]} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -246,18 +246,18 @@ export interface FieldShellProps {
 
 export function FieldShell({ label, id, children, hint, error, className }: FieldShellProps) {
   return (
-    <div className={['pv-field', error ? 'pv-field--invalid' : '', className ?? ''].filter(Boolean).join(' ')}>
-      <label className="pv-field__label" htmlFor={id}>
+    <div className={['od-field', error ? 'od-field--invalid' : '', className ?? ''].filter(Boolean).join(' ')}>
+      <label className="od-field__label" htmlFor={id}>
         {label}
       </label>
       {children}
       {hint ? (
-        <p className="pv-field__hint" id={`${id}-hint`}>
+        <p className="od-field__hint" id={`${id}-hint`}>
           {hint}
         </p>
       ) : null}
       {error ? (
-        <p className="pv-field__error" id={`${id}-error`}>
+        <p className="od-field__error" id={`${id}-error`}>
           {error}
         </p>
       ) : null}
@@ -278,7 +278,7 @@ export function TextField({ label, id, hint, error, className, ...rest }: TextFi
     <FieldShell label={label} id={id} hint={hint} error={error} className={className}>
       <input
         id={id}
-        className="pv-input"
+        className="od-input"
         aria-invalid={error ? true : undefined}
         aria-describedby={described || undefined}
         {...rest}
@@ -299,7 +299,7 @@ export function SelectField({ label, id, hint, error, className, children, ...re
   const described = [hint ? `${id}-hint` : '', error ? `${id}-error` : ''].filter(Boolean).join(' ');
   return (
     <FieldShell label={label} id={id} hint={hint} error={error} className={className}>
-      <select id={id} className="pv-select" aria-describedby={described || undefined} {...rest}>
+      <select id={id} className="od-select" aria-describedby={described || undefined} {...rest}>
         {children}
       </select>
     </FieldShell>
@@ -314,13 +314,13 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 
 export function Checkbox({ label, id, hint, ...rest }: CheckboxProps) {
   return (
-    <div className="pv-checkbox">
-      <input id={id} type="checkbox" className="pv-checkbox__input" aria-describedby={hint ? `${id}-hint` : undefined} {...rest} />
-      <label htmlFor={id} className="pv-checkbox__label">
+    <div className="od-checkbox">
+      <input id={id} type="checkbox" className="od-checkbox__input" aria-describedby={hint ? `${id}-hint` : undefined} {...rest} />
+      <label htmlFor={id} className="od-checkbox__label">
         {label}
       </label>
       {hint ? (
-        <p className="pv-checkbox__hint" id={`${id}-hint`}>
+        <p className="od-checkbox__hint" id={`${id}-hint`}>
           {hint}
         </p>
       ) : null}
@@ -342,9 +342,9 @@ export interface DisclosureProps {
 /** A native `<details>`: keyboard-operable and screen-reader-correct for free. */
 export function Disclosure({ summary, children, defaultOpen = false, className }: DisclosureProps) {
   return (
-    <details className={['pv-disclosure', className ?? ''].filter(Boolean).join(' ')} {...(defaultOpen ? { open: true } : {})}>
-      <summary className="pv-disclosure__summary">{summary}</summary>
-      <div className="pv-disclosure__body">{children}</div>
+    <details className={['od-disclosure', className ?? ''].filter(Boolean).join(' ')} {...(defaultOpen ? { open: true } : {})}>
+      <summary className="od-disclosure__summary">{summary}</summary>
+      <div className="od-disclosure__body">{children}</div>
     </details>
   );
 }
@@ -363,9 +363,9 @@ export interface ProgressBarProps {
 export function ProgressBar({ value, max, label, text }: ProgressBarProps) {
   const percent = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
   return (
-    <div className="pv-progress">
+    <div className="od-progress">
       <div
-        className="pv-progress__track"
+        className="od-progress__track"
         role="progressbar"
         aria-label={label}
         aria-valuenow={percent}
@@ -373,9 +373,9 @@ export function ProgressBar({ value, max, label, text }: ProgressBarProps) {
         aria-valuemax={100}
         aria-valuetext={text}
       >
-        <div className="pv-progress__fill" style={{ inlineSize: `${percent}%` }} />
+        <div className="od-progress__fill" style={{ inlineSize: `${percent}%` }} />
       </div>
-      <p className="pv-progress__text">{text}</p>
+      <p className="od-progress__text">{text}</p>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Generates apps/ios/Poravia/Generated/Brand.swift from the repository brand.json.
+# Generates apps/ios/Odivrelo/Generated/Brand.swift from the repository brand.json.
 # brand.json is the single source of product identity. Nothing in the iOS app may
 # hardcode the product name, slug, domain, bundle identifier or URL scheme.
 #
@@ -11,7 +11,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BRAND_JSON="${REPO_ROOT}/brand.json"
-OUT_DIR="${REPO_ROOT}/apps/ios/Poravia/Generated"
+OUT_DIR="${REPO_ROOT}/apps/ios/Odivrelo/Generated"
 OUT_FILE="${OUT_DIR}/Brand.swift"
 
 if [[ ! -f "${BRAND_JSON}" ]]; then

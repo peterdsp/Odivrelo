@@ -41,28 +41,28 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
   });
 
   return (
-    <Card as="article" className={selected ? 'pv-journey pv-journey--selected' : 'pv-journey'} tone="plain">
-      <Heading className="pv-journey__heading">
+    <Card as="article" className={selected ? 'od-journey od-journey--selected' : 'od-journey'} tone="plain">
+      <Heading className="od-journey__heading">
         {/*
           The accessible name is the full sentence; the visible text is the two
           times. An aria-label rather than a visually-hidden span inside the link,
           because an absolutely positioned child collapses the anchor's hit area
           and makes the link awkward to tap.
         */}
-        <Link to={to} className="pv-journey__link" aria-label={summary} aria-current={selected ? 'true' : undefined}>
+        <Link to={to} className="od-journey__link" aria-label={summary} aria-current={selected ? 'true' : undefined}>
           {formatClock(journey.departure.at)} {'→'} {formatClock(journey.arrival.at)}
         </Link>
       </Heading>
 
-      <p className="pv-journey__places">
+      <p className="od-journey__places">
         <span>{name(journey.departure.stopName)}</span>
-        <span className="pv-journey__arrow" aria-hidden="true">
+        <span className="od-journey__arrow" aria-hidden="true">
           {'→'}
         </span>
         <span>{name(journey.arrival.stopName)}</span>
       </p>
 
-      <dl className="pv-journey__grid">
+      <dl className="od-journey__grid">
         <div>
           <dt>{t('results.departs')}</dt>
           <dd>
@@ -122,7 +122,7 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
         </div>
       </dl>
 
-      <p className="pv-journey__badges">
+      <p className="od-journey__badges">
         {journey.crossesMidnight ? <OvernightBadge /> : null}
         <FreshnessBadge freshness={journey.freshness} now={now} />
         <ConfidenceBadge confidence={journey.confidence} />
@@ -135,10 +135,10 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
       </p>
 
       {journey.crossesMidnight ? (
-        <p className="pv-journey__note">{t('results.overnightExplain', { date: journey.serviceDate })}</p>
+        <p className="od-journey__note">{t('results.overnightExplain', { date: journey.serviceDate })}</p>
       ) : null}
       {journey.freshness.state === 'stale' ? (
-        <p className="pv-journey__note pv-journey__note--warning">
+        <p className="od-journey__note od-journey__note--warning">
           {t('freshness.staleWarning', { age: t('freshness.age_other', { count: journey.freshness.ageHours }) })}
         </p>
       ) : null}

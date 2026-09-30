@@ -53,7 +53,7 @@ export function StopTimeline({ stops, boardingStopId, linkStops = true, sectionL
   const { t, name, formatClock } = useI18n();
   const StopHeading = sectionLevel === 2 ? 'h3' : 'h4';
   return (
-    <ol className="pv-timeline" aria-label={t('journey.stops')}>
+    <ol className="od-timeline" aria-label={t('journey.stops')}>
       {stops.map((stop, index) => {
         const isBoarding = stop.stopId === boardingStopId;
         const isLast = index === stops.length - 1;
@@ -61,43 +61,43 @@ export function StopTimeline({ stops, boardingStopId, linkStops = true, sectionL
           <li
             key={`${stop.stopId}-${stop.sequence}`}
             className={[
-              'pv-timeline__item',
-              isBoarding ? 'pv-timeline__item--boarding' : '',
-              index === 0 ? 'pv-timeline__item--first' : '',
-              isLast ? 'pv-timeline__item--last' : '',
+              'od-timeline__item',
+              isBoarding ? 'od-timeline__item--boarding' : '',
+              index === 0 ? 'od-timeline__item--first' : '',
+              isLast ? 'od-timeline__item--last' : '',
             ]
               .filter(Boolean)
               .join(' ')}
           >
-            <div className="pv-timeline__rail" aria-hidden="true">
-              <span className="pv-timeline__dot" />
+            <div className="od-timeline__rail" aria-hidden="true">
+              <span className="od-timeline__dot" />
             </div>
-            <div className="pv-timeline__body">
-              <StopHeading className="pv-timeline__name">
+            <div className="od-timeline__body">
+              <StopHeading className="od-timeline__name">
                 {linkStops ? (
-                  <Link to={`/stations/${encodeURIComponent(stop.stopId)}`} className="pv-link">
+                  <Link to={`/stations/${encodeURIComponent(stop.stopId)}`} className="od-link">
                     {name(stop.name)}
                   </Link>
                 ) : (
                   name(stop.name)
                 )}
               </StopHeading>
-              <p className="pv-timeline__times">
+              <p className="od-timeline__times">
                 {stop.arrivalAt ? (
-                  <span className="pv-timeline__time">
+                  <span className="od-timeline__time">
                     {t('journey.arrivalAt', { time: '' }).trim()}{' '}
                     <time dateTime={stop.arrivalAt}>{formatClock(stop.arrivalAt)}</time>
                   </span>
                 ) : null}
                 {stop.departureAt ? (
-                  <span className="pv-timeline__time">
+                  <span className="od-timeline__time">
                     {t('journey.departureAt', { time: '' }).trim()}{' '}
                     <time dateTime={stop.departureAt}>{formatClock(stop.departureAt)}</time>
                   </span>
                 ) : null}
-                {!stop.arrivalAt && !stop.departureAt ? <span className="pv-timeline__time">{t('journey.noTime')}</span> : null}
+                {!stop.arrivalAt && !stop.departureAt ? <span className="od-timeline__time">{t('journey.noTime')}</span> : null}
               </p>
-              <p className="pv-timeline__badges">
+              <p className="od-timeline__badges">
                 <TimeQualityBadge quality={stop.timeQuality} />
                 <RuleBadge rule={stop.pickup} kind="pickup" />
                 <RuleBadge rule={stop.dropoff} kind="dropoff" />

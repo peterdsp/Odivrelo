@@ -1,0 +1,82 @@
+{
+  "contractVersion": "1.0.0",
+  "counts": {
+    "journeyPatterns": 2,
+    "lines": 1,
+    "serviceCalendars": 2,
+    "stopPlaces": 1,
+    "stops": 5,
+    "trips": 4
+  },
+  "files": {
+    "coverage": {
+      "bytes": 2619,
+      "mediaType": "application/json",
+      "path": "packs/coverage-cdac2166172e095c.json",
+      "sha256": "cdac2166172e095c8e23936d5edefe0563503ff325997e9e5e23eaa24ce91c58"
+    },
+    "gtfs": {
+      "bytes": 2484,
+      "mediaType": "application/zip",
+      "path": "packs/gtfs-4e223f3ceeb1d62b.zip",
+      "sha256": "4e223f3ceeb1d62bbeff40cb4c536449cabcb26080efb7feb8fbc642ee431a2f"
+    },
+    "journeys-2026-03-29": {
+      "bytes": 5530,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-03-29-c66965830202f492.json",
+      "sha256": "c66965830202f4924923b5e645b7190f73d32a2dbbf493bc5c7e2ab6096176c6"
+    },
+    "journeys-2026-04-08": {
+      "bytes": 5544,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-04-08-f43853b5b3a62de7.json",
+      "sha256": "f43853b5b3a62de7fedce950545f8b4f8fe6e3f8a1d857ea2920c1869dd5f391"
+    },
+    "journeys-2026-04-11": {
+      "bytes": 5544,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-04-11-ac72599c3405da1f.json",
+      "sha256": "ac72599c3405da1fa8b428a5bb41986c4e5c83a45cac0293f7480b486e413319"
+    },
+    "journeys-2026-10-02": {
+      "bytes": 15894,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-02-53f38b4da0ce4d0c.json",
+      "sha256": "53f38b4da0ce4d0ce186652943279d7b4df455c0be40308d07d79abd771fb0e9"
+    },
+    "meta": {
+      "bytes": 1332,
+      "mediaType": "application/json",
+      "path": "packs/meta-bcd5b7f420ab53e9.json",
+      "sha256": "bcd5b7f420ab53e9a0e5cdb7c9aac60a1a1c7870c071098ce54249fd0ea14299"
+    },
+    "operators": {
+      "bytes": 934,
+      "mediaType": "application/json",
+      "path": "packs/operators-5578a3f2c35370b0.json",
+      "sha256": "5578a3f2c35370b0eddb8115386ddfe2d70bf33967145f6f3947c5ea051a1f46"
+    },
+    "places": {
+      "bytes": 2466,
+      "mediaType": "application/json",
+      "path": "packs/places-9c6ca6f95ea083d4.json",
+      "sha256": "9c6ca6f95ea083d48fb613eefb18e72f96db411c270e4d28bdcce553b85f448a"
+    },
+    "sources": {
+      "bytes": 2040,
+      "mediaType": "application/json",
+      "path": "packs/sources-649d8beb05af1880.json",
+      "sha256": "649d8beb05af1880e6244b03a0fb079b46f7007c8071fdb2f6fa56623c396b71"
+    },
+    "stops": {
+      "bytes": 11168,
+      "mediaType": "application/json",
+      "path": "packs/stops-72cd8429b9c08c20.json",
+      "sha256": "72cd8429b9c08c205ca500c174b67b7fb4da863f07baf0814924934ab3a36696"
+    }
+  },
+  "product": "Odivrelo",
+  "publishedAt": "2026-09-30T22:13:07Z",
+  "releaseId": "daf0450a4c92484a"
+}

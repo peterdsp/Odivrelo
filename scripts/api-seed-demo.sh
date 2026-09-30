@@ -19,7 +19,7 @@
 # manifest is ever committed.
 #
 # Environment, all optional (defaults shown). <PREFIX> is brand.json.envPrefix,
-# and the legacy HODOMAP_ spelling is accepted for each one.
+# and the legacy PORAVIA_ and HODOMAP_ spellings are accepted for each one.
 #   <PREFIX>_ARTIFACTS_DIR   artifacts
 #   <PREFIX>_INGEST_DB_PATH  $ARTIFACTS_DIR/ingest.db
 #   <PREFIX>_PUBLIC_DB_PATH  $ARTIFACTS_DIR/public.db
@@ -43,14 +43,15 @@ case "$PY" in /*) ;; *) [ -x "$ROOT/$PY" ] && PY="$ROOT/$PY" ;; esac
 PREFIX="$("$PY" -c 'import json;print(json.load(open("brand.json"))["envPrefix"])')"
 SLUG="$("$PY" -c 'import json;print(json.load(open("brand.json"))["slug"])')"
 
-# Read <PREFIX>_NAME, then HODOMAP_NAME, then the supplied default.
+# Read <PREFIX>_NAME, then PORAVIA_NAME, then HODOMAP_NAME, then the supplied
+# default.
 setting() {
-  local suffix="$1" fallback="$2" branded legacy
-  branded="$(eval "printf '%s' \"\${${PREFIX}_${suffix}:-}\"")"
-  legacy="$(eval "printf '%s' \"\${HODOMAP_${suffix}:-}\"")"
-  if [ -n "$branded" ]; then printf '%s' "$branded"
-  elif [ -n "$legacy" ]; then printf '%s' "$legacy"
-  else printf '%s' "$fallback"; fi
+  local suffix="$1" fallback="$2" name value
+  for name in "${PREFIX}" PORAVIA HODOMAP; do  # branded, then legacy prefixes
+    value="$(eval "printf '%s' \"\${${name}_${suffix}:-}\"")"
+    if [ -n "$value" ]; then printf '%s' "$value"; return; fi
+  done
+  printf '%s' "$fallback"
 }
 
 ARTIFACTS="$(setting ARTIFACTS_DIR "$ROOT/artifacts")"

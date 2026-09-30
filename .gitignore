@@ -148,15 +148,15 @@ terraform.tfstate.*
 /artifacts/
 apps/*/artifacts/
 
-# Poravia iOS build and evidence output
+# Odivrelo iOS build and evidence output
 apps/ios/artifacts/
-apps/ios/Poravia.xcodeproj/
-apps/ios/Frameworks/PoraviaCore.xcframework/
+apps/ios/Odivrelo.xcodeproj/
+apps/ios/Frameworks/OdivreloCore.xcframework/
 *.xcuserdatad
 DerivedData/
 build/
 
-# Poravia web build and test output
+# Odivrelo web build and test output
 /apps/web/node_modules/
 /apps/web/dist/
 /apps/web/artifacts/

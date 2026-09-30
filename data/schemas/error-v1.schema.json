@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/error-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/error-v1.schema.json",
   "title": "Error, version 1",
   "description": "The single error shape returned by every non-2xx response.",
   "type": "object",

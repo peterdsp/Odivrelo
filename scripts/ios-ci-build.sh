@@ -20,16 +20,16 @@ mkdir -p "$ARTIFACTS"
 rm -rf "$ARTIFACTS"/build-debug.xcresult "$ARTIFACTS"/tests.xcresult \
        "$ARTIFACTS"/build-release.xcresult
 
-SCHEME="${SCHEME:-Poravia}"
+SCHEME="${SCHEME:-Odivrelo}"
 DEVICE="${DEVICE:-iPhone 15}"
 
 echo "== shared core =="
-if ! ls "$ROOT"/shared/core/build/XCFramework/*/PoraviaCore.xcframework >/dev/null 2>&1; then
-  echo "PoraviaCore.xcframework is missing." >&2
+if ! ls "$ROOT"/shared/core/build/XCFramework/*/OdivreloCore.xcframework >/dev/null 2>&1; then
+  echo "OdivreloCore.xcframework is missing." >&2
   echo "Run: bash scripts/shared-build-xcframework.sh" >&2
   exit 1
 fi
-echo "  found $(ls -d "$ROOT"/shared/core/build/XCFramework/*/PoraviaCore.xcframework | tr '\n' ' ')"
+echo "  found $(ls -d "$ROOT"/shared/core/build/XCFramework/*/OdivreloCore.xcframework | tr '\n' ' ')"
 
 echo "== generate the Xcode project =="
 if ! command -v xcodegen >/dev/null 2>&1; then
@@ -39,7 +39,7 @@ fi
 # ios-bootstrap.sh regenerates everything derived from a source of truth
 # (brand, theme, icon, strings), copies the XCFramework into apps/ios/Frameworks
 # and generates from project-core.yml, which is what actually links the shared
-# core and defines PORAVIA_CORE_AVAILABLE. Generating from the plain spec here
+# core and defines ODIVRELO_CORE_AVAILABLE. Generating from the plain spec here
 # would build an app with no shared core and report success.
 bash scripts/ios-bootstrap.sh
 
@@ -82,13 +82,13 @@ if [ ! -f "$APP_BINARY" ]; then
 fi
 
 # A Debug build keeps its Swift code in a side dylib, so check both.
-CORE_SYMBOLS=$(nm -a "$APP_BINARY" 2>/dev/null | grep -c 'kfun:dev.peterdsp.poravia.core' || true)
+CORE_SYMBOLS=$(nm -a "$APP_BINARY" 2>/dev/null | grep -c 'kfun:dev.peterdsp.odivrelo.core' || true)
 if [ "$CORE_SYMBOLS" -lt 100 ] && [ -f "${APP_BINARY}.debug.dylib" ]; then
-  CORE_SYMBOLS=$(nm -a "${APP_BINARY}.debug.dylib" 2>/dev/null | grep -c 'kfun:dev.peterdsp.poravia.core' || true)
+  CORE_SYMBOLS=$(nm -a "${APP_BINARY}.debug.dylib" 2>/dev/null | grep -c 'kfun:dev.peterdsp.odivrelo.core' || true)
 fi
 # Objective-C class data survives stripping, so it is the fallback proof.
 if [ "$CORE_SYMBOLS" -lt 100 ]; then
-  CORE_SYMBOLS=$(otool -oV "$APP_BINARY" 2>/dev/null | grep -c 'PoraviaCorePoravia' || true)
+  CORE_SYMBOLS=$(otool -oV "$APP_BINARY" 2>/dev/null | grep -c 'OdivreloCoreOdivrelo' || true)
 fi
 
 if [ "$CORE_SYMBOLS" -lt 50 ]; then
@@ -96,7 +96,7 @@ if [ "$CORE_SYMBOLS" -lt 50 ]; then
   echo "  binary: $APP_BINARY" >&2
   exit 1
 fi
-echo "  $CORE_SYMBOLS PoraviaCore symbols in $APP_BINARY"
+echo "  $CORE_SYMBOLS OdivreloCore symbols in $APP_BINARY"
 
 echo "== test =="
 xcodebuild -project "$PROJECT" -scheme "$SCHEME" \

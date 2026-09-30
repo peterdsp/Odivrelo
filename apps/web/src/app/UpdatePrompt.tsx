@@ -65,21 +65,21 @@ export function UpdatePrompt() {
   if (!showUpdate && !showEviction) return null;
 
   return (
-    <div className="pv-toasts">
+    <div className="od-toasts">
       {showUpdate ? (
         <div
-          className="pv-toast pv-toast--info"
+          className="od-toast od-toast--info"
           role="alertdialog"
-          aria-labelledby="pv-update-title"
+          aria-labelledby="od-update-title"
           tabIndex={-1}
           ref={promptRef}
           data-testid="update-prompt"
         >
-          <p className="pv-toast__title" id="pv-update-title">
+          <p className="od-toast__title" id="od-update-title">
             {t('update.available')}
           </p>
-          <p className="pv-toast__body">{t('update.body')}</p>
-          <div className="pv-toast__actions">
+          <p className="od-toast__body">{t('update.body')}</p>
+          <div className="od-toast__actions">
             <Button
               tone="primary"
               onClick={() => {
@@ -98,9 +98,9 @@ export function UpdatePrompt() {
       ) : null}
 
       {showEviction ? (
-        <div className="pv-toast pv-toast--warning" role="status" data-testid="eviction-notice">
-          <p className="pv-toast__body">{t('update.storageEvicted')}</p>
-          <div className="pv-toast__actions">
+        <div className="od-toast od-toast--warning" role="status" data-testid="eviction-notice">
+          <p className="od-toast__body">{t('update.storageEvicted')}</p>
+          <div className="od-toast__actions">
             <Button tone="quiet" onClick={() => setEvictionDismissed(true)}>
               {t('app.dismiss')}
             </Button>

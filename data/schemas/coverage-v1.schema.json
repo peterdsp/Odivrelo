@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/coverage-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/coverage-v1.schema.json",
   "title": "Coverage, version 1",
   "description": "Coverage and freshness summary, including the explicit statement of what is not covered.",
   "type": "object",

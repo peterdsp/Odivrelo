@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
   override componentDidCatch(error: Error, info: ErrorInfo): void {
     // Deliberately console-only. There is no error-reporting service, because
     // there is no third party in this app at all.
-    console.error('Poravia caught an unhandled error', error, info.componentStack);
+    console.error('Odivrelo caught an unhandled error', error, info.componentStack);
   }
 
   override render(): ReactNode {
@@ -49,25 +49,25 @@ export class ErrorBoundary extends Component<Props, State> {
 
     const Container = this.props.insideMain ? 'div' : 'main';
     const containerProps = this.props.insideMain
-      ? { className: 'pv-page pv-page--narrow' }
-      : { className: 'pv-main pv-main--narrow', id: 'main' };
+      ? { className: 'od-page od-page--narrow' }
+      : { className: 'od-main od-main--narrow', id: 'main' };
 
     return (
       <Container {...containerProps}>
-        <div className="pv-state pv-state--error" data-state="server_error">
-          <h1 className="pv-state__title">{catalogue['app.errorTitle']}</h1>
-          <div className="pv-state__body">
+        <div className="od-state od-state--error" data-state="server_error">
+          <h1 className="od-state__title">{catalogue['app.errorTitle']}</h1>
+          <div className="od-state__body">
             <p>{catalogue['app.errorBody']}</p>
-            <details className="pv-state__detail">
+            <details className="od-state__detail">
               <summary>{catalogue['app.errorDetail']}</summary>
-              <p className="pv-mono">{error.message}</p>
+              <p className="od-mono">{error.message}</p>
             </details>
           </div>
-          <div className="pv-state__actions">
-            <button type="button" className="pv-button pv-button--primary" onClick={() => globalThis.location.reload()}>
+          <div className="od-state__actions">
+            <button type="button" className="od-button od-button--primary" onClick={() => globalThis.location.reload()}>
               {catalogue['state.reload']}
             </button>
-            <Link className="pv-button pv-button--secondary" to="/search" onClick={() => this.setState({ error: null })}>
+            <Link className="od-button od-button--secondary" to="/search" onClick={() => this.setState({ error: null })}>
               {catalogue['app.goToSearch']}
             </Link>
           </div>

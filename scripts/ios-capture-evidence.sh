@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs Poravia on a named simulator and captures screenshots of real screens.
+# Runs Odivrelo on a named simulator and captures screenshots of real screens.
 #
 # Every shot comes from the running build, driven through the interface with
 # simctl and the app's own launch arguments. Filenames carry the device, the
@@ -14,8 +14,8 @@ set -uo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT_DIR="${REPO_ROOT}/apps/ios/artifacts/screenshots"
-APP_PATH="${PORAVIA_APP:-/tmp/poravia-dd/Build/Products/Debug-iphonesimulator/Poravia.app}"
-BUNDLE_ID="dev.peterdsp.poravia"
+APP_PATH="${ODIVRELO_APP:-/tmp/odivrelo-dd/Build/Products/Debug-iphonesimulator/Odivrelo.app}"
+BUNDLE_ID="dev.peterdsp.odivrelo"
 
 DEVICE_NAME="${1:-iPhone 15}"
 SCENARIO="${2:-normal}"
@@ -79,9 +79,9 @@ xcrun simctl install "${UDID}" "${APP_PATH}" >/dev/null 2>&1 || {
 
 echo "launching…"
 xcrun simctl launch "${UDID}" "${BUNDLE_ID}" \
-  -PoraviaUseFixture \
-  -PoraviaFixtureScenario "${SCENARIO}" \
-  -PoraviaResetState \
+  -OdivreloUseFixture \
+  -OdivreloFixtureScenario "${SCENARIO}" \
+  -OdivreloResetState \
   -AppleLanguages "(${LANGUAGE})" \
   -AppleLocale "${LANGUAGE}" >/dev/null 2>&1 || {
   echo "error: launch failed" >&2

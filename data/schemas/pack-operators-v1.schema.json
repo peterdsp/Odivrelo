@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-operators-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/pack-operators-v1.schema.json",
   "title": "Offline pack: operators, version 1",
   "description": "The `operators` pack. Each value is exactly what\n`GET /v1/operators/{operator_id}` returns in its `operator` member.\n",
   "allOf": [

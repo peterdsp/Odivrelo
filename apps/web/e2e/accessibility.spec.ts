@@ -112,7 +112,7 @@ test.describe('structure', () => {
     await page.goto('/search');
     await waitForApp(page);
 
-    const skip = page.locator('.pv-skip-link');
+    const skip = page.locator('.od-skip-link');
     await expect(skip).toHaveCount(1);
     await expect(skip).toHaveAttribute('href', '#main');
     await expect(page.locator('#main')).toHaveCount(1);
@@ -120,7 +120,7 @@ test.describe('structure', () => {
     // It is genuinely the first focusable thing, which is what makes it a skip link.
     const isFirst = await page.evaluate(() => {
       const candidates = document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]');
-      return candidates[0]?.classList.contains('pv-skip-link') ?? false;
+      return candidates[0]?.classList.contains('od-skip-link') ?? false;
     });
     expect(isFirst, 'the skip link is not the first focusable element').toBe(true);
 
@@ -142,7 +142,7 @@ test.describe('structure', () => {
     await waitForApp(page);
 
     await page.keyboard.press('Tab');
-    await expect(page.locator('.pv-skip-link')).toBeFocused();
+    await expect(page.locator('.od-skip-link')).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/#main$/);
   });
@@ -216,7 +216,7 @@ test.describe('structure', () => {
     await waitForApp(page);
     // The motion tokens collapse to zero, so nothing animates.
     const duration = await page.evaluate(() =>
-      getComputedStyle(document.documentElement).getPropertyValue('--pv-motion-standard').trim(),
+      getComputedStyle(document.documentElement).getPropertyValue('--od-motion-standard').trim(),
     );
     expect(duration).toBe('0ms');
     await shoot(page, testInfo, 'search-reduced-motion');

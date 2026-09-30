@@ -42,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "dev.peterdsp.poravia.features"
+    namespace = "dev.peterdsp.odivrelo.features"
     compileSdk = 36
 
     defaultConfig {

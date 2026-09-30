@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-meta-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/pack-meta-v1.schema.json",
   "title": "Offline pack: meta, version 1",
   "description": "The `meta` pack, identical to the GET /v1/meta body.",
   "allOf": [

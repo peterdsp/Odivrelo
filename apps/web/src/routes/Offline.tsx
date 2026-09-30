@@ -30,7 +30,7 @@ import { offlineGroupsFor, serviceDatesOf } from '../features/offlineGroups';
  * installed, storage full, offline, installed, update available, rollback to the
  * kept previous release, and delete.
  *
- * It also states what is *not* in a pack. Poravia ships no map imagery, so the
+ * It also states what is *not* in a pack. Odivrelo ships no map imagery, so the
  * page says the map will draw the route on a plain background rather than letting
  * "offline maps" be inferred.
  */
@@ -134,20 +134,20 @@ export function Offline() {
   if (manifest.status === 'loading') return <Loading />;
   if (manifest.status === 'error') {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('offline.title')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('offline.title')}</h1>
         <DataError error={manifest.error} onRetry={reload} />
       </div>
     );
   }
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('offline.title')}</h1>
-      <p className="pv-page__lede">{t('offline.intro')}</p>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('offline.title')}</h1>
+      <p className="od-page__lede">{t('offline.intro')}</p>
 
       {manifestValue ? (
-        <p className="pv-muted">
+        <p className="od-muted">
           {t('offline.release', {
             releaseId: manifestValue.releaseId,
             when: formatDateTime(manifestValue.publishedAt),
@@ -187,7 +187,7 @@ export function Offline() {
             description={t(view.descriptor.descriptionKey as MessageKey)}
           >
             <Card>
-              <p className="pv-pack__badges">
+              <p className="od-pack__badges">
                 {view.descriptor.required ? <Badge tone="info" icon="alert">{t('offline.required')}</Badge> : null}
                 {view.status === 'installed' ? (
                   <Badge tone="success" icon="check">
@@ -234,7 +234,7 @@ export function Offline() {
                 />
               ) : null}
 
-              {resumable && !isDownloading ? <p className="pv-muted">{t('offline.interrupted')}</p> : null}
+              {resumable && !isDownloading ? <p className="od-muted">{t('offline.interrupted')}</p> : null}
 
               {failure ? (
                 <StateBlock
@@ -246,7 +246,7 @@ export function Offline() {
                 />
               ) : null}
 
-              <div className="pv-pack__actions">
+              <div className="od-pack__actions">
                 {isDownloading ? (
                   <Button
                     tone="secondary"
@@ -303,10 +303,10 @@ export function Offline() {
                 ) : null}
               </div>
 
-              {view.previous ? <p className="pv-muted">{t('offline.previousKept')}</p> : null}
+              {view.previous ? <p className="od-muted">{t('offline.previousKept')}</p> : null}
 
               <Disclosure summary={t('offline.whatsIncluded')}>
-                <ul className="pv-list pv-list--plain pv-mono">
+                <ul className="od-list od-list--plain od-mono">
                   {view.descriptor.packNames.map((packName) => (
                     <li key={packName}>{packName}</li>
                   ))}
@@ -319,7 +319,7 @@ export function Offline() {
 
       {serviceDates.length > 0 ? (
         <Section title={t('coverage.dateRange', { from: serviceDates[0] ?? '', to: serviceDates.at(-1) ?? '' })} level={2}>
-          <p className="pv-muted">{t('offline.packNames', { count: serviceDates.length })}</p>
+          <p className="od-muted">{t('offline.packNames', { count: serviceDates.length })}</p>
         </Section>
       ) : null}
 
@@ -338,7 +338,7 @@ export function Offline() {
             </Fact>
           </FactList>
         ) : null}
-        <p className="pv-muted">{t('offline.evictionWarning')}</p>
+        <p className="od-muted">{t('offline.evictionWarning')}</p>
         <Button
           tone="secondary"
           onClick={async () => {
@@ -350,7 +350,7 @@ export function Offline() {
           {t('offline.requestPersist')}
         </Button>
         {persistResult !== null ? (
-          <p className={persistResult ? 'pv-muted' : 'pv-field__error'}>
+          <p className={persistResult ? 'od-muted' : 'od-field__error'}>
             {persistResult ? t('offline.persistGranted') : t('offline.persistDenied')}
           </p>
         ) : null}

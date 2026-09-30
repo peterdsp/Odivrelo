@@ -210,7 +210,7 @@ describe('recent searches and the remembered filter', () => {
 
   it('drops a stored entry that no longer validates', () => {
     globalThis.localStorage.setItem(
-      'poravia.v1.recentSearches',
+      'odivrelo.v1.recentSearches',
       JSON.stringify([entry('2026-02-30'), entry('2026-10-02')]),
     );
     const list = readRecentSearches();
@@ -228,7 +228,7 @@ describe('recent searches and the remembered filter', () => {
     });
 
     globalThis.localStorage.setItem(
-      'poravia.v1.lastFilter',
+      'odivrelo.v1.lastFilter',
       JSON.stringify({ accessible: 'yes', operatorIds: 'not an array', departFrom: '99:99' }),
     );
     expect(readStoredFilter()).toEqual({ accessible: false, operatorIds: [], departFrom: null, departTo: null });

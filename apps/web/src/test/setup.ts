@@ -54,7 +54,7 @@ if (!Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth')?.get)
 
 if (typeof URL.createObjectURL === 'undefined') {
   let counter = 0;
-  URL.createObjectURL = vi.fn(() => `blob:poravia/${(counter += 1)}`);
+  URL.createObjectURL = vi.fn(() => `blob:odivrelo/${(counter += 1)}`);
   URL.revokeObjectURL = vi.fn();
 }
 

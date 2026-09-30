@@ -49,7 +49,7 @@ afterEach(() => {
 
 describe('preference keys', () => {
   it('are namespaced, so nothing else on the origin is touched', () => {
-    expect(prefsKey('language')).toBe('poravia.v1.language');
+    expect(prefsKey('language')).toBe('odivrelo.v1.language');
   });
 });
 

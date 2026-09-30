@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/operator-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/operator-v1.schema.json",
   "title": "Operator, version 1",
   "description": "One transport operator, its coverage and the sources it is built from.",
   "type": "object",

@@ -91,7 +91,7 @@ val keystoreProperties: Properties? = rootProject.layout.projectDirectory
     ?.let { file -> Properties().apply { file.inputStream().use { load(it) } } }
 
 // Build outputs are named after the product rather than after the directory, so a
-// delivered artifact says what it is: poravia-debug.apk, poravia-release.aab.
+// delivered artifact says what it is: odivrelo-debug.apk, odivrelo-release.aab.
 base.archivesName.set(brand.getValue("slug"))
 
 android {

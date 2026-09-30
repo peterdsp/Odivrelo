@@ -14,7 +14,7 @@ cd "$(dirname "$0")/.."
 
 SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
 ADB="$SDK/platform-tools/adb"
-PKG="dev.peterdsp.poravia"
+PKG="dev.peterdsp.odivrelo"
 ACTIVITY="$PKG/.MainActivity"
 SERIAL="${1:-}"
 adb() { if [ -n "$SERIAL" ]; then "$ADB" -s "$SERIAL" "$@"; else "$ADB" "$@"; fi; }
@@ -24,7 +24,7 @@ mkdir -p "$OUT"
 REPORT="$OUT/performance-$(adb shell getprop ro.product.model | tr -d '\r' | tr ' ' '-')-$(date +%Y-%m-%d).txt"
 
 {
-  echo "Poravia Android performance"
+  echo "Odivrelo Android performance"
   echo "date:        $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "device:      $(adb shell getprop ro.product.model | tr -d '\r')"
   echo "fingerprint: $(adb shell getprop ro.build.fingerprint | tr -d '\r')"

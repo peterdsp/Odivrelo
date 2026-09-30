@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "poravia"
+rootProject.name = "odivrelo"
 
 include(":shared:core")
 include(":shared:features")

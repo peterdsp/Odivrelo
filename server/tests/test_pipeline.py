@@ -7,14 +7,14 @@ import urllib.error
 from email.message import Message
 from pathlib import Path
 
-from poravia_pipeline.acquisition import (
+from odivrelo_pipeline.acquisition import (
     AcquisitionSettings,
     SourceAcquirer,
     discover_candidate_links,
 )
-from poravia_pipeline import acquisition, cli
-from poravia_pipeline.registry import Registry, SourceTarget
-from poravia_pipeline.state import StateStore
+from odivrelo_pipeline import acquisition, cli
+from odivrelo_pipeline.registry import Registry, SourceTarget
+from odivrelo_pipeline.state import StateStore
 
 
 class FakeResponse:
@@ -230,9 +230,11 @@ class BrandMigrationCompatibilityTestCase(unittest.TestCase):
         self._saved = {
             name: os.environ.pop(name, None)
             for name in (
+                "ODIVRELO_MAX_REQUESTS",
                 "PORAVIA_MAX_REQUESTS",
                 "HODOMAP_MAX_REQUESTS",
                 "SYRMOS_MAX_REQUESTS",
+                "ODIVRELO_TICKETWEB_TERMS_APPROVED",
                 "PORAVIA_TICKETWEB_TERMS_APPROVED",
                 "HODOMAP_TICKETWEB_TERMS_APPROVED",
                 "SYRMOS_TICKETWEB_TERMS_APPROVED",
@@ -252,10 +254,12 @@ class BrandMigrationCompatibilityTestCase(unittest.TestCase):
         self.assertEqual(cli.env("MAX_REQUESTS", "100"), "11")
         os.environ["HODOMAP_MAX_REQUESTS"] = "22"
         self.assertEqual(cli.env("MAX_REQUESTS", "100"), "22")
+        os.environ["PORAVIA_MAX_REQUESTS"] = "44"
+        self.assertEqual(cli.env("MAX_REQUESTS", "100"), "44")
 
     def test_current_env_name_wins_over_legacy(self):
         os.environ["HODOMAP_MAX_REQUESTS"] = "22"
-        os.environ["PORAVIA_MAX_REQUESTS"] = "33"
+        os.environ["ODIVRELO_MAX_REQUESTS"] = "33"
         self.assertEqual(cli.env("MAX_REQUESTS", "100"), "33")
 
     def test_ticketweb_gate_is_off_unless_explicitly_approved(self):
@@ -264,6 +268,7 @@ class BrandMigrationCompatibilityTestCase(unittest.TestCase):
             "SYRMOS_TICKETWEB_TERMS_APPROVED",
             "HODOMAP_TICKETWEB_TERMS_APPROVED",
             "PORAVIA_TICKETWEB_TERMS_APPROVED",
+            "ODIVRELO_TICKETWEB_TERMS_APPROVED",
         ):
             os.environ[name] = "0"
             self.assertFalse(acquisition._ticketweb_terms_approved())

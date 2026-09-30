@@ -59,7 +59,7 @@ test.describe('search to boarding detail and back', () => {
     await dateField.fill(query.date);
     await expect(dateField).toHaveValue(query.date);
     // The readable form of the date is shown, not only the machine value.
-    await expect(page.locator('.pv-date-field__readable')).not.toBeEmpty();
+    await expect(page.locator('.od-date-field__readable')).not.toBeEmpty();
 
     await shoot(page, testInfo, 'search-filled');
     await page.getByRole('button', { name: 'Αναζήτηση δρομολογίων' }).click();
@@ -70,7 +70,7 @@ test.describe('search to boarding detail and back', () => {
     const url = page.url();
     expect(url).toContain(`date=${query.date}`);
 
-    const cards = page.locator('article.pv-journey');
+    const cards = page.locator('article.od-journey');
     await expect(cards.first()).toBeVisible({ timeout: 15_000 });
 
     // Every fact the brief requires is on the face of the card.
@@ -82,7 +82,7 @@ test.describe('search to boarding detail and back', () => {
     await expect(first).toContainText('Στάσεις');
     await expect(first).toContainText('Κόμιστρο');
     // Freshness carries both a state and an age.
-    await expect(first.locator('.pv-badge')).not.toHaveCount(0);
+    await expect(first.locator('.od-badge')).not.toHaveCount(0);
 
     await expectNoAxeViolations(page, testInfo, 'results');
     await shoot(page, testInfo, 'results');
@@ -96,7 +96,7 @@ test.describe('search to boarding detail and back', () => {
     await expect(page.getByRole('heading', { name: 'Από πού επιβιβάζεσαι' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Στάσεις' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Από πού προέρχεται αυτό' })).toBeVisible();
-    await expect(page.locator('.pv-timeline__item').first()).toBeVisible();
+    await expect(page.locator('.od-timeline__item').first()).toBeVisible();
 
     // Live tracking is stated to be unavailable rather than faked.
     await expect(page.getByTestId('live-unavailable')).toBeVisible();
@@ -185,7 +185,7 @@ test.describe('search to boarding detail and back', () => {
 
     await page.goto(`/results?origin=${query.originId}&destination=${query.destinationId}&date=${query.date}`);
     await waitForApp(page);
-    await expect(page.locator('article.pv-journey').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('article.od-journey').first()).toBeVisible({ timeout: 15_000 });
     const afterLoad = requests.length;
 
     for (const size of [
@@ -196,7 +196,7 @@ test.describe('search to boarding detail and back', () => {
       await page.setViewportSize(size);
       await page.waitForTimeout(200);
     }
-    await expect(page.locator('article.pv-journey').first()).toBeVisible();
+    await expect(page.locator('article.od-journey').first()).toBeVisible();
 
     // Packs are immutable and content-addressed, so a refetch would show up here.
     expect(requests.length, 'a resize caused the app to fetch data again').toBe(afterLoad);
@@ -207,16 +207,16 @@ test.describe('search to boarding detail and back', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`/results?origin=${query.originId}&destination=${query.destinationId}&date=${query.date}`);
     await waitForApp(page);
-    await expect(page.locator('article.pv-journey').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('article.od-journey').first()).toBeVisible({ timeout: 15_000 });
 
-    const pane = page.locator('.pv-two-pane');
+    const pane = page.locator('.od-two-pane');
     await expect(pane).toHaveAttribute('data-mode', 'two');
 
     // Selecting a journey opens the second pane without leaving the page.
-    await page.locator('.pv-results__selectable').first().getByRole('button', { name: 'Λεπτομέρειες δρομολογίου' }).click();
-    await expect(page.locator('.pv-two-pane__detail')).toBeVisible();
+    await page.locator('.od-results__selectable').first().getByRole('button', { name: 'Λεπτομέρειες δρομολογίου' }).click();
+    await expect(page.locator('.od-two-pane__detail')).toBeVisible();
     // The list is still there beside it.
-    await expect(page.locator('.pv-two-pane__list article.pv-journey').first()).toBeVisible();
+    await expect(page.locator('.od-two-pane__list article.od-journey').first()).toBeVisible();
     const selected = page.url();
     expect(selected).toContain('journey=');
     await shoot(page, testInfo, 'results-two-pane');
@@ -226,13 +226,13 @@ test.describe('search to boarding detail and back', () => {
     await page.setViewportSize({ width: 380, height: 800 });
     await page.waitForTimeout(200);
     await expect(pane).toHaveAttribute('data-mode', 'one');
-    await expect(page.locator('.pv-two-pane__detail')).toBeVisible();
+    await expect(page.locator('.od-two-pane__detail')).toBeVisible();
     expect(page.url()).toBe(selected);
     await shoot(page, testInfo, 'results-one-pane-detail');
 
     // And the list is still reachable from there.
-    await page.locator('.pv-two-pane__detail-bar').getByRole('button').click();
-    await expect(page.locator('article.pv-journey').first()).toBeVisible();
+    await page.locator('.od-two-pane__detail-bar').getByRole('button').click();
+    await expect(page.locator('article.od-journey').first()).toBeVisible();
     expect(page.url()).not.toContain('journey=');
   });
 
@@ -247,7 +247,7 @@ test.describe('search to boarding detail and back', () => {
     });
     await page.goto(`/results?origin=${query.originId}&destination=${query.destinationId}&date=${query.date}`);
     await waitForApp(page);
-    await expect(page.locator('article.pv-journey').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('article.od-journey').first()).toBeVisible({ timeout: 15_000 });
 
     // Nothing overflows horizontally, which is the WCAG 1.4.10 reflow failure.
     const overflow = await page.evaluate(
@@ -265,7 +265,7 @@ test.describe('search to boarding detail and back', () => {
     await waitForApp(page);
 
     // The skip link is the first thing in the document and it targets main.
-    const skip = page.locator('.pv-skip-link');
+    const skip = page.locator('.od-skip-link');
     await expect(skip).toHaveAttribute('href', '#main');
     await expect(skip).toHaveCount(1);
 
@@ -334,7 +334,7 @@ test.describe('the map is never the only path', () => {
     expect(mapRequests, 'the map bundle loaded on a route that never showed a map').toEqual([]);
 
     // Yet the ordered stop list, with pickup and drop-off rules, is fully present.
-    const stops = page.locator('.pv-timeline__item');
+    const stops = page.locator('.od-timeline__item');
     expect(await stops.count()).toBeGreaterThan(0);
     await expect(stops.first()).toContainText(/επιβιβαστείς|επιβίβαση/);
 
@@ -356,7 +356,7 @@ test.describe('the map is never the only path', () => {
     if (browserName === 'firefox') {
       const map = page.locator('#journey-map');
       const fallback = map.getByText('δεν φορτώθηκε');
-      await expect(map.locator('.pv-map__canvas[data-ready]').or(fallback)).toBeVisible({ timeout: 20_000 });
+      await expect(map.locator('.od-map__canvas[data-ready]').or(fallback)).toBeVisible({ timeout: 20_000 });
       test.skip((await fallback.count()) > 0, 'this Firefox has no usable WebGL, so the map showed its fallback');
     }
     // The panel appears, and it states that no background imagery is loaded.

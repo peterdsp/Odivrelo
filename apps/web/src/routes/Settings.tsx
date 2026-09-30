@@ -107,15 +107,15 @@ export function Settings() {
   ]);
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('settings.title')}</h1>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('settings.title')}</h1>
 
       {/* -- Language ------------------------------------------------------ */}
       <Section title={t('settings.language')} level={2} description={t('settings.languageHelp')}>
-        <fieldset className="pv-language-choice">
-          <legend className="pv-visually-hidden">{t('settings.language')}</legend>
+        <fieldset className="od-language-choice">
+          <legend className="od-visually-hidden">{t('settings.language')}</legend>
           {LANGUAGES.map((code) => (
-            <label key={code} className="pv-language-choice__option">
+            <label key={code} className="od-language-choice__option">
               <input
                 type="radio"
                 name="settings-language"
@@ -134,10 +134,10 @@ export function Settings() {
 
       {/* -- Appearance ---------------------------------------------------- */}
       <Section title={t('settings.appearance')} level={2}>
-        <fieldset className="pv-language-choice">
-          <legend className="pv-visually-hidden">{t('settings.appearance')}</legend>
+        <fieldset className="od-language-choice">
+          <legend className="od-visually-hidden">{t('settings.appearance')}</legend>
           {THEMES.map((option) => (
-            <label key={option.value} className="pv-language-choice__option">
+            <label key={option.value} className="od-language-choice__option">
               <input
                 type="radio"
                 name="settings-theme"
@@ -197,8 +197,8 @@ export function Settings() {
             </Fact>
           </FactList>
         ) : null}
-        <p className="pv-notice pv-notice--warning">{t('offline.evictionWarning')}</p>
-        <div className="pv-pack__actions">
+        <p className="od-notice od-notice--warning">{t('offline.evictionWarning')}</p>
+        <div className="od-pack__actions">
           <Button
             tone="secondary"
             onClick={async () => {
@@ -227,14 +227,14 @@ export function Settings() {
 
       {/* -- Privacy -------------------------------------------------------- */}
       <Section title={t('settings.privacy')} level={2}>
-        <ul className="pv-list pv-list--check">
+        <ul className="od-list od-list--check">
           <li>{t('settings.privacy1')}</li>
           <li>{t('settings.privacy2')}</li>
           <li>{t('settings.privacy3')}</li>
         </ul>
         <Card tone="muted">
           <p>{t('wallet.privacy2')}</p>
-          <p className="pv-notice pv-notice--warning">{t('wallet.privacy4')}</p>
+          <p className="od-notice od-notice--warning">{t('wallet.privacy4')}</p>
         </Card>
       </Section>
 
@@ -251,10 +251,10 @@ export function Settings() {
                   : t('app.unknown')}
           </Fact>
         </FactList>
-        <p className="pv-muted">{t('reminders.backgroundLimitationBody')}</p>
-        <p className="pv-muted">{t('reminders.privacy')}</p>
+        <p className="od-muted">{t('reminders.backgroundLimitationBody')}</p>
+        <p className="od-muted">{t('reminders.privacy')}</p>
         <p>
-          <Link to="/saved" className="pv-link">
+          <Link to="/saved" className="od-link">
             {t('reminders.title')}
           </Link>
         </p>
@@ -267,30 +267,30 @@ export function Settings() {
             {source.kind === 'static' ? t('settings.dataSourceStatic') : t('settings.dataSourceHttp')}
           </Fact>
           <Fact label={t('settings.dataSourceOrigin')}>
-            <span className="pv-mono">{source.origin}</span>
+            <span className="od-mono">{source.origin}</span>
           </Fact>
           <Fact label={t('coverage.state')}>
             {dataMode === 'demo' ? t('coverage.stateDemo') : t('coverage.stateCovered')}
           </Fact>
         </FactList>
         <p>
-          <Link to="/coverage" className="pv-link">
+          <Link to="/coverage" className="od-link">
             {t('nav.coverage')}
           </Link>
         </p>
-        {appConfig.apiBaseUrl ? <p className="pv-mono pv-muted">{appConfig.apiBaseUrl}</p> : null}
+        {appConfig.apiBaseUrl ? <p className="od-mono od-muted">{appConfig.apiBaseUrl}</p> : null}
       </Section>
 
       {/* -- Support -------------------------------------------------------- */}
       <Section title={t('settings.support')} level={2}>
         <FactList>
           <Fact label={t('settings.supportEmail')}>
-            <a className="pv-link" href={`mailto:${BRAND.supportEmail}`}>
+            <a className="od-link" href={`mailto:${BRAND.supportEmail}`}>
               {BRAND.supportEmail}
             </a>
           </Fact>
         </FactList>
-        <p className="pv-muted">{t('settings.diagnosticsHelp')}</p>
+        <p className="od-muted">{t('settings.diagnosticsHelp')}</p>
       </Section>
 
       {/* -- About and build ------------------------------------------------ */}
@@ -299,21 +299,21 @@ export function Settings() {
         <p>{t('settings.markMeaning')}</p>
         <FactList>
           <Fact label={t('settings.version')}>
-            <span className="pv-mono">{buildStamp.version}</span>
+            <span className="od-mono">{buildStamp.version}</span>
           </Fact>
           <Fact label={t('settings.commit')}>
-            <span className="pv-mono">{buildStamp.commit}</span>
+            <span className="od-mono">{buildStamp.commit}</span>
           </Fact>
           <Fact label={t('settings.builtAt')}>
-            <span className="pv-mono">{buildStamp.builtAt}</span>
+            <span className="od-mono">{buildStamp.builtAt}</span>
           </Fact>
           <Fact label={t('settings.dataRelease')}>
-            <span className="pv-mono">{releaseId ?? t('app.unknown')}</span>
-            {publishedAt ? <span className="pv-muted"> {formatDateTime(publishedAt)}</span> : null}
+            <span className="od-mono">{releaseId ?? t('app.unknown')}</span>
+            {publishedAt ? <span className="od-muted"> {formatDateTime(publishedAt)}</span> : null}
           </Fact>
         </FactList>
         <p>
-          <Link to="/licences" className="pv-link">
+          <Link to="/licences" className="od-link">
             {t('settings.licences')}
           </Link>
         </p>
@@ -322,7 +322,7 @@ export function Settings() {
       {/* -- Diagnostics ---------------------------------------------------- */}
       <Section title={t('settings.diagnostics')} level={2} description={t('settings.diagnosticsHelp')}>
         <Disclosure summary={t('settings.diagnostics')}>
-          <pre className="pv-diagnostics">{diagnostics}</pre>
+          <pre className="od-diagnostics">{diagnostics}</pre>
           <CopyButton value={diagnostics} label={t('settings.copyDiagnostics')} />
         </Disclosure>
       </Section>

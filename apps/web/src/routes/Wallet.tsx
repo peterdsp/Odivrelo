@@ -137,18 +137,18 @@ export function Wallet() {
   };
 
   return (
-    <div className="pv-page pv-page--narrow">
-      <h1 className="pv-page__title">{t('wallet.title')}</h1>
-      <p className="pv-page__lede">{t('wallet.intro')}</p>
+    <div className="od-page od-page--narrow">
+      <h1 className="od-page__title">{t('wallet.title')}</h1>
+      <p className="od-page__lede">{t('wallet.intro')}</p>
 
       <Card tone="muted">
-        <h2 className="pv-card__title">{t('wallet.privacyTitle')}</h2>
-        <ul className="pv-list pv-list--check">
+        <h2 className="od-card__title">{t('wallet.privacyTitle')}</h2>
+        <ul className="od-list od-list--check">
           <li>{t('wallet.privacy1')}</li>
           <li>{t('wallet.privacy2')}</li>
           <li>{t('wallet.privacy3')}</li>
         </ul>
-        <p className="pv-notice pv-notice--warning">{t('wallet.privacy4')}</p>
+        <p className="od-notice od-notice--warning">{t('wallet.privacy4')}</p>
       </Card>
 
       {!storageAvailable ? (
@@ -167,40 +167,40 @@ export function Wallet() {
             maxLength={120}
             onChange={(event) => setLabel(event.target.value)}
           />
-          <div className="pv-field">
-            <label className="pv-field__label" htmlFor="wallet-file">
+          <div className="od-field">
+            <label className="od-field__label" htmlFor="wallet-file">
               {t('wallet.import')}
             </label>
             <input
               id="wallet-file"
               ref={fileRef}
-              className="pv-input pv-input--file"
+              className="od-input od-input--file"
               type="file"
               accept={ACCEPT_ATTRIBUTE}
               disabled={busy}
               aria-describedby="wallet-file-hint"
               onChange={(event) => void onPick(event.target.files?.[0])}
             />
-            <p className="pv-field__hint" id="wallet-file-hint">
+            <p className="od-field__hint" id="wallet-file-hint">
               {t('wallet.importHelp', { max: formatBytes(MAX_WALLET_BYTES, language) })}
             </p>
-            {error ? <p className="pv-field__error">{error}</p> : null}
-            {busy ? <p className="pv-muted">{t('wallet.importing')}</p> : null}
+            {error ? <p className="od-field__error">{error}</p> : null}
+            {busy ? <p className="od-muted">{t('wallet.importing')}</p> : null}
           </div>
         </Section>
       )}
 
       <Section title={t('wallet.title')} level={2}>
         {items === null ? (
-          <p className="pv-muted">{t('app.loading')}</p>
+          <p className="od-muted">{t('app.loading')}</p>
         ) : items.length === 0 ? (
           <StateBlock kind="empty" headingLevel={3} title={t('state.empty')} body={<p>{t('wallet.empty')}</p>} announce={false} />
         ) : (
-          <ul className="pv-list pv-list--cards">
+          <ul className="od-list od-list--cards">
             {items.map((item) => (
               <li key={item.id}>
                 <Card as="article">
-                  <h3 className="pv-card__title">{item.label || item.fileName}</h3>
+                  <h3 className="od-card__title">{item.label || item.fileName}</h3>
                   <p>
                     <Badge tone="info">{TYPE_LABEL[item.mediaType as AcceptedType] ?? item.mediaType}</Badge>{' '}
                     <Badge tone="neutral">{formatBytes(item.bytes, language)}</Badge>
@@ -211,7 +211,7 @@ export function Wallet() {
                     </Fact>
                     <Fact label={t('wallet.size')}>{formatBytes(item.bytes, language)}</Fact>
                   </FactList>
-                  <div className="pv-pack__actions">
+                  <div className="od-pack__actions">
                     <Button tone="secondary" onClick={() => open(item)} aria-expanded={viewing?.item.id === item.id}>
                       {t('wallet.open')}
                     </Button>
@@ -235,7 +235,7 @@ export function Wallet() {
                       {t('app.delete')}
                     </Button>
                   </div>
-                  <p className="pv-muted">{t('wallet.openHelp')}</p>
+                  <p className="od-muted">{t('wallet.openHelp')}</p>
                 </Card>
               </li>
             ))}
@@ -246,13 +246,13 @@ export function Wallet() {
       {viewing ? (
         <Section title={t('wallet.viewerTitle')} level={2} id="wallet-viewer">
           <Card>
-            <div ref={viewerRef} tabIndex={-1} className="pv-viewer">
-              <p className="pv-viewer__name">{viewing.item.label || viewing.item.fileName}</p>
+            <div ref={viewerRef} tabIndex={-1} className="od-viewer">
+              <p className="od-viewer__name">{viewing.item.label || viewing.item.fileName}</p>
               {viewing.item.mediaType === 'application/pdf' ? (
                 <>
-                  <p className="pv-muted">{t('wallet.viewerPdf')}</p>
+                  <p className="od-muted">{t('wallet.viewerPdf')}</p>
                   <iframe
-                    className="pv-viewer__frame"
+                    className="od-viewer__frame"
                     title={t('wallet.viewerTitle')}
                     src={viewing.url}
                     /* An empty allow-list: no scripts, no plugins, no forms, no
@@ -260,10 +260,10 @@ export function Wallet() {
                     sandbox=""
                     referrerPolicy="no-referrer"
                   />
-                  <p className="pv-muted">{t('wallet.viewerFallback')}</p>
+                  <p className="od-muted">{t('wallet.viewerFallback')}</p>
                 </>
               ) : (
-                <img className="pv-viewer__image" src={viewing.url} alt={t('wallet.viewerImage')} />
+                <img className="od-viewer__image" src={viewing.url} alt={t('wallet.viewerImage')} />
               )}
               <Button tone="secondary" onClick={close}>
                 {t('app.close')}

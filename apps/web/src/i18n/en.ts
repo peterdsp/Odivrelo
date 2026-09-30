@@ -42,8 +42,8 @@ export const en = {
   'app.errorDetail': 'Technical detail',
   'app.goToSearch': 'Go to search',
   'app.neverSellsTickets':
-    'Poravia does not sell or issue tickets. Every purchase happens with the operator, who handles payment, changes and refunds.',
-  'app.independence': 'Poravia is independent. It is not operated by, endorsed by, or affiliated with any transport operator.',
+    'Odivrelo does not sell or issue tickets. Every purchase happens with the operator, who handles payment, changes and refunds.',
+  'app.independence': 'Odivrelo is independent. It is not operated by, endorsed by, or affiliated with any transport operator.',
 
   // -- Navigation ----------------------------------------------------------
   'nav.search': 'Search',
@@ -62,21 +62,21 @@ export const en = {
     'Everything shown here is invented. Aloria is a made-up region: it does not exist. No departure, operator, terminal, price or telephone number on this site is real, and none of it describes coverage of Greece or any other country.',
   'demo.why': 'Why is the data invented?',
   'demo.whyBody':
-    'No coach operator has yet granted Poravia documented rights to republish its timetables. Rather than publish data we are not allowed to publish, or guess, the 1.0.0 beta ships an invented region so the product can be checked end to end.',
+    'No coach operator has yet granted Odivrelo documented rights to republish its timetables. Rather than publish data we are not allowed to publish, or guess, the 1.0.0 beta ships an invented region so the product can be checked end to end.',
   'demo.label': 'Demonstration',
 
   // -- First launch --------------------------------------------------------
   'welcome.title': 'Travel with certainty',
-  'welcome.intro': 'Poravia tells you where to board, at what time, from which source, and how old that information is.',
+  'welcome.intro': 'Odivrelo tells you where to board, at what time, from which source, and how old that information is.',
   'welcome.chooseLanguage': 'Choose your language',
   'welcome.languageHelp': 'You can change this at any time in Settings.',
-  'welcome.doesTitle': 'What Poravia does',
+  'welcome.doesTitle': 'What Odivrelo does',
   'welcome.does1': 'Finds scheduled coach journeys between two places on a service date.',
   'welcome.does2': 'Shows the exact boarding point, including the bay and whether it is step-free, when that has been checked.',
   'welcome.does3': 'Names the source of every fact, when it was retrieved, and how old it is now.',
   'welcome.does4': 'Sends you to the operator to buy, or tells you the verified ticket office, phone and opening hours.',
   'welcome.does5': 'Works without a connection once you have downloaded the data.',
-  'welcome.doesNotTitle': 'What Poravia does not do',
+  'welcome.doesNotTitle': 'What Odivrelo does not do',
   'welcome.doesNot1': 'It never sells or issues tickets, and it never takes a payment.',
   'welcome.doesNot2': 'It does not track vehicles. Every time shown is a scheduled time, not a live position.',
   'welcome.doesNot3': 'It does not need an account, and it asks for no permission you have not chosen to give.',
@@ -180,7 +180,7 @@ export const en = {
   'position.scheduledHelp': 'This release has no live vehicle data. Nothing here shows where a coach actually is.',
   'position.liveUnavailable': 'Live tracking is not available',
   'position.liveUnavailableHelp':
-    'Poravia 1.0.0 carries scheduled information only. There is no real-time feed, so no arrival prediction or vehicle position is shown here.',
+    'Odivrelo 1.0.0 carries scheduled information only. There is no real-time feed, so no arrival prediction or vehicle position is shown here.',
   'confidence.reviewed': 'Reviewed',
   'confidence.candidate': 'Not yet reviewed',
   'confidence.reviewedHelp': 'A person has checked this against the source.',
@@ -261,7 +261,7 @@ export const en = {
   // -- Booking handoff -----------------------------------------------------
   'booking.title': 'How to buy this ticket',
   'booking.onlineAction': 'Buy from {operator}',
-  'booking.onlineBody': 'This opens {operator}’s own site in a new tab. Poravia takes no payment and issues no ticket.',
+  'booking.onlineBody': 'This opens {operator}’s own site in a new tab. Odivrelo takes no payment and issues no ticket.',
   'booking.officeAction': 'Buy at the ticket office',
   'booking.officeBody': 'This operator has no verified online sale. Buy at the ticket office below.',
   'booking.phoneAction': 'Call {operator}',
@@ -280,7 +280,7 @@ export const en = {
   'booking.markReturned': 'I have finished at the operator',
   'booking.noSaleTitle': 'No online sale exists for this journey',
   'booking.disclaimer':
-    'Poravia does not sell or issue tickets. The operator is responsible for the price, the ticket, changes and refunds.',
+    'Odivrelo does not sell or issue tickets. The operator is responsible for the price, the ticket, changes and refunds.',
 
   // -- Operators -----------------------------------------------------------
   'operators.title': 'Operators',
@@ -359,7 +359,7 @@ export const en = {
   'tripReady.ticketNone': 'No ticket file imported',
   'tripReady.mapData': 'Route line and stop positions',
   'tripReady.mapTiles': 'Background map imagery',
-  'tripReady.mapTilesNever': 'Not shipped. Poravia does not download map imagery for offline use, so it will not claim to.',
+  'tripReady.mapTilesNever': 'Not shipped. Odivrelo does not download map imagery for offline use, so it will not claim to.',
   'tripReady.live': 'Live updates',
   'tripReady.liveNever': 'Not available in this release, online or offline.',
 
@@ -368,7 +368,7 @@ export const en = {
   'offline.intro': 'Download the release to this device so search, journeys, boarding points and contacts all work with no connection.',
   'offline.release': 'Data release {releaseId}, published {when}',
   'offline.tilesNotice':
-    'These packs contain data only. Poravia ships no offline map imagery, so with no connection the map draws the route line and the stops on a plain background.',
+    'These packs contain data only. Odivrelo ships no offline map imagery, so with no connection the map draws the route line and the stops on a plain background.',
   'offline.download': 'Download',
   'offline.downloading': 'Downloading',
   'offline.resume': 'Resume download',
@@ -406,7 +406,7 @@ export const en = {
     'One pack per service date this release covers, each carrying the journeys for that date and the full detail of every one: ordered stops, boarding point, conditions and provenance.',
   'offline.packGtfs': 'GTFS archive',
   'offline.packGtfsBody':
-    'The reviewed GTFS for this release, for use in other tools. Not needed to use Poravia offline.',
+    'The reviewed GTFS for this release, for use in other tools. Not needed to use Odivrelo offline.',
   'offline.packNames': '{count} packs',
   'offline.legacyRelease': 'This data release was built by an older generator',
   'offline.legacyReleaseBody':
@@ -427,7 +427,7 @@ export const en = {
   'wallet.privacyTitle': 'Where these files go',
   'wallet.privacy1': 'Files you import stay in this browser, on this device, and nowhere else.',
   'wallet.privacy2': 'They are never uploaded, never put in the offline cache, never written to a log, and never put in a link.',
-  'wallet.privacy3': 'Deleting one here really deletes it. There is no copy anywhere for Poravia to delete.',
+  'wallet.privacy3': 'Deleting one here really deletes it. There is no copy anywhere for Odivrelo to delete.',
   'wallet.privacy4': 'This is not a backup. If you clear your browser data, or the browser reclaims space, these files go with it.',
   'wallet.import': 'Add a ticket file',
   'wallet.importHelp': 'PDF, PNG or JPEG, up to {max}.',
@@ -482,14 +482,14 @@ export const en = {
   // -- Settings ------------------------------------------------------------
   'settings.title': 'Settings',
   'settings.language': 'Language',
-  'settings.languageHelp': 'Poravia detects your browser language on first visit. This overrides it.',
+  'settings.languageHelp': 'Odivrelo detects your browser language on first visit. This overrides it.',
   'settings.appearance': 'Appearance',
   'settings.themeSystem': 'Follow the system',
   'settings.themeLight': 'Light',
   'settings.themeDark': 'Dark',
   'settings.accessibility': 'Accessibility',
   'settings.reduceMotion': 'Reduce movement',
-  'settings.reduceMotionHelp': 'Poravia already follows your system setting. This forces it on regardless.',
+  'settings.reduceMotionHelp': 'Odivrelo already follows your system setting. This forces it on regardless.',
   'settings.underline': 'Underline all links',
   'settings.storage': 'Storage on this device',
   'settings.storageUsed': '{used} used',
@@ -502,12 +502,12 @@ export const en = {
   'settings.storageUnknown': 'This browser will not report how much storage it is giving this site.',
   'settings.clearOffline': 'Delete all offline data',
   'settings.clearOfflineConfirm': 'Delete every downloaded pack from this device? Your saved trips and ticket files stay.',
-  'settings.clearEverything': 'Delete everything Poravia has stored',
+  'settings.clearEverything': 'Delete everything Odivrelo has stored',
   'settings.clearEverythingConfirm':
     'Delete every downloaded pack, saved trip, favourite, ticket file and preference from this device? This cannot be undone.',
   'settings.cleared': 'Deleted from this device.',
   'settings.privacy': 'Privacy',
-  'settings.privacy1': 'Poravia has no accounts, no analytics and no trackers, and loads no third-party script.',
+  'settings.privacy1': 'Odivrelo has no accounts, no analytics and no trackers, and loads no third-party script.',
   'settings.privacy2': 'Your searches, saved trips, favourites and ticket files never leave this device.',
   'settings.privacy3': 'The only network requests this site makes are for its own files and for the data release.',
   'settings.notifications': 'Notifications',
@@ -519,11 +519,11 @@ export const en = {
   'settings.support': 'Support',
   'settings.supportEmail': 'Email',
   'settings.licences': 'Licences and open-source notices',
-  'settings.about': 'About Poravia',
+  'settings.about': 'About Odivrelo',
   'settings.aboutBody':
-    'Poravia is an invented name. It was chosen to suggest a passage or crossing, and it is not a word in Greek or in any other language, so it does not translate to anything.',
+    'Odivrelo is an invented name. It is not a Greek word, and it is not a translation of anything.',
   'settings.markMeaning':
-    'The mark is an arch: a passage you travel through. The amber point inside the opening is the exact boarding point, which is the one fact the product exists to get right.',
+    'The mark is a ring crossed by a road that leads to an orange point: the journey, and where it takes you.',
   'settings.version': 'Version',
   'settings.commit': 'Build commit',
   'settings.builtAt': 'Built',
@@ -557,13 +557,13 @@ export const en = {
   'licences.software': 'Software',
   'licences.data': 'Data',
   'licences.fonts': 'Typefaces',
-  'licences.fontsBody': 'No web font is downloaded. Poravia uses the typefaces already on your device.',
+  'licences.fontsBody': 'No web font is downloaded. Odivrelo uses the typefaces already on your device.',
 
   // -- Errors and states ---------------------------------------------------
   'state.loading': 'Loading',
   'state.empty': 'Nothing to show',
   'state.offlineTitle': 'You are offline',
-  'state.offlineBody': 'Poravia cannot reach the data release. Anything you have downloaded still works.',
+  'state.offlineBody': 'Odivrelo cannot reach the data release. Anything you have downloaded still works.',
   'state.offlineBodyWithPacks': 'You are offline, so this is coming from the release you downloaded.',
   'state.serverErrorTitle': 'The data could not be read',
   'state.serverErrorBody': 'The release answered, but not with something this app can use. Try again in a moment.',
@@ -586,12 +586,12 @@ export const en = {
   'state.reload': 'Reload',
 
   // -- Update flow ---------------------------------------------------------
-  'update.available': 'A new version of Poravia is ready',
+  'update.available': 'A new version of Odivrelo is ready',
   'update.body': 'Reload to use it. Anything you have saved stays where it is.',
   'update.action': 'Reload now',
   'update.later': 'Later',
-  'update.offlineReady': 'Poravia is ready to work offline.',
-  'update.storageEvicted': 'The browser reclaimed the data Poravia had stored. Download the offline packs again if you need them.',
+  'update.offlineReady': 'Odivrelo is ready to work offline.',
+  'update.storageEvicted': 'The browser reclaimed the data Odivrelo had stored. Download the offline packs again if you need them.',
 
   // -- Accessibility -------------------------------------------------------
   'a11y.status': 'Status',
@@ -605,7 +605,7 @@ export const en = {
   'a11y.zoomIn': 'Zoom in',
   'a11y.zoomOut': 'Zoom out',
   'a11y.recentre': 'Centre on the route',
-  'a11y.logo': 'Poravia: an arch, with the boarding point marked inside it',
+  'a11y.logo': 'Odivrelo mark: a ring crossed by a road, with an orange destination point',
   'a11y.themeChanged': 'Appearance set to {theme}.',
   'a11y.languageChanged': 'Language set to {language}.',
   'a11y.sortedList': 'Sorted list',
@@ -620,9 +620,9 @@ export const en = {
   'language.sqName': 'Albanian',
 
   // -- Document titles and descriptions ------------------------------------
-  'meta.home.title': 'Poravia: intercity coach information you can check',
+  'meta.home.title': 'Odivrelo: intercity coach information you can check',
   'meta.home.description':
-    'Scheduled coach journeys with the exact boarding point, the source of every fact and how old it is. Poravia never sells tickets.',
+    'Scheduled coach journeys with the exact boarding point, the source of every fact and how old it is. Odivrelo never sells tickets.',
   'meta.search.title': 'Find a journey',
   'meta.results.title': '{origin} to {destination} on {date}',
   'meta.results.description': 'Scheduled coach journeys from {origin} to {destination} on {date}, with sources and freshness.',

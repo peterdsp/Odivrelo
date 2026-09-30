@@ -1,7 +1,7 @@
 """Load the labelled Aloria demonstration dataset and cut a release from it.
 
 Everything the normalized snapshot contract already covers goes through
-``poravia_ktel.ktel_ingest.import_normalized_snapshot``, including the invented
+``odivrelo_ktel.ktel_ingest.import_normalized_snapshot``, including the invented
 operator row, which the fixture declares in its ``demoOperators`` block. One
 thing the importer does not cover yet is written here directly, with the same
 review and rights semantics:
@@ -26,9 +26,9 @@ from typing import Any, Iterable
 from . import _staging  # noqa: F401  (installs the staging import path)
 from . import packs  # noqa: E402
 from .brand import BRAND  # noqa: E402
-from poravia_ktel import ktel_db, ktel_release  # noqa: E402
-from poravia_ktel.ktel_ingest import import_normalized_snapshot, review_entity  # noqa: E402
-from poravia_ktel.ktel_registry import seed_registry, stable_entity_id  # noqa: E402
+from odivrelo_ktel import ktel_db, ktel_release  # noqa: E402
+from odivrelo_ktel.ktel_ingest import import_normalized_snapshot, review_entity  # noqa: E402
+from odivrelo_ktel.ktel_registry import seed_registry, stable_entity_id  # noqa: E402
 
 #: ``server/api/publicapi/demo_seed.py`` -> ... -> repo root.
 REPO_ROOT = Path(__file__).resolve().parents[3]

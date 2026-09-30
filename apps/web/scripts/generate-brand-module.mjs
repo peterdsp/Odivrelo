@@ -26,6 +26,7 @@ const SHIPPED = [
   'name',
   'slug',
   'tagline',
+  'description',
   'domain',
   'url',
   'supportEmail',

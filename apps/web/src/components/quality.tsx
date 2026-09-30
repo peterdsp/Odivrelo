@@ -182,8 +182,8 @@ export function OvernightBadge() {
 export function LiveTrackingNotice() {
   const { t } = useI18n();
   return (
-    <div className="pv-notice pv-notice--info" data-testid="live-unavailable">
-      <p className="pv-notice__title">{t('position.liveUnavailable')}</p>
+    <div className="od-notice od-notice--info" data-testid="live-unavailable">
+      <p className="od-notice__title">{t('position.liveUnavailable')}</p>
       <p>{t('position.liveUnavailableHelp')}</p>
     </div>
   );

@@ -76,8 +76,8 @@ export function Journey() {
 
   if (!serviceDate) {
     return (
-      <div className="pv-page pv-page--narrow">
-        <h1 className="pv-page__title">{t('state.invalidLinkTitle')}</h1>
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('state.invalidLinkTitle')}</h1>
         <StateBlock
           kind="invalid"
           title={t('search.invalidDate')}

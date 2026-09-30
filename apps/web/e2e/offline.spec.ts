@@ -58,7 +58,7 @@ test.describe('offline data', () => {
     // is open, and it runs on every engine.
     await navigateInApp(page, `/results?origin=${query.originId}&destination=${query.destinationId}&date=${query.date}`);
     await waitForApp(page);
-    await expect(page.locator('article.pv-journey').first()).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('article.od-journey').first()).toBeVisible({ timeout: 20_000 });
     await shoot(page, testInfo, 'offline-results');
 
     await goOnline(page);
@@ -102,7 +102,7 @@ test.describe('offline data', () => {
     // And a second full navigation, not just a reload of the same document.
     await page.goto(`/results?origin=${query.originId}&destination=${query.destinationId}&date=${query.date}`);
     await waitForApp(page);
-    await expect(page.locator('article.pv-journey').first()).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('article.od-journey').first()).toBeVisible({ timeout: 20_000 });
     await shoot(page, testInfo, 'offline-reload');
 
     await goOnline(page);

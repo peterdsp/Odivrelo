@@ -1,9 +1,9 @@
 {
-  "name": "poravia-web",
+  "name": "odivrelo-web",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Poravia public web application. Static PWA served from GitHub Pages.",
+  "description": "Odivrelo public web application. Static PWA served from GitHub Pages.",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=22.0.0",

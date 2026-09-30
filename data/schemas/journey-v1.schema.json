@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://poravia.peterdsp.dev/schemas/v1/journey-v1.schema.json",
+  "$id": "https://odivrelo.peterdsp.dev/schemas/v1/journey-v1.schema.json",
   "title": "Journey, version 1",
   "description": "A journey in its detail form. It carries the full purchase action rather\nthan the summary one, plus the stop list, geometry, restrictions and\nprovenance a station or journey page needs.\n",
   "allOf": [
