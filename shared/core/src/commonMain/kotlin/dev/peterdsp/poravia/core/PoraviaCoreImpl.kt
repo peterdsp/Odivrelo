@@ -180,6 +180,33 @@ internal class PoraviaCoreImpl(
         store.prepare()
     }
 
+    /**
+     * Runs one exported operation.
+     *
+     * Everything the core exports declares `@Throws(PoraviaException, ...)`. On
+     * Kotlin/Native an exception outside that list is not converted into an
+     * NSError, it terminates the process, so the declaration is only half the
+     * guarantee. This is the other half: whatever a driver, a decoder or a file
+     * system throws is translated into a PoraviaException here, at the boundary,
+     * before it can cross it.
+     *
+     * Cancellation is re-thrown untouched: someone who left a screen has not hit
+     * an error, and the coroutine machinery needs the real exception.
+     */
+    private suspend fun <T> onCore(block: suspend () -> T): T = try {
+        withContext(Dispatchers.Default) { block() }
+    } catch (cancellation: CancellationException) {
+        throw cancellation
+    } catch (expected: PoraviaException) {
+        throw expected
+    } catch (error: Throwable) {
+        throw PoraviaException(
+            code = ErrorCode.UNAVAILABLE,
+            message = "Poravia could not complete that request.",
+            kind = PoraviaFailureKind.GENERAL,
+        )
+    }
+
     // -- Release access ------------------------------------------------------
 
     private suspend fun index(): ReleaseIndex {
@@ -336,7 +363,7 @@ internal class PoraviaCoreImpl(
 
     // -- Contract reads ------------------------------------------------------
 
-    override suspend fun meta(): Meta = withContext(Dispatchers.Default) {
+    override suspend fun meta(): Meta = onCore {
         val index = index()
         index.meta.copy(
             contractVersion = Brand.CONTRACT_VERSION,
@@ -346,12 +373,12 @@ internal class PoraviaCoreImpl(
         )
     }
 
-    override suspend fun coverage(): Coverage = withContext(Dispatchers.Default) {
+    override suspend fun coverage(): Coverage = onCore {
         index().coverage
     }
 
     override suspend fun searchPlaces(query: String, limit: Int): PlaceResults =
-        withContext(Dispatchers.Default) {
+        onCore {
             val index = index()
             val found = index.searchPlaces(query, limit.coerceIn(0, MAX_PLACE_RESULTS))
             PlaceResults(
@@ -369,8 +396,10 @@ internal class PoraviaCoreImpl(
         destinationId: String,
         serviceDate: String,
         filters: JourneyFilters,
-    ): JourneyResults = withContext(Dispatchers.Default) {
-        val index = index()
+    ): JourneyResults = onCore {
+        // Request validation comes first. A malformed date is malformed whether or
+        // not a release is installed, and reporting "no data" for it would send
+        // someone to the offline screen to fix a typo.
         ServiceTime.parseServiceDateOrNull(serviceDate)
             ?: throw PoraviaException(
                 ErrorCode.INVALID_REQUEST,
@@ -378,6 +407,7 @@ internal class PoraviaCoreImpl(
                 "date",
                 PoraviaFailureKind.INVALID_REQUEST,
             )
+        val index = index()
 
         when (val outcome = day(serviceDate)) {
             is DayOutcome.Pack -> {
@@ -481,8 +511,7 @@ internal class PoraviaCoreImpl(
     }
 
     override suspend fun journeyDetail(journeyId: String, serviceDate: String): JourneyDetail =
-        withContext(Dispatchers.Default) {
-            val index = index()
+        onCore {
             ServiceTime.parseServiceDateOrNull(serviceDate)
                 ?: throw PoraviaException(
                     ErrorCode.INVALID_REQUEST,
@@ -490,6 +519,7 @@ internal class PoraviaCoreImpl(
                     "date",
                     PoraviaFailureKind.INVALID_REQUEST,
                 )
+            val index = index()
 
             when (val outcome = day(serviceDate)) {
                 is DayOutcome.Pack -> {
@@ -541,7 +571,7 @@ internal class PoraviaCoreImpl(
         }
 
     override suspend fun operatorDetail(operatorId: String): OperatorDetail =
-        withContext(Dispatchers.Default) {
+        onCore {
             val index = index()
             val operator = index.operator(operatorId)
                 ?: throw PoraviaException(ErrorCode.NOT_FOUND, "Unknown operator.")
@@ -555,8 +585,7 @@ internal class PoraviaCoreImpl(
         }
 
     override suspend fun stopDetail(stopId: String, serviceDate: String): StopDetail =
-        withContext(Dispatchers.Default) {
-            val index = index()
+        onCore {
             ServiceTime.parseServiceDateOrNull(serviceDate)
                 ?: throw PoraviaException(
                     ErrorCode.INVALID_REQUEST,
@@ -564,6 +593,7 @@ internal class PoraviaCoreImpl(
                     "date",
                     PoraviaFailureKind.INVALID_REQUEST,
                 )
+            val index = index()
             val stop = index.stop(stopId)
                 ?: throw PoraviaException(
                     ErrorCode.NOT_FOUND,
@@ -589,7 +619,7 @@ internal class PoraviaCoreImpl(
             )
         }
 
-    override suspend fun sources(): SourceList = withContext(Dispatchers.Default) {
+    override suspend fun sources(): SourceList = onCore {
         val index = index()
         SourceList(
             contractVersion = Brand.CONTRACT_VERSION,
@@ -601,7 +631,7 @@ internal class PoraviaCoreImpl(
 
     // -- Person-owned state --------------------------------------------------
 
-    override suspend fun savedTrips(): List<SavedTrip> = withContext(Dispatchers.Default) {
+    override suspend fun savedTrips(): List<SavedTrip> = onCore {
         queries.selectSavedTrips().executeAsList().map { row ->
             SavedTrip(
                 id = row.id,
@@ -623,7 +653,7 @@ internal class PoraviaCoreImpl(
     }
 
     override suspend fun saveTrip(journeyId: String, serviceDate: String): SavedTrip =
-        withContext(Dispatchers.Default) {
+        onCore {
             val detail = journeyDetail(journeyId, serviceDate)
             val body = detail.journey
             val savedAt = nowText()
@@ -669,21 +699,21 @@ internal class PoraviaCoreImpl(
         }
 
     override suspend fun removeSavedTrip(savedTripId: String) {
-        withContext(Dispatchers.Default) {
+        onCore {
             writeLock.withLock { queries.deleteSavedTrip(savedTripId) }
         }
     }
 
     override suspend fun savedTripDetail(savedTripId: String): JourneyDetail? =
-        withContext(Dispatchers.Default) {
+        onCore {
             val row = queries.selectSavedTripById(savedTripId).executeAsOneOrNull()
-                ?: return@withContext null
+                ?: return@onCore null
             runCatching {
                 PoraviaJson.instance.decodeFromString(JourneyDetail.serializer(), row.detail_json)
             }.getOrNull()
         }
 
-    override suspend fun favorites(): List<FavoritePlace> = withContext(Dispatchers.Default) {
+    override suspend fun favorites(): List<FavoritePlace> = onCore {
         queries.selectFavorites().executeAsList().map { row ->
             FavoritePlace(
                 placeId = row.place_id,
@@ -700,11 +730,11 @@ internal class PoraviaCoreImpl(
     }
 
     override suspend fun toggleFavorite(placeId: String): Boolean =
-        withContext(Dispatchers.Default) {
+        onCore {
             val existing = queries.selectFavorite(placeId).executeAsOneOrNull()
             if (existing != null) {
                 writeLock.withLock { queries.deleteFavorite(placeId) }
-                return@withContext false
+                return@onCore false
             }
             val place = indexOrNull()?.place(placeId)
                 ?: throw PoraviaException(
@@ -723,7 +753,7 @@ internal class PoraviaCoreImpl(
             true
         }
 
-    override suspend fun recentSearches(): List<RecentSearch> = withContext(Dispatchers.Default) {
+    override suspend fun recentSearches(): List<RecentSearch> = onCore {
         queries.selectRecentSearches(MAX_RECENT_SEARCHES.toLong()).executeAsList().map { row ->
             RecentSearch(
                 originId = row.origin_id,
@@ -759,7 +789,7 @@ internal class PoraviaCoreImpl(
 
     // -- Offline packs -------------------------------------------------------
 
-    override suspend fun offlineCatalog(): OfflineCatalog = withContext(Dispatchers.Default) {
+    override suspend fun offlineCatalog(): OfflineCatalog = onCore {
         val installedManifest = store.installedManifest()
         val remote = remoteManifest()
         val reference = remote ?: installedManifest
@@ -953,7 +983,7 @@ internal class PoraviaCoreImpl(
         )
     }
 
-    override suspend fun installedPacks(): List<InstalledPack> = withContext(Dispatchers.Default) {
+    override suspend fun installedPacks(): List<InstalledPack> = onCore {
         queries.selectInstalledPacks().executeAsList().map { row ->
             InstalledPack(
                 name = row.name,
@@ -968,7 +998,7 @@ internal class PoraviaCoreImpl(
     }
 
     override suspend fun removePack(packName: String) {
-        withContext(Dispatchers.Default) {
+        onCore {
             val file = store.installedManifest()?.files?.get(packName)
             writeLock.withLock {
                 if (file != null) store.removePack(file)
@@ -979,7 +1009,7 @@ internal class PoraviaCoreImpl(
         }
     }
 
-    override suspend fun rollbackToPreviousRelease(): Meta = withContext(Dispatchers.Default) {
+    override suspend fun rollbackToPreviousRelease(): Meta = onCore {
         val restored = writeLock.withLock {
             val manifest = store.rollback()
                 ?: throw PoraviaException(
@@ -1021,8 +1051,8 @@ internal class PoraviaCoreImpl(
         meta()
     }
 
-    override suspend fun adoptSeededRelease(): Boolean = withContext(Dispatchers.Default) {
-        val manifest = store.installedManifest() ?: return@withContext false
+    override suspend fun adoptSeededRelease(): Boolean = onCore {
+        val manifest = store.installedManifest() ?: return@onCore false
         var registered = 0
         writeLock.withLock {
             manifest.files.forEach { (name, file) ->

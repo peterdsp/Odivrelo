@@ -25,6 +25,62 @@ Objective-C header uses stable `Poravia`-prefixed names, suspending members
 project into Swift as `async`, and `downloadPack` uses callbacks plus a
 `Cancellable` so Swift needs no coroutine bridge.
 
+## Linking it into an iOS target
+
+The framework is **static**, so it carries no link dependencies of its own. It
+embeds SQLDelight's native driver, which needs the system SQLite.
+
+`scripts/shared-build-xcframework.sh` declares that requirement in each slice's
+`Modules/module.modulemap`:
+
+```
+framework module "PoraviaCore" {
+    umbrella header "PoraviaCore.h"
+    …
+    link "sqlite3"
+}
+```
+
+Clang autolinking passes `-lsqlite3` for anything that imports `PoraviaCore`, so
+an app target should need no manual linker flag. If a build system bypasses
+autolinking, the fallback is to add `-lsqlite3` to **Other Linker Flags** on the
+app target; the symptom otherwise is undefined `sqlite3_*` symbols at link time.
+
+## Errors across the Objective-C boundary
+
+Every exported suspending member declares:
+
+```kotlin
+@Throws(PoraviaException::class, CancellationException::class)
+```
+
+This is not decoration. On Kotlin/Native an exception outside a function's
+`@Throws` list is never converted into an `NSError`: the runtime terminates the
+process before Swift can catch anything, and it cannot be fixed from Swift. A
+fresh installation has no data release, so the very first call fails for an
+entirely ordinary reason, and without the annotation that killed the application
+on launch.
+
+Two tests hold the line, because an annotation is exactly the kind of thing that
+silently comes back:
+
+- `ExportedApiContractTest` parses `PoraviaCore.kt` and `PoraviaCoreExtras.kt`
+  (through the `generateExportedApiFacts` Gradle task) and fails if any exported
+  suspending member is missing the annotation. It reads the **source**, not the
+  generated header, because a suspending function's completion handler carries an
+  `NSError` parameter whether or not `@Throws` is present, so the header looks
+  identical either way.
+- `FirstRunTest` calls every exported member on a core with nothing installed and
+  fails if any of them throws something that is not a `PoraviaException`. The
+  implementation routes every exported call through one guard that translates
+  whatever a driver, decoder or file system threw, which is what makes the
+  declaration safe.
+
+`CoreConfig`'s constructor deliberately does **not** throw, for the same reason:
+a throwing initialiser across the boundary terminates the process. Construction
+always succeeds, `CoreConfig.validationError` says what is wrong, and
+`createPoraviaCore` throws a typed `PoraviaException` a host can report.
+
 ## The exported surface
 
 `PoraviaCore` is the whole public read and write API; `createPoraviaCore(config)`

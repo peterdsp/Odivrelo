@@ -87,9 +87,12 @@ class PoraviaCoreTest {
     // -- Configuration -------------------------------------------------------
 
     @Test
-    fun configurationRejectsUnusableLocations() {
-        assertFailsWith<IllegalArgumentException> { CoreConfig(null, null, "", "/tmp/db", "el") }
-        assertFailsWith<IllegalArgumentException> { CoreConfig(null, null, "/tmp/packs", "", "el") }
+    fun configurationRejectsUnusableLocationsWithoutThrowingFromTheConstructor() {
+        // Construction must not throw: a throwing initialiser across the
+        // Objective-C boundary terminates the process. See FirstRunTest.
+        assertFalse(CoreConfig(null, null, "", "/tmp/db", "el").isValid)
+        assertFalse(CoreConfig(null, null, "/tmp/packs", "", "el").isValid)
+        assertTrue(CoreConfig(null, null, "/tmp/packs", "/tmp/db", "el").isValid)
     }
 
     @Test

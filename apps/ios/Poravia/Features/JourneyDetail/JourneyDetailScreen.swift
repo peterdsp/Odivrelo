@@ -14,9 +14,15 @@ struct JourneyDetailScreen: View {
     var isEmbedded = false
 
     @State private var state: State = .loading
-    @State private var isSaved = false
+    /// The saved trip the core returned, not a flag. The core owns the
+    /// identifier format of a saved trip, so removal must use the id the core
+    /// gave us rather than one Swift reassembles from a journey id and a date.
+    @State private var savedTrip: SavedTrip?
     @State private var reminderOn = false
     @State private var showingReminderDenied = false
+    /// Set when saving or removing a trip failed, so the button can stay
+    /// truthful and the person is told why rather than left guessing.
+    @State private var saveFailure: CoreError?
     @State private var purchaseURL: URL?
 
     private enum State: Equatable {
@@ -50,6 +56,18 @@ struct JourneyDetailScreen: View {
             Button(L10n.commonCancel, role: .cancel) {}
         } message: {
             Text(L10n.remindersDeniedHint)
+        }
+        .alert(
+            ErrorPresentation.of(saveFailure ?? .unexpected("")).title,
+            isPresented: Binding(
+                get: { saveFailure != nil },
+                set: { if !$0 { saveFailure = nil } }
+            ),
+            presenting: saveFailure
+        ) { _ in
+            Button(L10n.commonClose, role: .cancel) { saveFailure = nil }
+        } message: { error in
+            Text(ErrorPresentation.of(error).message)
         }
     }
 
@@ -204,7 +222,7 @@ struct JourneyDetailScreen: View {
     private func actions(_ detail: JourneyDetail) -> some View {
         SectionCard(L10n.tripsTitle, systemImage: "bookmark") {
             VStack(alignment: .leading, spacing: Theme.Space.small) {
-                Button(isSaved ? L10n.commonRemove : L10n.tripsSave) {
+                Button(savedTrip != nil ? L10n.commonRemove : L10n.tripsSave) {
                     Task { await toggleSaved(detail) }
                 }
                 .buttonStyle(PoraviaPrimaryButtonStyle())
@@ -214,7 +232,7 @@ struct JourneyDetailScreen: View {
                     get: { reminderOn },
                     set: { wanted in Task { await setReminder(wanted, detail: detail) } }
                 ))
-                .disabled(!isSaved)
+                .disabled(savedTrip == nil)
                 .accessibilityIdentifier("detail.reminder")
 
                 if reminderOn,
@@ -280,7 +298,7 @@ struct JourneyDetailScreen: View {
             let detail = try await model.core.journeyDetail(journeyId: journeyId, serviceDate: serviceDate)
             state = .loaded(detail)
             let saved = (try? await model.core.savedTrips()) ?? []
-            isSaved = saved.contains { $0.journeyId == journeyId && $0.serviceDate == serviceDate }
+            savedTrip = saved.first { $0.journeyId == journeyId && $0.serviceDate == serviceDate }
             reminderOn = model.reminders.isScheduled(journeyId: journeyId, serviceDate: serviceDate)
         } catch let error as CoreError {
             state = .failed(error)
@@ -290,14 +308,23 @@ struct JourneyDetailScreen: View {
     }
 
     private func toggleSaved(_ detail: JourneyDetail) async {
-        if isSaved {
-            try? await model.core.removeSavedTrip(savedTripId: "\(journeyId)|\(serviceDate.iso)")
-            model.reminders.cancel(journeyId: journeyId, serviceDate: serviceDate)
-            isSaved = false
-            reminderOn = false
-        } else {
-            _ = try? await model.core.saveTrip(journeyId: journeyId, serviceDate: serviceDate)
-            isSaved = true
+        // The button must only change state once the core has agreed. Setting it
+        // optimistically and swallowing the error would leave the label saying
+        // "Remove" for a trip that is still saved, or the reverse.
+        do {
+            if let trip = savedTrip {
+                try await model.core.removeSavedTrip(savedTripId: trip.id)
+                model.reminders.cancel(journeyId: journeyId, serviceDate: serviceDate)
+                savedTrip = nil
+                reminderOn = false
+            } else {
+                savedTrip = try await model.core.saveTrip(
+                    journeyId: journeyId,
+                    serviceDate: serviceDate
+                )
+            }
+        } catch {
+            saveFailure = CoreErrorTranslation.translate(error)
         }
     }
 

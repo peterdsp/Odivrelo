@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 #if PORAVIA_CORE_AVAILABLE
 import PoraviaCore
@@ -9,6 +10,8 @@ import PoraviaCore
 /// Compiled in every configuration so the mapping is unit-testable with or
 /// without the framework linked.
 public enum CoreErrorTranslation {
+    private static let log = Logger(subsystem: Brand.bundleIdentifier, category: "core")
+
     /// The domain Kotlin/Native uses when a Kotlin exception crosses into
     /// Objective-C. The thrown `PoraviaException` is carried in the user info.
     public static let kotlinExceptionKey = "KotlinException"
@@ -22,6 +25,16 @@ public enum CoreErrorTranslation {
         // The core's own exception type carries the contract error code and,
         // for an invalid request, the field that was rejected.
         if let thrown = nsError.userInfo[kotlinExceptionKey] as? PoraviaException {
+            // The contract code alone does not say what went wrong, and the
+            // core's own sentence is the only place that detail exists. It is a
+            // technical message about data, never about a person, so recording
+            // it costs nothing and not recording it makes a failure like
+            // "unavailable" impossible to act on.
+            log.error(
+                """
+                core raised \(String(describing: thrown.code), privacy: .public):                 \(thrown.message ?? "no message", privacy: .public)                \(thrown.field.map { " (field: \($0))" } ?? "", privacy: .public)
+                """
+            )
             return fromContract(
                 code: CoreMapping.errorCode(thrown.code),
                 field: thrown.field

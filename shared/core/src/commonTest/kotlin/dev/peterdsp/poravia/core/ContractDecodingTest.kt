@@ -111,17 +111,56 @@ class ContractDecodingTest {
             coverage.notCovered.isNotEmpty(),
             "a release must say what it does not cover",
         )
+        // The statement is localised, because it is a sentence a traveller reads
+        // and this product ships in three languages.
+        coverage.notCovered.forEach { statement ->
+            listOf("el", "en", "sq").forEach { language ->
+                assertTrue(
+                    statement.resolve(language).isNotBlank(),
+                    "a not-covered statement has no " + language + " text",
+                )
+            }
+        }
         assertTrue(
-            coverage.notCovered.any { it.contains("real-time", ignoreCase = true) },
+            coverage.notCovered.any {
+                it.resolve("en").contains("real-time", ignoreCase = true)
+            },
             "the release must state that real-time positions are not covered: " +
-                coverage.notCovered,
+                coverage.notCovered.map { it.resolve("en") },
         )
+        assertNotNull(coverage.note)
+        listOf("el", "en", "sq").forEach {
+            assertTrue(coverage.note.resolve(it).isNotBlank(), "the note has no " + it + " text")
+        }
         assertTrue(
             coverage.absenceSemantics.isNotEmpty(),
             "the release must say what the absence of a journey means",
         )
         assertNotNull(coverage.freshness, "coverage must carry its own freshness")
         assertTrue(coverage.operatorCount > 0)
+
+        // The coverage range is a span, not an inventory. The release describes a
+        // period, but publishes a timetable only for the dates its data names, so
+        // there are dates inside the range with no pack. That gap is precisely why
+        // the core must answer "no offline data for this date" rather than "no
+        // service on this date", and this asserts the gap is real in shipped data
+        // rather than only in a unit test's imagination.
+        val range = assertNotNull(coverage.serviceDates)
+        assertNotNull(range.from)
+        assertNotNull(range.to)
+        Release.serviceDates.forEach {
+            assertTrue(range.contains(it), "published date " + it + " is outside the stated range")
+        }
+        val insideButUnpublished = generateSequence(range.from) {
+            dev.peterdsp.poravia.core.time.ServiceTime.shiftServiceDate(it, 1)
+        }
+            .takeWhile { it <= range.to!! }
+            .firstOrNull { it !in Release.serviceDates }
+        assertNotNull(
+            insideButUnpublished,
+            "the release should exercise a date inside its own coverage range that " +
+                "still has no published timetable",
+        )
     }
 
     @Test

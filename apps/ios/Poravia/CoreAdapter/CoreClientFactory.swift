@@ -63,6 +63,11 @@ public enum CoreClientFactory {
         #if PORAVIA_CORE_AVAILABLE
         if !preferFixture {
             do {
+                // The files have to be in place before the core opens the packs
+                // directory, which is why this runs here and not after. The core
+                // is asked to adopt them once it exists, in the application's
+                // startup task.
+                SeededRelease.install(into: URL(fileURLWithPath: config.packsDirectory))
                 let adapter = try PoraviaCoreAdapter(config: config)
                 log.info("Poravia core adapter created")
                 return (adapter, .sharedCore)

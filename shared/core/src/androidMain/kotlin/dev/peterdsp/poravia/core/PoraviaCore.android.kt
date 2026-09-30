@@ -4,6 +4,7 @@ import android.content.Context
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import dev.peterdsp.poravia.core.db.PoraviaDatabase
+import dev.peterdsp.poravia.core.model.ErrorCode
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
@@ -55,11 +56,27 @@ internal actual fun createPlatformDriver(databasePath: String): SqlDriver {
     )
 }
 
-actual fun createPoraviaCore(config: CoreConfig): PoraviaCore = PoraviaCoreImpl(
-    config = config,
-    httpClient = createPlatformHttpClient(),
-    driver = createPlatformDriver(config.databasePath),
-)
+@Throws(PoraviaException::class)
+actual fun createPoraviaCore(config: CoreConfig): PoraviaCore {
+    requireValidConfig(config)
+    return try {
+        PoraviaCoreImpl(
+            config = config,
+            httpClient = createPlatformHttpClient(),
+            driver = createPlatformDriver(config.databasePath),
+        )
+    } catch (error: PoraviaException) {
+        throw error
+    } catch (error: Throwable) {
+        // Opening the database or preparing the packs directory failed. A host
+        // application can show this; terminating the process cannot be caught.
+        throw PoraviaException(
+            code = ErrorCode.UNAVAILABLE,
+            message = "Poravia could not open its local storage.",
+            kind = PoraviaFailureKind.GENERAL,
+        )
+    }
+}
 
 private const val REQUEST_TIMEOUT_MILLIS = 30_000L
 private const val CONNECT_TIMEOUT_MILLIS = 15_000L

@@ -18,6 +18,13 @@ struct PoraviaApp: App {
                     // exercise the core boundary directly and must not reach
                     // for the network or for installed packs on launch.
                     guard !RunMode.isUnitTestRun else { return }
+                    // Registering the release shipped with the application has
+                    // to finish before anything is read, otherwise a fresh
+                    // install would render an empty state it is about to
+                    // contradict. A failure here is not fatal: the application
+                    // simply has no offline data yet, which is a state it
+                    // already knows how to show.
+                    _ = try? await model.core.adoptSeededRelease()
                     await model.loadMeta()
                     await model.reminders.refreshAuthorisation()
                 }

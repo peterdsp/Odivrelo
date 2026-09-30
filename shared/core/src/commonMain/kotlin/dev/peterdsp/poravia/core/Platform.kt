@@ -16,3 +16,20 @@ internal expect fun createPlatformHttpClient(): HttpClient
  * knows whether the underlying SQLite implementation runs the callbacks itself.
  */
 internal expect fun createPlatformDriver(databasePath: String): SqlDriver
+
+/**
+ * Turns an unusable configuration into a typed failure.
+ *
+ * Both platform factories call this before building anything, so the message and
+ * the error code are identical on Android and iOS, and so the mapping can be
+ * tested in common code rather than once per platform.
+ */
+@Throws(PoraviaException::class)
+internal fun requireValidConfig(config: CoreConfig) {
+    val problem = config.validationError ?: return
+    throw PoraviaException(
+        code = dev.peterdsp.poravia.core.model.ErrorCode.INVALID_REQUEST,
+        message = problem,
+        kind = PoraviaFailureKind.INVALID_REQUEST,
+    )
+}

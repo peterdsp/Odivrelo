@@ -5,6 +5,7 @@ import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import dev.peterdsp.poravia.core.db.PoraviaDatabase
 import dev.peterdsp.poravia.core.io.Paths
 import dev.peterdsp.poravia.core.io.PlatformFiles
+import dev.peterdsp.poravia.core.model.ErrorCode
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.plugins.HttpTimeout
@@ -42,11 +43,28 @@ internal actual fun createPlatformDriver(databasePath: String): SqlDriver {
     )
 }
 
-actual fun createPoraviaCore(config: CoreConfig): PoraviaCore = PoraviaCoreImpl(
-    config = config,
-    httpClient = createPlatformHttpClient(),
-    driver = createPlatformDriver(config.databasePath),
-)
+@Throws(PoraviaException::class)
+@ObjCName("PoraviaCoreFactory")
+actual fun createPoraviaCore(config: CoreConfig): PoraviaCore {
+    requireValidConfig(config)
+    return try {
+        PoraviaCoreImpl(
+            config = config,
+            httpClient = createPlatformHttpClient(),
+            driver = createPlatformDriver(config.databasePath),
+        )
+    } catch (error: PoraviaException) {
+        throw error
+    } catch (error: Throwable) {
+        // Opening the database or preparing the packs directory failed. A host
+        // application can show this; terminating the process cannot be caught.
+        throw PoraviaException(
+            code = ErrorCode.UNAVAILABLE,
+            message = "Poravia could not open its local storage.",
+            kind = PoraviaFailureKind.GENERAL,
+        )
+    }
+}
 
 /**
  * Default writable locations for an iOS host, offered so the Swift application

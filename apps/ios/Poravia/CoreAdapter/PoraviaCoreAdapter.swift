@@ -22,7 +22,12 @@ import PoraviaCore
 public final class PoraviaCoreAdapter: PoraviaCoreClient, @unchecked Sendable {
     private let core: any PoraviaCore
 
-    public init(config: CoreConfig) {
+    /// The factory validates the configuration and opens the database, so it can
+    /// fail. It is annotated `@Throws(PoraviaException)` in Kotlin, which is what
+    /// lets that failure arrive here as an `NSError` instead of terminating the
+    /// process, so the failure is translated like every other core error rather
+    /// than being swallowed.
+    public init(config: CoreConfig) throws {
         let kotlinConfig = PoraviaCoreConfig(
             apiBaseUrl: config.apiBaseUrl,
             staticPacksBaseUrl: config.staticPacksBaseUrl,
@@ -30,7 +35,16 @@ public final class PoraviaCoreAdapter: PoraviaCoreClient, @unchecked Sendable {
             databasePath: config.databasePath,
             languageTag: config.languageTag
         )
-        self.core = PoraviaCore_iosKt.createPoraviaCore(config: kotlinConfig)
+        do {
+            // Kotlin declares the factory nullable, but because it also carries
+            // an error out-parameter Swift imports it as non-optional: a failure
+            // arrives as a thrown error, never as nil.
+            self.core = try PoraviaCore_iosKt.PoraviaCoreFactory(config: kotlinConfig)
+        } catch let error as CoreError {
+            throw error
+        } catch {
+            throw CoreErrorTranslation.translate(error)
+        }
     }
 
     /// Builds a configuration from the paths the core itself nominates, so the
@@ -111,6 +125,15 @@ public final class PoraviaCoreAdapter: PoraviaCoreClient, @unchecked Sendable {
     }
 
     // MARK: Saved state
+
+    /// Delegates to the core's extras. A core built without them reports that
+    /// nothing was adopted rather than pretending it succeeded.
+    public func adoptSeededRelease() async throws -> Bool {
+        guard let extras = PoraviaCoreExtrasKt.extras(core) else { return false }
+        return try await CoreErrorTranslation.run {
+            try await extras.adoptSeededRelease().boolValue
+        }
+    }
 
     public func savedTrips() async throws -> [SavedTrip] {
         try await CoreErrorTranslation.run {

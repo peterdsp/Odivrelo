@@ -76,6 +76,17 @@ targets:
           # scripts/ios-generate-strings.sh, not a shipped resource. The
           # compiled String Catalog is what the app reads.
           - "Resources/strings.source.json"
+          # Added below as a folder reference so the bundle keeps the
+          # release/manifest.json and release/packs/... layout the core expects.
+          # A flat resource scan would drop the directory and the seeding would
+          # find nothing.
+          - "Resources/release"
+      # The release bundled with the application, copied byte for byte from the
+      # one generator by scripts/ios-sync-packs.sh. It lets a fresh install
+      # search offline before any download. The core verifies every digest in
+      # adoptSeededRelease(), so shipping it grants no extra trust.
+      - path: Poravia/Resources/release
+        type: folder
     dependencies: []
     scheme:
       testTargets:

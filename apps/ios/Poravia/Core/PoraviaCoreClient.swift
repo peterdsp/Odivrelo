@@ -73,6 +73,14 @@ public protocol PoraviaCoreClient: Sendable {
     func stopDetail(stopId: String, serviceDate: ServiceDate) async throws -> StopDetail
 
     // Saved state
+    /// Registers a release the application shipped inside its own bundle,
+    /// after the host has copied it into the packs directory. Returns true
+    /// when at least one pack was registered.
+    ///
+    /// The core verifies every digest before registering anything, so this
+    /// grants a bundled file no more trust than a downloaded one.
+    func adoptSeededRelease() async throws -> Bool
+
     func savedTrips() async throws -> [SavedTrip]
     func saveTrip(journeyId: String, serviceDate: ServiceDate) async throws -> SavedTrip
     func removeSavedTrip(savedTripId: String) async throws
@@ -183,4 +191,10 @@ public struct CoreConfig: Hashable, Sendable {
     }
 
     public var isStaticPackMode: Bool { apiBaseUrl == nil }
+}
+
+public extension PoraviaCoreClient {
+    /// Most clients have no seeded release to adopt. Only the adapter over the
+    /// shared core does, so it is the only one that overrides this.
+    func adoptSeededRelease() async throws -> Bool { false }
 }

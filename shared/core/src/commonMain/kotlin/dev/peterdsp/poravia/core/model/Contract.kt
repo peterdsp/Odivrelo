@@ -55,16 +55,44 @@ data class OperatorCoverageSummary(
     val operatorId: String? = null,
     val name: LocalizedText? = null,
     val journeyCount: Int = 0,
+    val routeCount: Int = 0,
+    val stopCount: Int = 0,
     val state: CoverageState = CoverageState.NOT_COVERED,
 )
 
 /**
+ * The span of service dates a release describes.
+ *
+ * This is a span, not a guarantee. A release publishes a journeys pack only for
+ * the dates its data actually names, so a date inside this range may still have
+ * no pack. The range says what the release is about; only the manifest says what
+ * it holds.
+ */
+@Serializable
+@ObjCName("PoraviaServiceDateRange")
+data class ServiceDateRange(
+    val from: String? = null,
+    val to: String? = null,
+) {
+    fun contains(serviceDate: String): Boolean {
+        val start = from ?: return false
+        val end = to ?: return false
+        return serviceDate in start..end
+    }
+}
+
+/**
  * What a release covers and, just as importantly, what it does not.
  *
+ * [note] and [notCovered] are localised, not plain strings: they are sentences a
+ * traveller reads, and this product ships in three languages. A coverage
+ * statement that only exists in English is not a coverage statement for most of
+ * the people it is about.
+ *
  * [absenceSemantics] is the publisher's own statement of what the absence of a
- * journey means. A client must never turn "we have no record" into "there is no
- * service", so the wording comes from the release rather than from the
- * application.
+ * journey means, keyed by the machine term it explains. A client must never turn
+ * "we have no record" into "there is no service", so the wording comes from the
+ * release rather than from the application.
  */
 @Serializable
 @ObjCName("PoraviaCoverage")
@@ -73,11 +101,18 @@ data class Coverage(
     val operatorCount: Int = 0,
     val corridorCount: Int = 0,
     val journeyCount: Int = 0,
-    val note: String? = null,
+    val stopCount: Int = 0,
+    val note: LocalizedText? = null,
     /** Explicit statement of what is not covered. Never inferred by a client. */
-    val notCovered: List<String> = emptyList(),
+    val notCovered: List<LocalizedText> = emptyList(),
     val absenceSemantics: Map<String, String> = emptyMap(),
     val operators: List<OperatorCoverageSummary> = emptyList(),
+    /**
+     * The span of dates this release describes. Not every date inside it has a
+     * published timetable, which is why the core answers "no offline data for
+     * this date" rather than "no service" when a pack is absent.
+     */
+    val serviceDates: ServiceDateRange? = null,
     val freshness: Freshness? = null,
     val releaseId: String = "",
     val publishedAt: String? = null,

@@ -5,6 +5,13 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFrameworkTask
 
 private val HEX_DIGITS = "0123456789abcdef"
 
+/**
+ * The number of suspending members PoraviaCore and PoraviaCoreExtras export
+ * between them. It is a floor, not an exact count: adding a member is fine,
+ * losing eighteen of them silently is not.
+ */
+private val MINIMUM_EXPORTED_SUSPEND_MEMBERS = 20
+
 /** The brand slug, read from brand.json so no module hardcodes the product name. */
 fun poraviaSlug(root: Project): String {
     val brand = root.layout.projectDirectory.file("brand.json").asFile.readText()
@@ -83,6 +90,44 @@ kotlin {
 // default plural directory name is overridden rather than left to drift.
 tasks.withType<XCFrameworkTask>().configureEach {
     outputDir = layout.buildDirectory.dir("XCFramework").get().asFile
+
+    // A static framework carries no link dependencies of its own, so a consumer
+    // that just drags it in gets an undefined-symbol error for sqlite3, which the
+    // embedded SQLDelight native driver needs. Rather than make every consumer
+    // discover that by link failure and add -lsqlite3 by hand, the requirement is
+    // declared in the module map: clang autolinking then passes -lsqlite3 for
+    // anything that imports PoraviaCore, and Swift honours it.
+    doLast {
+        val root = outputDir
+        if (!root.isDirectory) return@doLast
+        var patched = 0
+        root.walkTopDown()
+            .filter { it.isFile && it.name == "module.modulemap" }
+            .forEach { moduleMap ->
+                val text = moduleMap.readText()
+                if (text.contains("link \"sqlite3\"")) return@forEach
+                val closing = text.lastIndexOf('}')
+                if (closing < 0) {
+                    throw GradleException("Unexpected module map at " + moduleMap.absolutePath)
+                }
+                moduleMap.writeText(
+                    text.substring(0, closing) +
+                        "\n    // SQLDelight's native driver is compiled into this static\n" +
+                        "    // framework and needs the system SQLite. Declared here so a\n" +
+                        "    // consumer does not have to add -lsqlite3 by hand.\n" +
+                        "    link \"sqlite3\"\n" +
+                        text.substring(closing),
+                )
+                patched++
+            }
+        if (patched == 0) {
+            throw GradleException(
+                "No module map was found under " + root.absolutePath +
+                    ", so the sqlite3 link requirement was not declared.",
+            )
+        }
+        logger.lifecycle("Declared the sqlite3 link requirement in " + patched + " module map(s).")
+    }
 }
 
 sqldelight {
@@ -263,6 +308,151 @@ val generateTestFixtures by tasks.registering {
     }
 }
 
+// The exported Objective-C surface is parsed out of its own source and handed to
+// commonTest as data, so a test can assert that every exported suspending member
+// carries @Throws.
+//
+// This cannot be checked from the generated header: a suspending function's
+// completion handler always has an NSError parameter whether or not the function
+// declares @Throws, so the header looks identical either way. What @Throws changes
+// is whether the Kotlin/Native runtime converts an exception into that NSError or
+// terminates the process first. The annotation is therefore only visible in the
+// source, and that is what this reads.
+val generateExportedApiFacts by tasks.registering {
+    val sources = listOf(
+        layout.projectDirectory.file(
+            "src/commonMain/kotlin/dev/peterdsp/poravia/core/PoraviaCore.kt",
+        ),
+        layout.projectDirectory.file(
+            "src/commonMain/kotlin/dev/peterdsp/poravia/core/PoraviaCoreExtras.kt",
+        ),
+    )
+    val outputDir = layout.buildDirectory.dir("generated/exportedApi/kotlin")
+    inputs.files(sources)
+    outputs.dir(outputDir)
+    doLast {
+        data class Member(
+            val owner: String,
+            val name: String,
+            val isSuspend: Boolean,
+            val throwsTypes: List<String>,
+        )
+
+        val throwsStart = Regex("""^\s*@Throws\(""")
+        val declaration = Regex("""^\s*(?:@\w+(?:\([^)]*\))?\s*)*(suspend\s+)?fun\s+(\w+)""")
+        val ownerStart = Regex("""^(?:expect\s+|actual\s+)?interface\s+(\w+)""")
+        val topLevelFun = Regex("""^expect\s+fun\s+(\w+)""")
+
+        val members = mutableListOf<Member>()
+        sources.forEach { source ->
+            val file = source.asFile
+            if (!file.isFile) throw GradleException("Missing exported source " + file.absolutePath)
+            var owner = "<top level>"
+            var pending = mutableListOf<String>()
+            var collecting = false
+            val buffer = StringBuilder()
+
+            file.readLines().forEach line@{ rawLine ->
+                val line = rawLine.substringBefore("//")
+
+                if (collecting) {
+                    buffer.append(line)
+                    if (line.contains(")")) {
+                        collecting = false
+                        pending += Regex("""(\w+)::class""")
+                            .findAll(buffer.toString())
+                            .map { it.groupValues[1] }
+                        buffer.clear()
+                    }
+                    return@line
+                }
+
+                if (throwsStart.containsMatchIn(line)) {
+                    buffer.append(line)
+                    if (line.trimEnd().endsWith(")")) {
+                        pending += Regex("""(\w+)::class""")
+                            .findAll(buffer.toString())
+                            .map { it.groupValues[1] }
+                        buffer.clear()
+                    } else {
+                        collecting = true
+                    }
+                    return@line
+                }
+
+                ownerStart.find(line)?.let {
+                    owner = it.groupValues[1]
+                    pending = mutableListOf()
+                    return@line
+                }
+
+                topLevelFun.find(line)?.let { match ->
+                    members += Member("<top level>", match.groupValues[1], false, pending.toList())
+                    pending = mutableListOf()
+                    return@line
+                }
+
+                declaration.find(line)?.let { match ->
+                    members += Member(
+                        owner = owner,
+                        name = match.groupValues[2],
+                        isSuspend = match.groupValues[1].isNotBlank(),
+                        throwsTypes = pending.toList(),
+                    )
+                    pending = mutableListOf()
+                    return@line
+                }
+
+                if (line.isBlank()) pending = mutableListOf()
+            }
+        }
+
+        // A parse that finds nothing must fail loudly rather than let an empty
+        // list satisfy every assertion downstream.
+        if (members.count { it.isSuspend } < MINIMUM_EXPORTED_SUSPEND_MEMBERS) {
+            throw GradleException(
+                "Parsed only " + members.count { it.isSuspend } +
+                    " suspending exported members, which cannot be right. " +
+                    "generateExportedApiFacts needs updating.",
+            )
+        }
+
+        val target = outputDir.get().asFile
+            .resolve("dev/peterdsp/poravia/core/ExportedApiFacts.kt")
+        target.parentFile.mkdirs()
+        val builder = StringBuilder()
+        builder.appendLine("// Generated by the generateExportedApiFacts Gradle task from")
+        builder.appendLine("// PoraviaCore.kt and PoraviaCoreExtras.kt. Do not edit by hand.")
+        builder.appendLine("package dev.peterdsp.poravia.core")
+        builder.appendLine()
+        builder.appendLine("internal data class ExportedMember(")
+        builder.appendLine("    val owner: String,")
+        builder.appendLine("    val name: String,")
+        builder.appendLine("    val isSuspend: Boolean,")
+        builder.appendLine("    val declaredThrows: List<String>,")
+        builder.appendLine(")")
+        builder.appendLine()
+        builder.appendLine("internal object ExportedApiFacts {")
+        builder.appendLine("    const val MINIMUM_SUSPEND_MEMBERS: Int = " + MINIMUM_EXPORTED_SUSPEND_MEMBERS)
+        builder.appendLine("    val members: List<ExportedMember> = listOf(")
+        members.forEach { member ->
+            val types = member.throwsTypes.joinToString(", ") { "\"" + it + "\"" }
+            builder.appendLine(
+                "        ExportedMember(\"" + member.owner + "\", \"" + member.name +
+                    "\", " + member.isSuspend + ", listOf(" + types + ")),",
+            )
+        }
+        builder.appendLine("    )")
+        builder.appendLine("}")
+        target.writeText(builder.toString())
+        logger.lifecycle(
+            "Exported API facts: " + members.size + " members, " +
+                members.count { it.isSuspend } + " suspending.",
+        )
+    }
+}
+
 kotlin.sourceSets.commonTest {
     kotlin.srcDir(generateTestFixtures)
+    kotlin.srcDir(generateExportedApiFacts)
 }
