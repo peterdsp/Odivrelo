@@ -347,16 +347,18 @@ test.describe('the map is never the only path', () => {
     await waitForApp(page);
 
     await page.getByRole('button', { name: 'Εμφάνιση χάρτη' }).click();
-    const map = page.locator('#journey-map');
-    await expect(map).toContainText(/υπόβαθρο χάρτη|δεν φορτώθηκε/, { timeout: 20_000 });
     // Headless Firefox on a GPU-less CI runner cannot always create the WebGL
-    // context the map needs, and the app then shows its text fallback, which
-    // the test above covers. Only Firefox is excused: Chromium and WebKit must
-    // still render the map.
-    test.skip(
-      browserName === 'firefox' && (await map.textContent())?.includes('δεν φορτώθηκε') === true,
-      'this Firefox has no usable WebGL, so the map showed its fallback',
-    );
+    // context the map needs; the app then replaces the panel with its text
+    // fallback, which the test above covers. So on Firefox only, wait for the
+    // map to settle (loaded, or replaced by the fallback) and skip if it fell
+    // back. The imagery note shows before either, so it cannot decide this.
+    // Chromium and WebKit are held to the full assertions below.
+    if (browserName === 'firefox') {
+      const map = page.locator('#journey-map');
+      const fallback = map.getByText('δεν φορτώθηκε');
+      await expect(map.locator('.pv-map__canvas[data-ready]').or(fallback)).toBeVisible({ timeout: 20_000 });
+      test.skip((await fallback.count()) > 0, 'this Firefox has no usable WebGL, so the map showed its fallback');
+    }
     // The panel appears, and it states that no background imagery is loaded.
     await expect(page.locator('#journey-map')).toContainText('υπόβαθρο χάρτη', { timeout: 20_000 });
     await expect(page.getByRole('group', { name: 'Χειριστήρια χάρτη' })).toBeVisible();
