@@ -10,10 +10,10 @@ struct OperatorScreen: View {
 
     let operatorId: String
 
-    @State private var state: State = .loading
+    @State private var state: LoadState = .loading
     @State private var openingURL: URL?
 
-    private enum State: Equatable {
+    private enum LoadState: Equatable {
         case loading
         case loaded(OperatorDetail)
         case failed(CoreError)

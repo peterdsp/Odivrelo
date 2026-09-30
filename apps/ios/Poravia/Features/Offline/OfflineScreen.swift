@@ -11,12 +11,12 @@ import SwiftUI
 struct OfflineScreen: View {
     @Environment(AppModel.self) private var model
     @State private var downloads = PackDownloadCoordinator()
-    @State private var state: State = .loading
+    @State private var state: LoadState = .loading
     @State private var confirmingRollback = false
 
     let geometry: WindowGeometry
 
-    private enum State: Equatable {
+    private enum LoadState: Equatable {
         case loading
         case loaded(OfflineCatalog)
         case failed(CoreError)

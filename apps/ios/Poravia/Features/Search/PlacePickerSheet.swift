@@ -15,10 +15,10 @@ struct PlacePickerSheet: View {
     let onChoose: (Place) -> Void
 
     @State private var query = ""
-    @State private var state: State = .idle
+    @State private var state: LoadState = .idle
     @State private var searchTask: Task<Void, Never>?
 
-    private enum State: Equatable {
+    private enum LoadState: Equatable {
         case idle
         case loading
         case loaded(PlaceSearchResult)

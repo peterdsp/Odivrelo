@@ -10,10 +10,10 @@ struct StopScreen: View {
     let stopId: String
     let serviceDate: ServiceDate
 
-    @State private var state: State = .loading
+    @State private var state: LoadState = .loading
     @State private var isFavourite = false
 
-    private enum State: Equatable {
+    private enum LoadState: Equatable {
         case loading
         case loaded(StopDetail)
         case failed(CoreError)

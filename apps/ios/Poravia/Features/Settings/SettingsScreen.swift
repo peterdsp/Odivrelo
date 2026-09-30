@@ -252,9 +252,9 @@ struct SourcesScreen: View {
     @Environment(AppModel.self) private var model
     @Environment(\.windowGeometry) private var geometry
 
-    @State private var state: State = .loading
+    @State private var state: LoadState = .loading
 
-    private enum State: Equatable {
+    private enum LoadState: Equatable {
         case loading
         case loaded(SourceList)
         case failed(CoreError)
@@ -336,12 +336,12 @@ struct CoverageScreen: View {
     @Environment(AppModel.self) private var model
     @Environment(\.windowGeometry) private var geometry
 
-    @State private var state: State = .loading
+    @State private var state: LoadState = .loading
 
     /// The language the release's own sentences are resolved for.
     private var language: String { model.settings.effectiveLanguageTag }
 
-    private enum State: Equatable {
+    private enum LoadState: Equatable {
         case loading
         case loaded(CoverageSummary)
         case failed(CoreError)

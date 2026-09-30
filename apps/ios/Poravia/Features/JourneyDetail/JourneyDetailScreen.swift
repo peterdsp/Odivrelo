@@ -13,7 +13,7 @@ struct JourneyDetailScreen: View {
     let serviceDate: ServiceDate
     var isEmbedded = false
 
-    @State private var state: State = .loading
+    @State private var state: LoadState = .loading
     /// The saved trip the core returned, not a flag. The core owns the
     /// identifier format of a saved trip, so removal must use the id the core
     /// gave us rather than one Swift reassembles from a journey id and a date.
@@ -25,7 +25,7 @@ struct JourneyDetailScreen: View {
     @State private var saveFailure: CoreError?
     @State private var purchaseURL: URL?
 
-    private enum State: Equatable {
+    private enum LoadState: Equatable {
         case loading
         case loaded(JourneyDetail)
         case failed(CoreError)
