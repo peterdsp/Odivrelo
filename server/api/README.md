@@ -54,9 +54,9 @@ installed elsewhere.
 scripts/api-seed-demo.sh
 
 # 2. Point the service at it. The script prints these three lines for you.
-export PORAVIA_PUBLIC_DB_PATH="$PWD/artifacts/public.db"
-export PORAVIA_RELEASE_DIR="$PWD/artifacts/releases/poravia"
-export PORAVIA_DATA_MODE=demo
+export ODIVRELO_PUBLIC_DB_PATH="$PWD/artifacts/public.db"
+export ODIVRELO_RELEASE_DIR="$PWD/artifacts/releases/odivrelo"
+export ODIVRELO_DATA_MODE=demo
 
 # 3. Run it.
 scripts/api-run.sh                  # 127.0.0.1:8080
@@ -75,7 +75,8 @@ curl -fsS 'localhost:8080/v1/places?q=aloria'
 Names only. No value in this file, in a log line, or in any error message.
 
 `<PREFIX>` is `brand.json.envPrefix`. Every variable also accepts the documented
-legacy `HODOMAP_` spelling; the branded name wins when both are set. The service
+legacy `PORAVIA_` and `HODOMAP_` spellings; the branded name wins when more than
+one is set. The service
 validates everything at startup and refuses to run with a clear message listing
 every problem at once.
 

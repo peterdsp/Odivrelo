@@ -4,11 +4,20 @@ Only blockers that were actually hit. No speculation. Each entry records what
 is missing, what it blocks, what was attempted, what is already prepared, and
 the precise action that would unblock it.
 
-Last updated: 30 September 2026.
+Last updated: 1 October 2026. On that date the product was renamed from Poravia
+to Odivrelo (AD-011). Entries that describe current actions use the new
+identifiers; history inside each entry is kept as it was written.
 
 ---
 
 ## EB-01: Cloudflare DNS record for `poravia.peterdsp.dev`
+
+> **Superseded by the rename, 1 October 2026.** The product is now served at
+> `odivrelo.peterdsp.dev` from the Cloudflare Pages project `odivrelo`. The owner
+> added the record (`odivrelo` CNAME to `odivrelo.pages.dev`, proxied) and
+> attached the custom domain; no new blocker was needed. The `poravia` project
+> and its record are left in place, still serving the last Poravia build. The
+> entry below is the Poravia history, kept as written.
 
 - **Affected capability:** the public Web `1.0.0` release gate. This is the
   one gate that cannot be closed without it.
@@ -109,7 +118,8 @@ wildcard or unrelated record was touched, nothing was purchased, and the
 **What is missing.** No Apple Developer team identifier, no distribution
 signing certificate and no provisioning profile are configured on this machine,
 and no App Store Connect API key is available. There is no existing app record
-for `dev.peterdsp.poravia`, because the identifier is new.
+for `dev.peterdsp.odivrelo`, because the identifier is new. (It replaced
+`dev.peterdsp.poravia` on 1 October 2026; nothing was registered under either.)
 
 **What was attempted.** The Release configuration is built and validated as far
 as signing allows. Entitlements, usage descriptions, the privacy manifest,
@@ -124,7 +134,7 @@ identity are all checked.
 - A `PrivacyInfo.xcprivacy` derived from the code that was actually written.
 
 **Exact action needed.** Enrol or sign in with the Apple Developer account,
-register the bundle identifier `dev.peterdsp.poravia`, create the App Store
+register the bundle identifier `dev.peterdsp.odivrelo`, create the App Store
 Connect app record, then create an App Store Connect API key and export
 `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID` and the `.p8` key, and
 run the archive and upload steps in `BUILD-AND-RELEASE.md`.
@@ -142,7 +152,8 @@ being reported as an installable iPhone beta.
 - **State:** blocked.
 
 **What is missing.** No release keystore is present, and there is no Play
-Console app record for `dev.peterdsp.poravia`.
+Console app record for `dev.peterdsp.odivrelo` (which replaced
+`dev.peterdsp.poravia` on 1 October 2026; neither was ever registered).
 
 **What is already prepared.** An installable debug/QA APK, a release build and
 bundle produced unsigned and labelled as such, and the full signing
@@ -199,7 +210,7 @@ point-level data for at least one corridor.
 
 ## EB-05: The five-traveller validation, Gate D2
 
-- **Affected capability:** the product claim that Poravia beats the operator's
+- **Affected capability:** the product claim that Odivrelo beats the operator's
   own site. Not an engineering gate.
 - **State:** not started, and correctly so.
 
@@ -215,9 +226,14 @@ real corridor, once EB-04 clears. A demonstration dataset cannot substitute.
 
 ## EB-06: Trademark search and native-speaker review for the name
 
-- **Affected capability:** confidence in the Poravia name beyond preliminary
-  screening.
-- **State:** blocked for the automated checks, open for the human ones.
+- **Affected capability:** confidence in the Odivrelo name.
+- **State:** open. For Odivrelo, **nothing has been checked yet**: no collision
+  screening, no trademark search and no native-speaker review was performed
+  when the owner chose the name on 1 October 2026. No trademark ownership or
+  clearance is claimed anywhere in the product or the documentation.
+
+The record below is what was attempted for the previous name, Poravia. The
+same register limitations will apply to Odivrelo.
 
 **What was attempted and failed on 30 September 2026:** EUIPO eSearch plus,
 TMview/TMDN, USPTO trademark search including its documented API, the WIPO
@@ -232,9 +248,11 @@ Also missing: native-speaker review. Albanian dictionary lookups for "poravia"
 returned nothing, so the absence of a bad meaning is **unproven**, not
 confirmed.
 
-**Exact action needed.** A professional trademark search in the EU, Greece and
-Albania in the relevant classes, and one Greek and one Albanian native speaker
-saying the name aloud. Neither is a beta blocker; both are launch blockers.
+**Exact action needed.** A professional trademark search for **Odivrelo** in the
+EU, Greece and Albania in the relevant classes, a check of the proposed domain
+`odivrelo.com` and of app-store and social handles, and one Greek and one
+Albanian native speaker saying the name aloud. Neither is a beta blocker; both
+are launch blockers.
 
 ---
 
@@ -251,7 +269,7 @@ systemd units and deploy script are updated for the new name with the legacy
 environment variables still honoured.
 
 **Exact action needed.** Run `ops/raspberry-pi/deploy.sh` against the Pi from a
-host that can reach it, then confirm `poravia-acquire.timer` is active and the
+host that can reach it, then confirm `odivrelo-acquire.timer` is active and the
 legacy data root migrated.
 
 ---
@@ -260,9 +278,12 @@ legacy data root migrated.
 
 Recorded so they are not mistaken for blockers later.
 
-- **`poravia.com` is registered** to a dormant placeholder. Irrelevant: the
-  release hostname is `poravia.peterdsp.dev`, per the project's existing
+- **`odivrelo.com`** is a proposed domain only. Its ownership and hosting are
+  not confirmed, so nothing links to it and it is not a canonical URL. The
+  release hostname is `odivrelo.peterdsp.dev`, per the project's existing
   convention, and a separately purchased domain is not a release dependency.
+  (For the previous name, `poravia.com` was registered to a dormant
+  placeholder; equally irrelevant.)
 - **TicketWeb** is disabled by design, not blocked. It stays off until written
   terms approval exists, and the gate honours all three environment prefixes so
   a rename cannot flip it.

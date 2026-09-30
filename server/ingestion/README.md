@@ -1,7 +1,7 @@
 # Ingestion
 
 The initial bounded acquisition implementation lives in
-`server/src/poravia_pipeline`.
+`server/src/odivrelo_pipeline`.
 
 Every adapter requires:
 

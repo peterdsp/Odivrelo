@@ -1,11 +1,11 @@
 # Raspberry Pi operations
 
-This directory contains the first deployable Poravia service: a bounded daily
+This directory contains the first deployable Odivrelo service: a bounded daily
 source-acquisition timer.
 
 It uses:
 
-- A dedicated `/home/peterdsp/poravia` deployment path.
+- A dedicated `/home/peterdsp/odivrelo` deployment path.
 - A private environment file outside the repository.
 - A systemd user timer.
 - SQLite acquisition state outside the repository.

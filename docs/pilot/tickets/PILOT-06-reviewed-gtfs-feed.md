@@ -2,9 +2,9 @@
 
 > **Historical document.** This records a decision made under the product's
 > former name, HodoMap, which was rejected on 30 September 2026 and replaced
-> by **Poravia**. The text below is preserved as written, including the old
-> name, because rewriting a dated decision would falsify the record. See
-> [the brand decision](../../../docs/beta/BRAND-DECISION.md).
+> by Poravia, itself renamed **Odivrelo** on 1 October 2026. The text below is
+> preserved as written, including the old names, because rewriting a dated
+> decision would falsify the record. See [the brand decision](../../../docs/beta/BRAND-DECISION.md).
 
 
 - Type: build

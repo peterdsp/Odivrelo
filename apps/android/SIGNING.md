@@ -1,4 +1,4 @@
-# Signing the Poravia Android application
+# Signing the Odivrelo Android application
 
 **Status for 1.0.0 beta: there is no release signing identity, and none was
 invented.**
@@ -18,10 +18,10 @@ hold the key has to do.
 
 | Artifact | Signing | Installable | Distributable |
 |---|---|---|---|
-| `poravia-debug.apk` | Android debug key | yes | no |
-| `poravia-releaseSmoke.apk` | Android debug key, minified and shrunk | yes | no |
-| `poravia-release-unsigned.apk` | none | no | no |
-| `poravia-release.aab` | none | no | no |
+| `odivrelo-debug.apk` | Android debug key | yes | no |
+| `odivrelo-releaseSmoke.apk` | Android debug key, minified and shrunk | yes | no |
+| `odivrelo-release-unsigned.apk` | none | no | no |
+| `odivrelo-release.aab` | none | no | no |
 
 `releaseSmoke` exists because the release configuration is the one that
 matters: it is minified, resource-shrunk and obfuscated, and a bug that only
@@ -36,11 +36,11 @@ Do this once, on a machine the key owner controls, and never in CI.
 
 ```sh
 keytool -genkeypair -v \
-  -keystore poravia-release.jks \
+  -keystore odivrelo-release.jks \
   -storetype PKCS12 \
   -keyalg RSA -keysize 4096 -validity 10000 \
-  -alias poravia \
-  -dname "CN=Poravia, O=Poravia, C=GR"
+  -alias odivrelo \
+  -dname "CN=Odivrelo, O=Odivrelo, C=GR"
 ```
 
 Back the keystore up somewhere the owner controls and that survives losing the
@@ -53,9 +53,9 @@ Create `keystore.properties` at the repository root. It is gitignored and must
 stay that way.
 
 ```properties
-storeFile=poravia-release.jks
+storeFile=odivrelo-release.jks
 storePassword=…
-keyAlias=poravia
+keyAlias=odivrelo
 keyPassword=…
 ```
 
@@ -80,12 +80,12 @@ shows under Release, Setup, App signing, not the upload certificate.
 
 ## Digital Asset Links, and why `autoVerify` is off
 
-`AndroidManifest.xml` declares the `https://poravia.peterdsp.dev/...` intent
+`AndroidManifest.xml` declares the `https://odivrelo.peterdsp.dev/...` intent
 filter **without** `android:autoVerify="true"`. That is a deliberate choice and
 not an oversight.
 
 Android verifies an App Link by fetching
-`https://poravia.peterdsp.dev/.well-known/assetlinks.json` and matching the
+`https://odivrelo.peterdsp.dev/.well-known/assetlinks.json` and matching the
 SHA-256 fingerprint of the signing certificate. That file does not exist yet,
 because there is no signing certificate yet. Declaring `autoVerify` now would
 produce a link that fails verification on every install, and a failed
@@ -93,7 +93,7 @@ verification is worse than no declaration: the link stops opening the
 application at all on Android 12 and later, silently.
 
 Without `autoVerify` the https links still work through the ordinary chooser,
-and the `poravia://` scheme works unconditionally and needs no domain
+and the `odivrelo://` scheme works unconditionally and needs no domain
 verification at all.
 
 To turn verification on, once a signing identity exists:
@@ -101,13 +101,13 @@ To turn verification on, once a signing identity exists:
 1. Get the fingerprint:
 
    ```sh
-   keytool -list -v -keystore poravia-release.jks -alias poravia \
+   keytool -list -v -keystore odivrelo-release.jks -alias odivrelo \
      | grep 'SHA256:'
    ```
 
    With Play App Signing, take the fingerprint from the Play Console instead.
 
-2. Publish this at `https://poravia.peterdsp.dev/.well-known/assetlinks.json`,
+2. Publish this at `https://odivrelo.peterdsp.dev/.well-known/assetlinks.json`,
    served as `application/json` over https with no redirect:
 
    ```json
@@ -115,7 +115,7 @@ To turn verification on, once a signing identity exists:
      "relation": ["delegate_permission/common.handle_all_urls"],
      "target": {
        "namespace": "android_app",
-       "package_name": "dev.peterdsp.poravia",
+       "package_name": "dev.peterdsp.odivrelo",
        "sha256_cert_fingerprints": ["<SHA-256 of the app signing certificate>"]
      }
    }]
@@ -127,8 +127,8 @@ To turn verification on, once a signing identity exists:
 4. Verify on a device:
 
    ```sh
-   adb shell pm verify-app-links --re-verify dev.peterdsp.poravia
-   adb shell pm get-app-links dev.peterdsp.poravia
+   adb shell pm verify-app-links --re-verify dev.peterdsp.odivrelo
+   adb shell pm get-app-links dev.peterdsp.odivrelo
    ```
 
    The domain must report `verified`.

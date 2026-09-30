@@ -1,22 +1,23 @@
 <div align="center">
 
-<img src="design/logo/poravia-mark.svg" width="88" height="88" alt="">
+<img src="design/logo/odivrelo-symbol.svg" width="88" height="88" alt="">
 
-# Poravia
+# Odivrelo
 
 ### Greece by coach, with certainty.
 
-Find the journey, the exact boarding point, and the operator's own booking
-page. See when each fact was checked and which source supports it.
+Odivrelo helps travellers find intercity coach journeys in Greece, understand
+exactly where to board, and reach the correct operator's ticket purchase page.
+See when each fact was checked and which source supports it.
 
-[![Release](https://img.shields.io/badge/release-1.0.0_beta-0B6B63)](docs/beta/RELEASE-NOTES.md)
-[![Data mode](https://img.shields.io/badge/data-demonstration_only-F2B84B)](#data-mode-demonstration-only)
+[![Release](https://img.shields.io/badge/release-1.0.0_beta-0B4A6B)](docs/beta/RELEASE-NOTES.md)
+[![Data mode](https://img.shields.io/badge/data-demonstration_only-FF9F2E)](#data-mode-demonstration-only)
 [![Platforms](https://img.shields.io/badge/platforms-Web%20%7C%20iOS%20%7C%20Android-1f2937)](#platforms)
 [![License](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
 
 </div>
 
-## What Poravia is
+## What Odivrelo is
 
 Greece's intercity coach network is run by dozens of independent KTEL
 operators, each with its own site, its own timetable format and its own
@@ -24,7 +25,7 @@ terminal. The hard part is not finding *a* coach. It is being sure of the one
 you need: the right date, the right terminal, the right bay, and a booking
 route that actually works.
 
-Poravia is a certainty layer over that. It answers four questions and shows its
+Odivrelo is a certainty layer over that. It answers four questions and shows its
 working for each:
 
 1. **Does this journey run on the date I am travelling?**
@@ -33,11 +34,11 @@ working for each:
    verified ticket office, address, phone and opening hours.
 4. **How stale is what you just told me, and who said it?**
 
-Poravia never sells or issues tickets. It hands you to the operator.
+Odivrelo never sells or issues tickets. It hands you to the operator.
 
-The name is invented. It was built to suggest the Greek *πόρος*, a passage,
-ford or strait. It is not a Greek word and it is not claimed to translate to
-anything.
+The name is invented. It is not a Greek word and it is not claimed to
+translate to anything. `odivrelo.com` is a proposed domain only; the product
+lives at `odivrelo.peterdsp.dev`.
 
 ## Data mode: demonstration only
 
@@ -64,7 +65,7 @@ Switching to real data is a rights-and-review event, not a rewrite: the
 code changes. What it would take is written down in
 [EXTERNAL-BLOCKERS.md](docs/beta/EXTERNAL-BLOCKERS.md).
 
-Poravia would rather show you a missing journey than an invented one.
+Odivrelo would rather show you a missing journey than an invented one.
 
 ## Product principles
 
@@ -72,7 +73,7 @@ Poravia would rather show you a missing journey than an invented one.
 - **One national search.** Operator boundaries are not the traveller's problem.
 - **Offline where it matters.** Reviewed schedules and stop data stay useful on
   a bad connection, and say which cached release they came from.
-- **Official booking handoff.** Poravia informs and routes. Operators without
+- **Official booking handoff.** Odivrelo informs and routes. Operators without
   electronic ticketing get a verified contact and ticket-office fallback.
 - **Passenger-owned travel wallet.** Saved trips and explicitly imported
   tickets stay on the device. No push service ever receives a ticket, a
@@ -89,7 +90,7 @@ Greek, English and Albanian are all first-class.
 
 | Target | Implementation | State |
 |---|---|---|
-| Web, mobile and desktop | React, TypeScript, Vite, installable PWA | deployed at `poravia.peterdsp.dev` |
+| Web, mobile and desktop | React, TypeScript, Vite, installable PWA | deployed at `odivrelo.peterdsp.dev` |
 | iPhone and iPad, including iPhone Duo | SwiftUI, MapKit, shared Kotlin core | native app |
 | Android phones, tablets and foldables | Jetpack Compose, shared Kotlin core | native app |
 | Backend and ingestion | Python, FastAPI, SQLite | service and governed release pipeline |
@@ -110,7 +111,7 @@ flowchart TB
     Review["Normalization, quarantine and human review"]
     Compiler["Rights-gated release compiler"]
     Packs["Immutable, checksummed release packs plus GTFS"]
-    API["Poravia read API"]
+    API["Odivrelo read API"]
     Web["Web and PWA"]
     IOS["iOS, SwiftUI"]
     Android["Android, Compose"]
@@ -184,7 +185,7 @@ JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./gradlew :apps:android:assembleDebug
 
 # iOS
 bash scripts/shared-build-xcframework.sh
-open apps/ios/Poravia.xcodeproj
+open apps/ios/Odivrelo.xcodeproj
 ```
 
 Full, exact steps including signing, deployment and rollback:
@@ -204,8 +205,11 @@ lives in [docs/beta/](docs/beta/):
 - [EXTERNAL-BLOCKERS.md](docs/beta/EXTERNAL-BLOCKERS.md), what is missing and exactly what would unblock it
 - [RELEASE-NOTES.md](docs/beta/RELEASE-NOTES.md)
 
-Documents written before 30 September 2026 carry the product's former name,
-HodoMap, and are marked as historical. They are preserved, not rewritten.
+Documents written before 30 September 2026 carry the product's first former
+name, HodoMap, and are marked as historical. Its second former name, Poravia,
+was used until the product was renamed Odivrelo on 1 October 2026. Dated
+records keep the name they were written under; they are preserved, not
+rewritten.
 
 ## Contributing and security
 
@@ -215,13 +219,13 @@ Security issues follow [SECURITY.md](SECURITY.md), not a public issue.
 
 ## License and independence
 
-Poravia's source code is licensed under the
+Odivrelo's source code is licensed under the
 [Apache License 2.0](LICENSE). That license grants no rights to third-party
 timetables, maps, operator logos, trademarks or booking-system data. Dataset
 publication follows each source's recorded terms and the rules in
 [DATA_GOVERNANCE.md](docs/DATA_GOVERNANCE.md).
 
-Poravia is an independent project. It is not affiliated with, endorsed by or
+Odivrelo is an independent project. It is not affiliated with, endorsed by or
 operated by the KTEL federation, any regional KTEL operator, TicketWeb or their
 technology providers. Operator names and trademarks remain the property of
 their respective owners.

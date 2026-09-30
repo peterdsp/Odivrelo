@@ -1,7 +1,7 @@
 # Privacy and data-safety declarations
 
 Prepared from an inventory of the code, dependencies, permissions, storage and
-network behaviour that Poravia 1.0.0 actually has. Dated 30 September 2026.
+network behaviour that Odivrelo 1.0.0 actually has. Dated 30 September 2026.
 
 **These are prepared answers, not submitted ones.** Store declarations are
 legal statements by the account holder. Nobody's declaration has been answered
@@ -17,9 +17,9 @@ the shipping build before submitting.
 | Crash-reporting SDKs | none |
 | Social or login SDKs | none |
 | Accounts | none; the app has no sign-in |
-| Server-side user records | none; there is no Poravia user store |
-| Outbound requests | release manifest and data packs from the Poravia origin, and the operator's own site opened for booking. **No tile provider on Web**: the map loads no basemap, so the Web app makes no third-party request at all, asserted by test. The native apps use the platform map component, which is an OS service rather than a Poravia request. |
-| Identifiers attached to requests | none added by Poravia |
+| Server-side user records | none; there is no Odivrelo user store |
+| Outbound requests | release manifest and data packs from the Odivrelo origin, and the operator's own site opened for booking. **No tile provider on Web**: the map loads no basemap, so the Web app makes no third-party request at all, asserted by test. The native apps use the platform map component, which is an OS service rather than a Odivrelo request. |
+| Identifiers attached to requests | none added by Odivrelo |
 | Device permissions requested | location (optional), notifications (optional), file import (optional) |
 | Permissions never requested | contacts, calendar, camera, microphone, broad storage, background location |
 | Data stored on device | preferences, recent searches, favourites, saved trips, offline packs, imported ticket files, reminder schedules |
@@ -30,16 +30,16 @@ the shipping build before submitting.
 
 ## Apple, App Privacy
 
-**Data collected: none.** Poravia qualifies for "Data Not Collected", because
+**Data collected: none.** Odivrelo qualifies for "Data Not Collected", because
 nothing is transmitted off the device and linked to the user or the device.
 
 Notes to keep with the submission:
 
 - Location is used **on device only**, to centre a map and sort nearby stops.
-  It is never transmitted to Poravia. If the reviewer asks, the answer is
+  It is never transmitted to Odivrelo. If the reviewer asks, the answer is
   device-only use, not collection.
 - The iOS app renders with MapKit, an operating-system service governed by
-  Apple's own terms. That is not a Poravia request and not Poravia collection.
+  Apple's own terms. That is not a Odivrelo request and not Odivrelo collection.
   The Web app loads no basemap at all.
 - Imported ticket documents are user content that never leaves the device.
 
@@ -67,7 +67,7 @@ Additional declarations:
 - **Advertising id:** not used; the permission is not declared.
 - **Target audience:** not directed at children.
 - **Government app:** no.
-- **Financial features:** none. Poravia does not sell or issue tickets and
+- **Financial features:** none. Odivrelo does not sell or issue tickets and
   processes no payment. Booking happens on the operator's own site.
 - **Health, financial or sensitive personal data:** none collected. Imported
   ticket documents are user content that stays on the device and is never

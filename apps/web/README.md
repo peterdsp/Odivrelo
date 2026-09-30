@@ -1,13 +1,13 @@
-# Poravia web
+# Odivrelo web
 
-The public Poravia web application: a static, offline-capable progressive web app
-served from the site root of `https://poravia.peterdsp.dev`.
+The public Odivrelo web application: a static, offline-capable progressive web app
+served from the site root of `https://odivrelo.peterdsp.dev`.
 
 It is built with React 19, TypeScript in strict mode, Vite 7 and React Router 7.
 It reads the published, content-addressed release packs as static files, so the
 deployed 1.0.0 site needs no server at all.
 
-**Poravia does not sell or issue tickets.** Every purchase happens with the
+**Odivrelo does not sell or issue tickets.** Every purchase happens with the
 operator. The application says so on every screen that could be mistaken for a
 checkout.
 
@@ -117,7 +117,7 @@ downloads it, and it is deliberately excluded from the service-worker precache.
 
 The map style has **no tile source, sprite or glyph URL**. It draws the route
 geometry and the stops from data the page already holds, and makes no network
-request of any kind. Poravia ships no map imagery, so the panel says so rather
+request of any kind. Odivrelo ships no map imagery, so the panel says so rather
 than letting an empty background imply a failure.
 
 Every map is optional. All journey, boarding-point and stop information is on the

@@ -1,4 +1,4 @@
-# Poravia shared feature logic
+# Odivrelo shared feature logic
 
 State machines, presentation values and pure transitions that Android and iOS
 both use. It sits on top of `shared/core` and holds no user interface.

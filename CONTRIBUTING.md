@@ -1,4 +1,4 @@
-# Contributing to Poravia
+# Contributing to Odivrelo
 
 Thank you for helping make Greek intercity coach information easier to use.
 

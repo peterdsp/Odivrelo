@@ -18,7 +18,7 @@ Version `1.0.0`. Data contract `1.0.0`. Data mode `demo`.
 | Xcode | 27.0, iOS 27 SDK, Swift 6.4 | |
 
 ```bash
-cd /Users/peterdsp/git/Poravia
+cd /Users/peterdsp/git/Odivrelo
 python3.12 -m venv .venv
 .venv/bin/pip install -r server/api/requirements.txt -r server/api/requirements-dev.txt
 export JAVA_HOME=/opt/homebrew/opt/openjdk@21
@@ -49,8 +49,8 @@ Output lands in the gitignored `artifacts/`:
 artifacts/ingest.db                      ingestion and review database
 artifacts/public.db                      compiled read-only public database
 artifacts/public-previous.db             the previous release, for rollback
-artifacts/releases/poravia/manifest.json written last
-artifacts/releases/poravia/packs/…       content-addressed packs plus GTFS
+artifacts/releases/odivrelo/manifest.json written last
+artifacts/releases/odivrelo/packs/…       content-addressed packs plus GTFS
 artifacts/ARTIFACT-MANIFEST.json         machine-readable artifact manifest
 ```
 
@@ -58,8 +58,8 @@ artifacts/ARTIFACT-MANIFEST.json         machine-readable artifact manifest
 
 ```bash
 cd server/ktel-staging && PYTHONPATH=. ../../.venv/bin/python -c "
-from poravia_ktel import ktel_release
-print(ktel_release.rollback_release('../../artifacts/releases/poravia'))"
+from odivrelo_ktel import ktel_release
+print(ktel_release.rollback_release('../../artifacts/releases/odivrelo'))"
 ```
 
 Packs are immutable, so nothing is deleted and the restored manifest still
@@ -71,9 +71,9 @@ verifies. To roll the database back as well, move `public-previous.db` over
 ## 2. Backend service
 
 ```bash
-export PORAVIA_PUBLIC_DB_PATH="$PWD/artifacts/public.db"
-export PORAVIA_RELEASE_DIR="$PWD/artifacts/releases/poravia"
-export PORAVIA_DATA_MODE=demo
+export ODIVRELO_PUBLIC_DB_PATH="$PWD/artifacts/public.db"
+export ODIVRELO_RELEASE_DIR="$PWD/artifacts/releases/odivrelo"
+export ODIVRELO_DATA_MODE=demo
 bash scripts/api-run.sh                    # uvicorn, see the script for workers
 .venv/bin/pytest server/api/tests -q       # tests
 ```
@@ -100,7 +100,7 @@ Secret names: `ADMIN_API_TOKEN`. No value is stored in the repository.
 ## 3. Web, and the `1.0.0` public release
 
 ```bash
-bash scripts/web-sync-packs.sh artifacts/releases/poravia   # packs into public/data
+bash scripts/web-sync-packs.sh artifacts/releases/odivrelo   # packs into public/data
 cd apps/web
 npm ci
 npm run lint && npm run typecheck && npm run test -- --run
@@ -114,7 +114,7 @@ bash scripts/check-brand.sh --dist apps/web/dist
 The build is stamped with `VITE_APP_VERSION`, `VITE_GIT_COMMIT`,
 `VITE_BUILD_TIME` and the data release id, all four visible in Settings.
 
-`dist` includes `CNAME` (`poravia.peterdsp.dev`), `.nojekyll`, `404.html` for
+`dist` includes `CNAME` (`odivrelo.peterdsp.dev`), `.nojekyll`, `404.html` for
 deep-link fallback on static hosting, `robots.txt`, `manifest.webmanifest` and
 `data/` with the release packs.
 
@@ -124,14 +124,14 @@ Deployment runs only from a release tag or a manual dispatch, never from a pull
 request, so untrusted code cannot reach the credentials.
 
 ```bash
-git tag -a v1.0.0 -m "Poravia 1.0.0 beta" && git push origin v1.0.0
+git tag -a v1.0.0 -m "Odivrelo 1.0.0 beta" && git push origin v1.0.0
 # or:
 gh workflow run deploy-web.yml -f reason="1.0.0 beta"
 ```
 
 The workflow builds, publishes `apps/web/dist` to the Cloudflare Pages project
-`poravia` with `wrangler pages deploy`, then runs
-`scripts/verify-deployment.sh https://poravia.peterdsp.dev`, which checks DNS,
+`odivrelo` with `wrangler pages deploy`, then runs
+`scripts/verify-deployment.sh https://odivrelo.peterdsp.dev`, which checks DNS,
 HTTPS, the HTTP redirect, the homepage, the release manifest, three deep-link
 loads and the PWA files, and **fails the job** rather than reporting a green
 deployment that is not live. Cloudflare Pages applies `_headers`, so the full
@@ -140,29 +140,29 @@ security header set is served.
 It needs two repository secrets, both set:
 
 - `CLOUDFLARE_API_TOKEN`: a token with Account, Cloudflare Pages, Edit.
-- `CLOUDFLARE_ACCOUNT_ID`: the account that owns the `poravia` project.
+- `CLOUDFLARE_ACCOUNT_ID`: the account that owns the `odivrelo` project.
 
 ### DNS
 
-`poravia.peterdsp.dev` is a custom domain on the Pages project, with a proxied
+`odivrelo.peterdsp.dev` is a custom domain on the Pages project, with a proxied
 record on the `peterdsp.dev` zone:
 
 ```
 Zone:    peterdsp.dev  (Cloudflare)
 Type:    CNAME
-Name:    poravia
-Target:  poravia.pages.dev
+Name:    odivrelo
+Target:  odivrelo.pages.dev
 Proxy:   Proxied
 ```
 
-The project also answers at `https://poravia.pages.dev`, and every deployment
-gets its own `https://<hash>.poravia.pages.dev` URL.
+The project also answers at `https://odivrelo.pages.dev`, and every deployment
+gets its own `https://<hash>.odivrelo.pages.dev` URL.
 
 ### Rollback
 
 Re-run the deploy workflow from the previous tag, or roll back to the previous
 deployment in the Cloudflare Pages project (`npx wrangler pages deployment
-list --project-name poravia` lists them). Packs are content
+list --project-name odivrelo` lists them). Packs are content
 addressed, so a rolled-back site keeps serving valid data.
 
 ---
@@ -170,7 +170,7 @@ addressed, so a rolled-back site keeps serving valid data.
 ## 4. Shared core
 
 ```bash
-bash scripts/shared-build-xcframework.sh          # PoraviaCore.xcframework
+bash scripts/shared-build-xcframework.sh          # OdivreloCore.xcframework
 ./gradlew :shared:core:allTests --no-daemon
 ```
 
@@ -189,7 +189,7 @@ export JAVA_HOME=/opt/homebrew/opt/openjdk@21
 ./gradlew :apps:android:bundleRelease        # AAB for Play
 ```
 
-Validate before shipping: application id `dev.peterdsp.poravia`, manifest,
+Validate before shipping: application id `dev.peterdsp.odivrelo`, manifest,
 declared permissions, min and target SDK against current policy, a version code
 that has never been uploaded before, native library ABIs, all three
 localisations present, resource shrinking behaviour, and the mapping file.
@@ -229,19 +229,19 @@ before claiming either.
 
 ```bash
 bash scripts/shared-build-xcframework.sh
-xcodebuild -project apps/ios/Poravia.xcodeproj -scheme Poravia \
+xcodebuild -project apps/ios/Odivrelo.xcodeproj -scheme Odivrelo \
   -destination 'platform=iOS Simulator,name=iPhone 18 Pro Max' build
-xcodebuild -project apps/ios/Poravia.xcodeproj -scheme Poravia \
+xcodebuild -project apps/ios/Odivrelo.xcodeproj -scheme Odivrelo \
   -destination 'platform=iOS Simulator,name=iPhone 18 Pro Max' test
-xcodebuild -project apps/ios/Poravia.xcodeproj -scheme Poravia \
+xcodebuild -project apps/ios/Odivrelo.xcodeproj -scheme Odivrelo \
   -configuration Release -destination 'generic/platform=iOS' \
-  -archivePath artifacts/ios/Poravia.xcarchive archive
+  -archivePath artifacts/ios/Odivrelo.xcarchive archive
 ```
 
 Validate: entitlements, usage descriptions, `PrivacyInfo.xcprivacy` against the
 APIs the code actually calls, bundled resources, all three localisations, the
-linked `PoraviaCore` slices and symbols, bundle identity
-`dev.peterdsp.poravia`, and the export options.
+linked `OdivreloCore` slices and symbols, bundle identity
+`dev.peterdsp.odivrelo`, and the export options.
 
 ### Signing, currently blocked, EB-02
 
@@ -253,13 +253,13 @@ iPhone beta.
 When access exists:
 
 ```bash
-# 1. register dev.peterdsp.poravia and create the App Store Connect record
+# 1. register dev.peterdsp.odivrelo and create the App Store Connect record
 # 2. export with the real team id
-xcodebuild -exportArchive -archivePath artifacts/ios/Poravia.xcarchive \
+xcodebuild -exportArchive -archivePath artifacts/ios/Odivrelo.xcarchive \
   -exportOptionsPlist apps/ios/ExportOptions.plist \
   -exportPath artifacts/ios/export
 # 3. upload
-xcrun altool --upload-app -f artifacts/ios/export/Poravia.ipa -t ios \
+xcrun altool --upload-app -f artifacts/ios/export/Odivrelo.ipa -t ios \
   --apiKey "$APP_STORE_CONNECT_KEY_ID" --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
 ```
 
@@ -277,12 +277,12 @@ Both platforms' verified links need files served from the deployed site, so
 they depend on EB-01.
 
 - Apple: `apps/web/public/.well-known/apple-app-site-association`, served as
-  `application/json` with no extension, listing `<TEAMID>.dev.peterdsp.poravia`.
+  `application/json` with no extension, listing `<TEAMID>.dev.peterdsp.odivrelo`.
   Until the team id exists, the entitlement is configured but unverified and
-  the `poravia://` scheme carries deep links.
+  the `odivrelo://` scheme carries deep links.
 - Android: `apps/web/public/.well-known/assetlinks.json` with the release
   signing certificate's SHA-256 fingerprint. Until the keystore exists,
-  `autoVerify` stays off and the `poravia://` scheme carries deep links.
+  `autoVerify` stays off and the `odivrelo://` scheme carries deep links.
 
 Both files must be published **before** claiming verified universal or app
 links work.

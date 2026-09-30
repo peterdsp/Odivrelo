@@ -34,9 +34,10 @@ separate bounded adapter.
 
 On 26 July 2026:
 
-- The source tree was deployed to `/home/peterdsp/poravia`.
+- The source tree was deployed to the dedicated directory, then named after the
+  product's former name (today's equivalent is `/home/peterdsp/odivrelo`).
 - The registry validated 62 official operators and 64 enabled metadata targets.
-- `poravia-acquire.timer` was enabled and active.
+- The acquisition timer (today `odivrelo-acquire.timer`) was enabled and active.
 - User lingering was confirmed active for unattended runs.
 - A live three-source smoke run completed with three successful HTTP 200
   checks.
@@ -61,19 +62,19 @@ applications.
 ## Runtime locations
 
 ```text
-/home/peterdsp/poravia/
+/home/peterdsp/odivrelo/
     Deployed source tree
 
-/home/peterdsp/.config/poravia/acquisition.env
+/home/peterdsp/.config/odivrelo/acquisition.env
     Private runtime configuration
 
-/home/peterdsp/.local/share/poravia/acquisition.db
+/home/peterdsp/.local/share/odivrelo/acquisition.db
     Acquisition state and review queue
 
-/home/peterdsp/.local/share/poravia/artifacts/
+/home/peterdsp/.local/share/odivrelo/artifacts/
     Permitted content-addressed artifacts only
 
-/home/peterdsp/.local/state/poravia/reports/
+/home/peterdsp/.local/state/odivrelo/reports/
     Per-run JSON reports
 ```
 
@@ -85,7 +86,7 @@ From the repository root:
 ./ops/raspberry-pi/deploy.sh
 ```
 
-The script deploys to the dedicated `/home/peterdsp/poravia` directory. It
+The script deploys to the dedicated `/home/peterdsp/odivrelo` directory. It
 does not delete the remote directory, replace the private environment file or
 touch Syrmos runtime data.
 
@@ -100,45 +101,45 @@ sudo loginctl enable-linger peterdsp
 Validate the registry:
 
 ```bash
-PYTHONPATH=server/src python3 -m poravia_pipeline validate-registry
+PYTHONPATH=server/src python3 -m odivrelo_pipeline validate-registry
 ```
 
 Show what is due:
 
 ```bash
-PYTHONPATH=server/src python3 -m poravia_pipeline plan
+PYTHONPATH=server/src python3 -m odivrelo_pipeline plan
 ```
 
 Run a bounded smoke acquisition:
 
 ```bash
-PYTHONPATH=server/src python3 -m poravia_pipeline \
+PYTHONPATH=server/src python3 -m odivrelo_pipeline \
   refresh --max-sources 3
 ```
 
 Inspect status:
 
 ```bash
-PYTHONPATH=server/src python3 -m poravia_pipeline status
+PYTHONPATH=server/src python3 -m odivrelo_pipeline status
 ```
 
 Inspect the user timer:
 
 ```bash
-systemctl --user status poravia-acquire.timer
-systemctl --user list-timers poravia-acquire.timer
+systemctl --user status odivrelo-acquire.timer
+systemctl --user list-timers odivrelo-acquire.timer
 ```
 
 Inspect the latest job:
 
 ```bash
-journalctl --user -u poravia-acquire.service -n 200 --no-pager
+journalctl --user -u odivrelo-acquire.service -n 200 --no-pager
 ```
 
 Trigger one full due run:
 
 ```bash
-systemctl --user start poravia-acquire.service
+systemctl --user start odivrelo-acquire.service
 ```
 
 ## Failure policy

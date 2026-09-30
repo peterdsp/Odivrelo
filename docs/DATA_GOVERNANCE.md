@@ -1,6 +1,6 @@
 # Data Governance
 
-Poravia publishes public transport information only when its provenance,
+Odivrelo publishes public transport information only when its provenance,
 rights, freshness and review state are known.
 
 This document is an engineering policy, not legal advice.

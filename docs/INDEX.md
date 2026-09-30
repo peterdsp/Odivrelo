@@ -1,4 +1,4 @@
-# Poravia documentation
+# Odivrelo documentation
 
 ## Start here
 
@@ -36,9 +36,10 @@ what exists, what is verified and what is blocked.
 
 ## Historical
 
-These predate 30 September 2026, carry the product's former name, HodoMap, and
-are **preserved as written**. Rewriting a dated decision to look like it always
-said Poravia would falsify the record.
+These predate 30 September 2026, carry the product's former name, HodoMap (the
+product was later called Poravia, and has been Odivrelo since 1 October 2026),
+and are **preserved as written**. Rewriting a dated decision to look like it always
+said Odivrelo would falsify the record.
 
 - [Pilot decision: web-first, one-corridor](PILOT_DECISION.md) (6 September 2026)
 - [Pilot backlog and tickets](pilot/README.md)

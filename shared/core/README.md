@@ -1,4 +1,4 @@
-# Poravia shared core
+# Odivrelo shared core
 
 The Kotlin Multiplatform core the Android and iOS applications are both built on.
 
@@ -15,13 +15,13 @@ iOS consumes a single static XCFramework:
 
 ```
 bash scripts/shared-build-xcframework.sh
-# shared/core/build/XCFramework/debug/PoraviaCore.xcframework
-# shared/core/build/XCFramework/release/PoraviaCore.xcframework
+# shared/core/build/XCFramework/debug/OdivreloCore.xcframework
+# shared/core/build/XCFramework/release/OdivreloCore.xcframework
 ```
 
 Both carry an `ios-arm64` device slice and a merged
 `ios-arm64_x86_64-simulator` slice. Exported types are annotated so the generated
-Objective-C header uses stable `Poravia`-prefixed names, suspending members
+Objective-C header uses stable `Odivrelo`-prefixed names, suspending members
 project into Swift as `async`, and `downloadPack` uses callbacks plus a
 `Cancellable` so Swift needs no coroutine bridge.
 
@@ -34,14 +34,14 @@ embeds SQLDelight's native driver, which needs the system SQLite.
 `Modules/module.modulemap`:
 
 ```
-framework module "PoraviaCore" {
-    umbrella header "PoraviaCore.h"
+framework module "OdivreloCore" {
+    umbrella header "OdivreloCore.h"
     …
     link "sqlite3"
 }
 ```
 
-Clang autolinking passes `-lsqlite3` for anything that imports `PoraviaCore`, so
+Clang autolinking passes `-lsqlite3` for anything that imports `OdivreloCore`, so
 an app target should need no manual linker flag. If a build system bypasses
 autolinking, the fallback is to add `-lsqlite3` to **Other Linker Flags** on the
 app target; the symptom otherwise is undefined `sqlite3_*` symbols at link time.
@@ -51,7 +51,7 @@ app target; the symptom otherwise is undefined `sqlite3_*` symbols at link time.
 Every exported suspending member declares:
 
 ```kotlin
-@Throws(PoraviaException::class, CancellationException::class)
+@Throws(OdivreloException::class, CancellationException::class)
 ```
 
 This is not decoration. On Kotlin/Native an exception outside a function's
@@ -64,14 +64,14 @@ on launch.
 Two tests hold the line, because an annotation is exactly the kind of thing that
 silently comes back:
 
-- `ExportedApiContractTest` parses `PoraviaCore.kt` and `PoraviaCoreExtras.kt`
+- `ExportedApiContractTest` parses `OdivreloCore.kt` and `OdivreloCoreExtras.kt`
   (through the `generateExportedApiFacts` Gradle task) and fails if any exported
   suspending member is missing the annotation. It reads the **source**, not the
   generated header, because a suspending function's completion handler carries an
   `NSError` parameter whether or not `@Throws` is present, so the header looks
   identical either way.
 - `FirstRunTest` calls every exported member on a core with nothing installed and
-  fails if any of them throws something that is not a `PoraviaException`. The
+  fails if any of them throws something that is not a `OdivreloException`. The
   implementation routes every exported call through one guard that translates
   whatever a driver, decoder or file system threw, which is what makes the
   declaration safe.
@@ -79,12 +79,12 @@ silently comes back:
 `CoreConfig`'s constructor deliberately does **not** throw, for the same reason:
 a throwing initialiser across the boundary terminates the process. Construction
 always succeeds, `CoreConfig.validationError` says what is wrong, and
-`createPoraviaCore` throws a typed `PoraviaException` a host can report.
+`createOdivreloCore` throws a typed `OdivreloException` a host can report.
 
 ## The exported surface
 
-`PoraviaCore` is the whole public read and write API; `createPoraviaCore(config)`
-builds one. `PoraviaCoreExtras` carries two host-application capabilities that
+`OdivreloCore` is the whole public read and write API; `createOdivreloCore(config)`
+builds one. `OdivreloCoreExtras` carries two host-application capabilities that
 deliberately sit beside the contract surface: the cached detail of a saved trip,
 and adopting a release the host bundled with the application.
 

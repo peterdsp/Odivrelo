@@ -1,10 +1,10 @@
-# Poravia support
+# Odivrelo support
 
 Version 1.0.0 beta · Contact: `info@peterdsp.dev`
 
 ## Before anything else: this beta shows invented data
 
-Every journey, terminal, operator and fare in Poravia 1.0.0 belongs to a
+Every journey, terminal, operator and fare in Odivrelo 1.0.0 belongs to a
 fictional region called **Aloria**, which does not exist. **Do not use this
 build to plan a trip.** The app says so on every screen; that notice is not a
 bug.
@@ -14,7 +14,7 @@ bug.
 **Why can I not find my journey?**
 Because this beta contains no real Greek coach data. See above.
 
-**Why does Poravia not sell tickets?**
+**Why does Odivrelo not sell tickets?**
 It is not a ticket seller and never will be without written authority from an
 operator. It sends you to the operator's own booking page, or to the operator's
 verified ticket office where there is no online sale.
@@ -26,24 +26,24 @@ means verify before you travel.
 
 **Why does the map look approximate?**
 Route geometry in this release is ordered-stops-only and is labelled as such.
-It is not an exact road alignment, and Poravia does not pretend otherwise.
+It is not an exact road alignment, and Odivrelo does not pretend otherwise.
 
 **Where is live coach tracking?**
-Not in this release. There is no authorised live feed, so Poravia shows the
+Not in this release. There is no authorised live feed, so Odivrelo shows the
 schedule and says live tracking is unavailable rather than animating a coach
 that is not there.
 
 **My offline pack will not install.**
-Poravia verifies a pack's SHA-256 before using it and refuses a corrupt one.
+Odivrelo verifies a pack's SHA-256 before using it and refuses a corrupt one.
 Delete it and download again. If it keeps failing, the release may have been
 replaced mid-download; pull to refresh and retry.
 
 **I lost my saved trips on the web.**
-Browsers can evict site storage. Poravia warns about this because it cannot
+Browsers can evict site storage. Odivrelo warns about this because it cannot
 prevent it. The mobile apps do not have this limitation.
 
 **Can I get my ticket files back after deleting them?**
-No. Deletion is real and Poravia holds no copy anywhere.
+No. Deletion is real and Odivrelo holds no copy anywhere.
 
 ## Reporting a problem
 

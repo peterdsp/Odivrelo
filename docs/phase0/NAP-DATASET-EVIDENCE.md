@@ -1,5 +1,10 @@
 # PHASE0-02 evidence: the NAP long-distance bus dataset
 
+> **Historical document.** Written on 30 September 2026, when the product was
+> called Poravia. It was renamed **Odivrelo** on 1 October 2026; the evidence
+> below is preserved as written. See
+> [the brand decision](../beta/BRAND-DECISION.md).
+
 - Ticket: [PHASE0-02](tickets/PHASE0-02-nap-dataset-licence.md)
 - Retrieved and inventoried: **30 September 2026**
 - Outcome: **no-go for a real-data beta.** The licence is fine. The data is

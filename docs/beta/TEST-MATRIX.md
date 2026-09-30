@@ -18,7 +18,7 @@ directories. They are not committed. Retention in CI is 7 days.
 
 | # | Scenario | Status | Command | Evidence | Limitation |
 |---|---|---|---|---|---|
-| A1 | Migrate, seed, import, review, compile, pack, verify end to end | passed | `bash scripts/ci-pipeline-smoke.sh` | `artifacts/releases/poravia/manifest.json`, 11 packs | demonstration fixture only |
+| A1 | Migrate, seed, import, review, compile, pack, verify end to end | passed | `bash scripts/ci-pipeline-smoke.sh` | `artifacts/releases/odivrelo/manifest.json`, 11 packs | demonstration fixture only |
 | A2 | Staging suite | passed | `cd server/ktel-staging && PYTHONPATH=. ../../.venv/bin/python -m unittest discover -s tests` | 22 tests, 0 failures | |
 | A3 | Acquisition pipeline suite, including rename compatibility | passed | `cd server && PYTHONPATH=src ../.venv/bin/python -m unittest discover -s tests` | 11 tests, 0 failures | |
 | A4 | GTFS time past 24:00 for an overnight journey | passed | A1 assertions, and `test_release_and_gtfs.py` | 1 stop time at or beyond 24:00 in the generated feed | |
@@ -65,7 +65,7 @@ These are not unit tests; they are real requests over HTTP.
 
 | # | Check | Status | Observed |
 |---|---|---|---|
-| B12 | Service starts and reports its configuration | passed | `service configured … product Poravia, contractVersion 1.0.0, dataMode demo, adminEnabled false` |
+| B12 | Service starts and reports its configuration | passed | `service configured … product Odivrelo, contractVersion 1.0.0, dataMode demo, adminEnabled false` |
 | B13 | Security headers on a public response | passed | CSP `default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; sandbox`, plus `nosniff`, `no-referrer`, `DENY`, CORP, COOP, `Permissions-Policy`, HSTS, `Cache-Control: no-store`, `x-request-id` |
 | B14 | `/v1/meta` declares demo mode and real attribution | passed | `dataMode: demo`, coverage note naming Aloria, three attributions including the ODbL NAP dataset |
 | B15 | Place disambiguation separates a terminal from its bays | passed | `q=alo` returns `Aloria Central Terminal` as `stop_place` plus bays A1 and A2 as `stop` |
@@ -123,7 +123,7 @@ SDK, Swift 6.4.
 | I3 | Release build, device target | passed | `BUILD SUCCEEDED`, arm64, 17 MB |
 | I4 | Release archive | passed | `ARCHIVE SUCCEEDED`, 35 MB with dSYM |
 | I5 | Release validation suite | passed | 40 checks, entitlements, usage descriptions, privacy manifest, bundle identity, localisations, resources |
-| I6 | **Shared core linked in Release, not merely referenced** | passed | plain Release binary: 4009 Kotlin symbols, 272 `PoraviaCore*` Objective-C classes, `createPoraviaCore` present. Archive binary is stripped, so proven through 1915 symbols in the dSYM plus the class table. **Zero fixture symbols in either.** |
+| I6 | **Shared core linked in Release, not merely referenced** | passed | plain Release binary: 4009 Kotlin symbols, 272 `OdivreloCore*` Objective-C classes, `createOdivreloCore` present. Archive binary is stripped, so proven through 1915 symbols in the dSYM plus the class table. **Zero fixture symbols in either.** |
 | I7 | Happy path in el, en and sq, light and dark, largest accessibility size | passed | screenshots, each read back |
 | I8 | Twelve failure and edge scenarios | passed | offline, not-covered, empty results, partial coverage, stale release, served-from-cache, core-unavailable, corrupt download (fails digest, offers retry, installs nothing), **interrupted download fails then resumes to Installed**, insufficient storage, trips, wallet, offline packs, settings |
 | I9 | iPad adaptive layout | passed | onboarding constrained to a readable column; populated two-column split with search and results left, detail right |
@@ -139,7 +139,7 @@ SDK, Swift 6.4.
 
 A fresh install terminated the process because no exported suspending member
 declared `@Throws`. Two further latent crashes sat on the same path:
-`createPoraviaCore` had the same defect and is the first call a host makes, and
+`createOdivreloCore` had the same defect and is the first call a host makes, and
 `CoreConfig`'s constructor threw, which across the Objective-C boundary kills
 the process for the same reason. All three are fixed, and every exported call
 now routes through one guard so the declaration is sound rather than merely
@@ -224,9 +224,9 @@ asserting the three languages are not the same sentence repeated.
 
 | # | Scenario | Status | Command | Evidence |
 |---|---|---|---|---|
-| C1 | No unintended old-brand or placeholder string in tracked source or paths | passed | `bash scripts/check-brand.sh` | **clean across the whole tree** after the `poravia_ktel` rename; allowlist documented in `BRAND-DECISION.md` |
+| C1 | No unintended old-brand or placeholder string in tracked source or paths | passed | `bash scripts/check-brand.sh` | **clean across the whole tree** after the `odivrelo_ktel` rename; allowlist documented in `BRAND-DECISION.md` |
 | C2 | No old-brand or placeholder string in the built web artifact, including binaries | not-run | `bash scripts/check-brand.sh --dist apps/web/dist` | runs once the production build exists |
-| C3 | Legacy `HODOMAP_` and `SYRMOS_` environment names still honoured | passed | `BrandMigrationCompatibilityTestCase` | 3 tests |
+| C3 | Legacy `PORAVIA_`, `HODOMAP_` and `SYRMOS_` environment names still honoured | passed | `BrandMigrationCompatibilityTestCase` | 3 tests |
 | C4 | TicketWeb gate cannot be flipped by the rename | passed | `test_ticketweb_gate_is_off_unless_explicitly_approved` | all three prefixes checked, both directions |
 
 ## D. Mandatory runtime scenarios

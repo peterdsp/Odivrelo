@@ -1,18 +1,19 @@
-# Poravia 1.0.0 beta, release notes
+# Odivrelo 1.0.0 beta, release notes
 
 Date: 30 September 2026 · Version `1.0.0` · Data release: see the artifact
-manifest · Formerly released under the name HodoMap, which is retired.
+manifest · Formerly released under the names HodoMap and then Poravia, both
+retired. Renamed Odivrelo on 1 October 2026 with no change in behaviour.
 
 ---
 
 ## Read this first
 
-**Every journey in this build is invented.** Poravia 1.0.0 ships a
+**Every journey in this build is invented.** Odivrelo 1.0.0 ships a
 demonstration dataset covering a fictional region called **Aloria**, which does
 not exist. No departure, terminal, operator or fare shown is real. Do not use
 this build to plan a trip.
 
-That is deliberate. Poravia's whole premise is that a missing journey is better
+That is deliberate. Odivrelo's whole premise is that a missing journey is better
 than an invented one, so the moment the real data failed its own quality gate,
 the honest move was to ship working software over data that announces what it
 is. The evidence behind that decision is published in
@@ -20,20 +21,20 @@ is. The evidence behind that decision is published in
 
 ---
 
-## What Poravia does
+## What Odivrelo does
 
 Greece's intercity coach network is dozens of independent KTEL operators, each
 with its own site, its own timetable format and its own terminal. Finding *a*
 coach is easy. Being certain of *the right one* is not.
 
-Poravia answers four questions and shows its working for each:
+Odivrelo answers four questions and shows its working for each:
 
 1. Does this journey run on the date I am travelling?
 2. Where exactly do I board? Not the city. The terminal, and the bay.
 3. How do I buy a ticket officially, or where is the verified ticket office?
 4. How stale is this, and who said it?
 
-**Poravia never sells or issues tickets.** It hands you to the operator.
+**Odivrelo never sells or issues tickets.** It hands you to the operator.
 
 ## In this release
 
@@ -75,7 +76,7 @@ Poravia answers four questions and shows its working for each:
   sources have undocumented reuse rights, and the one rights-cleared national
   source is nearly six years stale and contains no boarding points at all.
 - **Live coach tracking and live ETA.** There is no authorised feed. Where live
-  tracking would be, Poravia shows the schedule and says live tracking is
+  tracking would be, Odivrelo shows the schedule and says live tracking is
   unavailable. It does not animate a coach that is not there.
 - **Predicted or estimated times.** No defensible prediction input exists yet.
 - **National coverage.** This is a limited-coverage demonstration beta.
@@ -92,7 +93,7 @@ Poravia answers four questions and shows its working for each:
 | Data | Demonstration only. Aloria does not exist. |
 | Web | Served as static hosting, which cannot set HTTP security headers. The content security policy is applied by meta element instead, which is weaker. Stated in `apps/web/README.md`. |
 | Web | Browser storage can be evicted. The travel wallet is not a backup, and the app says so rather than implying durability. |
-| Web | Scheduled background reminders are not deliverable in every browser. Poravia says so instead of claiming they work. |
+| Web | Scheduled background reminders are not deliverable in every browser. Odivrelo says so instead of claiming they work. |
 | iOS | Not signed, so not installable outside a simulator. See EB-02. |
 | Android | Not signed for release, so not installable from a store. A debug QA build is provided. See EB-03. |
 | iPhone Duo | Runtime coverage is reported exactly as far as the installed runtime allowed. Synthetic geometry checks are supplementary evidence, not proof of physical-device support. |
@@ -115,7 +116,7 @@ review or takedown at `info@peterdsp.dev`.
 
 ## Independence
 
-Poravia is an independent project. It is not affiliated with, endorsed by or
+Odivrelo is an independent project. It is not affiliated with, endorsed by or
 operated by the KTEL federation, any regional KTEL operator, TicketWeb or their
 technology providers. Operator names and trademarks remain the property of
 their respective owners.

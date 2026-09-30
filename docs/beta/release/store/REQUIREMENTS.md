@@ -40,7 +40,7 @@ Note the alpha rule differs between the two: the Play **icon** requires alpha,
 the Play **feature graphic and screenshots** forbid it, and Apple forbids it
 everywhere. Exporting one file for all three will be rejected somewhere.
 
-## Rules for Poravia's own screenshots
+## Rules for Odivrelo's own screenshots
 
 - Screenshots must come from the **running rebranded build**. No mockups, no
   composited marketing frames pretending to be the app, no fabricated data

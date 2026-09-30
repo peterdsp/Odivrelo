@@ -6,7 +6,7 @@ Aloria demonstration fixture. Every command is idempotent.
 Prerequisites: Python 3.12 and the repository virtual environment.
 
 ```bash
-cd /Users/peterdsp/git/Poravia
+cd /Users/peterdsp/git/Odivrelo
 python3.12 -m venv .venv          # once
 export PY=.venv/bin/python
 export STAGING=server/ktel-staging
@@ -20,8 +20,8 @@ All commands below run from `server/ktel-staging` with `PYTHONPATH=.`.
 
 ```bash
 cd "$STAGING"
-export PORAVIA_KTEL_DB_PATH="$ARTIFACTS/ingest.db"
-export PORAVIA_KTEL_PUBLIC_DB_PATH="$ARTIFACTS/public.db"
+export ODIVRELO_KTEL_DB_PATH="$ARTIFACTS/ingest.db"
+export ODIVRELO_KTEL_PUBLIC_DB_PATH="$ARTIFACTS/public.db"
 PYTHONPATH=. ../../$PY scripts/ktel_pipeline.py migrate
 PYTHONPATH=. ../../$PY scripts/ktel_pipeline.py seed
 ```
@@ -72,18 +72,18 @@ unchanged release id and the command becomes a no-op.
 
 ```bash
 PYTHONPATH=. ../../$PY - <<'PY'
-from poravia_ktel import ktel_release
+from odivrelo_ktel import ktel_release
 import os
 print(ktel_release.generate_public_release(
     os.environ["ARTIFACTS"] + "/releases",
-    os.environ["PORAVIA_KTEL_DB_PATH"],
-    os.environ["PORAVIA_KTEL_PUBLIC_DB_PATH"],
+    os.environ["ODIVRELO_KTEL_DB_PATH"],
+    os.environ["ODIVRELO_KTEL_PUBLIC_DB_PATH"],
 ))
 PY
 ```
 
-Writes `artifacts/releases/poravia/packs/<name>-<digest16>.<ext>` and then
-`artifacts/releases/poravia/manifest.json` **last**. Packs are content
+Writes `artifacts/releases/odivrelo/packs/<name>-<digest16>.<ext>` and then
+`artifacts/releases/odivrelo/manifest.json` **last**. Packs are content
 addressed, so a name can never refer to different bytes. A GTFS zip is one of
 the packs and is byte-reproducible.
 
@@ -91,8 +91,8 @@ the packs and is byte-reproducible.
 
 ```bash
 PYTHONPATH=. ../../$PY -c "
-from poravia_ktel import ktel_release
-ktel_release.verify_release('$ARTIFACTS/releases/poravia')"
+from odivrelo_ktel import ktel_release
+ktel_release.verify_release('$ARTIFACTS/releases/odivrelo')"
 ```
 
 `verify_release` re-reads the manifest and recomputes every pack digest and
@@ -104,7 +104,7 @@ nothing is deleted and the rolled-back manifest still verifies.
 
 ```bash
 PYTHONPATH=. ../../$PY -c "
-from poravia_ktel import ktel_api, ktel_db
+from odivrelo_ktel import ktel_api, ktel_db
 with ktel_db.connect('$ARTIFACTS/public.db', read_only=True) as c:
     print(ktel_api.release_metadata(c))
     print(ktel_api.coverage_payload(c))
@@ -123,8 +123,8 @@ cd "$STAGING" && PYTHONPATH=. ../../$PY -m unittest discover -s tests -v
 
 | Name | Meaning | Legacy fallback |
 |---|---|---|
-| `PORAVIA_KTEL_DB_PATH` | ingestion database | `HODOMAP_KTEL_DB_PATH`, `SYRMOS_KTEL_DB_PATH` |
-| `PORAVIA_KTEL_PUBLIC_DB_PATH` | compiled public database | `HODOMAP_KTEL_PUBLIC_DB_PATH`, `SYRMOS_KTEL_PUBLIC_DB_PATH` |
+| `ODIVRELO_KTEL_DB_PATH` | ingestion database | `PORAVIA_KTEL_DB_PATH`, `HODOMAP_KTEL_DB_PATH`, `SYRMOS_KTEL_DB_PATH` |
+| `ODIVRELO_KTEL_PUBLIC_DB_PATH` | compiled public database | `PORAVIA_KTEL_PUBLIC_DB_PATH`, `HODOMAP_KTEL_PUBLIC_DB_PATH`, `SYRMOS_KTEL_PUBLIC_DB_PATH` |
 | `KTEL_TICKETWEB_TERMS_APPROVED` | must equal `1` before any TicketWeb request is attempted | — |
 
 The legacy names are read as a fallback so an existing Raspberry Pi deployment

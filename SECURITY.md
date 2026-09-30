@@ -11,7 +11,7 @@ mitigation. Do not include real passenger information or reusable credentials.
 
 ## Sensitive areas
 
-Poravia treats these as especially sensitive:
+Odivrelo treats these as especially sensitive:
 
 - Booking-provider credentials and session material.
 - Administrative review endpoints.

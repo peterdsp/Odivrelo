@@ -1,10 +1,11 @@
 # Execution status
 
-Living document. Last updated: 30 September 2026.
+Living document. Last updated: 1 October 2026.
 
-Branch: `codex/beta-1.0.0`. Repository: `peterdsp/Poravia`, renamed from
-`peterdsp/HodoMap` on 30 September 2026; GitHub serves permanent redirects, so
-the fourteen issue links cross-referenced from `docs/pilot/` and
+Branch: `main`. Repository: `peterdsp/Odivrelo`. It was `peterdsp/HodoMap`,
+renamed to `peterdsp/Poravia` on 30 September 2026 and to `peterdsp/Odivrelo`
+with the Odivrelo rename on 1 October 2026; GitHub serves permanent redirects,
+so the fourteen issue links cross-referenced from `docs/pilot/` and
 `docs/phase0/` still resolve.
 
 ## Platform states
@@ -48,7 +49,25 @@ The reported defect was reproduced exactly before being touched:
 `ImportError: cannot import name 'generator' from 'poravia_ktel'`, so the whole
 suite refused to load.
 
-### Brand
+### Brand, 1 October 2026: Odivrelo
+
+The product owner renamed the product to **Odivrelo** and supplied the "Route
+O" identity (AD-011, `BRAND-DECISION.md`). Slug `odivrelo`, hostname
+`odivrelo.peterdsp.dev` on the Cloudflare Pages project `odivrelo`, bundle and
+application id `dev.peterdsp.odivrelo`, URL scheme `odivrelo`, environment
+prefix `ODIVRELO_` with `PORAVIA_` and `HODOMAP_` still read.
+
+Migrated: every user-facing string in Greek, English and Albanian, page titles
+and metadata, the web manifest, accessibility labels, the Kotlin packages, the
+Swift targets and modules, the Python packages, systemd units, the deploy
+workflow and the bundled iOS release packs, which were regenerated. The
+palette moved to deep teal blue, warm orange and a light blue background
+through the one token file, now generated into all three platforms with a
+contrast audit. Every icon, favicon, launch mark and in-app mark was redrawn
+from one generator in `design/logo/`. No etymology and no trademark clearance
+is claimed; EB-06 is open for the new name.
+
+### Brand, 30 September 2026 (superseded)
 
 **Poravia**, slug `poravia`, hostname `poravia.peterdsp.dev`, bundle and
 application id `dev.peterdsp.poravia`. Chosen after screening thirteen

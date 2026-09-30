@@ -1,10 +1,10 @@
-# Poravia Architecture
+# Odivrelo Architecture
 
 Status: accepted foundation decision
 
 ## Decision
 
-Poravia will use Kotlin Multiplatform for shared iOS and Android logic.
+Odivrelo will use Kotlin Multiplatform for shared iOS and Android logic.
 
 Android uses Jetpack Compose. iOS uses SwiftUI and MapKit. The public Web app
 uses TypeScript, React and a web-native map library. Backend services use

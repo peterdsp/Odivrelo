@@ -80,11 +80,11 @@ Detail per row, with commands, artifacts and limitations, is in
 
 **Status: satisfied, 1 October 2026.**
 
-`https://poravia.peterdsp.dev` is live on Cloudflare Pages with a valid
+`https://odivrelo.peterdsp.dev` is live on Cloudflare Pages with a valid
 certificate, and the release workflow's live verification passed every check
 (DNS, HTTPS, redirect, homepage identity, release manifest, six deep links,
 404 handling, PWA files) in
-https://github.com/peterdsp/Poravia/actions/runs/36779339890. EB-01 is
+https://github.com/peterdsp/Odivrelo/actions/runs/36779339890. EB-01 is
 resolved.
 
 ## 6. Legal and account gates
@@ -117,6 +117,6 @@ release claims otherwise.
 and the `1.0.0` Web release gate is open.** This section is rewritten with the
 actual per-platform outcome once `TEST-MATRIX.md` is complete.
 
-Poravia is not a validated product, not a national dataset, and not installable
+Odivrelo is not a validated product, not a national dataset, and not installable
 by a tester today. It is a working, verified, honest beta whose remaining gaps
 are each written down with the exact action that would close them.

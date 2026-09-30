@@ -1,4 +1,4 @@
-# Poravia Android application
+# Odivrelo Android application
 
 The native Android client. Jetpack Compose, Material 3, one activity, no
 fragments, no XML layouts.
@@ -57,13 +57,13 @@ about service.
 
 ```
 MainActivity            one activity, no configChanges, resizeable
- └ PoraviaApp           theme, window measurement, first run
-    └ PoraviaShell      navigation bar or rail, deep links, lifecycle
-       └ PoraviaNavHost every destination, and the one place geometry
+ └ OdivreloApp           theme, window measurement, first run
+    └ OdivreloShell      navigation bar or rail, deep links, lifecycle
+       └ OdivreloNavHost every destination, and the one place geometry
                         changes navigation
 ```
 
-`PoraviaViewModel` holds the whole application state in one value and is the
+`OdivreloViewModel` holds the whole application state in one value and is the
 only thing that writes it. That is what makes the adaptive requirement provable:
 one pane and two panes read the same state, so folding cannot leave a detail
 pane showing a journey the list no longer has. The session half of the state
@@ -71,7 +71,7 @@ pane showing a journey the list no longer has. The session half of the state
 mirrored into `SavedStateHandle` on every change and therefore survives process
 death.
 
-`PoraviaServices` owns the single `PoraviaCore` instance and rebuilds it only
+`OdivreloServices` owns the single `OdivreloCore` instance and rebuilds it only
 when the language changes, so two cores never contend for one database file.
 
 ## Deliberate choices worth knowing about
@@ -90,7 +90,7 @@ when the language changes, so two cores never contend for one database file.
   `assetlinks.json` cannot be published before a signing identity exists. See
   `SIGNING.md`.
 - **No `androidx.startup` provider.** It is removed in the manifest, and
-  WorkManager is configured by hand in `PoraviaApplication`, so nothing runs
+  WorkManager is configured by hand in `OdivreloApplication`, so nothing runs
   arbitrary library initialisers at process start.
 - **No offline map tiles.** The application says so on the offline screen and
   hands coordinates to the device's own maps application instead of drawing a
