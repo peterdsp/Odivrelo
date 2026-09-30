@@ -5,7 +5,9 @@
     "Exactly 62 federation operators are included.",
     "Daily directory checks retain metadata and content digests only.",
     "TicketWeb targets are intentionally absent until written terms approval.",
-    "Timetable and official-site URLs are added only after source review."
+    "Timetable and official-site URLs are added only after source review.",
+    "Every operator directory source remains rightsStatus 'unknown'. No Greek operator has granted documented reuse rights, so no real timetable can lawfully reach a public release.",
+    "The Greek NAP dataset is the only 'permitted' source. Its licence was verified as ODbL 1.0 on 30 September 2026, but it fails the data gate on freshness and completeness, so the 1.0.0 beta ships a labelled invented dataset instead. See docs/phase0/NAP-DATASET-EVIDENCE.md."
   ],
   "operators": [
     {
@@ -1455,7 +1457,7 @@
       "id": "greek-nap-catalog",
       "operatorId": null,
       "label": "Greek NAP long-distance bus dataset catalog",
-      "url": "https://data.nap.gov.gr/el/dataset/information-about-transport-by-long-distance-buses-in-greece",
+      "url": "https://data.nap.imet.gr/dataset/information-about-transport-by-long-distance-buses-in-greece",
       "sourceKind": "national_access_point",
       "cadence": "daily",
       "enabled": true,
@@ -1464,7 +1466,15 @@
       "maxBytes": 4194304,
       "expectedContentTypes": [
         "text/html"
-      ]
+      ],
+      "licenceId": "ODbL-1.0",
+      "licenceUrl": "https://opendefinition.org/licenses/odc-odbl",
+      "licenceVerifiedAt": "2026-09-30",
+      "publisher": "Hellenic Institute of Transport",
+      "datasetLastUpdated": "2020-12-01",
+      "fitnessForPublication": "rejected",
+      "fitnessNote": "Licence is fine: ODbL 1.0 permits reuse with attribution and share-alike. The data is not. Last updated 1 December 2020; no boarding points, no coordinates and no stop identifiers, only free-text city names; calendars are unnormalised Greek prose with no validity period; Delphi appears zero times. See docs/phase0/NAP-DATASET-EVIDENCE.md.",
+      "alternateUrlNote": "The primary host data.nap.gov.gr presents a certificate that expired on 15 April 2026. TLS verification is not bypassed; the valid IMET mirror is used instead."
     }
   ]
 }
