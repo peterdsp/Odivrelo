@@ -6,17 +6,17 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from syrmos_admin import generator, ktel_api, ktel_db
-from syrmos_admin.ktel_ingest import import_normalized_snapshot, review_entity
-from syrmos_admin.ktel_publish import compile_public_database
-from syrmos_admin.ktel_registry import (
+from poravia_ktel import branding, ktel_api, ktel_db, ktel_gtfs, ktel_release
+from poravia_ktel.ktel_ingest import import_normalized_snapshot, review_entity
+from poravia_ktel.ktel_publish import compile_public_database
+from poravia_ktel.ktel_registry import (
     coordinate_status,
     coverage_summary,
     load_registry,
     operator_rows,
     seed_registry,
 )
-from syrmos_admin.ktel_ticketweb import (
+from poravia_ktel.ktel_ticketweb import (
     JsonDiskCache,
     RequestBudget,
     TicketWebReadClient,
@@ -64,7 +64,15 @@ class KtelTestCase(unittest.TestCase):
         )
 
     def test_migration_and_seed_are_idempotent(self):
-        self.assertEqual(ktel_db.migrate(self.conn), 1)
+        # The expected version is the highest numbered file in
+        # ktel_migrations/, so a new migration has to be added deliberately
+        # here as well as on disk.
+        latest = max(
+            int(path.stem.split("_", 1)[0])
+            for path in ktel_db.KTEL_MIGRATIONS_DIR.glob("[0-9]*.sql")
+        )
+        self.assertEqual(latest, 2)
+        self.assertEqual(ktel_db.migrate(self.conn), 2)
         seed_registry(self.conn)
         rows = operator_rows(self.conn, official_only=False)
         self.assertEqual(len(rows), 64)
@@ -307,27 +315,26 @@ class KtelTestCase(unittest.TestCase):
     def test_snapshot_manifest_points_to_immutable_hashed_packs(self):
         out_dir = Path(self.temp_dir.name) / "out"
         public_db = str(Path(self.temp_dir.name) / "ktel-public.db")
-        result = generator._generate_ktel_snapshots(
+        result = ktel_release.generate_public_release(
             out_dir, self.db_path, public_db
         )
         manifest = json.loads(
-            (out_dir / "ktel" / "manifest.json").read_text(encoding="utf-8")
+            (out_dir / branding.PRODUCT_SLUG / "manifest.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["releaseId"], result["releaseId"])
         for metadata in manifest["files"].values():
             self.assertTrue(metadata["path"].startswith("packs/"))
-            filename = metadata["path"].removeprefix("packs/")
-            path = out_dir / "ktel" / filename
+            path = out_dir / branding.PRODUCT_SLUG / metadata["path"]
             self.assertTrue(path.exists())
             self.assertEqual(
                 hashlib.sha256(path.read_bytes()).hexdigest(),
                 metadata["sha256"],
             )
-        second = generator._generate_ktel_snapshots(
+        second = ktel_release.generate_public_release(
             out_dir, self.db_path, public_db
         )
         second_manifest = json.loads(
-            (out_dir / "ktel" / "manifest.json").read_text(encoding="utf-8")
+            (out_dir / branding.PRODUCT_SLUG / "manifest.json").read_text(encoding="utf-8")
         )
         self.assertEqual(second["releaseId"], result["releaseId"])
         self.assertEqual(second_manifest, manifest)

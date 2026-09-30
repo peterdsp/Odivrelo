@@ -1,6 +1,6 @@
 # Data Governance
 
-HodoMap publishes public transport information only when its provenance,
+Poravia publishes public transport information only when its provenance,
 rights, freshness and review state are known.
 
 This document is an engineering policy, not legal advice.

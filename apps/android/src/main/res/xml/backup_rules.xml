@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Backup is switched off in the manifest. These rules exist anyway so that if it
+  is ever switched on, the travel wallet and the local database cannot be carried
+  off the device by accident.
+
+  The wallet holds imported ticket documents encrypted with a key that lives in
+  the Android Keystore and cannot leave the device, so a backup of it would be
+  both useless and a copy of someone's travel document in a place they did not
+  choose. The database holds their saved trips; those are public timetable data
+  and are cheap to recreate.
+-->
+<full-backup-content>
+    <exclude domain="file" path="wallet/" />
+    <exclude domain="file" path="packs/" />
+    <exclude domain="database" path="poravia.db" />
+    <exclude domain="database" path="poravia.db-journal" />
+    <exclude domain="database" path="poravia.db-wal" />
+    <exclude domain="database" path="poravia.db-shm" />
+    <exclude domain="sharedpref" path="poravia_wallet_keys.xml" />
+</full-backup-content>

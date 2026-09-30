@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-coverage-v1.schema.json",
+  "title": "Offline pack: coverage, version 1",
+  "description": "The `coverage` pack, identical to the GET /v1/coverage body.",
+  "allOf": [
+    {
+      "$ref": "#/$defs/Envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "coverage"
+      ],
+      "properties": {
+        "coverage": {
+          "$ref": "#/$defs/Coverage"
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "ContractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "Coverage": {
+      "type": "object",
+      "required": [
+        "state",
+        "operatorCount",
+        "corridorCount",
+        "stopCount",
+        "journeyCount",
+        "serviceDates",
+        "note",
+        "notCovered",
+        "freshness",
+        "absenceSemantics",
+        "operators"
+      ],
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/CoverageState"
+        },
+        "operatorCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "corridorCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stopCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "journeyCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "serviceDates": {
+          "type": "object",
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "to": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "note": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "notCovered": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LocalizedText"
+          }
+        },
+        "freshness": {
+          "$ref": "#/$defs/Freshness"
+        },
+        "absenceSemantics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CoverageOperator"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "CoverageOperator": {
+      "type": "object",
+      "required": [
+        "operatorId",
+        "name",
+        "state",
+        "routeCount",
+        "stopCount",
+        "journeyCount"
+      ],
+      "properties": {
+        "operatorId": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "state": {
+          "$ref": "#/$defs/CoverageState"
+        },
+        "routeCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stopCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "journeyCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "DataMode": {
+      "type": "string",
+      "enum": [
+        "real",
+        "demo"
+      ],
+      "description": "When `demo`, every client must show a persistent, non-dismissible notice\nthat the services shown are invented and are not real departures, and\nmust send `noindex` on web.\n"
+    },
+    "Envelope": {
+      "type": "object",
+      "required": [
+        "contractVersion",
+        "releaseId",
+        "publishedAt",
+        "dataMode"
+      ],
+      "properties": {
+        "contractVersion": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "releaseId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataMode": {
+          "$ref": "#/$defs/DataMode"
+        }
+      }
+    },
+    "Freshness": {
+      "type": "object",
+      "required": [
+        "checkedAt",
+        "ageHours",
+        "state"
+      ],
+      "properties": {
+        "checkedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ageHours": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "state": {
+          "$ref": "#/$defs/FreshnessState"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FreshnessState": {
+      "type": "string",
+      "enum": [
+        "fresh",
+        "aging",
+        "stale"
+      ]
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -146,9 +146,9 @@
     },
     {
       "id": "manual-review",
-      "label": "Syrmos manual operator review",
+      "label": "Poravia manual operator review",
       "sourceKind": "manual_review",
-      "baseUrl": "https://syrmos.peterdsp.dev/",
+      "baseUrl": "https://poravia.peterdsp.dev/",
       "authorityLevel": "manual",
       "accessMode": "file_import",
       "licenseId": null,

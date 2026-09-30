@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/place-v1.schema.json",
+  "title": "Place, version 1",
+  "description": "A stop place (terminal) or one of its boarding points.",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "name",
+    "parentId",
+    "municipality",
+    "latitude",
+    "longitude",
+    "coordinateStatus",
+    "boardingPointCount",
+    "operatorIds",
+    "coverage"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "stop_place",
+        "stop"
+      ]
+    },
+    "name": {
+      "$ref": "#/$defs/LocalizedText"
+    },
+    "parentId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "municipality": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "latitude": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "longitude": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "coordinateStatus": {
+      "type": "string"
+    },
+    "boardingPointCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "operatorIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/CoverageState"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

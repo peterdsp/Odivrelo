@@ -1,0 +1,8 @@
+-- Migration 1 to 2.
+--
+-- Schema version 1 recorded a saved trip's boarding bay but not whether the
+-- reviewed boarding point was step free, so a saved trip opened offline could
+-- not answer the one accessibility question that matters at the kerb. The
+-- column is added as nullable because "not reviewed" is a real third state and
+-- must not be rendered as "not step free".
+ALTER TABLE saved_trip ADD COLUMN boarding_step_free INTEGER;

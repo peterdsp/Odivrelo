@@ -1,0 +1,36 @@
+# Security headers Poravia requires.
+#
+# GitHub Pages cannot set response headers, so on the 1.0.0 deployment these are
+# NOT applied: only the Content-Security-Policy is in force, via the
+# <meta http-equiv> in index.html, and a meta CSP cannot carry frame-ancestors.
+# apps/web/README.md documents that limitation honestly.
+#
+# This file is in the Netlify/Cloudflare Pages `_headers` format and is here so
+# that any host which can set headers applies the full set unchanged. An nginx or
+# Caddy translation is in the README.
+
+/*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; child-src blob:; frame-src blob:; object-src 'none'; form-action 'none'; frame-ancestors 'none'; manifest-src 'self'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), browsing-topics=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), idle-detection=(), interest-cohort=(), local-fonts=(), magnetometer=(), microphone=(), midi=(), payment=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Frame-Options: DENY
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+
+# Content-addressed packs are immutable: the digest is in the file name.
+/data/packs/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The manifest is the one mutable data file.
+/data/manifest.json
+  Cache-Control: no-cache
+
+# Never cache the shell HTML: it is how a new build is picked up.
+/index.html
+  Cache-Control: no-cache
+/404.html
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    /*
+     * DOM is here because the end-to-end specs are Node files that contain
+     * browser code: every `page.evaluate` body is executed in the page, so it
+     * legitimately references document, HTMLElement and the rest.
+     */
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "checkJs": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "types": ["node"]
+  },
+  "include": ["vite.config.ts", "playwright.config.ts", "vitest.config.ts", "scripts/**/*.mjs", "e2e/**/*.ts"]
+}

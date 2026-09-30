@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-operators-v1.schema.json",
+  "title": "Offline pack: operators, version 1",
+  "description": "The `operators` pack. Each value is exactly what\n`GET /v1/operators/{operator_id}` returns in its `operator` member.\n",
+  "allOf": [
+    {
+      "$ref": "#/$defs/Envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "operators"
+      ],
+      "properties": {
+        "operators": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Operator"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Contact": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "phone",
+        "email",
+        "address"
+      ],
+      "properties": {
+        "phone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ContractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "DataMode": {
+      "type": "string",
+      "enum": [
+        "real",
+        "demo"
+      ],
+      "description": "When `demo`, every client must show a persistent, non-dismissible notice\nthat the services shown are invented and are not real departures, and\nmust send `noindex` on web.\n"
+    },
+    "Envelope": {
+      "type": "object",
+      "required": [
+        "contractVersion",
+        "releaseId",
+        "publishedAt",
+        "dataMode"
+      ],
+      "properties": {
+        "contractVersion": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "releaseId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataMode": {
+          "$ref": "#/$defs/DataMode"
+        }
+      }
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Operator": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "logoAvailable",
+        "federationNumber",
+        "officialSiteUrl",
+        "directoryUrl",
+        "contact",
+        "coverage",
+        "sources",
+        "verifiedAt",
+        "correctionUrl"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "logoAvailable": {
+          "type": "boolean"
+        },
+        "federationNumber": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "officialSiteUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "directoryUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contact": {
+          "$ref": "#/$defs/Contact"
+        },
+        "coverage": {
+          "type": "object",
+          "required": [
+            "state",
+            "routeCount",
+            "stopCount"
+          ],
+          "properties": {
+            "state": {
+              "$ref": "#/$defs/CoverageState"
+            },
+            "routeCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "stopCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Provenance"
+          }
+        },
+        "verifiedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "correctionUrl": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Provenance": {
+      "type": "object",
+      "required": [
+        "sourceId",
+        "sourceName",
+        "sourceUrl",
+        "retrievedAt",
+        "rightsStatus",
+        "licence"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceName": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retrievedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rightsStatus": {
+          "$ref": "#/$defs/RightsStatus"
+        },
+        "licence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "RightsStatus": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "permission_pending",
+        "prohibited",
+        "unknown"
+      ]
+    }
+  }
+}

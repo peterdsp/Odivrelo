@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/operator-v1.schema.json",
+  "title": "Operator, version 1",
+  "description": "One transport operator, its coverage and the sources it is built from.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "logoAvailable",
+    "federationNumber",
+    "officialSiteUrl",
+    "directoryUrl",
+    "contact",
+    "coverage",
+    "sources",
+    "verifiedAt",
+    "correctionUrl"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "$ref": "#/$defs/LocalizedText"
+    },
+    "logoAvailable": {
+      "type": "boolean"
+    },
+    "federationNumber": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "officialSiteUrl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "directoryUrl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contact": {
+      "$ref": "#/$defs/Contact"
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "state",
+        "routeCount",
+        "stopCount"
+      ],
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/CoverageState"
+        },
+        "routeCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stopCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Provenance"
+      }
+    },
+    "verifiedAt": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "correctionUrl": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Contact": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "phone",
+        "email",
+        "address"
+      ],
+      "properties": {
+        "phone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Provenance": {
+      "type": "object",
+      "required": [
+        "sourceId",
+        "sourceName",
+        "sourceUrl",
+        "retrievedAt",
+        "rightsStatus",
+        "licence"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceName": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retrievedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rightsStatus": {
+          "$ref": "#/$defs/RightsStatus"
+        },
+        "licence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "RightsStatus": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "permission_pending",
+        "prohibited",
+        "unknown"
+      ]
+    }
+  }
+}

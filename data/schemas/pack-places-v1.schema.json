@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://poravia.peterdsp.dev/schemas/v1/pack-places-v1.schema.json",
+  "title": "Offline pack: places, version 1",
+  "description": "The `places` pack, identical to an unfiltered, unpaged GET /v1/places body.",
+  "allOf": [
+    {
+      "$ref": "#/$defs/Envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "places",
+        "total"
+      ],
+      "properties": {
+        "places": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Place"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "ContractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "CoverageState": {
+      "type": "string",
+      "enum": [
+        "covered",
+        "partial",
+        "not_covered",
+        "demo"
+      ]
+    },
+    "DataMode": {
+      "type": "string",
+      "enum": [
+        "real",
+        "demo"
+      ],
+      "description": "When `demo`, every client must show a persistent, non-dismissible notice\nthat the services shown are invented and are not real departures, and\nmust send `noindex` on web.\n"
+    },
+    "Envelope": {
+      "type": "object",
+      "required": [
+        "contractVersion",
+        "releaseId",
+        "publishedAt",
+        "dataMode"
+      ],
+      "properties": {
+        "contractVersion": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "releaseId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataMode": {
+          "$ref": "#/$defs/DataMode"
+        }
+      }
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Every supported language is always present.",
+      "required": [
+        "el",
+        "en",
+        "sq"
+      ],
+      "properties": {
+        "el": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        },
+        "sq": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Place": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "parentId",
+        "municipality",
+        "latitude",
+        "longitude",
+        "coordinateStatus",
+        "boardingPointCount",
+        "operatorIds",
+        "coverage"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "stop_place",
+            "stop"
+          ]
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "parentId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "municipality": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "coordinateStatus": {
+          "type": "string"
+        },
+        "boardingPointCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operatorIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coverage": {
+          "$ref": "#/$defs/CoverageState"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

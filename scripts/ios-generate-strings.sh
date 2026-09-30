@@ -1,0 +1,255 @@
+#!/usr/bin/env bash
+# Generates the Poravia String Catalog and its Swift accessors from the single
+# trilingual source of truth.
+#
+#   apps/ios/Poravia/Resources/strings.source.json
+#     -> apps/ios/Poravia/Resources/Localizable.xcstrings   (String Catalog)
+#     -> apps/ios/Poravia/Generated/L10n.swift              (typed accessors)
+#
+# Completeness is enforced twice. This script refuses to write anything if any
+# key is missing el, en or sq, or if the format specifiers disagree between
+# languages. `LocalisationCompletenessTests` then asserts the same properties
+# against the catalog that actually shipped in the bundle, so a hand edit to
+# the catalog cannot slip through either.
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SOURCE="${REPO_ROOT}/apps/ios/Poravia/Resources/strings.source.json"
+CATALOG="${REPO_ROOT}/apps/ios/Poravia/Resources/Localizable.xcstrings"
+SWIFT_OUT="${REPO_ROOT}/apps/ios/Poravia/Generated/L10n.swift"
+
+if [[ ! -f "${SOURCE}" ]]; then
+  echo "error: ${SOURCE} not found" >&2
+  exit 1
+fi
+
+mkdir -p "$(dirname "${SWIFT_OUT}")"
+
+/usr/bin/env python3 - "${SOURCE}" "${CATALOG}" "${SWIFT_OUT}" <<'PY'
+import json, re, sys
+
+source_path, catalog_path, swift_path = sys.argv[1:4]
+with open(source_path, "r", encoding="utf-8") as handle:
+    document = json.load(handle)
+
+strings = document["strings"]
+LANGUAGES = ["el", "en", "sq"]
+DEFAULT_LANGUAGE = "el"
+
+SPECIFIER = re.compile(r"%(?:(\d+)\$)?(lld|ld|d|@|f)")
+
+problems = []
+
+
+def specifiers(value: str):
+    """Ordered argument types for a format string, honouring %n$ positions."""
+    found = []
+    for index, (position, kind) in enumerate(SPECIFIER.findall(value)):
+        found.append((int(position) if position else index + 1, kind))
+    found.sort(key=lambda pair: pair[0])
+    ordered = []
+    for expected, (position, kind) in enumerate(found, start=1):
+        if position != expected:
+            return None  # non-contiguous positions
+        ordered.append(kind)
+    return ordered
+
+
+SWIFT_TYPE = {"lld": "Int", "ld": "Int", "d": "Int", "@": "String", "f": "Double"}
+
+# A counted string declares a "plural" block instead of a flat translation.
+# Every language must then supply every plural category it uses, or the
+# interface says things like "1 journeys".
+PLURAL_CATEGORIES = ["one", "other"]
+
+
+def is_plural(entry) -> bool:
+    return "plural" in entry
+
+
+def texts_of(entry, language):
+    """Every string a key carries for a language, flat or plural."""
+    if is_plural(entry):
+        block = entry["plural"].get(language) or {}
+        return [block[c] for c in PLURAL_CATEGORIES if c in block]
+    return [entry[language]] if language in entry else []
+
+
+for key in sorted(strings):
+    entry = strings[key]
+
+    if "comment" not in entry or not entry["comment"].strip():
+        problems.append(f"{key}: missing translator comment")
+
+    for language in LANGUAGES:
+        if is_plural(entry):
+            block = entry["plural"].get(language)
+            if not block:
+                problems.append(f"{key}: missing plural block for '{language}'")
+                continue
+            for category in PLURAL_CATEGORIES:
+                if category not in block or not str(block[category]).strip():
+                    problems.append(f"{key}: missing plural '{category}' for '{language}'")
+        elif language not in entry or not str(entry[language]).strip():
+            problems.append(f"{key}: missing or empty translation for '{language}'")
+
+    shapes = {}
+    for language in LANGUAGES:
+        for index, text in enumerate(texts_of(entry, language)):
+            shape = specifiers(text)
+            if shape is None:
+                problems.append(f"{key}: '{language}' uses non-contiguous positional specifiers")
+                shape = []
+            shapes[f"{language}[{index}]"] = shape
+    distinct = {tuple(shape) for shape in shapes.values()}
+    if len(distinct) > 1:
+        detail = ", ".join(f"{k}={v}" for k, v in sorted(shapes.items()))
+        problems.append(f"{key}: format specifiers differ ({detail})")
+
+if problems:
+    print("error: the string source is not complete:", file=sys.stderr)
+    for problem in problems:
+        print(f"  - {problem}", file=sys.stderr)
+    sys.exit(1)
+
+# ---------------------------------------------------------------- catalog ----
+
+catalog = {
+    "sourceLanguage": DEFAULT_LANGUAGE,
+    "version": "1.0",
+    "strings": {},
+}
+
+for key in sorted(strings):
+    entry = strings[key]
+    localizations = {}
+    for language in LANGUAGES:
+        if is_plural(entry):
+            block = entry["plural"][language]
+            localizations[language] = {
+                "variations": {
+                    "plural": {
+                        category: {
+                            "stringUnit": {"state": "translated", "value": block[category]}
+                        }
+                        for category in PLURAL_CATEGORIES
+                    }
+                }
+            }
+        else:
+            localizations[language] = {
+                "stringUnit": {"state": "translated", "value": entry[language]}
+            }
+    catalog["strings"][key] = {
+        "comment": entry["comment"],
+        "extractionState": "manual",
+        "localizations": localizations,
+    }
+
+with open(catalog_path, "w", encoding="utf-8") as handle:
+    json.dump(catalog, handle, ensure_ascii=False, indent=2, sort_keys=True)
+    handle.write("\n")
+
+# ------------------------------------------------------------------ swift ----
+
+
+def identifier(key: str) -> str:
+    parts = re.split(r"[._-]", key)
+    head = parts[0]
+    tail = "".join(part[:1].upper() + part[1:] for part in parts[1:])
+    name = head + tail
+    reserved = {"return", "class", "default", "operator", "import", "for", "in", "case", "where"}
+    return f"`{name}`" if name in reserved else name
+
+
+lines = []
+add = lines.append
+add("// Generated by scripts/ios-generate-strings.sh from")
+add("// apps/ios/Poravia/Resources/strings.source.json.")
+add("// Do not edit by hand. Re-run the script after changing a string.")
+add("")
+add("import Foundation")
+add("")
+add("/// Every user-facing string in Poravia, resolved against the active")
+add("/// language.")
+add("///")
+add("/// The language is normally the device language. When a person picks a")
+add("/// specific language in Settings, `override` points at that language's")
+add("/// bundle so the choice applies immediately without a relaunch.")
+add("public enum L10n {")
+add("    /// Languages the product ships, from `brand.json`.")
+add(f"    public static let supportedLanguages: [String] = {json.dumps(LANGUAGES)}")
+add("")
+add("    /// The bundle the next lookup resolves against. `nil` means the main")
+add("    /// bundle, which follows the device language.")
+add("    public nonisolated(unsafe) static var override: Bundle?")
+add("")
+add("    /// Points lookups at the given language, or back at the device")
+add("    /// language when `languageTag` is `nil` or has no bundle.")
+add("    public static func use(languageTag: String?) {")
+add("        guard let tag = languageTag,")
+add("              let path = Bundle.main.path(forResource: tag, ofType: \"lproj\"),")
+add("              let bundle = Bundle(path: path)")
+add("        else {")
+add("            override = nil")
+add("            return")
+add("        }")
+add("        override = bundle")
+add("    }")
+add("")
+add("    static var bundle: Bundle { override ?? .main }")
+add("")
+add("    /// Looks up one key. The key itself is the fallback, so a missing")
+add("    /// translation is visible in the interface rather than silent.")
+add("    public static func string(_ key: String) -> String {")
+add("        NSLocalizedString(key, tableName: \"Localizable\", bundle: bundle, value: key, comment: \"\")")
+add("    }")
+add("")
+add("    /// Formats a key's value. The locale is passed so a key with plural")
+add("    /// variations picks the category that matches the count, rather than")
+add("    /// always using one form.")
+add("    static func format(_ key: String, _ arguments: any CVarArg...) -> String {")
+add("        String(format: string(key), locale: Locale.current, arguments: arguments)")
+add("    }")
+add("")
+add("    /// Every key this build knows, for the completeness test.")
+add("    public static let allKeys: [String] = [")
+for key in sorted(strings):
+    add(f'        "{key}",')
+add("    ]")
+add("")
+add("    /// Keys that carry plural variations. A counted string without one")
+add("    /// produces text like \"1 journeys\", so the tests assert this list.")
+add("    public static let pluralKeys: [String] = [")
+for key in sorted(strings):
+    if is_plural(strings[key]):
+        add(f'        "{key}",')
+add("    ]")
+add("}")
+add("")
+add("public extension L10n {")
+
+for key in sorted(strings):
+    entry = strings[key]
+    english = texts_of(entry, "en")
+    shape = specifiers(english[0]) if english else []
+    name = identifier(key)
+    comment = entry["comment"].replace("\n", " ")
+    add(f"    /// {comment}")
+    if not shape:
+        add(f'    static var {name}: String {{ string("{key}") }}')
+    else:
+        params = ", ".join(f"_ a{index}: {SWIFT_TYPE[kind]}" for index, kind in enumerate(shape))
+        arguments = ", ".join(f"a{index}" for index in range(len(shape)))
+        add(f'    static func {name}({params}) -> String {{ format("{key}", {arguments}) }}')
+    add("")
+
+add("}")
+add("")
+
+with open(swift_path, "w", encoding="utf-8") as handle:
+    handle.write("\n".join(lines))
+
+print(f"wrote {catalog_path} ({len(strings)} keys x {len(LANGUAGES)} languages)")
+print(f"wrote {swift_path}")
+PY

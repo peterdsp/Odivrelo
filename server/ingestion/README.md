@@ -1,7 +1,7 @@
 # Ingestion
 
 The initial bounded acquisition implementation lives in
-`server/src/hodomap_pipeline`.
+`server/src/poravia_pipeline`.
 
 Every adapter requires:
 

@@ -1,0 +1,82 @@
+{
+  "contractVersion": "1.0.0",
+  "counts": {
+    "journeyPatterns": 2,
+    "lines": 1,
+    "serviceCalendars": 2,
+    "stopPlaces": 1,
+    "stops": 5,
+    "trips": 4
+  },
+  "files": {
+    "coverage": {
+      "bytes": 2619,
+      "mediaType": "application/json",
+      "path": "packs/coverage-64d6d7be412813f6.json",
+      "sha256": "64d6d7be412813f683e2b0357c1fc6ed462604bc762bb673c5d9b99f0b35c1c9"
+    },
+    "gtfs": {
+      "bytes": 2479,
+      "mediaType": "application/zip",
+      "path": "packs/gtfs-324b1d4874a964b3.zip",
+      "sha256": "324b1d4874a964b3b51a9f9b787c18dcd514967b88148dc6d2ab62c53963d0f0"
+    },
+    "journeys-2026-03-29": {
+      "bytes": 5526,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-03-29-7ac91d122338996c.json",
+      "sha256": "7ac91d122338996c771b502f4ff57c80f6223f5d2af6e1408e788531afedb934"
+    },
+    "journeys-2026-04-08": {
+      "bytes": 5540,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-04-08-c442ffae8b0435fe.json",
+      "sha256": "c442ffae8b0435fee3084ac54f3a9c04f36607be1b93eac91f42c0dbb56029f9"
+    },
+    "journeys-2026-04-11": {
+      "bytes": 5540,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-04-11-5d8a703ffadf32ac.json",
+      "sha256": "5d8a703ffadf32ac0e5e8c4f3b837c41db933d15c120edcfa2c7c757a21df4f0"
+    },
+    "journeys-2026-10-02": {
+      "bytes": 15883,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-02-1a1c7d457cceb9a5.json",
+      "sha256": "1a1c7d457cceb9a5dc9196b9343a25fc79167c701372d940ab395e9f4a929bfb"
+    },
+    "meta": {
+      "bytes": 1329,
+      "mediaType": "application/json",
+      "path": "packs/meta-ab68667a105a9dff.json",
+      "sha256": "ab68667a105a9dffa564439874b3b926d1221bb9f149adf998328b28d265b12f"
+    },
+    "operators": {
+      "bytes": 931,
+      "mediaType": "application/json",
+      "path": "packs/operators-fda9d7e0dbdce760.json",
+      "sha256": "fda9d7e0dbdce7602565943a15ec093da042ccaec07e1e65407a6577ccebafba"
+    },
+    "places": {
+      "bytes": 2466,
+      "mediaType": "application/json",
+      "path": "packs/places-0e58ed7aa7b3a7a7.json",
+      "sha256": "0e58ed7aa7b3a7a70d0b64f4510bec3beb3b157850240f49e92a16e782de7f3a"
+    },
+    "sources": {
+      "bytes": 2038,
+      "mediaType": "application/json",
+      "path": "packs/sources-4c6297342ef46eb0.json",
+      "sha256": "4c6297342ef46eb07e7249781b5fb15ea3e0f5fb225968415ad53ee131ff445c"
+    },
+    "stops": {
+      "bytes": 11153,
+      "mediaType": "application/json",
+      "path": "packs/stops-22b881e392e40743.json",
+      "sha256": "22b881e392e407433cf7bd848f31c159fa22206656572d0f0211175f800b91bc"
+    }
+  },
+  "product": "Poravia",
+  "publishedAt": "2026-09-30T12:49:39Z",
+  "releaseId": "d213def3eecad22c"
+}

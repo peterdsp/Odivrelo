@@ -1,0 +1,101 @@
+<!doctype html>
+<!--
+  The lang attribute starts at the default language and is corrected by the app
+  as soon as the reader's preference is known, so assistive technology never
+  reads Greek with an English voice.
+
+  The CSP below is applied by meta because GitHub Pages cannot set response
+  headers. That is a genuine limitation, not a preference: a meta CSP cannot
+  carry frame-ancestors and is applied slightly later than a header would be.
+  apps/web/README.md documents it and lists the headers a real host must set.
+
+  `upgrade-insecure-requests` is deliberately NOT here, though it is in
+  public/_headers for a host that can set headers. On an https page with
+  `default-src 'self'` every subresource is already https, so it buys nothing;
+  and on an http origin it makes the browser upgrade requests that cannot be
+  served, which breaks the site outright. Chromium exempts localhost from that
+  rule and WebKit does not, so the directive turned the local preview into a
+  blank page in Safari while looking fine in Chrome.
+-->
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               base-uri 'self';
+               script-src 'self' 'wasm-unsafe-eval';
+               style-src 'self' 'unsafe-inline';
+               img-src 'self' blob: data:;
+               font-src 'self';
+               connect-src 'self';
+               worker-src 'self' blob:;
+               child-src blob:;
+               frame-src blob:;
+               object-src 'none';
+               form-action 'none';
+               manifest-src 'self'"
+    />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!--
+      Default deny.
+
+      This ships in the bytes, so a crawler or link-preview fetcher that never
+      runs JavaScript still sees a directive. robots.txt governs crawling, but a
+      disallowed URL can still be indexed from an external link, which is exactly
+      the case this guard is for.
+
+      The prerenderer rewrites this per page, and `useHead` only ever upgrades it
+      to `index, follow` at run time, and only for a page that is genuinely
+      indexable on a release whose dataMode is `real`. Indexing is something a
+      page has to earn; it is never the state that ships by default.
+    -->
+    <meta name="robots" content="noindex, nofollow" />
+
+    <title>Poravia</title>
+    <meta name="description" content="Intercity coach information you can check: the exact boarding point, the source of every fact, and how old it is." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#0b6b63" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1b1a" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icons/icon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <style>
+      /*
+        Inlined so the first paint is not a white flash in dark mode, and so the
+        page has a background before the stylesheet arrives.
+      */
+      :root { color-scheme: light; --pv-boot-bg: #f6f7f2; --pv-boot-fg: #142e2c; }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) { color-scheme: dark; --pv-boot-bg: #0d1b1a; --pv-boot-fg: #f4f8f6; }
+      }
+      :root[data-theme='dark'] { color-scheme: dark; --pv-boot-bg: #0d1b1a; --pv-boot-fg: #f4f8f6; }
+      html, body { margin: 0; padding: 0; background: var(--pv-boot-bg); color: var(--pv-boot-fg); }
+      body { font-family: Inter, 'SF Pro Text', Roboto, system-ui, sans-serif; }
+      #pv-boot { padding: 2rem 1rem; max-inline-size: 40rem; margin-inline: auto; }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!--
+        Replaced on mount. It exists so that a reader whose JavaScript failed, or
+        is still loading on a slow connection, sees something honest rather than
+        an empty page.
+      -->
+      <div id="pv-boot">
+        <h1>Poravia</h1>
+        <p lang="el">Φόρτωση. Αν δεν εμφανιστεί τίποτα, η JavaScript είναι απενεργοποιημένη σε αυτόν τον browser.</p>
+        <p lang="en">Loading. If nothing appears, JavaScript is disabled in this browser.</p>
+        <p lang="sq">Po ngarkohet. Nëse nuk shfaqet asgjë, JavaScript është i çaktivizuar në këtë shfletues.</p>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

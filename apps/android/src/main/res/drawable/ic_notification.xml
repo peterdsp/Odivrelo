@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The status-bar mark. Android draws a notification's small icon as a silhouette
+  in a single tint, so this carries the arch and the boarding point as solid
+  shape at 24dp, with heavier strokes than the launcher mark because it is drawn
+  at a fraction of the size.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFFFF">
+    <path
+        android:pathData="M5.5,20V9.5a6.5,6.5 0,0 1,13 0V20"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,7.2a2.4,2.4 0,1 0,0 4.8a2.4,2.4 0,1 0,0 -4.8z" />
+</vector>

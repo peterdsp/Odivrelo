@@ -1,0 +1,495 @@
+{
+  "$comment": "INVENTED DEMONSTRATION DATA. Aloria does not exist. No row here describes a real departure, terminal, fare or operator. See data/fixtures/README.md before using any of it anywhere.",
+  "dataset": "demo",
+  "operatorId": "demo-aloria-coach",
+  "demoOperators": [
+    {
+      "id": "demo-aloria-coach",
+      "slug": "demo-aloria-coach",
+      "nameEn": "Aloria Coach Lines (demonstration operator)",
+      "nameEl": "Λεωφορεία Αλόρια (επίδειξη)",
+      "operatorKind": "other",
+      "federationNumber": null,
+      "directoryUrl": null,
+      "officialSiteUrl": null,
+      "registryVerifiedAt": "2026-09-20T06:00:00Z",
+      "publicAttributes": {
+        "nameSq": "Autobusët Aloria (demonstrim)",
+        "logoAvailable": false,
+        "contact": {
+          "phone": "+00 000 000 001",
+          "email": "info@peterdsp.dev",
+          "address": "1 Harbour Approach, Aloria City (fictional address)"
+        }
+      }
+    }
+  ],
+  "sourceId": "manual-review",
+  "retrievedAt": "2026-09-20T06:00:00Z",
+  "importRunId": "demo-aloria-manual-review",
+  "stopPlaces": [
+    {
+      "externalId": "place-aloria-central",
+      "name": "Aloria Central Terminal",
+      "nameEl": "Κεντρικός Σταθμός Αλόρια",
+      "defaultStopExternalId": "stop-aloria-bay-a1",
+      "webActive": true,
+      "publicAttributes": {
+        "nameSq": "Terminali Qendror i Alorias",
+        "municipality": "Aloria City (fictional)"
+      }
+    }
+  ],
+  "stops": [
+    {
+      "externalId": "stop-aloria-bay-a1",
+      "stopPlaceExternalId": "place-aloria-central",
+      "name": "Aloria Central Terminal, bay A1",
+      "nameEl": "Κεντρικός Σταθμός Αλόρια, θέση A1",
+      "address": "1 Harbour Approach, Aloria City (fictional address)",
+      "phone": "+00 000 000 001",
+      "latitude": 0.4213,
+      "longitude": -0.5121,
+      "webActive": true,
+      "publicAttributes": {
+        "nameSq": "Terminali Qendror i Alorias, vendi A1",
+        "municipality": "Aloria City (fictional)",
+        "bay": "A1",
+        "stepFree": true,
+        "boardingReviewedAt": "2026-09-10T08:00:00Z",
+        "instructions": {
+          "el": "Η θέση A1 βρίσκεται στο ισόγειο, αριστερά από την κεντρική είσοδο. Υπάρχει ράμπα χωρίς σκαλοπάτια.",
+          "en": "Bay A1 is on the ground floor, left of the main entrance. A step-free ramp reaches the platform.",
+          "sq": "Vendi A1 ndodhet në katin përdhes, majtas hyrjes kryesore. Një rampë pa shkallë të çon te platforma."
+        }
+      }
+    },
+    {
+      "externalId": "stop-aloria-bay-a2",
+      "stopPlaceExternalId": "place-aloria-central",
+      "name": "Aloria Central Terminal, bay A2",
+      "nameEl": "Κεντρικός Σταθμός Αλόρια, θέση A2",
+      "address": "1 Harbour Approach, Aloria City (fictional address)",
+      "phone": "+00 000 000 001",
+      "latitude": 0.4218,
+      "longitude": -0.5107,
+      "webActive": true,
+      "publicAttributes": {
+        "nameSq": "Terminali Qendror i Alorias, vendi A2",
+        "municipality": "Aloria City (fictional)",
+        "bay": "A2"
+      }
+    },
+    {
+      "externalId": "stop-veraki-harbour",
+      "name": "Veraki Harbour Station",
+      "nameEl": "Σταθμός Λιμένα Βεράκι",
+      "address": "Quayside, Veraki (fictional address)",
+      "latitude": 0.2481,
+      "longitude": -0.3974,
+      "webActive": true,
+      "publicAttributes": {
+        "nameSq": "Stacioni i Portit të Verakit",
+        "municipality": "Veraki (fictional)"
+      }
+    },
+    {
+      "externalId": "stop-mistona-village",
+      "name": "Mistona Village Stop",
+      "nameEl": "Στάση Χωριού Μιστόνα",
+      "latitude": 0.1106,
+      "longitude": -0.2417,
+      "webActive": true,
+      "publicAttributes": {
+        "nameSq": "Ndalesa e Fshatit Mistona",
+        "municipality": "Mistona (fictional)"
+      }
+    },
+    {
+      "externalId": "stop-oravo-junction",
+      "name": "Oravo Junction",
+      "nameEl": "Κόμβος Οράβο",
+      "latitude": 0.0621,
+      "longitude": -0.1183,
+      "webActive": true,
+      "publicAttributes": {
+        "nameSq": "Kryqëzimi i Oravos",
+        "municipality": "Oravo (fictional)"
+      }
+    },
+    {
+      "externalId": "stop-unreviewed-candidate",
+      "name": "Draft stop awaiting review (must never be published)",
+      "nameEl": "Πρόχειρη στάση υπό έλεγχο (δεν δημοσιεύεται)",
+      "latitude": 0.5104,
+      "longitude": -0.5809,
+      "webActive": false,
+      "publicAttributes": {
+        "nameSq": "Ndalesë në pritje të rishikimit"
+      }
+    }
+  ],
+  "lines": [
+    {
+      "externalId": "line-coast",
+      "publicCode": "A1",
+      "name": "Aloria Central to Oravo Junction coast line",
+      "nameEl": "Παράκτια γραμμή Αλόρια προς Οράβο",
+      "dataStatus": "verified"
+    }
+  ],
+  "journeyPatterns": [
+    {
+      "externalId": "pattern-southbound",
+      "lineExternalId": "line-coast",
+      "name": "Southbound, all stops",
+      "direction": "southbound",
+      "geometryStatus": "ordered_stops_only",
+      "geometryGeoJson": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.5121,
+            0.4213
+          ],
+          [
+            -0.3974,
+            0.2481
+          ],
+          [
+            -0.2417,
+            0.1106
+          ],
+          [
+            -0.1183,
+            0.0621
+          ]
+        ]
+      },
+      "stops": [
+        {
+          "stopExternalId": "stop-aloria-bay-a1",
+          "sequence": 1,
+          "pickupType": "allowed",
+          "dropoffType": "not_allowed"
+        },
+        {
+          "stopExternalId": "stop-veraki-harbour",
+          "sequence": 2,
+          "pickupType": "allowed",
+          "dropoffType": "allowed"
+        },
+        {
+          "stopExternalId": "stop-mistona-village",
+          "sequence": 3,
+          "pickupType": "not_allowed",
+          "dropoffType": "allowed"
+        },
+        {
+          "stopExternalId": "stop-oravo-junction",
+          "sequence": 4,
+          "pickupType": "not_allowed",
+          "dropoffType": "allowed"
+        }
+      ]
+    },
+    {
+      "externalId": "pattern-night",
+      "lineExternalId": "line-coast",
+      "name": "Overnight express",
+      "direction": "southbound",
+      "geometryStatus": "unverified",
+      "stops": [
+        {
+          "stopExternalId": "stop-aloria-bay-a2",
+          "sequence": 1,
+          "pickupType": "allowed",
+          "dropoffType": "not_allowed"
+        },
+        {
+          "stopExternalId": "stop-oravo-junction",
+          "sequence": 2,
+          "pickupType": "not_allowed",
+          "dropoffType": "allowed"
+        }
+      ]
+    }
+  ],
+  "serviceCalendars": [
+    {
+      "externalId": "cal-weekday",
+      "name": "Aloria coast line, weekdays",
+      "validFrom": "2026-01-01",
+      "validUntil": "2026-12-31",
+      "monday": true,
+      "tuesday": true,
+      "wednesday": true,
+      "thursday": true,
+      "friday": true,
+      "saturday": false,
+      "sunday": false,
+      "verificationState": "operator_verified",
+      "exceptions": [
+        {
+          "serviceDate": "2026-04-06",
+          "exceptionType": "removed",
+          "note": "Invented regional holiday in Aloria. The Monday service does not run."
+        },
+        {
+          "serviceDate": "2026-04-11",
+          "exceptionType": "added",
+          "note": "Invented Saturday extra working for the Aloria harbour festival."
+        }
+      ]
+    },
+    {
+      "externalId": "cal-sunday",
+      "name": "Aloria coast line, Sundays",
+      "validFrom": "2026-01-01",
+      "validUntil": "2026-12-31",
+      "monday": false,
+      "tuesday": false,
+      "wednesday": false,
+      "thursday": false,
+      "friday": false,
+      "saturday": false,
+      "sunday": true,
+      "verificationState": "operator_verified",
+      "exceptions": []
+    }
+  ],
+  "trips": [
+    {
+      "externalId": "trip-daytime",
+      "lineExternalId": "line-coast",
+      "patternExternalId": "pattern-southbound",
+      "serviceDate": "2026-10-02",
+      "departureAt": "2026-10-02T09:00:00+03:00",
+      "approximateArrivalAt": "2026-10-02T12:10:00+03:00",
+      "commercialState": "bookable",
+      "scheduleScope": "operator_published",
+      "fareAmount": 18.0,
+      "fareCurrency": "EUR",
+      "bookingUrl": "https://demo.invalid/aloria/book/trip-daytime",
+      "observedAt": "2026-09-20T06:00:00Z",
+      "publicAttributes": {
+        "positionQuality": "scheduled",
+        "fareIsIndicative": true,
+        "purchase": {
+          "kind": "online",
+          "url": "https://demo.invalid/aloria/book/trip-daytime",
+          "label": {
+            "el": "Κράτηση online (επίδειξη)",
+            "en": "Book online (demonstration)",
+            "sq": "Rezervo online (demonstrim)"
+          },
+          "disclaimer": {
+            "el": "Επίδειξη. Ο σύνδεσμος δεν οδηγεί σε πραγματική πώληση.",
+            "en": "Demonstration only. This link does not reach a real sale.",
+            "sq": "Vetëm demonstrim. Kjo lidhje nuk çon në një shitje reale."
+          }
+        }
+      },
+      "stopTimes": [
+        {
+          "stopExternalId": "stop-aloria-bay-a1",
+          "sequence": 1,
+          "departureAt": "2026-10-02T09:00:00+03:00",
+          "timeStatus": "scheduled"
+        },
+        {
+          "stopExternalId": "stop-veraki-harbour",
+          "sequence": 2,
+          "arrivalAt": "2026-10-02T10:05:00+03:00",
+          "departureAt": "2026-10-02T10:10:00+03:00",
+          "timeStatus": "scheduled"
+        },
+        {
+          "stopExternalId": "stop-mistona-village",
+          "sequence": 3,
+          "arrivalAt": "2026-10-02T11:00:00+03:00",
+          "departureAt": "2026-10-02T11:02:00+03:00",
+          "timeStatus": "approximate"
+        },
+        {
+          "stopExternalId": "stop-oravo-junction",
+          "sequence": 4,
+          "arrivalAt": "2026-10-02T12:10:00+03:00",
+          "timeStatus": "approximate"
+        }
+      ]
+    },
+    {
+      "externalId": "trip-overnight",
+      "lineExternalId": "line-coast",
+      "patternExternalId": "pattern-night",
+      "serviceDate": "2026-10-02",
+      "departureAt": "2026-10-02T23:40:00+03:00",
+      "approximateArrivalAt": "2026-10-03T01:20:00+03:00",
+      "commercialState": "unknown",
+      "scheduleScope": "operator_published",
+      "fareAmount": 21.5,
+      "fareCurrency": "EUR",
+      "observedAt": "2026-09-20T06:00:00Z",
+      "publicAttributes": {
+        "positionQuality": "scheduled",
+        "fareIsIndicative": true,
+        "purchase": {
+          "kind": "ticket_office",
+          "phone": "+00 000 000 002",
+          "address": "Ticket office, Aloria Central Terminal (fictional address)",
+          "openingHours": "Mo-Su 06:00-22:00 (fictional)",
+          "label": {
+            "el": "Μόνο από το εκδοτήριο (επίδειξη)",
+            "en": "Ticket office only (demonstration)",
+            "sq": "Vetëm në sportelin e biletave (demonstrim)"
+          },
+          "disclaimer": {
+            "el": "Επίδειξη. Δεν υπάρχει online πώληση για αυτό το δρομολόγιο.",
+            "en": "Demonstration only. There is no online sale for this journey.",
+            "sq": "Vetëm demonstrim. Nuk ka shitje online për këtë udhëtim."
+          }
+        },
+        "restrictions": [
+          {
+            "code": "overnight_unaccompanied_minors",
+            "text": {
+              "el": "Ασυνόδευτοι ανήλικοι δεν γίνονται δεκτοί στο νυχτερινό δρομολόγιο (επίδειξη).",
+              "en": "Unaccompanied minors are not carried on the overnight service (demonstration).",
+              "sq": "Të miturit e pashoqëruar nuk pranohen në shërbimin e natës (demonstrim)."
+            }
+          }
+        ]
+      },
+      "stopTimes": [
+        {
+          "stopExternalId": "stop-aloria-bay-a2",
+          "sequence": 1,
+          "departureAt": "2026-10-02T23:40:00+03:00",
+          "timeStatus": "scheduled"
+        },
+        {
+          "stopExternalId": "stop-oravo-junction",
+          "sequence": 2,
+          "arrivalAt": "2026-10-03T01:20:00+03:00",
+          "timeStatus": "approximate"
+        }
+      ]
+    },
+    {
+      "externalId": "trip-sunday-dst",
+      "lineExternalId": "line-coast",
+      "patternExternalId": "pattern-southbound",
+      "calendarExternalId": "cal-sunday",
+      "serviceDate": "2026-03-29",
+      "departureAt": "2026-03-29T09:00:00+03:00",
+      "approximateArrivalAt": "2026-03-29T12:10:00+03:00",
+      "commercialState": "bookable",
+      "scheduleScope": "operator_published",
+      "fareAmount": 18.0,
+      "fareCurrency": "EUR",
+      "bookingUrl": "https://demo.invalid/aloria/book/trip-sunday-dst",
+      "observedAt": "2026-09-20T06:00:00Z",
+      "publicAttributes": {
+        "positionQuality": "scheduled",
+        "fareIsIndicative": true,
+        "purchase": {
+          "kind": "online",
+          "url": "https://demo.invalid/aloria/book/trip-sunday-dst",
+          "label": {
+            "el": "Κράτηση online (επίδειξη)",
+            "en": "Book online (demonstration)",
+            "sq": "Rezervo online (demonstrim)"
+          }
+        }
+      },
+      "stopTimes": [
+        {
+          "stopExternalId": "stop-aloria-bay-a1",
+          "sequence": 1,
+          "departureAt": "2026-03-29T09:00:00+03:00",
+          "timeStatus": "scheduled"
+        },
+        {
+          "stopExternalId": "stop-veraki-harbour",
+          "sequence": 2,
+          "arrivalAt": "2026-03-29T10:05:00+03:00",
+          "departureAt": "2026-03-29T10:10:00+03:00",
+          "timeStatus": "scheduled"
+        },
+        {
+          "stopExternalId": "stop-mistona-village",
+          "sequence": 3,
+          "arrivalAt": "2026-03-29T11:00:00+03:00",
+          "departureAt": "2026-03-29T11:02:00+03:00",
+          "timeStatus": "approximate"
+        },
+        {
+          "stopExternalId": "stop-oravo-junction",
+          "sequence": 4,
+          "arrivalAt": "2026-03-29T12:10:00+03:00",
+          "timeStatus": "approximate"
+        }
+      ]
+    },
+    {
+      "externalId": "trip-weekday-afternoon",
+      "lineExternalId": "line-coast",
+      "patternExternalId": "pattern-southbound",
+      "calendarExternalId": "cal-weekday",
+      "serviceDate": "2026-04-08",
+      "departureAt": "2026-04-08T14:30:00+03:00",
+      "approximateArrivalAt": "2026-04-08T17:40:00+03:00",
+      "commercialState": "bookable",
+      "scheduleScope": "operator_published",
+      "fareAmount": 18.0,
+      "fareCurrency": "EUR",
+      "bookingUrl": "https://demo.invalid/aloria/book/trip-weekday-afternoon",
+      "observedAt": "2026-09-20T06:00:00Z",
+      "publicAttributes": {
+        "positionQuality": "scheduled",
+        "fareIsIndicative": true,
+        "purchase": {
+          "kind": "online",
+          "url": "https://demo.invalid/aloria/book/trip-weekday-afternoon",
+          "label": {
+            "el": "Κράτηση online (επίδειξη)",
+            "en": "Book online (demonstration)",
+            "sq": "Rezervo online (demonstrim)"
+          }
+        }
+      },
+      "stopTimes": [
+        {
+          "stopExternalId": "stop-aloria-bay-a1",
+          "sequence": 1,
+          "departureAt": "2026-04-08T14:30:00+03:00",
+          "timeStatus": "scheduled"
+        },
+        {
+          "stopExternalId": "stop-veraki-harbour",
+          "sequence": 2,
+          "arrivalAt": "2026-04-08T15:35:00+03:00",
+          "departureAt": "2026-04-08T15:40:00+03:00",
+          "timeStatus": "scheduled"
+        },
+        {
+          "stopExternalId": "stop-mistona-village",
+          "sequence": 3,
+          "arrivalAt": "2026-04-08T16:30:00+03:00",
+          "departureAt": "2026-04-08T16:32:00+03:00",
+          "timeStatus": "approximate"
+        },
+        {
+          "stopExternalId": "stop-oravo-junction",
+          "sequence": 4,
+          "arrivalAt": "2026-04-08T17:40:00+03:00",
+          "timeStatus": "approximate"
+        }
+      ]
+    }
+  ],
+  "leaveUnreviewed": [
+    "stop-unreviewed-candidate"
+  ]
+}

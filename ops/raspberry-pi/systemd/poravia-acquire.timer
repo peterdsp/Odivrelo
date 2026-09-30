@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Poravia source acquisition every day
+
+[Timer]
+OnCalendar=*-*-* 03:17:00 Europe/Athens
+RandomizedDelaySec=15m
+Persistent=true
+AccuracySec=1m
+Unit=poravia-acquire.service
+
+[Install]
+WantedBy=timers.target

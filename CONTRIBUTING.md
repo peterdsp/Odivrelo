@@ -1,4 +1,4 @@
-# Contributing to HodoMap
+# Contributing to Poravia
 
 Thank you for helping make Greek intercity coach information easier to use.
 

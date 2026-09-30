@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The single colour layer, from design/logo/poravia-mark-mono.svg. Android 13 and
+  later tint this for a themed icon, so it carries shape only: the arch, and the
+  boarding point punched out of it so the point still reads at small sizes.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="1.125"
+        android:scaleY="1.125"
+        android:translateX="18"
+        android:translateY="18">
+        <path
+            android:pathData="M16,53V30a16,16 0,0 1,32 0v23"
+            android:strokeColor="#000000"
+            android:strokeWidth="7.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:fillColor="#000000"
+            android:pathData="M32,28.5a5.5,5.5 0,1 0,0 11a5.5,5.5 0,1 0,0 -11z" />
+    </group>
+</vector>
