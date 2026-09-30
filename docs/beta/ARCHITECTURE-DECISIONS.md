@@ -192,3 +192,54 @@ available.
 
 **Explicitly rejected.** Animating a fabricated coach to make the product look
 complete.
+
+---
+
+## AD-009, 30 September 2026: one release generator, and packs carry the contract shape
+
+**Context.** During parallel client development, three independent offline-pack
+generators appeared: the staging release generator emitting the internal
+staging payloads (`registry`, `routes`, `trips-<date>`), a JavaScript generator
+under `apps/web/scripts/` emitting a near-copy with an undated singular `trips`
+pack, and a shell generator under `scripts/` emitting a fourth, unrelated set
+(`meta`, `places`, `operators`, `journeys`, `patterns`) into the Android
+assets.
+
+This is the exact failure the delivery instruction names: each client
+inventing its own contract. Worse than duplication, it means an **offline
+client sees payloads the API would never return**, so offline and online
+disagree by construction and the disagreement is invisible until a traveller
+hits it.
+
+**Decision.**
+
+1. There is **one** generator. `server/api/publicapi/packs.py` builds every
+   pack using the same shaping functions in `publicapi/repository.py` that
+   serve the HTTP endpoints. The other two generators are deleted.
+2. Packs carry the **contract** shape, not the staging shape. A pack contains
+   exactly what the matching `/v1/...` endpoint would have returned for the
+   same input. An offline read and an online read are the same bytes.
+3. The low-level release mechanism stays in
+   `hodomap_ktel/ktel_release.py` — content addressing, digest and size in the
+   manifest, manifest written last, one previous manifest retained for
+   rollback, and `verify_release`. Only the payload shaping moved. The
+   mechanism is not forked.
+4. Canonical logical pack names, and nothing else: `meta`, `coverage`,
+   `sources`, `places`, `operators`, `stops`, `journeys-<serviceDate>`, `gtfs`.
+   `data/schemas/CONTRACT-v1.md` lists them, so the contract and the generator
+   cannot drift again.
+5. Clients consume the generated release rather than producing one.
+   `scripts/web-sync-packs.sh` copies it into `apps/web/public/data/` and
+   `scripts/android-sync-packs.sh` into the Android assets. Shared Kotlin test
+   fixtures come from the same directory.
+
+**Enforcement, so this cannot regress silently.** Each client carries a test
+that runs the same queries through its pack-backed source and its API-backed
+source against the same release and asserts the results are equal. A manifest
+test asserts the pack set is exactly the canonical list with no extras. Every
+pack is validated against its JSON Schema in `data/schemas/`.
+
+**Cost.** Regenerating fixtures and reworking the web and Android data layers
+mid-build. Taken deliberately: a duplicated generator is cheap to leave and
+expensive to discover, and the whole product claim is that the answer you get
+offline is the answer the source supports.
