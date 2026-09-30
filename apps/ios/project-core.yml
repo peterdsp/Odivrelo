@@ -1,0 +1,23 @@
+# Overlay spec used only when shared/core has produced PoraviaCore.xcframework.
+# scripts/ios-bootstrap.sh selects this spec automatically; it is never used
+# when the framework is absent, so the base spec always stays buildable.
+include:
+  - project.yml
+
+targets:
+  Poravia:
+    settings:
+      base:
+        PORAVIA_CORE_CONDITION: PORAVIA_CORE_AVAILABLE
+        # The static core embeds SQLDelight's native SQLite driver, which
+        # references the system libsqlite3. A static framework carries no link
+        # dependencies of its own, so the app target states it.
+        OTHER_LDFLAGS: "$(inherited) -lsqlite3"
+    dependencies:
+      - framework: Frameworks/PoraviaCore.xcframework
+        embed: false
+        link: true
+  PoraviaTests:
+    settings:
+      base:
+        PORAVIA_CORE_CONDITION: PORAVIA_CORE_AVAILABLE

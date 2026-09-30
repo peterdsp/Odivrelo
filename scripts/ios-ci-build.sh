@@ -14,8 +14,14 @@ ROOT="$PWD"
 ARTIFACTS="$ROOT/apps/ios/artifacts"
 mkdir -p "$ARTIFACTS"
 
+# xcodebuild refuses to overwrite an existing result bundle, so a second local
+# run of this script would fail on the first build. CI starts clean; a
+# developer re-running it should not have to.
+rm -rf "$ARTIFACTS"/build-debug.xcresult "$ARTIFACTS"/tests.xcresult \
+       "$ARTIFACTS"/build-release.xcresult
+
 SCHEME="${SCHEME:-Poravia}"
-DEVICE="${DEVICE:-iPhone 18 Pro Max}"
+DEVICE="${DEVICE:-iPhone 15}"
 
 echo "== shared core =="
 if ! ls "$ROOT"/shared/core/build/XCFramework/*/PoraviaCore.xcframework >/dev/null 2>&1; then
@@ -30,7 +36,12 @@ if ! command -v xcodegen >/dev/null 2>&1; then
   echo "xcodegen is not installed. Install it, or open an existing project." >&2
   exit 1
 fi
-(cd apps/ios && xcodegen generate --quiet)
+# ios-bootstrap.sh regenerates everything derived from a source of truth
+# (brand, theme, icon, strings), copies the XCFramework into apps/ios/Frameworks
+# and generates from project-core.yml, which is what actually links the shared
+# core and defines PORAVIA_CORE_AVAILABLE. Generating from the plain spec here
+# would build an app with no shared core and report success.
+bash scripts/ios-bootstrap.sh
 
 PROJECT="apps/ios/${SCHEME}.xcodeproj"
 [ -d "$PROJECT" ] || { echo "no project at $PROJECT" >&2; exit 1; }
@@ -55,6 +66,37 @@ xcodebuild -project "$PROJECT" -scheme "$SCHEME" \
   -destination "id=$UDID" -configuration Debug \
   -resultBundlePath "$ARTIFACTS/build-debug.xcresult" \
   -quiet build 2>&1 | tail -30
+
+echo "== the built app really links the shared core =="
+# Ask xcodebuild where it put the product rather than guessing a path: the
+# default DerivedData location is not predictable and a wrong guess would make
+# this check silently unenforceable.
+BUILT_DIR=$(xcodebuild -project "$PROJECT" -scheme "$SCHEME" \
+  -destination "id=$UDID" -configuration Debug -showBuildSettings 2>/dev/null \
+  | awk -F' = ' '/ BUILT_PRODUCTS_DIR = /{print $2; exit}')
+APP_BINARY="$BUILT_DIR/${SCHEME}.app/${SCHEME}"
+
+if [ ! -f "$APP_BINARY" ]; then
+  echo "  could not find the built binary at $APP_BINARY" >&2
+  exit 1
+fi
+
+# A Debug build keeps its Swift code in a side dylib, so check both.
+CORE_SYMBOLS=$(nm -a "$APP_BINARY" 2>/dev/null | grep -c 'kfun:dev.peterdsp.poravia.core' || true)
+if [ "$CORE_SYMBOLS" -lt 100 ] && [ -f "${APP_BINARY}.debug.dylib" ]; then
+  CORE_SYMBOLS=$(nm -a "${APP_BINARY}.debug.dylib" 2>/dev/null | grep -c 'kfun:dev.peterdsp.poravia.core' || true)
+fi
+# Objective-C class data survives stripping, so it is the fallback proof.
+if [ "$CORE_SYMBOLS" -lt 100 ]; then
+  CORE_SYMBOLS=$(otool -oV "$APP_BINARY" 2>/dev/null | grep -c 'PoraviaCorePoravia' || true)
+fi
+
+if [ "$CORE_SYMBOLS" -lt 50 ]; then
+  echo "  the built app does not contain the shared core ($CORE_SYMBOLS symbols)" >&2
+  echo "  binary: $APP_BINARY" >&2
+  exit 1
+fi
+echo "  $CORE_SYMBOLS PoraviaCore symbols in $APP_BINARY"
 
 echo "== test =="
 xcodebuild -project "$PROJECT" -scheme "$SCHEME" \

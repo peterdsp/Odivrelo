@@ -1,0 +1,2032 @@
+{
+  "$comment": "Single source of truth for every user-facing string in the Poravia iOS app. scripts/ios-generate-strings.sh generates Localizable.xcstrings and L10n.swift from it. Every key must carry el, en and sq; the generator refuses to write an incomplete file and LocalisationCompletenessTests asserts it again at test time. Default language is el.",
+  "strings": {
+    "a11y.brandMark": {
+      "comment": "VoiceOver label for the Poravia mark",
+      "el": "Σήμα Poravia, μια αψίδα με ένα σημείο επιβίβασης μέσα της",
+      "en": "Poravia mark, an arch with a boarding point inside it",
+      "sq": "Shenja Poravia, një hark me një vend hipjeje brenda"
+    },
+    "a11y.errorAnnouncement": {
+      "comment": "Spoken when an error appears. %@ is the error text.",
+      "el": "Σφάλμα. %@",
+      "en": "Error. %@",
+      "sq": "Gabim. %@"
+    },
+    "a11y.journeyCard": {
+      "comment": "VoiceOver summary of a journey card. %1$@ departure time, %2$@ origin, %3$@ arrival time, %4$@ destination, %5$@ operator.",
+      "el": "Αναχώρηση %1$@ από %2$@, άφιξη %3$@ στον προορισμό %4$@, μεταφορέας %5$@",
+      "en": "Departs %1$@ from %2$@, arrives %3$@ at %4$@, operated by %5$@",
+      "sq": "Niset %1$@ nga %2$@, mbërrin %3$@ në %4$@, operuar nga %5$@"
+    },
+    "a11y.loadedAnnouncement": {
+      "comment": "Spoken when results finish loading. %lld is the number of results.",
+      "el": "Φορτώθηκαν %lld δρομολόγια",
+      "en": "Loaded %lld journeys",
+      "sq": "U ngarkuan %lld udhëtime"
+    },
+    "a11y.mapHint": {
+      "comment": "VoiceOver hint telling the reader the list holds the same facts",
+      "el": "Κάθε πληροφορία του χάρτη υπάρχει και στον κατάλογο στάσεων παρακάτω.",
+      "en": "Every fact on the map is also in the stop list below.",
+      "sq": "Çdo fakt në hartë ndodhet edhe në listën e ndalesave më poshtë."
+    },
+    "a11y.progressPercent": {
+      "comment": "VoiceOver value for a download progress bar. %lld is a percentage.",
+      "el": "%lld τοις εκατό",
+      "en": "%lld percent",
+      "sq": "%lld përqind"
+    },
+    "common.call": {
+      "comment": "Place a telephone call",
+      "el": "Κλήση",
+      "en": "Call",
+      "sq": "Telefono"
+    },
+    "common.cancel": {
+      "comment": "Cancel an operation",
+      "el": "Ακύρωση",
+      "en": "Cancel",
+      "sq": "Anulo"
+    },
+    "common.close": {
+      "comment": "Close a sheet",
+      "el": "Κλείσιμο",
+      "en": "Close",
+      "sq": "Mbyll"
+    },
+    "common.copy": {
+      "comment": "Copy text to the clipboard",
+      "el": "Αντιγραφή",
+      "en": "Copy",
+      "sq": "Kopjo"
+    },
+    "common.delete": {
+      "comment": "Destructive action",
+      "el": "Διαγραφή",
+      "en": "Delete",
+      "sq": "Fshi"
+    },
+    "common.directions": {
+      "comment": "Open directions in the maps app",
+      "el": "Οδηγίες",
+      "en": "Directions",
+      "sq": "Udhëzime"
+    },
+    "common.done": {
+      "comment": "Dismiss a sheet",
+      "el": "Τέλος",
+      "en": "Done",
+      "sq": "U krye"
+    },
+    "common.email": {
+      "comment": "Send an email",
+      "el": "Email",
+      "en": "Email",
+      "sq": "Email"
+    },
+    "common.loading": {
+      "comment": "Loading state",
+      "el": "Φόρτωση",
+      "en": "Loading",
+      "sq": "Po ngarkohet"
+    },
+    "common.notReviewed": {
+      "comment": "Shown where a fact exists but no reviewer has checked it",
+      "el": "Δεν έχει ελεγχθεί",
+      "en": "Not reviewed",
+      "sq": "E pashqyrtuar"
+    },
+    "common.notStated": {
+      "comment": "Shown where a source published no value",
+      "el": "Δεν δηλώνεται",
+      "en": "Not stated",
+      "sq": "E padeklaruar"
+    },
+    "common.openSettings": {
+      "comment": "Open the system Settings app",
+      "el": "Άνοιγμα Ρυθμίσεων",
+      "en": "Open Settings",
+      "sq": "Hap Cilësimet"
+    },
+    "common.refresh": {
+      "comment": "Reload the current screen",
+      "el": "Ανανέωση",
+      "en": "Refresh",
+      "sq": "Rifresko"
+    },
+    "common.remove": {
+      "comment": "Remove an item from a list",
+      "el": "Αφαίρεση",
+      "en": "Remove",
+      "sq": "Hiq"
+    },
+    "common.retry": {
+      "comment": "Button that runs the failed request again",
+      "el": "Δοκιμή ξανά",
+      "en": "Try again",
+      "sq": "Provo sërish"
+    },
+    "common.save": {
+      "comment": "Save an item",
+      "el": "Αποθήκευση",
+      "en": "Save",
+      "sq": "Ruaj"
+    },
+    "common.update": {
+      "comment": "Update to a newer version",
+      "el": "Ενημέρωση",
+      "en": "Update",
+      "sq": "Përditëso"
+    },
+    "common.website": {
+      "comment": "Open a website",
+      "el": "Ιστότοπος",
+      "en": "Website",
+      "sq": "Faqja e internetit"
+    },
+    "confidence.candidate": {
+      "comment": "Not yet reviewed",
+      "el": "Υποψήφιο, χωρίς έλεγχο",
+      "en": "Candidate, not reviewed",
+      "sq": "Kandidate, e pashqyrtuar"
+    },
+    "confidence.reviewed": {
+      "comment": "A human reviewer has checked this record",
+      "el": "Ελεγμένο",
+      "en": "Reviewed",
+      "sq": "E shqyrtuar"
+    },
+    "coverage.corridorCount": {
+      "comment": "How many corridors the release covers. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld διαδρομή",
+          "other": "%lld διαδρομές"
+        },
+        "en": {
+          "one": "%lld corridor",
+          "other": "%lld corridors"
+        },
+        "sq": {
+          "one": "%lld korridor",
+          "other": "%lld korridore"
+        }
+      }
+    },
+    "coverage.covered": {
+      "comment": "Coverage badge",
+      "el": "Καλύπτεται",
+      "en": "Covered",
+      "sq": "E mbuluar"
+    },
+    "coverage.demo": {
+      "comment": "Coverage badge for demonstration data",
+      "el": "Επίδειξη",
+      "en": "Demonstration",
+      "sq": "Demonstrim"
+    },
+    "coverage.notCovered": {
+      "comment": "Coverage badge",
+      "el": "Δεν καλύπτεται",
+      "en": "Not covered",
+      "sq": "Pa mbulim"
+    },
+    "coverage.notCoveredEmpty": {
+      "comment": "Shown when the release states nothing about what it does not cover. Must not read as full coverage.",
+      "el": "Αυτή η έκδοση δεν δηλώνει τι δεν καλύπτει. Μην το εκλάβετε ως πλήρη κάλυψη.",
+      "en": "This release states nothing about what it does not cover. Do not read that as full coverage.",
+      "sq": "Ky publikim nuk deklaron çfarë nuk mbulon. Mos e lexoni si mbulim të plotë."
+    },
+    "coverage.notCoveredHeading": {
+      "comment": "Heading above the explicit list of what is not covered",
+      "el": "Τι δεν καλύπτεται",
+      "en": "What is not covered",
+      "sq": "Çfarë nuk mbulohet"
+    },
+    "coverage.operatorCount": {
+      "comment": "How many operators the release covers. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld μεταφορέας",
+          "other": "%lld μεταφορείς"
+        },
+        "en": {
+          "one": "%lld operator",
+          "other": "%lld operators"
+        },
+        "sq": {
+          "one": "%lld operator",
+          "other": "%lld operatorë"
+        }
+      }
+    },
+    "coverage.partial": {
+      "comment": "Coverage badge",
+      "el": "Μερική κάλυψη",
+      "en": "Partial coverage",
+      "sq": "Mbulim i pjesshëm"
+    },
+    "coverage.title": {
+      "comment": "Coverage screen title",
+      "el": "Κάλυψη",
+      "en": "Coverage",
+      "sq": "Mbulimi"
+    },
+    "deeplink.expiredBody": {
+      "comment": "Body for an expired link. %@ is the service date the link named.",
+      "el": "Αυτός ο σύνδεσμος αφορά την ημερομηνία %@, που έχει περάσει.",
+      "en": "That link is for %@, which has passed.",
+      "sq": "Ajo lidhje është për %@, e cila ka kaluar."
+    },
+    "deeplink.expiredTitle": {
+      "comment": "Title shown when a link names a past service date",
+      "el": "Ο σύνδεσμος έχει λήξει",
+      "en": "The link has expired",
+      "sq": "Lidhja ka skaduar"
+    },
+    "deeplink.searchInstead": {
+      "comment": "Offers a useful next step after a bad link",
+      "el": "Αναζήτηση για σήμερα",
+      "en": "Search for today instead",
+      "sq": "Kërko për sot në vend të kësaj"
+    },
+    "deeplink.unknownBody": {
+      "comment": "Body for an unrecognised link",
+      "el": "Αυτός ο σύνδεσμος δεν αντιστοιχεί σε κάτι που γνωρίζει αυτή η έκδοση του Poravia.",
+      "en": "That link does not point at anything this version of Poravia knows.",
+      "sq": "Ajo lidhje nuk tregon asgjë që kjo version e Poravia e njeh."
+    },
+    "deeplink.unknownTitle": {
+      "comment": "Title shown when a link points at nothing this build understands",
+      "el": "Άγνωστος σύνδεσμος",
+      "en": "Unknown link",
+      "sq": "Lidhje e panjohur"
+    },
+    "demo.accessibilityLabel": {
+      "comment": "VoiceOver label for the demonstration notice",
+      "el": "Σημείωση δεδομένων επίδειξης, δεν κλείνει",
+      "en": "Demonstration data notice, cannot be dismissed",
+      "sq": "Njoftim për të dhëna demonstrimi, nuk mund të mbyllet"
+    },
+    "demo.body": {
+      "comment": "Body of the permanent demonstration-data notice. Must state that the region is invented and that no departure is real.",
+      "el": "Αυτή η έκδοση δείχνει δεδομένα επίδειξης για την Αλορία. Η Αλορία δεν υπάρχει και καμία αναχώρηση που βλέπετε δεν είναι πραγματική.",
+      "en": "This release shows demonstration data for Aloria. Aloria does not exist, and no departure shown here is real.",
+      "sq": "Ky publikim shfaq të dhëna demonstrimi për Alorinë. Aloria nuk ekziston dhe asnjë nisje e shfaqur këtu nuk është reale."
+    },
+    "demo.title": {
+      "comment": "Title of the permanent demonstration-data notice",
+      "el": "Δεδομένα επίδειξης",
+      "en": "Demonstration data",
+      "sq": "Të dhëna demonstrimi"
+    },
+    "detail.bay": {
+      "comment": "Bay or platform number. %@ is the bay identifier.",
+      "el": "Θέση %@",
+      "en": "Bay %@",
+      "sq": "Vendi %@"
+    },
+    "detail.bayUnknown": {
+      "comment": "No bay is published",
+      "el": "Δεν δηλώνεται θέση",
+      "en": "No bay stated",
+      "sq": "Pa vend të deklaruar"
+    },
+    "detail.boardingPoint": {
+      "comment": "Section heading for the exact reviewed boarding point",
+      "el": "Ακριβής θέση επιβίβασης",
+      "en": "Exact boarding point",
+      "sq": "Vendi i saktë i hipjes"
+    },
+    "detail.correction": {
+      "comment": "Link to report a mistake",
+      "el": "Αναφορά λάθους σε αυτή τη σελίδα",
+      "en": "Report a mistake on this page",
+      "sq": "Raporto një gabim në këtë faqe"
+    },
+    "detail.dropoffAllowed": {
+      "comment": "Alighting is allowed at this stop",
+      "el": "Αποβίβαση",
+      "en": "Drop-off",
+      "sq": "Zbritje"
+    },
+    "detail.dropoffCoordinate": {
+      "comment": "Alighting only by prior arrangement with the operator",
+      "el": "Αποβίβαση κατόπιν συνεννόησης με τον μεταφορέα",
+      "en": "Drop-off by arrangement with the operator",
+      "sq": "Zbritje me marrëveshje me operatorin"
+    },
+    "detail.dropoffNotAllowed": {
+      "comment": "No alighting at this stop",
+      "el": "Χωρίς αποβίβαση",
+      "en": "No drop-off",
+      "sq": "Pa zbritje"
+    },
+    "detail.dropoffOnRequest": {
+      "comment": "Alighting only if requested",
+      "el": "Αποβίβαση κατόπιν αιτήματος",
+      "en": "Drop-off on request",
+      "sq": "Zbritje me kërkesë"
+    },
+    "detail.duration": {
+      "comment": "Label for how long the journey takes and how many stops it makes",
+      "el": "Διάρκεια",
+      "en": "Duration",
+      "sq": "Kohëzgjatja"
+    },
+    "detail.fare": {
+      "comment": "Label for the fare a source published",
+      "el": "Ναύλος",
+      "en": "Fare",
+      "sq": "Çmimi"
+    },
+    "detail.instructions": {
+      "comment": "Walking instructions to the boarding point",
+      "el": "Πώς να φτάσετε",
+      "en": "How to get there",
+      "sq": "Si të arrini"
+    },
+    "detail.licence": {
+      "comment": "Licence label. %@ is the licence name.",
+      "el": "Άδεια: %@",
+      "en": "Licence: %@",
+      "sq": "Licenca: %@"
+    },
+    "detail.licenceLabel": {
+      "comment": "Row label for a source's licence",
+      "el": "Άδεια",
+      "en": "Licence",
+      "sq": "Licenca"
+    },
+    "detail.map": {
+      "comment": "Section heading for the map",
+      "el": "Χάρτης",
+      "en": "Map",
+      "sq": "Harta"
+    },
+    "detail.mapUnavailableOffline": {
+      "comment": "Base map imagery needs a network connection",
+      "el": "Ο χάρτης χρειάζεται σύνδεση. Ο κατάλογος στάσεων παραμένει πλήρης χωρίς αυτόν.",
+      "en": "The map needs a connection. The stop list stays complete without it.",
+      "sq": "Harta kërkon lidhje. Lista e ndalesave mbetet e plotë pa të."
+    },
+    "detail.operatingDate": {
+      "comment": "The service date this journey belongs to",
+      "el": "Ημερομηνία εκτέλεσης",
+      "en": "Operating date",
+      "sq": "Data e kryerjes"
+    },
+    "detail.operator": {
+      "comment": "Section label",
+      "el": "Μεταφορέας",
+      "en": "Operator",
+      "sq": "Operatori"
+    },
+    "detail.pickupAllowed": {
+      "comment": "Boarding is allowed at this stop",
+      "el": "Επιβίβαση",
+      "en": "Pick-up",
+      "sq": "Hipje"
+    },
+    "detail.pickupCoordinate": {
+      "comment": "Boarding only by prior arrangement with the operator",
+      "el": "Επιβίβαση κατόπιν συνεννόησης με τον μεταφορέα",
+      "en": "Pick-up by arrangement with the operator",
+      "sq": "Hipje me marrëveshje me operatorin"
+    },
+    "detail.pickupNotAllowed": {
+      "comment": "No boarding at this stop",
+      "el": "Χωρίς επιβίβαση",
+      "en": "No pick-up",
+      "sq": "Pa hipje"
+    },
+    "detail.pickupOnRequest": {
+      "comment": "Boarding only if requested",
+      "el": "Επιβίβαση κατόπιν αιτήματος",
+      "en": "Pick-up on request",
+      "sq": "Hipje me kërkesë"
+    },
+    "detail.provenance": {
+      "comment": "Section heading for where every fact came from",
+      "el": "Προέλευση δεδομένων",
+      "en": "Where this came from",
+      "sq": "Nga vjen kjo"
+    },
+    "detail.restrictions": {
+      "comment": "Section heading for service restrictions",
+      "el": "Περιορισμοί",
+      "en": "Restrictions",
+      "sq": "Kufizimet"
+    },
+    "detail.retrievedAt": {
+      "comment": "When the source was retrieved. %@ is a date.",
+      "el": "Ανακτήθηκε %@",
+      "en": "Retrieved %@",
+      "sq": "Marrë %@"
+    },
+    "detail.retrievedAtLabel": {
+      "comment": "Row label for when a source was retrieved",
+      "el": "Ανακτήθηκε",
+      "en": "Retrieved",
+      "sq": "Marrë"
+    },
+    "detail.stepFreeNo": {
+      "comment": "Reviewed as not step-free",
+      "el": "Χωρίς πρόσβαση χωρίς σκαλοπάτια, ελεγμένο",
+      "en": "Not step-free, reviewed",
+      "sq": "Jo pa shkallë, e shqyrtuar"
+    },
+    "detail.stepFreeUnreviewed": {
+      "comment": "Step-free access has not been checked. Must not read as a no.",
+      "el": "Η πρόσβαση χωρίς σκαλοπάτια δεν έχει ελεγχθεί",
+      "en": "Step-free access has not been reviewed",
+      "sq": "Qasja pa shkallë nuk është shqyrtuar"
+    },
+    "detail.stepFreeYes": {
+      "comment": "Reviewed as step-free",
+      "el": "Πρόσβαση χωρίς σκαλοπάτια, ελεγμένη",
+      "en": "Step-free access, reviewed",
+      "sq": "Qasje pa shkallë, e shqyrtuar"
+    },
+    "detail.stops": {
+      "comment": "Section heading for the ordered stop list",
+      "el": "Στάσεις",
+      "en": "Stops",
+      "sq": "Ndalesat"
+    },
+    "detail.stopsListAlternative": {
+      "comment": "Explains the list carries everything the map shows",
+      "el": "Ο κατάλογος στάσεων περιέχει κάθε πληροφορία που δείχνει ο χάρτης.",
+      "en": "The stop list carries every fact the map shows.",
+      "sq": "Lista e ndalesave përmban çdo fakt që tregon harta."
+    },
+    "detail.title": {
+      "comment": "Journey detail screen title",
+      "el": "Λεπτομέρειες δρομολογίου",
+      "en": "Journey detail",
+      "sq": "Detajet e udhëtimit"
+    },
+    "detail.verifiedAtLabel": {
+      "comment": "Row label for when a record was last verified",
+      "el": "Επαληθεύτηκε",
+      "en": "Verified",
+      "sq": "Verifikuar"
+    },
+    "error.cancelled": {
+      "comment": "The person cancelled the operation",
+      "el": "Ακυρώθηκε.",
+      "en": "Cancelled.",
+      "sq": "U anulua."
+    },
+    "error.coreUnavailable": {
+      "comment": "The shared data core was not linked into this build. Must not read as a temporary network problem.",
+      "el": "Ο κοινός πυρήνας δεδομένων του Poravia δεν περιλαμβάνεται σε αυτή την έκδοση της εφαρμογής, οπότε δεν υπάρχουν δεδομένα δρομολογίων. Δεν πρόκειται για πρόβλημα δικτύου.",
+      "en": "The shared Poravia data core is not part of this build, so there is no timetable data. This is not a network problem.",
+      "sq": "Bërthama e përbashkët e të dhënave të Poravia nuk është pjesë e këtij ndërtimi, ndaj nuk ka të dhëna orari. Ky nuk është problem rrjeti."
+    },
+    "error.decoding": {
+      "comment": "The answer did not match the published contract",
+      "el": "Η απάντηση δεν ταιριάζει με το δημοσιευμένο συμβόλαιο δεδομένων.",
+      "en": "The answer did not match the published data contract.",
+      "sq": "Përgjigjja nuk përputhej me kontratën e publikuar të të dhënave."
+    },
+    "error.integrity": {
+      "comment": "A downloaded pack failed its SHA-256 check",
+      "el": "Το ληφθέν πακέτο απέτυχε στον έλεγχο ακεραιότητας και δεν εγκαταστάθηκε.",
+      "en": "The downloaded pack failed its integrity check and was not installed.",
+      "sq": "Paketa e shkarkuar dështoi kontrollin e integritetit dhe nuk u instalua."
+    },
+    "error.interrupted": {
+      "comment": "The download stopped part way",
+      "el": "Η λήψη διακόπηκε. Μπορείτε να συνεχίσετε από εκεί που σταμάτησε.",
+      "en": "The download was interrupted. You can resume from where it stopped.",
+      "sq": "Shkarkimi u ndërpre. Mund ta vazhdoni aty ku ndaloi."
+    },
+    "error.invalidRequest": {
+      "comment": "The request was rejected. %@ names the field.",
+      "el": "Το αίτημα απορρίφθηκε στο πεδίο %@.",
+      "en": "The request was rejected on the field %@.",
+      "sq": "Kërkesa u refuzua te fusha %@."
+    },
+    "error.notFound": {
+      "comment": "The requested record no longer exists in this release",
+      "el": "Αυτή η εγγραφή δεν υπάρχει σε αυτή την έκδοση δεδομένων.",
+      "en": "This record does not exist in this data release.",
+      "sq": "Ky regjistrim nuk ekziston në këtë publikim të të dhënave."
+    },
+    "error.offline": {
+      "comment": "No network path",
+      "el": "Δεν υπάρχει σύνδεση στο διαδίκτυο.",
+      "en": "There is no internet connection.",
+      "sq": "Nuk ka lidhje interneti."
+    },
+    "error.offlineHint": {
+      "comment": "What still works offline",
+      "el": "Τα αποθηκευμένα ταξίδια και τα κατεβασμένα δεδομένα εξακολουθούν να λειτουργούν.",
+      "en": "Saved trips and downloaded data still work.",
+      "sq": "Udhëtimet e ruajtura dhe të dhënat e shkarkuara ende funksionojnë."
+    },
+    "error.packIo": {
+      "comment": "A pack could not be written to the device",
+      "el": "Το πακέτο δεν μπόρεσε να γραφτεί στη συσκευή.",
+      "en": "The pack could not be written to the device.",
+      "sq": "Paketa nuk mund të shkruhej në pajisje."
+    },
+    "error.packNotInManifest": {
+      "comment": "A pack was requested that the published manifest does not list",
+      "el": "Αυτό το πακέτο δεν υπάρχει στον δημοσιευμένο κατάλογο.",
+      "en": "That pack is not in the published manifest.",
+      "sq": "Ajo paketë nuk është në manifestin e publikuar."
+    },
+    "error.packStorageFull": {
+      "comment": "Not enough free space for a pack",
+      "el": "Δεν υπάρχει αρκετός ελεύθερος χώρος για αυτό το πακέτο.",
+      "en": "There is not enough free space for this pack.",
+      "sq": "Nuk ka hapësirë të mjaftueshme për këtë paketë."
+    },
+    "error.releaseMismatch": {
+      "comment": "Local packs and server answers come from different releases",
+      "el": "Τα αποθηκευμένα δεδομένα προέρχονται από άλλη έκδοση από τον διακομιστή. Εμφανίζονται τα αποθηκευμένα δεδομένα και η ηλικία τους.",
+      "en": "Your stored data comes from a different release than the server. The stored release and its age are shown instead.",
+      "sq": "Të dhënat tuaja të ruajtura vijnë nga një publikim tjetër nga serveri. Në vend të tyre shfaqet publikimi i ruajtur dhe mosha e tij."
+    },
+    "error.server": {
+      "comment": "Server failure. %lld is the HTTP status.",
+      "el": "Ο διακομιστής απάντησε με σφάλμα %lld.",
+      "en": "The server answered with error %lld.",
+      "sq": "Serveri u përgjigj me gabimin %lld."
+    },
+    "error.storage": {
+      "comment": "Not enough free space. %1$@ is required, %2$@ is available.",
+      "el": "Χρειάζονται %1$@ αλλά υπάρχουν μόνο %2$@ ελεύθερα.",
+      "en": "%1$@ is needed but only %2$@ is free.",
+      "sq": "Nevojiten %1$@ por vetëm %2$@ janë të lira."
+    },
+    "error.unauthorized": {
+      "comment": "A public surface unexpectedly demanded a token",
+      "el": "Αυτή η δημόσια υπηρεσία ζήτησε απροσδόκητα εξουσιοδότηση.",
+      "en": "This public service unexpectedly demanded authorisation.",
+      "sq": "Ky shërbim publik kërkoi papritur autorizim."
+    },
+    "error.unavailable": {
+      "comment": "Service is reachable but cannot answer",
+      "el": "Η υπηρεσία δεν μπορεί να απαντήσει αυτή τη στιγμή.",
+      "en": "The service cannot answer right now.",
+      "sq": "Shërbimi nuk mund të përgjigjet tani."
+    },
+    "favourites.add": {
+      "comment": "Action",
+      "el": "Προσθήκη στα αγαπημένα",
+      "en": "Add to favourites",
+      "sq": "Shto te të preferuarat"
+    },
+    "favourites.empty": {
+      "comment": "Empty state",
+      "el": "Δεν έχετε αποθηκεύσει ακόμη αγαπημένους τόπους.",
+      "en": "You have not saved any favourite places yet.",
+      "sq": "Ende nuk keni ruajtur vende të preferuara."
+    },
+    "favourites.remove": {
+      "comment": "Action",
+      "el": "Αφαίρεση από τα αγαπημένα",
+      "en": "Remove from favourites",
+      "sq": "Hiq nga të preferuarat"
+    },
+    "favourites.title": {
+      "comment": "Favourites section heading",
+      "el": "Αγαπημένα",
+      "en": "Favourites",
+      "sq": "Të preferuarat"
+    },
+    "filters.accessible": {
+      "comment": "Filter toggle",
+      "el": "Μόνο με ελεγμένη πρόσβαση χωρίς σκαλοπάτια",
+      "en": "Only reviewed step-free boarding",
+      "sq": "Vetëm hipje pa shkallë e shqyrtuar"
+    },
+    "filters.activeCount": {
+      "comment": "Number of active filters. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld ενεργό φίλτρο",
+          "other": "%lld ενεργά φίλτρα"
+        },
+        "en": {
+          "one": "%lld active filter",
+          "other": "%lld active filters"
+        },
+        "sq": {
+          "one": "%lld filtër aktiv",
+          "other": "%lld filtra aktivë"
+        }
+      }
+    },
+    "filters.departureWindow": {
+      "comment": "Filter section heading for a departure time range",
+      "el": "Ώρα αναχώρησης",
+      "en": "Departure time",
+      "sq": "Ora e nisjes"
+    },
+    "filters.earliest": {
+      "comment": "Earliest departure",
+      "el": "Από",
+      "en": "From",
+      "sq": "Nga"
+    },
+    "filters.excludeOvernight": {
+      "comment": "Filter toggle",
+      "el": "Χωρίς δρομολόγια που διασχίζουν τα μεσάνυχτα",
+      "en": "Exclude journeys crossing midnight",
+      "sq": "Përjashto udhëtimet që kalojnë mesnatën"
+    },
+    "filters.latest": {
+      "comment": "Latest departure",
+      "el": "Έως",
+      "en": "Until",
+      "sq": "Deri"
+    },
+    "filters.maxDuration": {
+      "comment": "Toggle limiting results to journeys no longer than a chosen time",
+      "el": "Μέγιστη διάρκεια",
+      "en": "Maximum duration",
+      "sq": "Kohëzgjatja maksimale"
+    },
+    "filters.operators": {
+      "comment": "Filter section heading",
+      "el": "Μεταφορείς",
+      "en": "Operators",
+      "sq": "Operatorët"
+    },
+    "filters.reset": {
+      "comment": "Clear all filters",
+      "el": "Καθαρισμός φίλτρων",
+      "en": "Clear filters",
+      "sq": "Pastro filtrat"
+    },
+    "filters.reviewedBoarding": {
+      "comment": "Filter toggle",
+      "el": "Μόνο ελεγμένες θέσεις επιβίβασης",
+      "en": "Only reviewed boarding points",
+      "sq": "Vetëm vende hipjeje të shqyrtuara"
+    },
+    "filters.sortArrival": {
+      "comment": "Sort results by arrival time",
+      "el": "Άφιξη",
+      "en": "Arrival",
+      "sq": "Mbërritja"
+    },
+    "filters.sortBy": {
+      "comment": "Heading for how results are ordered",
+      "el": "Ταξινόμηση κατά",
+      "en": "Sort by",
+      "sq": "Rendit sipas"
+    },
+    "filters.sortDeparture": {
+      "comment": "Sort results by departure time",
+      "el": "Αναχώρηση",
+      "en": "Departure",
+      "sq": "Nisja"
+    },
+    "filters.sortDuration": {
+      "comment": "Sort results by how long the journey takes",
+      "el": "Διάρκεια",
+      "en": "Duration",
+      "sq": "Kohëzgjatja"
+    },
+    "filters.title": {
+      "comment": "Filters sheet title",
+      "el": "Φίλτρα",
+      "en": "Filters",
+      "sq": "Filtra"
+    },
+    "freshness.aging": {
+      "comment": "Freshness badge",
+      "el": "Παλαιώνει",
+      "en": "Aging",
+      "sq": "Po vjetërohet"
+    },
+    "freshness.checkedDays": {
+      "comment": "How long ago the source was checked. %lld is days.",
+      "plural": {
+        "el": {
+          "one": "Ελέγχθηκε πριν από %lld ημέρα",
+          "other": "Ελέγχθηκε πριν από %lld ημέρες"
+        },
+        "en": {
+          "one": "Checked %lld day ago",
+          "other": "Checked %lld days ago"
+        },
+        "sq": {
+          "one": "Kontrolluar %lld ditë më parë",
+          "other": "Kontrolluar %lld ditë më parë"
+        }
+      }
+    },
+    "freshness.checkedHours": {
+      "comment": "How long ago the source was checked. %lld is hours.",
+      "plural": {
+        "el": {
+          "one": "Ελέγχθηκε πριν από %lld ώρα",
+          "other": "Ελέγχθηκε πριν από %lld ώρες"
+        },
+        "en": {
+          "one": "Checked %lld hour ago",
+          "other": "Checked %lld hours ago"
+        },
+        "sq": {
+          "one": "Kontrolluar %lld orë më parë",
+          "other": "Kontrolluar %lld orë më parë"
+        }
+      }
+    },
+    "freshness.fresh": {
+      "comment": "Freshness badge",
+      "el": "Πρόσφατο",
+      "en": "Fresh",
+      "sq": "I freskët"
+    },
+    "freshness.stale": {
+      "comment": "Freshness badge",
+      "el": "Παλαιό",
+      "en": "Stale",
+      "sq": "I vjetruar"
+    },
+    "freshness.unknown": {
+      "comment": "Freshness badge when the core reported no state",
+      "el": "Άγνωστη παλαιότητα",
+      "en": "Age unknown",
+      "sq": "Vjetërsi e panjohur"
+    },
+    "geometry.orderedStopsOnly": {
+      "comment": "Route geometry is straight lines between ordered stops, not the real road",
+      "el": "Ευθείες γραμμές μεταξύ διαδοχικών στάσεων, όχι η πραγματική διαδρομή",
+      "en": "Straight lines between ordered stops, not the real road",
+      "sq": "Vija të drejta mes ndalesave të radhitura, jo rruga reale"
+    },
+    "geometry.osmCandidate": {
+      "comment": "Route geometry from an open map source, not reviewed",
+      "el": "Υποψήφια χάραξη από ανοικτό χάρτη, χωρίς έλεγχο",
+      "en": "Candidate shape from an open map source, not reviewed",
+      "sq": "Formë kandidate nga një burim i hapur hartash, e pashqyrtuar"
+    },
+    "geometry.rejected": {
+      "comment": "Route geometry was rejected in review",
+      "el": "Απορριφθείσα χάραξη",
+      "en": "Rejected route shape",
+      "sq": "Formë e refuzuar e rrugës"
+    },
+    "geometry.reviewed": {
+      "comment": "Route geometry has been reviewed",
+      "el": "Ελεγμένη χάραξη",
+      "en": "Reviewed route shape",
+      "sq": "Formë e shqyrtuar e rrugës"
+    },
+    "geometry.unverified": {
+      "comment": "Route geometry confidence",
+      "el": "Μη επαληθευμένη χάραξη",
+      "en": "Unverified route shape",
+      "sq": "Formë e paverifikuar e rrugës"
+    },
+    "licences.title": {
+      "comment": "Licences screen title",
+      "el": "Άδειες και αποδόσεις",
+      "en": "Licences and attribution",
+      "sq": "Licencat dhe atribuimi"
+    },
+    "offline.attempt": {
+      "comment": "Which download attempt this is. %lld is the attempt number.",
+      "el": "Προσπάθεια %lld",
+      "en": "Attempt %lld",
+      "sq": "Përpjekja %lld"
+    },
+    "offline.available": {
+      "comment": "Section heading for packs that can be downloaded",
+      "el": "Διαθέσιμα πακέτα",
+      "en": "Available packs",
+      "sq": "Paketat e disponueshme"
+    },
+    "offline.baseMapUnavailable": {
+      "comment": "Offline capability statement about base map imagery",
+      "el": "Ο χάρτης υποβάθρου δεν αποθηκεύεται και χρειάζεται σύνδεση.",
+      "en": "The base map is not stored and needs a connection.",
+      "sq": "Harta bazë nuk ruhet dhe kërkon lidhje."
+    },
+    "offline.currentRelease": {
+      "comment": "Section heading for the release currently in use",
+      "el": "Τρέχουσα έκδοση",
+      "en": "Current release",
+      "sq": "Publikimi aktual"
+    },
+    "offline.download": {
+      "comment": "Action",
+      "el": "Λήψη",
+      "en": "Download",
+      "sq": "Shkarko"
+    },
+    "offline.downloading": {
+      "comment": "Progress state. %lld is a percentage.",
+      "el": "Λήψη %lld%%",
+      "en": "Downloading %lld%%",
+      "sq": "Po shkarkohet %lld%%"
+    },
+    "offline.installed": {
+      "comment": "Section heading for installed packs",
+      "el": "Εγκατεστημένα",
+      "en": "Installed",
+      "sq": "Të instaluara"
+    },
+    "offline.installedAt": {
+      "comment": "When a pack was installed. %@ is a date.",
+      "el": "Εγκαταστάθηκε %@",
+      "en": "Installed %@",
+      "sq": "Instaluar %@"
+    },
+    "offline.installedAtLabel": {
+      "comment": "Row label for when a pack was installed",
+      "el": "Εγκαταστάθηκε",
+      "en": "Installed",
+      "sq": "Instaluar"
+    },
+    "offline.installing": {
+      "comment": "Installing the verified pack atomically",
+      "el": "Εγκατάσταση",
+      "en": "Installing",
+      "sq": "Po instalohet"
+    },
+    "offline.manifestUnreachable": {
+      "comment": "The published manifest could not be read at all",
+      "el": "Ο κατάλογος εκδόσεων δεν είναι προσβάσιμος. Τα ήδη εγκατεστημένα δεδομένα εξακολουθούν να λειτουργούν.",
+      "en": "The release manifest could not be reached. Data already installed still works.",
+      "sq": "Manifesti i publikimit nuk u arrit. Të dhënat e instaluara ende funksionojnë."
+    },
+    "offline.mapsNote": {
+      "comment": "Must be explicit about what is and is not available offline",
+      "el": "Τα ωράρια, οι στάσεις και οι θέσεις επιβίβασης λειτουργούν χωρίς σύνδεση. Ο χάρτης υποβάθρου δεν αποθηκεύεται και χρειάζεται σύνδεση.",
+      "en": "Timetables, stops and boarding points work offline. The base map is not stored and needs a connection.",
+      "sq": "Oraret, ndalesat dhe vendet e hipjes funksionojnë pa internet. Harta bazë nuk ruhet dhe kërkon lidhje."
+    },
+    "offline.noPrevious": {
+      "comment": "No previous release is retained",
+      "el": "Δεν διατηρείται προηγούμενη έκδοση.",
+      "en": "No previous release is retained.",
+      "sq": "Nuk ruhet asnjë publikim i mëparshëm."
+    },
+    "offline.noneInstalled": {
+      "comment": "Shown when no offline pack has been downloaded yet",
+      "el": "Δεν έχει εγκατασταθεί κανένα πακέτο ακόμη.",
+      "en": "No pack has been installed yet.",
+      "sq": "Asnjë paketë nuk është instaluar ende."
+    },
+    "offline.phaseDone": {
+      "comment": "Pack download phase",
+      "el": "Ολοκληρώθηκε",
+      "en": "Done",
+      "sq": "Përfundoi"
+    },
+    "offline.phaseQueued": {
+      "comment": "Pack download phase",
+      "el": "Σε αναμονή",
+      "en": "Queued",
+      "sq": "Në radhë"
+    },
+    "offline.phaseResuming": {
+      "comment": "Pack download phase after an interruption",
+      "el": "Συνέχιση",
+      "en": "Resuming",
+      "sq": "Po vazhdon"
+    },
+    "offline.publishedLabel": {
+      "comment": "Row label for when a release or pack was published",
+      "el": "Δημοσιεύτηκε",
+      "en": "Published",
+      "sq": "Publikuar"
+    },
+    "offline.releaseId": {
+      "comment": "Data release identifier. %@ is the identifier.",
+      "el": "Έκδοση δεδομένων %@",
+      "en": "Data release %@",
+      "sq": "Publikimi i të dhënave %@"
+    },
+    "offline.releaseLabel": {
+      "comment": "Row label for the installed data release identifier",
+      "el": "Έκδοση δεδομένων",
+      "en": "Data release",
+      "sq": "Publikimi i të dhënave"
+    },
+    "offline.rollback": {
+      "comment": "Action that returns to the previously installed release",
+      "el": "Επιστροφή στην προηγούμενη έκδοση",
+      "en": "Roll back to the previous release",
+      "sq": "Kthehu te publikimi i mëparshëm"
+    },
+    "offline.rollbackTargetLabel": {
+      "comment": "Row label for the release a rollback would return to",
+      "el": "Προηγούμενη έκδοση",
+      "en": "Previous release",
+      "sq": "Publikimi i mëparshëm"
+    },
+    "offline.routeGeometryAvailable": {
+      "comment": "Offline capability statement",
+      "el": "Η χάραξη διαδρομής είναι αποθηκευμένη.",
+      "en": "Route shapes are stored.",
+      "sq": "Format e rrugëve janë të ruajtura."
+    },
+    "offline.searchAvailable": {
+      "comment": "Offline capability statement",
+      "el": "Η αναζήτηση λειτουργεί χωρίς σύνδεση.",
+      "en": "Search works offline.",
+      "sq": "Kërkimi funksionon pa internet."
+    },
+    "offline.searchUnavailable": {
+      "comment": "Offline capability statement",
+      "el": "Η αναζήτηση χρειάζεται σύνδεση.",
+      "en": "Search needs a connection.",
+      "sq": "Kërkimi kërkon lidhje."
+    },
+    "offline.stopCoordinatesAvailable": {
+      "comment": "Offline capability statement",
+      "el": "Οι συντεταγμένες στάσεων είναι αποθηκευμένες.",
+      "en": "Stop coordinates are stored.",
+      "sq": "Koordinatat e ndalesave janë të ruajtura."
+    },
+    "offline.storageUsed": {
+      "comment": "How much space the installed packs take. %@ is a formatted size.",
+      "el": "Χρησιμοποιούνται %@",
+      "en": "%@ used",
+      "sq": "%@ të përdorura"
+    },
+    "offline.storageUsedLabel": {
+      "comment": "Row label for how much space installed packs take",
+      "el": "Χώρος που χρησιμοποιείται",
+      "en": "Storage used",
+      "sq": "Hapësira e përdorur"
+    },
+    "offline.title": {
+      "comment": "Offline packs screen title",
+      "el": "Δεδομένα εκτός σύνδεσης",
+      "en": "Offline data",
+      "sq": "Të dhëna pa internet"
+    },
+    "offline.updateAvailable": {
+      "comment": "A newer release of this pack exists",
+      "el": "Διαθέσιμη ενημέρωση",
+      "en": "Update available",
+      "sq": "Përditësim i disponueshëm"
+    },
+    "offline.verifying": {
+      "comment": "Verifying the SHA-256 digest before installing",
+      "el": "Έλεγχος ακεραιότητας",
+      "en": "Verifying integrity",
+      "sq": "Po verifikohet integriteti"
+    },
+    "onboarding.honestyTitle": {
+      "comment": "Heading above the statement about tickets",
+      "el": "Τι κάνει και τι δεν κάνει",
+      "en": "What this app does and does not do",
+      "sq": "Çfarë bën dhe çfarë nuk bën"
+    },
+    "onboarding.language": {
+      "comment": "Language chooser heading on first launch",
+      "el": "Γλώσσα",
+      "en": "Language",
+      "sq": "Gjuha"
+    },
+    "onboarding.noAccount": {
+      "comment": "No sign-in required",
+      "el": "Χωρίς λογαριασμό και χωρίς εγγραφή.",
+      "en": "No account and no sign-up.",
+      "sq": "Pa llogari dhe pa regjistrim."
+    },
+    "onboarding.noTickets": {
+      "comment": "Must be unambiguous: the product never sells or issues tickets",
+      "el": "Το Poravia δεν πουλά ούτε εκδίδει ποτέ εισιτήρια. Σας δείχνει το δρομολόγιο και σας παραπέμπει στον μεταφορέα.",
+      "en": "Poravia never sells or issues tickets. It shows you the schedule and hands you over to the operator.",
+      "sq": "Poravia nuk shet dhe nuk lëshon kurrë bileta. Ju tregon orarin dhe ju kalon te operatori."
+    },
+    "onboarding.noTracking": {
+      "comment": "No analytics",
+      "el": "Χωρίς παρακολούθηση και χωρίς αναλυτικά στοιχεία.",
+      "en": "No tracking and no analytics.",
+      "sq": "Pa gjurmim dhe pa analitikë."
+    },
+    "onboarding.offlineFirst": {
+      "comment": "Works without network",
+      "el": "Η αναζήτηση λειτουργεί χωρίς σύνδεση όταν έχετε κατεβάσει δεδομένα.",
+      "en": "Search works offline once you have downloaded data.",
+      "sq": "Kërkimi funksionon pa internet pasi të keni shkarkuar të dhënat."
+    },
+    "onboarding.start": {
+      "comment": "Button that leaves onboarding for search",
+      "el": "Έναρξη αναζήτησης",
+      "en": "Start searching",
+      "sq": "Fillo kërkimin"
+    },
+    "onboarding.title": {
+      "comment": "First launch headline",
+      "el": "Καλώς ήρθατε στο Poravia",
+      "en": "Welcome to Poravia",
+      "sq": "Mirë se vini në Poravia"
+    },
+    "operator.coverage": {
+      "comment": "Section heading",
+      "el": "Κάλυψη",
+      "en": "Coverage",
+      "sq": "Mbulimi"
+    },
+    "operator.notAffiliated": {
+      "comment": "Makes the lack of affiliation explicit",
+      "el": "Το Poravia δεν συνδέεται με αυτόν τον μεταφορέα και δεν τον εκπροσωπεί.",
+      "en": "Poravia is not affiliated with this operator and does not represent it.",
+      "sq": "Poravia nuk është e lidhur me këtë operator dhe nuk e përfaqëson atë."
+    },
+    "operator.official": {
+      "comment": "Link to the operator's own website",
+      "el": "Επίσημος ιστότοπος",
+      "en": "Official website",
+      "sq": "Faqja zyrtare"
+    },
+    "operator.routeCount": {
+      "comment": "Number of routes. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld διαδρομή",
+          "other": "%lld διαδρομές"
+        },
+        "en": {
+          "one": "%lld route",
+          "other": "%lld routes"
+        },
+        "sq": {
+          "one": "%lld rrugë",
+          "other": "%lld rrugë"
+        }
+      }
+    },
+    "operator.stopCount": {
+      "comment": "Number of stops. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld στάση",
+          "other": "%lld στάσεις"
+        },
+        "en": {
+          "one": "%lld stop",
+          "other": "%lld stops"
+        },
+        "sq": {
+          "one": "%lld ndalesë",
+          "other": "%lld ndalesa"
+        }
+      }
+    },
+    "operator.title": {
+      "comment": "Operator page title",
+      "el": "Μεταφορέας",
+      "en": "Operator",
+      "sq": "Operatori"
+    },
+    "place.boardingPoint": {
+      "comment": "Badge marking a single boarding point inside a terminal",
+      "el": "Θέση επιβίβασης",
+      "en": "Boarding point",
+      "sq": "Vend hipjeje"
+    },
+    "place.boardingPointCount": {
+      "comment": "How many boarding points a terminal has. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld θέση επιβίβασης",
+          "other": "%lld θέσεις επιβίβασης"
+        },
+        "en": {
+          "one": "%lld boarding point",
+          "other": "%lld boarding points"
+        },
+        "sq": {
+          "one": "%lld vend hipjeje",
+          "other": "%lld vende hipjeje"
+        }
+      }
+    },
+    "place.disambiguationHint": {
+      "comment": "Explains terminal versus boarding point",
+      "el": "Ένας σταθμός περιέχει περισσότερες θέσεις επιβίβασης. Επιλέξτε τον σταθμό αν δεν είστε βέβαιοι.",
+      "en": "A terminal contains several boarding points. Choose the terminal if you are not sure.",
+      "sq": "Një terminal përmban disa vende hipjeje. Zgjidhni terminalin nëse nuk jeni i sigurt."
+    },
+    "place.noMatches": {
+      "comment": "Empty state in the place picker",
+      "el": "Κανένας τόπος δεν ταιριάζει με αυτή την αναζήτηση.",
+      "en": "No place matches that search.",
+      "sq": "Asnjë vend nuk përputhet me atë kërkim."
+    },
+    "place.picker.title": {
+      "comment": "Place picker screen title",
+      "el": "Επιλογή τόπου",
+      "en": "Choose a place",
+      "sq": "Zgjidhni një vend"
+    },
+    "place.searchPlaceholder": {
+      "comment": "Search field in the place picker",
+      "el": "Αναζήτηση σταθμού ή στάσης",
+      "en": "Search a terminal or stop",
+      "sq": "Kërko një terminal ose ndalesë"
+    },
+    "place.terminal": {
+      "comment": "Badge marking a terminal, which groups boarding points",
+      "el": "Σταθμός",
+      "en": "Terminal",
+      "sq": "Terminal"
+    },
+    "purchase.address": {
+      "comment": "Label for a street address",
+      "el": "Διεύθυνση",
+      "en": "Address",
+      "sq": "Adresa"
+    },
+    "purchase.continueToOperator": {
+      "comment": "Primary action that opens the operator's own sales page. %@ is the operator name.",
+      "el": "Συνέχεια στον μεταφορέα %@",
+      "en": "Continue to %@",
+      "sq": "Vazhdo te %@"
+    },
+    "purchase.heading": {
+      "comment": "Section heading above the purchase handoff",
+      "el": "Αγορά εισιτηρίου",
+      "en": "Buying a ticket",
+      "sq": "Blerja e biletës"
+    },
+    "purchase.howToBuy": {
+      "comment": "Shown instead of a buy action when no online sale exists",
+      "el": "Πώς αγοράζεται αυτό το εισιτήριο",
+      "en": "How to buy this ticket",
+      "sq": "Si blihet kjo biletë"
+    },
+    "purchase.notVerified": {
+      "comment": "The sales channel has never been verified",
+      "el": "Δεν έχει επαληθευτεί",
+      "en": "Not verified",
+      "sq": "E paverifikuar"
+    },
+    "purchase.onboard": {
+      "comment": "Tickets are sold on the vehicle",
+      "el": "Το εισιτήριο εκδίδεται στο όχημα.",
+      "en": "The ticket is issued on board.",
+      "sq": "Bileta lëshohet në bord."
+    },
+    "purchase.openingHours": {
+      "comment": "Label for opening hours",
+      "el": "Ώρες λειτουργίας",
+      "en": "Opening hours",
+      "sq": "Orari i punës"
+    },
+    "purchase.opensInBrowser": {
+      "comment": "Tells the reader the link opens a browser inside the app and returns here",
+      "el": "Ανοίγει τον ιστότοπο του μεταφορέα. Θα επιστρέψετε εδώ, στην ίδια κατάσταση.",
+      "en": "Opens the operator's own website. You will come back here, in the same state.",
+      "sq": "Hap faqen e vetë operatorit. Do të ktheheni këtu, në të njëjtën gjendje."
+    },
+    "purchase.operatorHandles": {
+      "comment": "Explains the operator owns payment and refunds",
+      "el": "Ο μεταφορέας διαχειρίζεται πληρωμή, εισιτήρια, αλλαγές και επιστροφές. Το Poravia δεν εμπλέκεται.",
+      "en": "The operator handles payment, tickets, changes and refunds. Poravia is not involved.",
+      "sq": "Operatori menaxhon pagesën, biletat, ndryshimet dhe rimbursimet. Poravia nuk përfshihet."
+    },
+    "purchase.phone": {
+      "comment": "Label for a telephone number",
+      "el": "Τηλέφωνο",
+      "en": "Telephone",
+      "sq": "Telefoni"
+    },
+    "purchase.ticketOffice": {
+      "comment": "Heading for a physical ticket office",
+      "el": "Εκδοτήριο",
+      "en": "Ticket office",
+      "sq": "Sporteli i biletave"
+    },
+    "purchase.unknownElectronic": {
+      "comment": "Deliberately not the phrase electronic ticketing unavailable",
+      "el": "Άγνωστη ηλεκτρονική έκδοση εισιτηρίων",
+      "en": "Electronic ticketing unknown",
+      "sq": "Biletat elektronike të panjohura"
+    },
+    "purchase.verifiedAt": {
+      "comment": "When the sales channel was last verified. %@ is a date.",
+      "el": "Επαληθεύτηκε %@",
+      "en": "Verified %@",
+      "sq": "Verifikuar %@"
+    },
+    "quality.approximate": {
+      "comment": "Time quality: the source gives only an approximate time",
+      "el": "Κατά προσέγγιση",
+      "en": "Approximate",
+      "sq": "E përafërt"
+    },
+    "quality.estimated": {
+      "comment": "Position quality: estimated",
+      "el": "Εκτίμηση",
+      "en": "Estimated",
+      "sq": "E vlerësuar"
+    },
+    "quality.live": {
+      "comment": "Position quality: observed live",
+      "el": "Ζωντανά",
+      "en": "Live",
+      "sq": "Drejtpërdrejt"
+    },
+    "quality.predicted": {
+      "comment": "Position quality: predicted, not observed",
+      "el": "Πρόβλεψη",
+      "en": "Predicted",
+      "sq": "E parashikuar"
+    },
+    "quality.scheduled": {
+      "comment": "Time quality: published by the operator",
+      "el": "Προγραμματισμένο",
+      "en": "Scheduled",
+      "sq": "E planifikuar"
+    },
+    "quality.unknownTime": {
+      "comment": "Time quality: not published",
+      "el": "Άγνωστη ώρα",
+      "en": "Time unknown",
+      "sq": "Orë e panjohur"
+    },
+    "reminders.denied": {
+      "comment": "Notifications permission was refused",
+      "el": "Οι ειδοποιήσεις δεν επιτρέπονται για το Poravia.",
+      "en": "Notifications are not allowed for Poravia.",
+      "sq": "Njoftimet nuk lejohen për Poravia."
+    },
+    "reminders.deniedHint": {
+      "comment": "How to allow notifications again",
+      "el": "Μπορείτε να τις επιτρέψετε στις Ρυθμίσεις. Το αποθηκευμένο ταξίδι λειτουργεί κανονικά χωρίς υπενθύμιση.",
+      "en": "You can allow them in Settings. The saved trip works normally without a reminder.",
+      "sq": "Mund t'i lejoni te Cilësimet. Udhëtimi i ruajtur funksionon normalisht pa kujtesë."
+    },
+    "reminders.enable": {
+      "comment": "Opt in to a local reminder for a saved trip",
+      "el": "Υπενθύμιση πριν από την αναχώρηση",
+      "en": "Remind me before departure",
+      "sq": "Më kujto para nisjes"
+    },
+    "reminders.leadMinutes": {
+      "comment": "A lead time in minutes. %lld is the number.",
+      "plural": {
+        "el": {
+          "one": "%lld λεπτό πριν",
+          "other": "%lld λεπτά πριν"
+        },
+        "en": {
+          "one": "%lld minute before",
+          "other": "%lld minutes before"
+        },
+        "sq": {
+          "one": "%lld minutë para",
+          "other": "%lld minuta para"
+        }
+      }
+    },
+    "reminders.leadTime": {
+      "comment": "How long before departure the reminder fires",
+      "el": "Πόσο πριν",
+      "en": "How long before",
+      "sq": "Sa kohë para"
+    },
+    "reminders.leadTimeValue": {
+      "comment": "Accessible value for the reminder lead-time control. %lld is minutes.",
+      "plural": {
+        "el": {
+          "one": "%lld λεπτό",
+          "other": "%lld λεπτά"
+        },
+        "en": {
+          "one": "%lld minute",
+          "other": "%lld minutes"
+        },
+        "sq": {
+          "one": "%lld minutë",
+          "other": "%lld minuta"
+        }
+      }
+    },
+    "reminders.notificationBody": {
+      "comment": "Body of the local notification. %1$@ is the departure time, %2$@ is the boarding point.",
+      "el": "Αναχώρηση στις %1$@ από %2$@.",
+      "en": "Departs at %1$@ from %2$@.",
+      "sq": "Niset në %1$@ nga %2$@."
+    },
+    "reminders.notificationTitle": {
+      "comment": "Title of the local notification itself",
+      "el": "Η αναχώρησή σας πλησιάζει",
+      "en": "Your departure is coming up",
+      "sq": "Nisja juaj po afron"
+    },
+    "reminders.privacyNote": {
+      "comment": "States exactly what a reminder payload contains",
+      "el": "Η υπενθύμιση περιέχει μόνο την ώρα και τον τόπο αναχώρησης. Ποτέ όνομα επιβάτη, κωδικό κράτησης, εικόνα εισιτηρίου ή γραμμωτό κώδικα.",
+      "en": "A reminder carries only the departure time and place. Never a passenger name, booking reference, ticket image or barcode.",
+      "sq": "Një kujtesë përmban vetëm orën dhe vendin e nisjes. Kurrë emër udhëtari, referencë rezervimi, imazh bilete ose barkod."
+    },
+    "reminders.revoked": {
+      "comment": "Permission was granted before and has since been withdrawn",
+      "el": "Η άδεια ειδοποιήσεων αφαιρέθηκε, οπότε οι προγραμματισμένες υπενθυμίσεις δεν θα εμφανιστούν.",
+      "en": "Notification permission was withdrawn, so scheduled reminders will not appear.",
+      "sq": "Leja e njoftimeve u hoq, ndaj kujtesat e planifikuara nuk do të shfaqen."
+    },
+    "reminders.scheduled": {
+      "comment": "Confirmation that a reminder exists. %@ is the fire date.",
+      "el": "Προγραμματίστηκε για %@",
+      "en": "Scheduled for %@",
+      "sq": "Planifikuar për %@"
+    },
+    "reminders.timeZoneChanged": {
+      "comment": "The device time zone changed and reminders were rescheduled",
+      "el": "Η ζώνη ώρας της συσκευής άλλαξε. Οι υπενθυμίσεις επαναπρογραμματίστηκαν με βάση την ώρα Ευρώπη/Αθήνα του δρομολογίου.",
+      "en": "The device time zone changed. Reminders were rescheduled against the journey's Europe/Athens time.",
+      "sq": "Zona kohore e pajisjes ndryshoi. Kujtesat u riplanifikuan sipas kohës Evropë/Athinë të udhëtimit."
+    },
+    "reminders.title": {
+      "comment": "Reminders screen title",
+      "el": "Υπενθυμίσεις",
+      "en": "Reminders",
+      "sq": "Kujtesat"
+    },
+    "results.arrivesNextDay": {
+      "comment": "Explains the arrival is on the following calendar day",
+      "el": "Άφιξη την επόμενη ημερολογιακή ημέρα",
+      "en": "Arrives the next calendar day",
+      "sq": "Mbërrin ditën tjetër kalendarike"
+    },
+    "results.count": {
+      "comment": "Number of results found. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld δρομολόγιο",
+          "other": "%lld δρομολόγια"
+        },
+        "en": {
+          "one": "%lld journey",
+          "other": "%lld journeys"
+        },
+        "sq": {
+          "one": "%lld udhëtim",
+          "other": "%lld udhëtime"
+        }
+      }
+    },
+    "results.crossesMidnight": {
+      "comment": "Marker on a journey that arrives after midnight",
+      "el": "Διασχίζει τα μεσάνυχτα",
+      "en": "Crosses midnight",
+      "sq": "Kalon mesnatën"
+    },
+    "results.durationHoursOnly": {
+      "comment": "A journey that is a whole number of hours. %lld is hours.",
+      "el": "%lld ώ",
+      "en": "%lldh",
+      "sq": "%lldo"
+    },
+    "results.durationMinutes": {
+      "comment": "Journey duration in hours and minutes. %1$lld is hours, %2$lld is minutes.",
+      "el": "%1$lld ώ %2$lld λ",
+      "en": "%1$lldh %2$lldm",
+      "sq": "%1$lldo %2$lldm"
+    },
+    "results.durationMinutesOnly": {
+      "comment": "A journey shorter than an hour. %lld is minutes. Avoids reading as '0h 45m'.",
+      "el": "%lld λ",
+      "en": "%lldm",
+      "sq": "%lldm"
+    },
+    "results.emptyNoOfflineData": {
+      "comment": "No journeys pack is installed for this date. Deliberately NOT the same as 'no service on this date'.",
+      "el": "Δεν υπάρχουν αποθηκευμένα δεδομένα για αυτή την ημερομηνία.",
+      "en": "There is no offline data for this date.",
+      "sq": "Nuk ka të dhëna offline për këtë datë."
+    },
+    "results.emptyNoOfflineDataHint": {
+      "comment": "What to do about a missing journeys pack. Must not claim anything about whether a service runs.",
+      "el": "Δεν γνωρίζουμε αν εκτελείται δρομολόγιο αυτή την ημέρα. Συνδεθείτε ή κατεβάστε τα δεδομένα αυτής της ημερομηνίας για να ελέγξετε.",
+      "en": "Whether a service runs that day is not known here. Connect, or download this date's data, to find out.",
+      "sq": "Nuk dihet këtu nëse kryhet ndonjë shërbim atë ditë. Lidhuni, ose shkarkoni të dhënat e kësaj date, për ta zbuluar."
+    },
+    "results.emptyNoService": {
+      "comment": "No service runs on the chosen date",
+      "el": "Κανένα δρομολόγιο δεν εκτελείται αυτή την ημερομηνία.",
+      "en": "No service runs on this date.",
+      "sq": "Asnjë shërbim nuk kryhet në këtë datë."
+    },
+    "results.emptyOutsideCoverage": {
+      "comment": "The corridor is outside the released coverage",
+      "el": "Αυτή η διαδρομή δεν καλύπτεται από την τρέχουσα έκδοση δεδομένων.",
+      "en": "This corridor is not covered by the current data release.",
+      "sq": "Ky korridor nuk mbulohet nga publikimi aktual i të dhënave."
+    },
+    "results.emptyOutsideCoverageHint": {
+      "comment": "What to do when a corridor is outside the release's coverage. Points at the coverage page rather than repeating its heading.",
+      "el": "Δείτε στις Ρυθμίσεις τι καλύπτει και τι δεν καλύπτει αυτή η έκδοση δεδομένων.",
+      "en": "Settings lists exactly what this data release does and does not cover.",
+      "sq": "Cilësimet listojnë saktësisht çfarë mbulon dhe çfarë nuk mbulon ky publikim."
+    },
+    "results.emptyReasonUnstated": {
+      "comment": "The release returned no journeys and gave no reason this build recognises. Must not assert that no service runs.",
+      "el": "Δεν επιστράφηκε κανένα δρομολόγιο και η έκδοση δεδομένων δεν εξηγεί γιατί.",
+      "en": "No journeys came back, and the data release does not say why.",
+      "sq": "Nuk u kthye asnjë udhëtim dhe publikimi i të dhënave nuk shpjegon pse."
+    },
+    "results.emptySamePlace": {
+      "comment": "Origin and destination are the same",
+      "el": "Η αφετηρία και ο προορισμός είναι ο ίδιος τόπος.",
+      "en": "The origin and the destination are the same place.",
+      "sq": "Nisja dhe destinacioni janë i njëjti vend."
+    },
+    "results.fareIndicative": {
+      "comment": "Marks a fare as indicative, not a price the product can honour. %@ is the formatted amount.",
+      "el": "%@ ενδεικτικά",
+      "en": "%@ indicative",
+      "sq": "%@ tregues"
+    },
+    "results.intermediateStops": {
+      "comment": "Number of intermediate stops. %lld is the count.",
+      "plural": {
+        "el": {
+          "one": "%lld ενδιάμεση στάση",
+          "other": "%lld ενδιάμεσες στάσεις"
+        },
+        "en": {
+          "one": "%lld intermediate stop",
+          "other": "%lld intermediate stops"
+        },
+        "sq": {
+          "one": "%lld ndalesë e ndërmjetme",
+          "other": "%lld ndalesa të ndërmjetme"
+        }
+      }
+    },
+    "results.noFare": {
+      "comment": "No fare is published for this service",
+      "el": "Δεν δημοσιεύεται ναύλος",
+      "en": "No fare published",
+      "sq": "Pa çmim të publikuar"
+    },
+    "results.partialWarning": {
+      "comment": "Shown above a partial result list",
+      "el": "Ορισμένα δρομολόγια αυτής της ημέρας δεν έχουν ελεγχθεί ακόμη, οπότε ο κατάλογος μπορεί να είναι ελλιπής.",
+      "en": "Some services on this date have not been reviewed yet, so this list may be incomplete.",
+      "sq": "Disa shërbime të kësaj date nuk janë shqyrtuar ende, ndaj kjo listë mund të jetë e paplotë."
+    },
+    "results.scheduledOnly": {
+      "comment": "Banner: this release carries scheduled data only",
+      "el": "Προγραμματισμένα δεδομένα μόνο. Η ζωντανή παρακολούθηση δεν είναι διαθέσιμη σε αυτή την έκδοση.",
+      "en": "Scheduled data only. Live tracking is not available in this release.",
+      "sq": "Vetëm të dhëna të planifikuara. Gjurmimi i drejtpërdrejtë nuk ofrohet në këtë publikim."
+    },
+    "results.servedFromCache": {
+      "comment": "The answer came from installed packs rather than the network. %@ is the release age.",
+      "el": "Από αποθηκευμένα δεδομένα, %@",
+      "en": "From stored data, %@",
+      "sq": "Nga të dhëna të ruajtura, %@"
+    },
+    "results.title": {
+      "comment": "Results screen title",
+      "el": "Δρομολόγια",
+      "en": "Journeys",
+      "sq": "Udhëtimet"
+    },
+    "rights.allowed": {
+      "comment": "Rights status: reuse is permitted",
+      "el": "Επιτρέπεται η επαναχρησιμοποίηση",
+      "en": "Reuse permitted",
+      "sq": "Ripërdorimi lejohet"
+    },
+    "rights.pending": {
+      "comment": "Rights status: permission has been requested",
+      "el": "Εκκρεμεί άδεια",
+      "en": "Permission pending",
+      "sq": "Leja në pritje"
+    },
+    "rights.prohibited": {
+      "comment": "Rights status: reuse is not permitted",
+      "el": "Δεν επιτρέπεται η επαναχρησιμοποίηση",
+      "en": "Reuse not permitted",
+      "sq": "Ripërdorimi nuk lejohet"
+    },
+    "rights.unknown": {
+      "comment": "Rights status has not been established",
+      "el": "Άγνωστα δικαιώματα",
+      "en": "Rights unknown",
+      "sq": "Të drejta të panjohura"
+    },
+    "search.date": {
+      "comment": "Service date field label",
+      "el": "Ημερομηνία δρομολογίου",
+      "en": "Service date",
+      "sq": "Data e shërbimit"
+    },
+    "search.dateZoneNote": {
+      "comment": "Explains the time zone the service date is read in",
+      "el": "Οι ημερομηνίες δρομολογίων διαβάζονται σε ώρα Ευρώπη/Αθήνα.",
+      "en": "Service dates are read in Europe/Athens time.",
+      "sq": "Datat e shërbimit lexohen në kohën Evropë/Athinë."
+    },
+    "search.destination": {
+      "comment": "Field label",
+      "el": "Προορισμός",
+      "en": "To",
+      "sq": "Për"
+    },
+    "search.destinationPlaceholder": {
+      "comment": "Placeholder in the destination field",
+      "el": "Επιλέξτε προορισμό",
+      "en": "Choose a destination",
+      "sq": "Zgjidhni destinacionin"
+    },
+    "search.needBothPlaces": {
+      "comment": "Validation message",
+      "el": "Επιλέξτε αφετηρία και προορισμό.",
+      "en": "Choose an origin and a destination.",
+      "sq": "Zgjidhni një nisje dhe një destinacion."
+    },
+    "search.origin": {
+      "comment": "Field label",
+      "el": "Αφετηρία",
+      "en": "From",
+      "sq": "Nga"
+    },
+    "search.originPlaceholder": {
+      "comment": "Placeholder in the origin field",
+      "el": "Επιλέξτε αφετηρία",
+      "en": "Choose an origin",
+      "sq": "Zgjidhni nisjen"
+    },
+    "search.recent": {
+      "comment": "Heading above recent searches",
+      "el": "Πρόσφατες αναζητήσεις",
+      "en": "Recent searches",
+      "sq": "Kërkimet e fundit"
+    },
+    "search.recentEmpty": {
+      "comment": "Shown when no search has been made yet",
+      "el": "Δεν υπάρχουν ακόμη πρόσφατες αναζητήσεις.",
+      "en": "No recent searches yet.",
+      "sq": "Ende asnjë kërkim i fundit."
+    },
+    "search.submit": {
+      "comment": "Primary action. Deliberately not the word Go.",
+      "el": "Αναζήτηση δρομολογίων",
+      "en": "Search journeys",
+      "sq": "Kërko udhëtime"
+    },
+    "search.swap": {
+      "comment": "Button that swaps origin and destination",
+      "el": "Εναλλαγή αφετηρίας και προορισμού",
+      "en": "Swap origin and destination",
+      "sq": "Ndërro nisjen dhe destinacionin"
+    },
+    "search.title": {
+      "comment": "Search screen title",
+      "el": "Αναζήτηση δρομολογίων",
+      "en": "Search journeys",
+      "sq": "Kërko udhëtime"
+    },
+    "search.today": {
+      "comment": "Quick date choice",
+      "el": "Σήμερα",
+      "en": "Today",
+      "sq": "Sot"
+    },
+    "search.tomorrow": {
+      "comment": "Quick date choice",
+      "el": "Αύριο",
+      "en": "Tomorrow",
+      "sq": "Nesër"
+    },
+    "settings.about": {
+      "comment": "Section heading",
+      "el": "Σχετικά",
+      "en": "About",
+      "sq": "Rreth"
+    },
+    "settings.aboutMark": {
+      "comment": "What the brand mark means. Used as the accessibility description of the mark too.",
+      "el": "Το σήμα του Poravia είναι μια αψίδα, δηλαδή ένα πέρασμα, και το πορτοκαλί σημείο μέσα της είναι η ακριβής θέση επιβίβασης.",
+      "en": "The Poravia mark is an arch, which is a passage, and the amber point inside it is the exact boarding point.",
+      "sq": "Shenja e Poravia është një hark, që është një kalim, dhe pika qelibar brenda saj është vendi i saktë i hipjes."
+    },
+    "settings.accessibility": {
+      "comment": "Section heading",
+      "el": "Προσβασιμότητα",
+      "en": "Accessibility",
+      "sq": "Aksesueshmëria"
+    },
+    "settings.appearance": {
+      "comment": "Section heading",
+      "el": "Εμφάνιση",
+      "en": "Appearance",
+      "sq": "Pamja"
+    },
+    "settings.appearanceDark": {
+      "comment": "Dark appearance",
+      "el": "Σκοτεινή",
+      "en": "Dark",
+      "sq": "E errët"
+    },
+    "settings.appearanceLight": {
+      "comment": "Light appearance",
+      "el": "Φωτεινή",
+      "en": "Light",
+      "sq": "E çelët"
+    },
+    "settings.appearanceSystem": {
+      "comment": "Follow the system appearance",
+      "el": "Συσκευή",
+      "en": "System",
+      "sq": "Sistemi"
+    },
+    "settings.commit": {
+      "comment": "Source commit row. %@ is the commit identifier.",
+      "el": "Commit %@",
+      "en": "Commit %@",
+      "sq": "Commit %@"
+    },
+    "settings.commitLabel": {
+      "comment": "Row label for the source commit the build came from",
+      "el": "Commit πηγαίου κώδικα",
+      "en": "Source commit",
+      "sq": "Commit i burimit"
+    },
+    "settings.contractLabel": {
+      "comment": "Row label for the data contract version the build implements",
+      "el": "Συμβόλαιο δεδομένων",
+      "en": "Data contract",
+      "sq": "Kontrata e të dhënave"
+    },
+    "settings.copyDiagnostics": {
+      "comment": "Action",
+      "el": "Αντιγραφή διαγνωστικών",
+      "en": "Copy diagnostics",
+      "sq": "Kopjo diagnostikën"
+    },
+    "settings.coverage": {
+      "comment": "Row that opens the coverage page",
+      "el": "Κάλυψη και παλαιότητα",
+      "en": "Coverage and freshness",
+      "sq": "Mbulimi dhe freskia"
+    },
+    "settings.dataCoreFixture": {
+      "comment": "A development build is running on fixture data",
+      "el": "Αυτή είναι έκδοση ανάπτυξης που χρησιμοποιεί δεδομένα επίδειξης.",
+      "en": "This is a development build running on fixture data.",
+      "sq": "Ky është një ndërtim zhvillimi që përdor të dhëna demonstrimi."
+    },
+    "settings.dataCoreLinked": {
+      "comment": "The shared Kotlin core is present",
+      "el": "Ο κοινός πυρήνας δεδομένων είναι συνδεδεμένος.",
+      "en": "The shared data core is linked.",
+      "sq": "Bërthama e përbashkët e të dhënave është e lidhur."
+    },
+    "settings.dataCoreMissing": {
+      "comment": "The shared Kotlin core is absent from this build",
+      "el": "Ο κοινός πυρήνας δεδομένων δεν είναι συνδεδεμένος σε αυτή την έκδοση.",
+      "en": "The shared data core is not linked in this build.",
+      "sq": "Bërthama e përbashkët e të dhënave nuk është e lidhur në këtë ndërtim."
+    },
+    "settings.dataSources": {
+      "comment": "Section heading",
+      "el": "Πηγές δεδομένων",
+      "en": "Data sources",
+      "sq": "Burimet e të dhënave"
+    },
+    "settings.diagnostics": {
+      "comment": "Section heading for diagnostics that carry no secrets",
+      "el": "Διαγνωστικά",
+      "en": "Diagnostics",
+      "sq": "Diagnostika"
+    },
+    "settings.diagnosticsNote": {
+      "comment": "Explains what diagnostics contain",
+      "el": "Τα διαγνωστικά περιέχουν μόνο εκδόσεις, κατάσταση δεδομένων και μεγέθη. Κανένα προσωπικό στοιχείο, κανένα εισιτήριο και κανένα μυστικό.",
+      "en": "Diagnostics carry only versions, data state and sizes. No personal detail, no ticket and no secret.",
+      "sq": "Diagnostika përmban vetëm versione, gjendjen e të dhënave dhe madhësi. Asnjë detaj personal, asnjë biletë dhe asnjë sekret."
+    },
+    "settings.language": {
+      "comment": "Section heading",
+      "el": "Γλώσσα",
+      "en": "Language",
+      "sq": "Gjuha"
+    },
+    "settings.languageSystem": {
+      "comment": "Follow the system language",
+      "el": "Γλώσσα συσκευής",
+      "en": "Device language",
+      "sq": "Gjuha e pajisjes"
+    },
+    "settings.licences": {
+      "comment": "Section heading",
+      "el": "Άδειες",
+      "en": "Licences",
+      "sq": "Licencat"
+    },
+    "settings.nameOrigin": {
+      "comment": "Honest statement about the invented name. Must not claim it is a Greek word.",
+      "el": "Το Poravia είναι επινοημένο όνομα, εμπνευσμένο από την ελληνική λέξη πόρος, που σημαίνει πέρασμα ή στενό. Δεν είναι ελληνική λέξη και δεν έχει επιβεβαιωμένη μετάφραση.",
+      "en": "Poravia is an invented name, suggested by the Greek word poros, meaning a passage, ford or strait. It is not itself a Greek word and has no verified translation.",
+      "sq": "Poravia është një emër i shpikur, i frymëzuar nga fjala greke poros, që do të thotë kalim, vad ose ngushticë. Nuk është vetë një fjalë greke dhe nuk ka përkthim të verifikuar."
+    },
+    "settings.notifications": {
+      "comment": "Section heading",
+      "el": "Ειδοποιήσεις",
+      "en": "Notifications",
+      "sq": "Njoftimet"
+    },
+    "settings.preferAccessibleJourneys": {
+      "comment": "Default the accessibility filter on for every search",
+      "el": "Προεπιλογή σε δρομολόγια με ελεγμένη πρόσβαση χωρίς σκαλοπάτια",
+      "en": "Default to journeys with reviewed step-free boarding",
+      "sq": "Parazgjidh udhëtimet me hipje pa shkallë të shqyrtuar"
+    },
+    "settings.privacy": {
+      "comment": "Section heading",
+      "el": "Απόρρητο",
+      "en": "Privacy",
+      "sq": "Privatësia"
+    },
+    "settings.privacyBody": {
+      "comment": "The complete privacy statement",
+      "el": "Το Poravia δεν έχει λογαριασμούς, δεν συλλέγει αναλυτικά στοιχεία και δεν περιέχει ιχνηλάτες τρίτων. Οι αναζητήσεις, τα αγαπημένα, τα ταξίδια και τα εισιτήριά σας παραμένουν στη συσκευή.",
+      "en": "Poravia has no accounts, collects no analytics and contains no third-party trackers. Your searches, favourites, trips and tickets stay on the device.",
+      "sq": "Poravia nuk ka llogari, nuk mbledh analitikë dhe nuk përmban gjurmues të palëve të treta. Kërkimet, të preferuarat, udhëtimet dhe biletat tuaja mbeten në pajisje."
+    },
+    "settings.reduceMotionNote": {
+      "comment": "Explains the app already follows the system setting",
+      "el": "Το Poravia ακολουθεί τη ρύθμιση Μείωση κίνησης της συσκευής.",
+      "en": "Poravia follows the device's Reduce Motion setting.",
+      "sq": "Poravia ndjek cilësimin Zvogëlo lëvizjen të pajisjes."
+    },
+    "settings.storage": {
+      "comment": "Section heading",
+      "el": "Αποθήκευση",
+      "en": "Storage",
+      "sq": "Ruajtja"
+    },
+    "settings.support": {
+      "comment": "Section heading",
+      "el": "Υποστήριξη",
+      "en": "Support",
+      "sq": "Mbështetja"
+    },
+    "settings.title": {
+      "comment": "Settings screen title",
+      "el": "Ρυθμίσεις",
+      "en": "Settings",
+      "sq": "Cilësimet"
+    },
+    "settings.version": {
+      "comment": "App version row. %1$@ is the version, %2$@ is the build number.",
+      "el": "Έκδοση %1$@ (%2$@)",
+      "en": "Version %1$@ (%2$@)",
+      "sq": "Versioni %1$@ (%2$@)"
+    },
+    "settings.versionLabel": {
+      "comment": "Row label for the app version",
+      "el": "Έκδοση",
+      "en": "Version",
+      "sq": "Versioni"
+    },
+    "sources.empty": {
+      "comment": "Empty state on the source registry",
+      "el": "Δεν έχουν καταχωρηθεί πηγές σε αυτή την έκδοση.",
+      "en": "No sources are registered in this release.",
+      "sq": "Asnjë burim nuk është regjistruar në këtë publikim."
+    },
+    "sources.title": {
+      "comment": "Source registry screen title",
+      "el": "Πηγές",
+      "en": "Sources",
+      "sq": "Burimet"
+    },
+    "stop.boardingPoints": {
+      "comment": "Section heading",
+      "el": "Θέσεις επιβίβασης",
+      "en": "Boarding points",
+      "sq": "Vendet e hipjes"
+    },
+    "stop.crossesMidnight": {
+      "comment": "Marks a departure whose journey arrives after midnight",
+      "el": "Άφιξη μετά τα μεσάνυχτα",
+      "en": "Arrives after midnight",
+      "sq": "Mbërrin pas mesnate"
+    },
+    "stop.nextDepartures": {
+      "comment": "Section heading",
+      "el": "Επόμενες αναχωρήσεις",
+      "en": "Next departures",
+      "sq": "Nisjet e ardhshme"
+    },
+    "stop.noDepartures": {
+      "comment": "Empty state",
+      "el": "Καμία αναχώρηση αυτή την ημερομηνία.",
+      "en": "No departures on this date.",
+      "sq": "Asnjë nisje në këtë datë."
+    },
+    "stop.operators": {
+      "comment": "Section heading",
+      "el": "Μεταφορείς που εξυπηρετούν",
+      "en": "Operators serving this stop",
+      "sq": "Operatorët që shërbejnë këtu"
+    },
+    "stop.title": {
+      "comment": "Station page title",
+      "el": "Σταθμός",
+      "en": "Station",
+      "sq": "Stacioni"
+    },
+    "tab.offline": {
+      "comment": "Tab title for offline packs",
+      "el": "Εκτός σύνδεσης",
+      "en": "Offline",
+      "sq": "Pa internet"
+    },
+    "tab.search": {
+      "comment": "Tab title",
+      "el": "Αναζήτηση",
+      "en": "Search",
+      "sq": "Kërko"
+    },
+    "tab.settings": {
+      "comment": "Tab title",
+      "el": "Ρυθμίσεις",
+      "en": "Settings",
+      "sq": "Cilësimet"
+    },
+    "tab.trips": {
+      "comment": "Tab title for saved trips and favourites",
+      "el": "Τα ταξίδια μου",
+      "en": "My trips",
+      "sq": "Udhëtimet e mia"
+    },
+    "trips.cachedRelease": {
+      "comment": "Names the cached data release a saved trip came from. %@ is the release identifier.",
+      "el": "Αποθηκευμένη έκδοση δεδομένων %@",
+      "en": "Cached data release %@",
+      "sq": "Publikim i ruajtur i të dhënave %@"
+    },
+    "trips.empty": {
+      "comment": "Empty state",
+      "el": "Δεν έχετε αποθηκεύσει ακόμη ταξίδι.",
+      "en": "You have not saved a trip yet.",
+      "sq": "Ende nuk keni ruajtur asnjë udhëtim."
+    },
+    "trips.readyBody": {
+      "comment": "Explains that everything needed is stored on the device",
+      "el": "Όλα όσα χρειάζεστε για αυτό το ταξίδι είναι αποθηκευμένα στη συσκευή και λειτουργούν χωρίς σύνδεση.",
+      "en": "Everything you need for this trip is stored on the device and works without a connection.",
+      "sq": "Gjithçka që ju nevojitet për këtë udhëtim ruhet në pajisje dhe funksionon pa lidhje."
+    },
+    "trips.readyIncomplete": {
+      "comment": "Some part of the trip is not stored offline",
+      "el": "Μέρος αυτού του ταξιδιού δεν είναι αποθηκευμένο χωρίς σύνδεση.",
+      "en": "Part of this trip is not stored for offline use.",
+      "sq": "Një pjesë e këtij udhëtimi nuk ruhet për përdorim pa internet."
+    },
+    "trips.readyTitle": {
+      "comment": "Heading of the Trip Ready summary",
+      "el": "Έτοιμο ταξίδι",
+      "en": "Trip Ready",
+      "sq": "Udhëtimi gati"
+    },
+    "trips.releaseAgeDays": {
+      "comment": "How old the cached release is. %lld is days.",
+      "plural": {
+        "el": {
+          "one": "Ηλικία %lld ημέρα",
+          "other": "Ηλικία %lld ημέρες"
+        },
+        "en": {
+          "one": "%lld day old",
+          "other": "%lld days old"
+        },
+        "sq": {
+          "one": "%lld ditë e vjetër",
+          "other": "%lld ditë të vjetra"
+        }
+      }
+    },
+    "trips.releaseAgeUnknown": {
+      "comment": "The age of the cached release could not be determined",
+      "el": "Άγνωστη ηλικία έκδοσης",
+      "en": "Release age unknown",
+      "sq": "Mosha e publikimit e panjohur"
+    },
+    "trips.save": {
+      "comment": "Action that saves a journey for offline use",
+      "el": "Αποθήκευση ταξιδιού",
+      "en": "Save trip",
+      "sq": "Ruaj udhëtimin"
+    },
+    "trips.saved": {
+      "comment": "State after saving",
+      "el": "Αποθηκεύτηκε",
+      "en": "Saved",
+      "sq": "U ruajt"
+    },
+    "trips.savedHeading": {
+      "comment": "Section heading",
+      "el": "Αποθηκευμένα ταξίδια",
+      "en": "Saved trips",
+      "sq": "Udhëtime të ruajtura"
+    },
+    "trips.title": {
+      "comment": "Saved trips screen title",
+      "el": "Τα ταξίδια μου",
+      "en": "My trips",
+      "sq": "Udhëtimet e mia"
+    },
+    "wallet.backupExcluded": {
+      "comment": "Confirms the tickets directory is excluded from backup",
+      "el": "Εξαιρείται από τα αντίγραφα ασφαλείας",
+      "en": "Excluded from backup",
+      "sq": "Përjashtuar nga rezervimi"
+    },
+    "wallet.backupNotExcluded": {
+      "comment": "Warns that the backup exclusion could not be set",
+      "el": "Η εξαίρεση από τα αντίγραφα ασφαλείας δεν μπόρεσε να οριστεί",
+      "en": "The backup exclusion could not be set",
+      "sq": "Përjashtimi nga rezervimi nuk u vendos"
+    },
+    "wallet.deleteConfirm": {
+      "comment": "Confirmation before deleting a ticket",
+      "el": "Να διαγραφεί οριστικά αυτό το εισιτήριο από τη συσκευή;",
+      "en": "Permanently delete this ticket from the device?",
+      "sq": "Të fshihet përgjithmonë kjo biletë nga pajisja?"
+    },
+    "wallet.empty": {
+      "comment": "Empty state",
+      "el": "Δεν έχετε εισαγάγει κανένα αρχείο εισιτηρίου.",
+      "en": "You have not imported any ticket file.",
+      "sq": "Nuk keni importuar asnjë skedar bilete."
+    },
+    "wallet.fileSize": {
+      "comment": "Size of an imported ticket file. %@ is a formatted size.",
+      "el": "Μέγεθος %@",
+      "en": "Size %@",
+      "sq": "Madhësia %@"
+    },
+    "wallet.import": {
+      "comment": "Action that opens the document picker",
+      "el": "Εισαγωγή αρχείου εισιτηρίου",
+      "en": "Import a ticket file",
+      "sq": "Importo një skedar bilete"
+    },
+    "wallet.importExplainer": {
+      "comment": "Explains the wallet only ever holds files the person chose",
+      "el": "Το Poravia αποθηκεύει μόνο αρχεία που επιλέγετε εσείς. Δεν διαβάζει email, δεν στέλνει τίποτα και δεν ανεβάζει ποτέ ένα εισιτήριο.",
+      "en": "Poravia stores only files you choose yourself. It reads no email, sends nothing, and never uploads a ticket.",
+      "sq": "Poravia ruan vetëm skedarë që i zgjidhni vetë. Nuk lexon email, nuk dërgon asgjë dhe nuk ngarkon kurrë një biletë."
+    },
+    "wallet.importedAt": {
+      "comment": "When a ticket was imported. %@ is a date.",
+      "el": "Εισήχθη %@",
+      "en": "Imported %@",
+      "sq": "Importuar %@"
+    },
+    "wallet.pickerDenied": {
+      "comment": "The file could not be read because access was refused",
+      "el": "Δεν δόθηκε πρόσβαση σε αυτό το αρχείο.",
+      "en": "Access to that file was not granted.",
+      "sq": "Qasja në atë skedar nuk u dha."
+    },
+    "wallet.readFailed": {
+      "comment": "The stored file could not be opened",
+      "el": "Αυτό το αρχείο δεν μπόρεσε να ανοίξει.",
+      "en": "This file could not be opened.",
+      "sq": "Ky skedar nuk mund të hapej."
+    },
+    "wallet.storageExplainer": {
+      "comment": "Where a ticket is stored and how",
+      "el": "Τα εισιτήρια αποθηκεύονται κρυπτογραφημένα στη συσκευή, εξαιρούνται από τα αντίγραφα ασφαλείας iCloud και iTunes, και διαγράφονται οριστικά όταν τα διαγράψετε.",
+      "en": "Tickets are stored encrypted on the device, excluded from iCloud and iTunes backups, and permanently removed when you delete them.",
+      "sq": "Biletat ruhen të enkriptuara në pajisje, përjashtohen nga rezervimet iCloud dhe iTunes, dhe fshihen përgjithmonë kur i fshini."
+    },
+    "wallet.title": {
+      "comment": "Travel wallet screen title",
+      "el": "Πορτοφόλι ταξιδιού",
+      "en": "Travel wallet",
+      "sq": "Portofoli i udhëtimit"
+    },
+    "wallet.tooLarge": {
+      "comment": "The chosen file exceeds the size limit. %@ is the limit.",
+      "el": "Το αρχείο ξεπερνά το όριο των %@.",
+      "en": "The file is larger than the %@ limit.",
+      "sq": "Skedari është më i madh se kufiri prej %@."
+    },
+    "wallet.unsupportedType": {
+      "comment": "The chosen file is not a supported ticket format",
+      "el": "Αυτός ο τύπος αρχείου δεν υποστηρίζεται. Επιλέξτε PDF, PNG ή JPEG.",
+      "en": "That file type is not supported. Choose a PDF, PNG or JPEG.",
+      "sq": "Ai lloj skedari nuk mbështetet. Zgjidhni një PDF, PNG ose JPEG."
+    }
+  }
+}

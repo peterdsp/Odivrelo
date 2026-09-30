@@ -57,26 +57,54 @@ def specifiers(value: str):
 
 SWIFT_TYPE = {"lld": "Int", "ld": "Int", "d": "Int", "@": "String", "f": "Double"}
 
+# A counted string declares a "plural" block instead of a flat translation.
+# Every language must then supply every plural category it uses, or the
+# interface says things like "1 journeys".
+PLURAL_CATEGORIES = ["one", "other"]
+
+
+def is_plural(entry) -> bool:
+    return "plural" in entry
+
+
+def texts_of(entry, language):
+    """Every string a key carries for a language, flat or plural."""
+    if is_plural(entry):
+        block = entry["plural"].get(language) or {}
+        return [block[c] for c in PLURAL_CATEGORIES if c in block]
+    return [entry[language]] if language in entry else []
+
+
 for key in sorted(strings):
     entry = strings[key]
-    for language in LANGUAGES:
-        if language not in entry or not str(entry[language]).strip():
-            problems.append(f"{key}: missing or empty translation for '{language}'")
+
     if "comment" not in entry or not entry["comment"].strip():
         problems.append(f"{key}: missing translator comment")
 
-    present = [lang for lang in LANGUAGES if lang in entry]
+    for language in LANGUAGES:
+        if is_plural(entry):
+            block = entry["plural"].get(language)
+            if not block:
+                problems.append(f"{key}: missing plural block for '{language}'")
+                continue
+            for category in PLURAL_CATEGORIES:
+                if category not in block or not str(block[category]).strip():
+                    problems.append(f"{key}: missing plural '{category}' for '{language}'")
+        elif language not in entry or not str(entry[language]).strip():
+            problems.append(f"{key}: missing or empty translation for '{language}'")
+
     shapes = {}
-    for language in present:
-        shape = specifiers(entry[language])
-        if shape is None:
-            problems.append(f"{key}: '{language}' uses non-contiguous positional specifiers")
-            shape = []
-        shapes[language] = shape
+    for language in LANGUAGES:
+        for index, text in enumerate(texts_of(entry, language)):
+            shape = specifiers(text)
+            if shape is None:
+                problems.append(f"{key}: '{language}' uses non-contiguous positional specifiers")
+                shape = []
+            shapes[f"{language}[{index}]"] = shape
     distinct = {tuple(shape) for shape in shapes.values()}
     if len(distinct) > 1:
-        detail = ", ".join(f"{lang}={shapes[lang]}" for lang in present)
-        problems.append(f"{key}: format specifiers differ between languages ({detail})")
+        detail = ", ".join(f"{k}={v}" for k, v in sorted(shapes.items()))
+        problems.append(f"{key}: format specifiers differ ({detail})")
 
 if problems:
     print("error: the string source is not complete:", file=sys.stderr)
@@ -96,12 +124,22 @@ for key in sorted(strings):
     entry = strings[key]
     localizations = {}
     for language in LANGUAGES:
-        localizations[language] = {
-            "stringUnit": {
-                "state": "translated",
-                "value": entry[language],
+        if is_plural(entry):
+            block = entry["plural"][language]
+            localizations[language] = {
+                "variations": {
+                    "plural": {
+                        category: {
+                            "stringUnit": {"state": "translated", "value": block[category]}
+                        }
+                        for category in PLURAL_CATEGORIES
+                    }
+                }
             }
-        }
+        else:
+            localizations[language] = {
+                "stringUnit": {"state": "translated", "value": entry[language]}
+            }
     catalog["strings"][key] = {
         "comment": entry["comment"],
         "extractionState": "manual",
@@ -167,6 +205,9 @@ add("    public static func string(_ key: String) -> String {")
 add("        NSLocalizedString(key, tableName: \"Localizable\", bundle: bundle, value: key, comment: \"\")")
 add("    }")
 add("")
+add("    /// Formats a key's value. The locale is passed so a key with plural")
+add("    /// variations picks the category that matches the count, rather than")
+add("    /// always using one form.")
 add("    static func format(_ key: String, _ arguments: any CVarArg...) -> String {")
 add("        String(format: string(key), locale: Locale.current, arguments: arguments)")
 add("    }")
@@ -176,13 +217,22 @@ add("    public static let allKeys: [String] = [")
 for key in sorted(strings):
     add(f'        "{key}",')
 add("    ]")
+add("")
+add("    /// Keys that carry plural variations. A counted string without one")
+add("    /// produces text like \"1 journeys\", so the tests assert this list.")
+add("    public static let pluralKeys: [String] = [")
+for key in sorted(strings):
+    if is_plural(strings[key]):
+        add(f'        "{key}",')
+add("    ]")
 add("}")
 add("")
 add("public extension L10n {")
 
 for key in sorted(strings):
     entry = strings[key]
-    shape = specifiers(entry["en"])
+    english = texts_of(entry, "en")
+    shape = specifiers(english[0]) if english else []
     name = identifier(key)
     comment = entry["comment"].replace("\n", " ")
     add(f"    /// {comment}")

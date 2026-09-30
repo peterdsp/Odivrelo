@@ -22,8 +22,7 @@ LOGO_DIR="${REPO_ROOT}/design/logo"
 TOKENS="${REPO_ROOT}/design/tokens/poravia.tokens.json"
 ASSETS="${REPO_ROOT}/apps/ios/Poravia/Resources/Assets.xcassets"
 
-for required in "${LOGO_DIR}/poravia-mark.svg" "${LOGO_DIR}/poravia-wordmark.svg" \
-                "${LOGO_DIR}/poravia-wordmark-dark.svg" "${TOKENS}"; do
+for required in "${LOGO_DIR}/poravia-mark.svg" "${TOKENS}"; do
   if [[ ! -f "${required}" ]]; then
     echo "error: ${required} not found" >&2
     exit 1
@@ -86,9 +85,6 @@ for name, (ground, arch, point) in variants.items():
 )
 PY
 
-cp "${LOGO_DIR}/poravia-wordmark.svg" "${WORK}/svg/wordmark-light.svg"
-cp "${LOGO_DIR}/poravia-wordmark-dark.svg" "${WORK}/svg/wordmark-dark.svg"
-
 # Quick Look renders SVG faithfully and needs no third-party rasteriser.
 render() {
   local source="$1" pixels="$2" destination="$3"
@@ -113,12 +109,10 @@ render "${WORK}/svg/mark-light.svg" 171 "${WORK}/png/mark-light.png"
 render "${WORK}/svg/mark-dark.svg" 512 "${WORK}/png/mark-dark@3x.png"
 render "${WORK}/svg/mark-dark.svg" 341 "${WORK}/png/mark-dark@2x.png"
 render "${WORK}/svg/mark-dark.svg" 171 "${WORK}/png/mark-dark.png"
-for scale in "588 @3x" "392 @2x" "196 ."; do
-  set -- ${scale}
-  suffix="$2"; [[ "${suffix}" == "." ]] && suffix=""
-  render "${WORK}/svg/wordmark-light.svg" "$1" "${WORK}/png/wordmark${suffix}.png"
-  render "${WORK}/svg/wordmark-dark.svg" "$1" "${WORK}/png/wordmark-dark${suffix}.png"
-done
+# The wordmark is composed in the app from this mark plus live text, so it
+# stays sharp, follows Dynamic Type and is read correctly by a screen reader.
+# Quick Look only produces square thumbnails, which would letterbox the
+# 196x64 wordmark artboard into a padded square image.
 
 # Flatten the three icon variants onto an opaque 1024 square.
 /usr/bin/env python3 - "${WORK}/png" <<'PY'
@@ -184,9 +178,8 @@ PY
 
 ICONSET="${ASSETS}/AppIcon.appiconset"
 MARKSET="${ASSETS}/BrandMark.imageset"
-WORDSET="${ASSETS}/Wordmark.imageset"
-rm -rf "${ICONSET}" "${MARKSET}" "${WORDSET}"
-mkdir -p "${ICONSET}" "${MARKSET}" "${WORDSET}"
+rm -rf "${ICONSET}" "${MARKSET}" "${ASSETS}/Wordmark.imageset"
+mkdir -p "${ICONSET}" "${MARKSET}"
 
 cp "${WORK}/png/AppIcon-any.png"    "${ICONSET}/AppIcon-1024.png"
 cp "${WORK}/png/AppIcon-dark.png"   "${ICONSET}/AppIcon-1024-Dark.png"
@@ -195,8 +188,6 @@ cp "${WORK}/png/AppIcon-tinted.png" "${ICONSET}/AppIcon-1024-Tinted.png"
 for suffix in "" "@2x" "@3x"; do
   cp "${WORK}/png/mark-light${suffix}.png" "${MARKSET}/BrandMark${suffix}.png"
   cp "${WORK}/png/mark-dark${suffix}.png"  "${MARKSET}/BrandMark-Dark${suffix}.png"
-  cp "${WORK}/png/wordmark${suffix}.png"      "${WORDSET}/Wordmark${suffix}.png"
-  cp "${WORK}/png/wordmark-dark${suffix}.png" "${WORDSET}/Wordmark-Dark${suffix}.png"
 done
 
 cat > "${ICONSET}/Contents.json" <<'JSON'
@@ -254,6 +245,16 @@ JSON
 }
 
 write_imageset "${MARKSET}" "BrandMark"
-write_imageset "${WORDSET}" "Wordmark"
 
-echo "app icon, brand mark and wordmark written to ${ASSETS} from ${LOGO_DIR}"
+# The mark must stay square: a non-square rasterisation would mean Quick Look
+# padded the artboard, which is what the wordmark used to suffer from.
+for f in "${MARKSET}"/BrandMark*.png; do
+  W="$(sips -g pixelWidth "$f" | awk '/pixelWidth/{print $2}')"
+  H="$(sips -g pixelHeight "$f" | awk '/pixelHeight/{print $2}')"
+  if [[ "${W}" != "${H}" ]]; then
+    echo "error: $(basename "$f") is ${W}x${H}, expected square" >&2
+    exit 1
+  fi
+done
+
+echo "app icon and brand mark written to ${ASSETS} from ${LOGO_DIR}"
