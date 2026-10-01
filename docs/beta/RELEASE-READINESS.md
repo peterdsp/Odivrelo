@@ -4,12 +4,20 @@ Each gate is assessed separately. A gate is `pass` only with evidence a reader
 can check. `blocked` means an external prerequisite is missing, not that the
 work was skipped; see `EXTERNAL-BLOCKERS.md`.
 
-Last updated: 30 September 2026.
+Last updated: 30 September 2026. Client re-verification recorded 2 October 2026.
 
 > **Rows marked `pending` are not yet claimed.** The client applications are
 > still being built and verified as this is written. A row moves to `pass` only
 > when a matching row exists in `TEST-MATRIX.md` with a command, an artifact and
 > a build commit behind it. Nothing here is a pass by assumption.
+
+> **Update, 2 October 2026.** The product gates below were re-verified against
+> the running implementation. First-hand evidence per requirement and per
+> platform, with the exact commands, is in
+> [`REQUIREMENT-MATRIX.md`](REQUIREMENT-MATRIX.md). The data gates and the
+> distribution gates are unchanged: the real-data beta stays blocked on EB-04
+> (see [`OPERATOR-COVERAGE-LEDGER.md`](OPERATOR-COVERAGE-LEDGER.md)), and mobile
+> distribution stays blocked on EB-02 and EB-03.
 
 ---
 

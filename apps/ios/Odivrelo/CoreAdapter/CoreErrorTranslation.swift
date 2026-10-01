@@ -32,7 +32,7 @@ public enum CoreErrorTranslation {
             // "unavailable" impossible to act on.
             log.error(
                 """
-                core raised \(String(describing: thrown.code), privacy: .public):                 \(thrown.message ?? "no message", privacy: .public)                \(thrown.field.map { " (field: \($0))" } ?? "", privacy: .public)
+                core raised \(String(describing: thrown.code), privacy: .public):                 \(thrown.message, privacy: .public)                \(thrown.field.map { " (field: \($0))" } ?? "", privacy: .public)
                 """
             )
             return fromContract(

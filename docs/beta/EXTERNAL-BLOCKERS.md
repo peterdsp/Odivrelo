@@ -206,6 +206,18 @@ point-level data for at least one corridor.
    publishing any database derived from the NAP dataset.
 5. Only then flip `dataMode` to `real`. No code change is required.
 
+**Re-checked 2 October 2026.** A fresh read-only discovery pass found no source
+that is simultaneously rights-cleared, fresh, and boarding-point-level for even
+one Greek intercity corridor. The authoritative NAP catalog still reports
+`metadata_modified` 2020-12-01 and a single 2020 resource (re-verified via its
+CKAN API); a `data.gov.gr` mirror is reported to carry newer 2021 and 2023
+editions of the same shape, still without boarding points. The one artefact
+found with boarding-point-level KTEL GTFS (a personal GitHub feed for Lefkada
+and Kefalonia) carries no licence and no provenance, so it is not reusable. The
+full result, and the discovered-to-blocked state of all 62 operators, is in
+[`OPERATOR-COVERAGE-LEDGER.md`](OPERATOR-COVERAGE-LEDGER.md). This blocker is
+unchanged.
+
 ---
 
 ## EB-05: The five-traveller validation, Gate D2

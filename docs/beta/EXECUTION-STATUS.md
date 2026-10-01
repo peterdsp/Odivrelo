@@ -1,6 +1,16 @@
 # Execution status
 
-Living document. Last updated: 1 October 2026.
+Living document. Last updated: 2 October 2026.
+
+On 2 October 2026 every platform was re-verified against the running
+implementation, not against this summary. The first-hand evidence, per
+requirement and per platform, is in
+[`REQUIREMENT-MATRIX.md`](REQUIREMENT-MATRIX.md): backend 308 tests, shared KMP
+core 414 tests, web 178 unit plus 384 end-to-end across three engines, iOS 192
+tests with the shared core linked, and the full Android journey driven on the
+API 34 emulator. The real-data position is in
+[`OPERATOR-COVERAGE-LEDGER.md`](OPERATOR-COVERAGE-LEDGER.md): still no corridor
+published with real data, blocked on EB-04.
 
 Branch: `main`. Repository: `peterdsp/Odivrelo`. It was `peterdsp/HodoMap`,
 renamed to `peterdsp/Poravia` on 30 September 2026 and to `peterdsp/Odivrelo`
