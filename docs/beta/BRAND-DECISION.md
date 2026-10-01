@@ -65,6 +65,8 @@ The web CSS prefix moved from `--pv-` to `--od-` with the name.
 |---|---|---|---|
 | Product display name | Poravia | Odivrelo | migrated in every client, all three languages |
 | Public hostname | `poravia.peterdsp.dev` (Pages project `poravia`) | `odivrelo.peterdsp.dev` (Pages project `odivrelo`) | new project deployed; the old one is left serving the last Poravia build |
+| Repository (GitHub) | `peterdsp/Poravia` | `peterdsp/Odivrelo` | renamed; GitHub keeps the permanent redirect for the old URL |
+| Repository (local checkout) | `/Users/peterdsp/git/Poravia` | `/Users/peterdsp/git/Odivrelo` | moved; `.venv` recreated from pinned requirements (absolute interpreter paths) |
 | Apple bundle identifier | `dev.peterdsp.poravia` | `dev.peterdsp.odivrelo` | changed; nothing was ever registered under the old one (EB-02) |
 | Android application id and package | `dev.peterdsp.poravia` | `dev.peterdsp.odivrelo` | changed; no Play record or upload key existed (EB-03) |
 | URL scheme and app links | `poravia://`, `poravia.peterdsp.dev` | `odivrelo://`, `odivrelo.peterdsp.dev` | migrated |

@@ -181,6 +181,14 @@ the checkout path: scripts resolve the root from their own location. The one
 casualty was the local `.venv`, whose interpreter paths are absolute; it was
 recreated from the pinned requirements.
 
+**Update, 1 October 2026.** With the product rename in AD-011 the remote
+repository was renamed to `peterdsp/Odivrelo` (`gh repo rename`, with GitHub
+keeping the permanent redirect) and the `origin` remote was repointed to it.
+The local checkout moved again, to `/Users/peterdsp/git/Odivrelo`, and the
+`.venv` was recreated from the pinned requirements for the same absolute-path
+reason as before. The dates and paths quoted above stay as written; read them
+through this update.
+
 ---
 
 ## AD-008, 30 September 2026: no live tracking, no predictions, in this release
