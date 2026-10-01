@@ -5,6 +5,8 @@
 The **beta delivery ledger** in [`beta/`](beta/) is the current authority on
 what exists, what is verified and what is blocked.
 
+- [Requirement matrix](beta/REQUIREMENT-MATRIX.md), every requirement verified against the running implementation on 2 October 2026
+- [Operator coverage ledger](beta/OPERATOR-COVERAGE-LEDGER.md), what real data is discovered, imported, validated, published, stale or blocked
 - [Execution status](beta/EXECUTION-STATUS.md), what is done, in progress and blocked
 - [Release readiness](beta/RELEASE-READINESS.md), the gates, assessed separately
 - [Test matrix](beta/TEST-MATRIX.md), evidence per platform, with what was not tested
