@@ -178,6 +178,9 @@
     <string name="journey_boarding_not_reviewed">This boarding point has not been reviewed.</string>
     <string name="journey_stops_title">Stops</string>
     <string name="journey_stops_count">%1$d stops</string>
+    <string name="journey_segment_board">Board here</string>
+    <string name="journey_segment_alight">Get off here</string>
+    <string name="journey_segment_outside">Served, outside your leg</string>
     <string name="pickup_allowed">Boarding</string>
     <string name="pickup_not_allowed">No boarding</string>
     <string name="pickup_on_request">Boarding on request</string>

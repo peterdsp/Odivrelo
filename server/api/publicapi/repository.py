@@ -416,6 +416,80 @@ def _pattern_rules(
     return {(row["pattern_id"], row["stop_id"]): row for row in rows}
 
 
+JOURNEY_ID_SEPARATOR = "~"
+
+
+def compose_journey_id(trip_id: str, board_stop_id: str, alight_stop_id: str) -> str:
+    """A journey id that carries the travelled segment, not only the trip.
+
+    A trip can be boarded and left at many stops. A search answers one pair, so
+    the id it returns names that pair. The detail screen then shows the whole run
+    but headlines the traveller's own leg, and a shared link reopens the same leg
+    rather than the whole run. Stop and trip ids never contain the separator.
+    """
+    return f"{trip_id}{JOURNEY_ID_SEPARATOR}{board_stop_id}{JOURNEY_ID_SEPARATOR}{alight_stop_id}"
+
+
+def parse_journey_id(journey_id: str) -> tuple[str, str | None, str | None]:
+    """Split a journey id into its trip and, when present, its segment.
+
+    A bare trip id (no separator) resolves to the whole run, so an older or
+    hand-built link still works. Any other shape is rejected rather than guessed
+    at, so a malformed id cannot silently read as a different journey.
+    """
+    parts = journey_id.split(JOURNEY_ID_SEPARATOR)
+    if len(parts) == 1 and parts[0]:
+        return parts[0], None, None
+    if len(parts) == 3 and all(parts):
+        return parts[0], parts[1], parts[2]
+    raise invalid_request("That journey link is not in a form this release understands.", "id")
+
+
+def _segment_indices(
+    sequence: list[sqlite3.Row],
+    board_stop_id: str | None,
+    alight_stop_id: str | None,
+) -> tuple[int, int]:
+    """Resolve the board and alight positions inside a trip's stop sequence.
+
+    Falls back to the whole run when the segment is absent or cannot be placed in
+    order, so a stale segment on a reshaped trip degrades to the full journey
+    rather than an error.
+    """
+    whole = (0, len(sequence) - 1)
+    if board_stop_id is None or alight_stop_id is None:
+        return whole
+    board_index = next(
+        (i for i, row in enumerate(sequence) if row["stop_id"] == board_stop_id),
+        None,
+    )
+    if board_index is None:
+        return whole
+    alight_index = next(
+        (
+            i
+            for i in range(len(sequence) - 1, board_index, -1)
+            if sequence[i]["stop_id"] == alight_stop_id
+        ),
+        None,
+    )
+    if alight_index is None:
+        return whole
+    return board_index, alight_index
+
+
+def _segment_role(index: int, board_index: int, alight_index: int) -> str:
+    if index == board_index:
+        return "board"
+    if index == alight_index:
+        return "alight"
+    if board_index < index < alight_index:
+        return "onSegment"
+    if index < board_index:
+        return "beforeBoard"
+    return "afterAlight"
+
+
 def _summary(
     trip: sqlite3.Row,
     *,
@@ -599,18 +673,22 @@ def search_journeys(
         ):
             continue
         try:
-            results.append(
-                _summary(
-                    trip,
-                    service_date=service_date,
-                    times=sequence,
-                    origin_index=origin_index,
-                    destination_index=destination_index,
-                    operators=operators,
-                    stops=stops,
-                    now=now,
-                )
+            summary = _summary(
+                trip,
+                service_date=service_date,
+                times=sequence,
+                origin_index=origin_index,
+                destination_index=destination_index,
+                operators=operators,
+                stops=stops,
+                now=now,
             )
+            summary["id"] = compose_journey_id(
+                trip["id"],
+                sequence[origin_index]["stop_id"],
+                sequence[destination_index]["stop_id"],
+            )
+            results.append(summary)
         except GtfsExportError:
             # A stop time that precedes its own service day is a release defect.
             # Drop the journey rather than publish a negative duration.
@@ -683,29 +761,38 @@ def journey_detail(
     data_mode: str,
     now: Any = None,
 ) -> dict[str, Any]:
-    trip, resolved = trip_row(connection, trip_id, service_date)
+    parsed_trip_id, board_stop_id, alight_stop_id = parse_journey_id(trip_id)
+    trip, resolved = trip_row(connection, parsed_trip_id, service_date)
     template = _template_date(trip)
     attributes = _attributes(trip)
     operators = _operator_index(connection)
     stops = _stop_index(connection)
     sequence = _stop_times(connection, [trip["id"]]).get(trip["id"], [])
     if not sequence:
-        raise not_found(f"journey {trip_id} has no published stop times", "id")
+        raise not_found(f"journey {parsed_trip_id} has no published stop times", "id")
 
+    board_index, alight_index = _segment_indices(sequence, board_stop_id, alight_stop_id)
     rules = _pattern_rules(connection, [trip["pattern_id"]])
     summary = _summary(
         trip,
         service_date=resolved,
         times=sequence,
-        origin_index=0,
-        destination_index=len(sequence) - 1,
+        origin_index=board_index,
+        destination_index=alight_index,
         operators=operators,
         stops=stops,
         now=now,
     )
+    # The id echoes the leg actually shown, so a detail body round-trips: sharing
+    # it or reloading it reopens this same leg, not the whole run.
+    summary["id"] = compose_journey_id(
+        trip["id"],
+        sequence[board_index]["stop_id"],
+        sequence[alight_index]["stop_id"],
+    )
 
     stop_list: list[dict[str, Any]] = []
-    for row in sequence:
+    for index, row in enumerate(sequence):
         arrival = row["arrival_at"]
         departure = row["departure_at"]
         rule = rules.get((trip["pattern_id"], row["stop_id"]))
@@ -727,13 +814,18 @@ def journey_detail(
                 "timeQuality": row["time_status"],
                 "pickup": rule["pickup_type"] if rule else "unknown",
                 "dropoff": rule["dropoff_type"] if rule else "unknown",
+                "segmentRole": _segment_role(index, board_index, alight_index),
             }
         )
 
-    boarding_stop = stops.get(sequence[0]["stop_id"])
+    boarding_stop = stops.get(sequence[board_index]["stop_id"])
     boarding = _boarding_point(connection, boarding_stop)
     journey = dict(summary)
     journey["boardingPoint"] = boarding
+    journey["selectedSegment"] = {
+        "boardStopId": sequence[board_index]["stop_id"],
+        "alightStopId": sequence[alight_index]["stop_id"],
+    }
     journey["stops"] = stop_list
     journey["geometry"] = _geometry(connection, trip["pattern_id"])
     journey["restrictions"] = attrs.restrictions(attributes)
@@ -1129,6 +1221,11 @@ def _next_departures(
             )
         except GtfsExportError:
             continue
+        summary["id"] = compose_journey_id(
+            trip["id"],
+            sequence[index]["stop_id"],
+            sequence[len(sequence) - 1]["stop_id"],
+        )
         departures.append(summary)
     departures.sort(key=lambda item: (item["departure"]["at"], item["id"]))
     return departures[:limit]

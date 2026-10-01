@@ -355,7 +355,7 @@ class OdivreloCoreTest {
 
             val results = core.searchJourneys(middle.stopId, later.stopId, date, JourneyFilters.NONE)
                 .results
-            val segment = results.firstOrNull { it.id == detail.id }
+            val segment = results.firstOrNull { it.id.substringBefore("~") == detail.id.substringBefore("~") }
             assertNotNull(segment, "the segment search did not find the journey")
 
             assertEquals(middle.stopId, segment.departure.stopId)
@@ -364,6 +364,26 @@ class OdivreloCoreTest {
             assertEquals(later.arrivalAt ?: later.departureAt, segment.arrival.at)
             // The segment is shorter than the whole journey, which is the point.
             assertTrue(segment.durationMinutes < detail.durationMinutes)
+
+            // The detail for that result follows the same leg: it does not snap
+            // back to the end of the run. This is the defect that was reported.
+            val scoped = core.journeyDetail(segment.id, date).journey
+            assertEquals(segment.id, scoped.id)
+            assertEquals(later.stopId, scoped.arrival.stopId)
+            assertEquals(segment.arrival.at, scoped.arrival.at)
+            assertEquals(segment.durationMinutes, scoped.durationMinutes)
+            assertEquals(middle.stopId, scoped.selectedSegment?.boardStopId)
+            assertEquals(later.stopId, scoped.selectedSegment?.alightStopId)
+            // The whole run is still present, with the leg marked.
+            assertEquals(detail.stops.size, scoped.stops.size)
+            assertEquals(
+                dev.peterdsp.odivrelo.core.model.SegmentRole.BOARD,
+                scoped.stops.first { it.stopId == middle.stopId }.segmentRole,
+            )
+            assertEquals(
+                dev.peterdsp.odivrelo.core.model.SegmentRole.ALIGHT,
+                scoped.stops.first { it.stopId == later.stopId }.segmentRole,
+            )
         } finally {
             core.close()
         }
@@ -391,7 +411,7 @@ class OdivreloCoreTest {
                 JourneyFilters.NONE,
             )
             assertTrue(
-                results.results.none { it.id == detail.id },
+                results.results.none { it.id.substringBefore("~") == detail.id.substringBefore("~") },
                 "a journey must never be offered boarding at a stop that forbids pickup",
             )
         } finally {
@@ -969,7 +989,7 @@ class OdivreloCoreTest {
             // The full detail is cached, which is what makes Trip Ready honest when
             // there is no network and no installed release.
             val cached = assertNotNull(core.savedTripDetail(trip.id))
-            assertEquals(overnight.id, cached.journey.id)
+            assertEquals(overnight.id, cached.journey.id.substringBefore("~"))
             assertTrue(cached.journey.stops.isNotEmpty())
             assertNotNull(cached.journey.boardingPoint)
 
@@ -1002,7 +1022,7 @@ class OdivreloCoreTest {
             assertEquals(Release.releaseId, saved.releaseId)
             assertTrue(saved.cachedAt.isNotBlank())
             val cached = assertNotNull(core.savedTripDetail(trip.id))
-            assertEquals(journeyId, cached.journey.id)
+            assertEquals(journeyId, cached.journey.id.substringBefore("~"))
             assertTrue(cached.journey.stops.isNotEmpty())
         } finally {
             core.close()

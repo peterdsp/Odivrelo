@@ -48,6 +48,15 @@ where RawValue == String {
     static var unrecognised: Self { get }
 }
 
+/// Folds an enum name so a Kotlin constant and a Swift case compare equal
+/// regardless of separators or case: `NOT_ALLOWED` and `notAllowed` both fold to
+/// `notallowed`.
+enum ContractEnumNameFolding {
+    static func fold(_ value: String) -> String {
+        value.lowercased().filter { $0 != "_" && $0 != "-" }
+    }
+}
+
 public extension ContractEnum {
     init(from decoder: any Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
@@ -59,10 +68,19 @@ public extension ContractEnum {
         try container.encode(rawValue)
     }
 
-    /// Maps a Kotlin enum's `name` onto this case. Kotlin names are
-    /// lowerCamelCase in the exported API.
+    /// Maps a Kotlin enum's `name` onto this case.
+    ///
+    /// Kotlin's exported `Enum.name` is the declared constant, which is
+    /// SCREAMING_SNAKE_CASE (for example `NOT_ALLOWED`), while a case here is
+    /// lowerCamelCase (`notAllowed`). An exact match is tried first so a value
+    /// that already matches is unchanged, then both sides are compared with their
+    /// separators dropped and case folded, which maps `NOT_ALLOWED` onto
+    /// `notAllowed` without a per-enum table. An unknown value stays
+    /// `unrecognised` rather than guessing.
     static func fromKotlinName(_ name: String) -> Self {
-        Self.allCases.first { $0.kotlinName == name } ?? .unrecognised
+        if let direct = Self(rawValue: name) { return direct }
+        let folded = ContractEnumNameFolding.fold(name)
+        return Self.allCases.first { ContractEnumNameFolding.fold($0.rawValue) == folded } ?? .unrecognised
     }
 
     var kotlinName: String { rawValue }
@@ -123,6 +141,12 @@ public enum FreshnessState: String, ContractEnum {
 public enum BoardingRule: String, ContractEnum {
     case allowed, notAllowed, onRequest, coordinateWithOperator
     public static var unrecognised: BoardingRule { .notAllowed }
+}
+
+/// Where a stop sits relative to the traveller's own leg.
+public enum SegmentRole: String, ContractEnum {
+    case board, onSegment, alight, beforeBoard, afterAlight
+    public static var unrecognised: SegmentRole { .onSegment }
 }
 
 public enum Confidence: String, ContractEnum {
@@ -670,6 +694,7 @@ public struct JourneyStop: Hashable, Codable, Sendable, Identifiable {
     public var timeQuality: TimeQuality
     public var pickup: BoardingRule
     public var dropoff: BoardingRule
+    public var segmentRole: SegmentRole
     public var id: String { "\(sequence)-\(stopId)" }
 
     public init(
@@ -680,7 +705,8 @@ public struct JourneyStop: Hashable, Codable, Sendable, Identifiable {
         departureAt: Date?,
         timeQuality: TimeQuality,
         pickup: BoardingRule,
-        dropoff: BoardingRule
+        dropoff: BoardingRule,
+        segmentRole: SegmentRole = .onSegment
     ) {
         self.stopId = stopId
         self.sequence = sequence
@@ -690,6 +716,7 @@ public struct JourneyStop: Hashable, Codable, Sendable, Identifiable {
         self.timeQuality = timeQuality
         self.pickup = pickup
         self.dropoff = dropoff
+        self.segmentRole = segmentRole
     }
 }
 
@@ -769,6 +796,8 @@ public struct JourneyDetailBody: Hashable, Codable, Sendable, Identifiable {
     public var confidence: Confidence
     /// `nil` when no boarding point has been reviewed for this journey.
     public var boardingPoint: BoardingPoint?
+    /// The leg this detail headlines: where the traveller boards and alights.
+    public var selectedSegment: SelectedSegment?
     public var stops: [JourneyStop]
     public var geometry: RouteGeometry?
     public var restrictions: [Restriction]
@@ -790,6 +819,7 @@ public struct JourneyDetailBody: Hashable, Codable, Sendable, Identifiable {
         freshness: Freshness,
         confidence: Confidence,
         boardingPoint: BoardingPoint?,
+        selectedSegment: SelectedSegment? = nil,
         stops: [JourneyStop],
         geometry: RouteGeometry?,
         restrictions: [Restriction],
@@ -810,12 +840,24 @@ public struct JourneyDetailBody: Hashable, Codable, Sendable, Identifiable {
         self.freshness = freshness
         self.confidence = confidence
         self.boardingPoint = boardingPoint
+        self.selectedSegment = selectedSegment
         self.stops = stops
         self.geometry = geometry
         self.restrictions = restrictions
         self.provenance = provenance
         self.purchase = purchase
         self.correctionUrl = correctionUrl
+    }
+}
+
+/// The leg a journey detail headlines, as a pair of stop ids.
+public struct SelectedSegment: Hashable, Codable, Sendable {
+    public var boardStopId: String
+    public var alightStopId: String
+
+    public init(boardStopId: String, alightStopId: String) {
+        self.boardStopId = boardStopId
+        self.alightStopId = alightStopId
     }
 }
 

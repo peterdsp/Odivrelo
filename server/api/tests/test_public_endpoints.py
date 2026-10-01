@@ -146,8 +146,20 @@ def test_journey_detail_carries_stops_geometry_and_provenance(client, seeded, id
     envelope_is_sound(body, seeded["releaseId"])
     journey = body["journey"]
 
-    assert journey["id"] == journey_id
+    # A bare trip id resolves to the whole run: the first stop is boarded and the
+    # last is alighted, and the id echoes that leg.
+    assert journey["id"] == f"{journey_id}~{ids[BAY_A1_EXTERNAL_ID]}~{ids[ORAVO_EXTERNAL_ID]}"
+    assert journey["selectedSegment"] == {
+        "boardStopId": ids[BAY_A1_EXTERNAL_ID],
+        "alightStopId": ids[ORAVO_EXTERNAL_ID],
+    }
     assert [stop["sequence"] for stop in journey["stops"]] == [1, 2, 3, 4]
+    assert [stop["segmentRole"] for stop in journey["stops"]] == [
+        "board",
+        "onSegment",
+        "onSegment",
+        "alight",
+    ]
     assert journey["stops"][0]["departureAt"] == f"{DAYTIME_DATE}T09:00:00+03:00"
     assert journey["stops"][0]["pickup"] == "allowed"
     assert journey["stops"][0]["dropoff"] == "not_allowed"

@@ -455,6 +455,24 @@
       "en": "Stops",
       "sq": "Ndalesat"
     },
+    "detail.segmentBoard": {
+      "comment": "Marks the stop where the traveller boards their leg",
+      "el": "Επιβιβαστείτε εδώ",
+      "en": "Board here",
+      "sq": "Hip këtu"
+    },
+    "detail.segmentAlight": {
+      "comment": "Marks the stop where the traveller leaves their leg",
+      "el": "Αποβιβαστείτε εδώ",
+      "en": "Get off here",
+      "sq": "Zbrit këtu"
+    },
+    "detail.segmentOutside": {
+      "comment": "Marks a stop the coach serves outside the chosen leg",
+      "el": "Εξυπηρετείται, εκτός της διαδρομής σας",
+      "en": "Served, outside your leg",
+      "sq": "Shërbehet, jashtë segmentit tënd"
+    },
     "detail.stopsListAlternative": {
       "comment": "Explains the list carries everything the map shows",
       "el": "Ο κατάλογος στάσεων περιέχει κάθε πληροφορία που δείχνει ο χάρτης.",

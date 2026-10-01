@@ -116,6 +116,9 @@ public enum L10n {
         "detail.restrictions",
         "detail.retrievedAt",
         "detail.retrievedAtLabel",
+        "detail.segmentAlight",
+        "detail.segmentBoard",
+        "detail.segmentOutside",
         "detail.stepFreeNo",
         "detail.stepFreeUnreviewed",
         "detail.stepFreeYes",
@@ -596,6 +599,15 @@ public extension L10n {
 
     /// Row label for when a source was retrieved
     static var detailRetrievedAtLabel: String { string("detail.retrievedAtLabel") }
+
+    /// Marks the stop where the traveller leaves their leg
+    static var detailSegmentAlight: String { string("detail.segmentAlight") }
+
+    /// Marks the stop where the traveller boards their leg
+    static var detailSegmentBoard: String { string("detail.segmentBoard") }
+
+    /// Marks a stop the coach serves outside the chosen leg
+    static var detailSegmentOutside: String { string("detail.segmentOutside") }
 
     /// Reviewed as not step-free
     static var detailStepFreeNo: String { string("detail.stepFreeNo") }

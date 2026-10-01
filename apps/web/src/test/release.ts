@@ -22,6 +22,7 @@ import type {
   CoverageResult,
   JourneyResult,
   JourneysResult,
+  JourneyStop,
   Manifest,
   Meta,
   OperatorResult,
@@ -34,6 +35,7 @@ import type {
 import type { JourneysPack, OperatorsPack, PlacesPack, StopsPack } from '../data/packShapes';
 import { journeysPackName, serviceDateFromPackName } from '../data/packShapes';
 import { searchPlaces } from '../data/packQuery';
+import { boardingPointFromStop, composeJourneyId, parseJourneyId, scopedDetail, segmentSummary, tripIdOf } from '../data/segments';
 
 const here = dirname(fileURLToPath(import.meta.url));
 export const DATA_DIR = join(here, '..', '..', 'public', 'data');
@@ -190,7 +192,7 @@ export function makeApiFetch(options: ApiFetchOptions = {}): typeof fetch {
           const last = detail.stops[detail.stops.length - 1];
           if (!calling || !last) continue;
           departures.push({
-            journeyId: detail.id,
+            journeyId: composeJourneyId(tripIdOf(detail.id), id, last.stopId),
             operator: detail.operator,
             departureAt: calling.departureAt,
             arrivalAt: calling.arrivalAt,
@@ -207,11 +209,22 @@ export function makeApiFetch(options: ApiFetchOptions = {}): typeof fetch {
 
     const journeyMatch = /^\/v1\/journeys\/(.+)$/.exec(path);
     if (journeyMatch) {
-      const id = decodeURIComponent(journeyMatch[1] as string);
+      const rawId = decodeURIComponent(journeyMatch[1] as string);
+      let parsed: ReturnType<typeof parseJourneyId>;
+      try {
+        parsed = parseJourneyId(rawId);
+      } catch {
+        return error(400, 'invalid_request', 'That journey link is not in a form this release understands.', 'id');
+      }
       const date = q.get('date') ?? '';
       const pack = journeysFor(date);
-      const journey = pack?.journeys[id];
-      if (!journey) return error(404, 'not_found', 'That journey does not run on that service date in this release.');
+      const detail = pack?.journeys[parsed.tripId];
+      if (!detail) return error(404, 'not_found', 'That journey does not run on that service date in this release.');
+      const resolver =
+        parsed.boardStopId && parsed.boardStopId !== [...detail.stops].sort((a, b) => a.sequence - b.sequence)[0]?.stopId
+          ? (stop: JourneyStop) => boardingPointFromStop(stops.stops[stop.stopId], stop)
+          : undefined;
+      const journey = scopedDetail(detail, parsed.boardStopId, parsed.alightStopId, resolver);
       return jsonResponse({ ...envelope, journey } satisfies JourneyResult);
     }
 
@@ -245,9 +258,12 @@ export function makeApiFetch(options: ApiFetchOptions = {}): typeof fetch {
       const originIds = expand(origin.id, origin.kind);
       const destinationIds = expand(destination.id, destination.kind);
 
-      let results = pack.results.filter(
-        (journey) => originIds.has(journey.departure.stopId) && destinationIds.has(journey.arrival.stopId),
-      );
+      let results = pack.results
+        .map((summary) => {
+          const detail = pack.journeys[summary.id];
+          return detail ? segmentSummary(summary, detail, originIds, destinationIds) : null;
+        })
+        .filter((journey): journey is NonNullable<typeof journey> => journey !== null);
       const operatorFilter = q.get('operators');
       if (operatorFilter) {
         const allowed = new Set(operatorFilter.split(','));
@@ -255,7 +271,7 @@ export function makeApiFetch(options: ApiFetchOptions = {}): typeof fetch {
       }
       if (q.get('accessible') === 'true') {
         results = results.filter((journey) => {
-          const detail = pack.journeys[journey.id];
+          const detail = pack.journeys[tripIdOf(journey.id)];
           return detail?.boardingPoint.stepFree === true && detail.boardingPoint.reviewState === 'published';
         });
       }
@@ -273,9 +289,10 @@ export function makeApiFetch(options: ApiFetchOptions = {}): typeof fetch {
       }
 
       if (results.length === 0) {
-        const anyOnThisDate = pack.results.some(
-          (journey) => originIds.has(journey.departure.stopId) && destinationIds.has(journey.arrival.stopId),
-        );
+        const anyOnThisDate = pack.results.some((summary) => {
+          const detail = pack.journeys[summary.id];
+          return detail ? segmentSummary(summary, detail, originIds, destinationIds) !== null : false;
+        });
         return jsonResponse({
           ...base,
           coverage: cov,
@@ -283,6 +300,7 @@ export function makeApiFetch(options: ApiFetchOptions = {}): typeof fetch {
           unavailableReason: anyOnThisDate ? 'no_service_on_date' : 'outside_coverage',
         } satisfies JourneysResult);
       }
+      results.sort((a, b) => a.departure.at.localeCompare(b.departure.at) || a.id.localeCompare(b.id));
       return jsonResponse({ ...base, coverage: cov, results, unavailableReason: null } satisfies JourneysResult);
     }
 

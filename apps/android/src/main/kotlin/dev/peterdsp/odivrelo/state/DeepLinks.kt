@@ -150,7 +150,7 @@ object DeepLinkParser {
         if (raw == "." || raw == "..") return null
         if (raw.contains("..")) return null
         if (raw.contains('/') || raw.contains('\\')) return null
-        if (!raw.all { it.isLetterOrDigit() && it.code < 128 || it in ".-_:" }) return null
+        if (!raw.all { it.isLetterOrDigit() && it.code < 128 || it in ".-_:~" }) return null
         return raw
     }
 

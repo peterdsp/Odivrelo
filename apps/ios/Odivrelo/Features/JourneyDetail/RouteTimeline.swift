@@ -20,18 +20,22 @@ struct RouteTimeline: View {
     }
 
     private func row(_ call: JourneyStop, isFirst: Bool, isLast: Bool) -> some View {
-        HStack(alignment: .top, spacing: Theme.Space.small) {
-            marker(isFirst: isFirst, isLast: isLast)
+        let isBoard = call.segmentRole == .board
+        let isAlight = call.segmentRole == .alight
+        let isOutside = call.segmentRole == .beforeBoard || call.segmentRole == .afterAlight
+        return HStack(alignment: .top, spacing: Theme.Space.small) {
+            marker(isFirst: isFirst, isLast: isLast, isBoard: isBoard, isAlight: isAlight)
 
             VStack(alignment: .leading, spacing: Theme.Space.xxSmall) {
                 Text(call.name.resolved(for: language))
-                    .font(.body.weight(isFirst || isLast ? .semibold : .regular))
+                    .font(.body.weight(isBoard || isAlight || isFirst || isLast ? .semibold : .regular))
                     .foregroundStyle(Theme.Palette.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
 
                 times(call)
 
                 BadgeFlow {
+                    segmentBadge(call.segmentRole)
                     BoardingRuleBadge(rule: call.pickup, isPickup: true)
                     BoardingRuleBadge(rule: call.dropoff, isPickup: false)
                     if call.timeQuality != .scheduled {
@@ -45,20 +49,36 @@ struct RouteTimeline: View {
             }
             .padding(.bottom, isLast ? 0 : Theme.Space.medium)
         }
+        .opacity(isOutside ? 0.6 : 1)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel(call))
     }
 
-    private func marker(isFirst: Bool, isLast: Bool) -> some View {
-        VStack(spacing: 0) {
+    @ViewBuilder
+    private func segmentBadge(_ role: SegmentRole) -> some View {
+        switch role {
+        case .board:
+            StatusBadge(L10n.detailSegmentBoard, systemImage: "figure.walk.arrival", tone: .warning)
+        case .alight:
+            StatusBadge(L10n.detailSegmentAlight, systemImage: "figure.walk.departure", tone: .info)
+        case .beforeBoard, .afterAlight:
+            StatusBadge(L10n.detailSegmentOutside, systemImage: "arrow.right.circle", tone: .neutral)
+        default:
+            EmptyView()
+        }
+    }
+
+    private func marker(isFirst: Bool, isLast: Bool, isBoard: Bool, isAlight: Bool) -> some View {
+        let emphasised = isFirst || isLast || isBoard || isAlight
+        return VStack(spacing: 0) {
             Rectangle()
                 .fill(isFirst ? Color.clear : Theme.Palette.primary.opacity(0.35))
                 .frame(width: 2, height: 6)
             Circle()
-                .fill(isFirst || isLast ? Theme.Palette.primary : Theme.Palette.surface)
-                .frame(width: isFirst || isLast ? 14 : 10, height: isFirst || isLast ? 14 : 10)
+                .fill(isBoard ? Theme.Palette.accent : emphasised ? Theme.Palette.primary : Theme.Palette.surface)
+                .frame(width: emphasised ? 14 : 10, height: emphasised ? 14 : 10)
                 .overlay {
-                    Circle().stroke(Theme.Palette.primary, lineWidth: 2)
+                    Circle().stroke(isBoard ? Theme.Palette.accent : Theme.Palette.primary, lineWidth: 2)
                 }
             Rectangle()
                 .fill(isLast ? Color.clear : Theme.Palette.primary.opacity(0.35))
@@ -93,6 +113,12 @@ struct RouteTimeline: View {
 
     private func accessibilityLabel(_ call: JourneyStop) -> String {
         var parts: [String] = ["\(call.sequence). \(call.name.resolved(for: language))"]
+        switch call.segmentRole {
+        case .board: parts.append(L10n.detailSegmentBoard)
+        case .alight: parts.append(L10n.detailSegmentAlight)
+        case .beforeBoard, .afterAlight: parts.append(L10n.detailSegmentOutside)
+        default: break
+        }
         if let arrival = call.arrivalAt {
             parts.append("\(L10n.searchDestination) \(Formatters.clock(arrival))")
         }

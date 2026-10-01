@@ -6,6 +6,7 @@ pinned here against the served responses rather than against a helper function.
 from __future__ import annotations
 
 from conftest import (
+    trip_of,
     AUTUMN_BACK_DATE,
     BAY_A1_EXTERNAL_ID,
     BAY_A2_EXTERNAL_ID,
@@ -36,7 +37,7 @@ def search(client, ids, date, **extra):
 def test_overnight_journey_keeps_its_service_date_and_reports_crossing(client, ids):
     body = search(client, ids, DAYTIME_DATE)
     overnight = next(
-        result for result in body["results"] if result["id"] == ids["trip-overnight"]
+        result for result in body["results"] if trip_of(result["id"]) == ids["trip-overnight"]
     )
     assert overnight["crossesMidnight"] is True
     # The service date stays on the departure day even though arrival is the next.
@@ -60,7 +61,7 @@ def test_overnight_detail_keeps_the_requested_service_date(client, ids):
 def test_daytime_journey_does_not_cross_midnight(client, ids):
     body = search(client, ids, DAYTIME_DATE)
     daytime = next(
-        result for result in body["results"] if result["id"] == ids["trip-daytime"]
+        result for result in body["results"] if trip_of(result["id"]) == ids["trip-daytime"]
     )
     assert daytime["crossesMidnight"] is False
 
@@ -69,7 +70,7 @@ def test_spring_forward_date_keeps_the_local_wall_clock(client, ids):
     body = search(client, ids, SPRING_FORWARD_DATE)
     assert len(body["results"]) == 1
     journey = body["results"][0]
-    assert journey["id"] == ids["trip-sunday-dst"]
+    assert trip_of(journey["id"]) == ids["trip-sunday-dst"]
     assert journey["serviceDate"] == SPRING_FORWARD_DATE
     # Greece moves to EEST at 03:00 local on 29 March 2026, so 09:00 local is +03:00.
     assert journey["departure"]["at"] == f"{SPRING_FORWARD_DATE}T09:00:00+03:00"
@@ -81,7 +82,7 @@ def test_autumn_back_date_keeps_the_local_wall_clock(client, ids):
     body = search(client, ids, AUTUMN_BACK_DATE)
     assert len(body["results"]) == 1
     journey = body["results"][0]
-    assert journey["id"] == ids["trip-sunday-dst"]
+    assert trip_of(journey["id"]) == ids["trip-sunday-dst"]
     assert journey["serviceDate"] == AUTUMN_BACK_DATE
     # Greece returns to EET at 04:00 local on 25 October 2026: the same journey
     # still departs at 09:00 local, now at +02:00.
@@ -117,7 +118,7 @@ def test_calendar_exception_removal_hides_the_journey(client, ids):
 
 def test_the_same_journey_runs_on_an_ordinary_calendar_weekday(client, ids):
     body = search(client, ids, CALENDAR_NORMAL_DATE)
-    assert [result["id"] for result in body["results"]] == [
+    assert [trip_of(result["id"]) for result in body["results"]] == [
         ids["trip-weekday-afternoon"]
     ]
     assert body["results"][0]["departure"]["at"] == (
@@ -129,7 +130,7 @@ def test_calendar_exception_addition_shows_the_journey(client, ids):
     # 11 April 2026 is a Saturday, which the weekday calendar excludes. The added
     # exception is what puts the journey back on that date.
     body = search(client, ids, CALENDAR_ADDED_DATE)
-    assert [result["id"] for result in body["results"]] == [
+    assert [trip_of(result["id"]) for result in body["results"]] == [
         ids["trip-weekday-afternoon"]
     ]
     assert body["results"][0]["serviceDate"] == CALENDAR_ADDED_DATE
@@ -154,8 +155,8 @@ def test_accessible_filter_keeps_only_reviewed_step_free_boarding(client, ids):
     assert len(everything["results"]) == 3
     # The overnight service boards at bay A2, which has no reviewed step-free
     # boarding point, so it drops out.
-    assert ids["trip-overnight"] in {r["id"] for r in everything["results"]}
-    assert ids["trip-overnight"] not in {r["id"] for r in accessible["results"]}
+    assert ids["trip-overnight"] in {trip_of(r["id"]) for r in everything["results"]}
+    assert ids["trip-overnight"] not in {trip_of(r["id"]) for r in accessible["results"]}
     assert all(
         result["departure"]["stopId"] == ids[BAY_A1_EXTERNAL_ID]
         for result in accessible["results"]
@@ -164,7 +165,7 @@ def test_accessible_filter_keeps_only_reviewed_step_free_boarding(client, ids):
 
 def test_purchase_actions_cover_online_and_ticket_office_only(client, ids):
     body = search(client, ids, DAYTIME_DATE)
-    by_id = {result["id"]: result for result in body["results"]}
+    by_id = {trip_of(result["id"]): result for result in body["results"]}
     assert by_id[ids["trip-daytime"]]["purchase"]["kind"] == "online"
     assert by_id[ids["trip-daytime"]]["purchase"]["url"]
 
