@@ -165,3 +165,6 @@ build/
 /apps/web/.vite/
 # Release packs are copied in by scripts/web-sync-packs.sh, never edited by hand.
 /apps/web/public/data/
+
+# Wrangler CLI cache (account and project lookups). Local only.
+.wrangler/
