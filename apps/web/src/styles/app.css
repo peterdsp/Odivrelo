@@ -1274,6 +1274,24 @@ svg {
   border-color: var(--od-accent-ink);
 }
 
+.od-timeline__item--alighting .od-timeline__dot {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  background: var(--od-primary);
+  border-color: var(--od-primary-ink);
+}
+
+/* Stops the coach also serves outside the chosen leg are kept, but recede so the
+   leg reads first. The dimming is not the only cue: each carries a text badge. */
+.od-timeline__item--outside .od-timeline__body {
+  opacity: 0.6;
+}
+
+.od-timeline__item--outside .od-timeline__dot {
+  background: var(--od-surface);
+  border-color: var(--od-border-strong);
+}
+
 .od-timeline__body {
   padding-block: var(--od-space-2) var(--od-space-5);
   display: grid;

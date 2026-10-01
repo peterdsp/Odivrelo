@@ -412,3 +412,42 @@ struct DemonstrationNoticeTests {
         #expect(!L10n.demoTitle.isEmpty)
     }
 }
+
+/// The enum boundary: a Kotlin constant name maps onto the matching Swift case.
+///
+/// The core hands the app each enum as its Kotlin `name`, which is
+/// SCREAMING_SNAKE_CASE. These pin the mapping so the real core does not quietly
+/// decode every enum to its unrecognised fallback, which once hid the boarding
+/// rules, the time quality and the segment role behind uniform defaults.
+@Suite("Kotlin enum names")
+struct KotlinEnumNameTests {
+    @Test("Boarding rules map from their Kotlin names")
+    func boardingRules() {
+        #expect(BoardingRule.fromKotlinName("ALLOWED") == .allowed)
+        #expect(BoardingRule.fromKotlinName("NOT_ALLOWED") == .notAllowed)
+        #expect(BoardingRule.fromKotlinName("ON_REQUEST") == .onRequest)
+        #expect(BoardingRule.fromKotlinName("COORDINATE_WITH_OPERATOR") == .coordinateWithOperator)
+    }
+
+    @Test("Segment roles map from their Kotlin names")
+    func segmentRoles() {
+        #expect(SegmentRole.fromKotlinName("BOARD") == .board)
+        #expect(SegmentRole.fromKotlinName("ON_SEGMENT") == .onSegment)
+        #expect(SegmentRole.fromKotlinName("ALIGHT") == .alight)
+        #expect(SegmentRole.fromKotlinName("BEFORE_BOARD") == .beforeBoard)
+        #expect(SegmentRole.fromKotlinName("AFTER_ALIGHT") == .afterAlight)
+    }
+
+    @Test("Other contract enums map from their Kotlin names")
+    func otherEnums() {
+        #expect(TimeQuality.fromKotlinName("SCHEDULED") == .scheduled)
+        #expect(Confidence.fromKotlinName("REVIEWED") == .reviewed)
+        #expect(ReviewState.fromKotlinName("PUBLISHED") == .published)
+    }
+
+    @Test("An already lowerCamelCase name still maps, and an unknown falls back")
+    func directAndUnknown() {
+        #expect(BoardingRule.fromKotlinName("notAllowed") == .notAllowed)
+        #expect(SegmentRole.fromKotlinName("SOMETHING_NEW") == .onSegment)
+    }
+}

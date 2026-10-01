@@ -18,9 +18,12 @@
  * and the network is not touched at all.
  */
 import type {
+  BoardingPoint,
   CoverageResult,
+  JourneyDetail,
   JourneyResult,
   JourneysResult,
+  JourneyStop,
   Manifest,
   ManifestFile,
   Meta,
@@ -37,6 +40,7 @@ import type { JourneyQuery, PublicDataSource } from './PublicDataSource';
 import type { CoveragePack, JourneysPack, MetaPack, OperatorsPack, PlacesPack, SourcesPack, StopsPack } from './packShapes';
 import { journeysPackName, serviceDateFromPackName } from './packShapes';
 import { searchPlaces } from './packQuery';
+import { boardingPointFromStop, composeJourneyId, parseJourneyId, scopedDetail, segmentSummary, tripIdOf } from './segments';
 import { digestsMatch, sha256Hex } from '../lib/digest';
 import { BRAND } from '../brand/brand';
 
@@ -288,7 +292,7 @@ export class StaticPackSource implements PublicDataSource {
       const last = detail.stops[detail.stops.length - 1];
       if (!last) continue;
       departures.push({
-        journeyId: detail.id,
+        journeyId: composeJourneyId(tripIdOf(detail.id), stopId, last.stopId),
         operator: detail.operator,
         departureAt: calling.departureAt,
         arrivalAt: calling.arrivalAt,
@@ -360,9 +364,12 @@ export class StaticPackSource implements PublicDataSource {
     const originIds = expand(origin);
     const destinationIds = expand(destination);
 
-    let results = journeys.results.filter(
-      (journey) => originIds.has(journey.departure.stopId) && destinationIds.has(journey.arrival.stopId),
-    );
+    let results = journeys.results
+      .map((summary) => {
+        const detail = journeys.journeys[summary.id];
+        return detail ? segmentSummary(summary, detail, originIds, destinationIds) : null;
+      })
+      .filter((journey): journey is NonNullable<typeof journey> => journey !== null);
 
     if (query.operatorIds && query.operatorIds.length > 0) {
       const allowed = new Set(query.operatorIds);
@@ -370,7 +377,7 @@ export class StaticPackSource implements PublicDataSource {
     }
     if (query.accessible) {
       results = results.filter((journey) => {
-        const detail = journeys.journeys[journey.id];
+        const detail = journeys.journeys[tripIdOf(journey.id)];
         return detail?.boardingPoint.stepFree === true && detail.boardingPoint.reviewState === 'published';
       });
     }
@@ -386,30 +393,52 @@ export class StaticPackSource implements PublicDataSource {
     }
 
     if (results.length === 0) {
-      const anyOnThisDate = journeys.results.some(
-        (journey) => originIds.has(journey.departure.stopId) && destinationIds.has(journey.arrival.stopId),
-      );
+      const anyOnThisDate = journeys.results.some((summary) => {
+        const detail = journeys.journeys[summary.id];
+        return detail ? segmentSummary(summary, detail, originIds, destinationIds) !== null : false;
+      });
       return { ...base, coverage, results: [], unavailableReason: anyOnThisDate ? 'no_service_on_date' : 'outside_coverage' };
     }
 
+    results.sort((a, b) => a.departure.at.localeCompare(b.departure.at) || a.id.localeCompare(b.id));
     return { ...base, coverage, results, unavailableReason: null };
   }
 
   async journey(id: string, serviceDate: string, signal?: AbortSignal): Promise<JourneyResult> {
-    if (!isIdentifier(id)) throw new ContractError('invalid_request', 'That journey link is not in a form this release understands.');
+    const { tripId, boardStopId, alightStopId } = parseJourneyId(id);
     if (!isServiceDate(serviceDate)) throw new ContractError('invalid_request', 'That service date is not usable.', 'date');
     const journeys = await this.journeysFor(serviceDate, signal);
-    const detail = journeys?.journeys[id];
+    const detail = journeys?.journeys[tripId];
     if (!journeys || !detail) {
       throw new ContractError('not_found', 'That journey does not run on that service date in this release.');
     }
+    const boardingPointFor = await this.boardingPointResolver(detail, boardStopId, signal);
     return {
       contractVersion: journeys.contractVersion,
       releaseId: journeys.releaseId,
       publishedAt: journeys.publishedAt,
       dataMode: journeys.dataMode,
-      journey: detail,
+      journey: scopedDetail(detail, boardStopId, alightStopId, boardingPointFor),
     };
+  }
+
+  /**
+   * A way to describe the boarding point of a leg that starts partway along the
+   * run. The run's own boarding point only describes its first stop, so an
+   * intermediate boarding reads its stop from the stops pack. A leg that boards at
+   * the first stop needs nothing extra.
+   */
+  private async boardingPointResolver(
+    detail: JourneyDetail,
+    boardStopId: string | null,
+    signal?: AbortSignal,
+  ): Promise<((stop: JourneyStop) => BoardingPoint) | undefined> {
+    const ordered = [...detail.stops].sort((a, b) => a.sequence - b.sequence);
+    const first = ordered[0];
+    if (!boardStopId || !first || boardStopId === first.stopId) return undefined;
+    if (!ordered.some((stop) => stop.stopId === boardStopId)) return undefined;
+    const stopsPack = await this.pack<StopsPack>('stops', signal);
+    return (stop: JourneyStop) => boardingPointFromStop(stopsPack.stops[stop.stopId], stop);
   }
 
   async operators(signal?: AbortSignal): Promise<OperatorsResult> {

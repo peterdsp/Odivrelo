@@ -1705,6 +1705,78 @@
         }
       }
     },
+    "detail.segmentAlight": {
+      "comment": "Marks the stop where the traveller leaves their leg",
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αποβιβαστείτε εδώ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get off here"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbrit këtu"
+          }
+        }
+      }
+    },
+    "detail.segmentBoard": {
+      "comment": "Marks the stop where the traveller boards their leg",
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επιβιβαστείτε εδώ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Board here"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hip këtu"
+          }
+        }
+      }
+    },
+    "detail.segmentOutside": {
+      "comment": "Marks a stop the coach serves outside the chosen leg",
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εξυπηρετείται, εκτός της διαδρομής σας"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Served, outside your leg"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shërbehet, jashtë segmentit tënd"
+          }
+        }
+      }
+    },
     "detail.stepFreeNo": {
       "comment": "Reviewed as not step-free",
       "extractionState": "manual",

@@ -124,7 +124,7 @@ public enum DeepLinkRouter {
         // A separator must not survive decoding, in either direction.
         guard !raw.contains("/"), !raw.contains("\\") else { return nil }
 
-        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: ".-_:"))
+        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: ".-_:~"))
         guard raw.unicodeScalars.allSatisfy(allowed.contains) else { return nil }
         return raw
     }

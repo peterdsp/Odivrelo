@@ -246,7 +246,11 @@ def test_every_journey_detail_in_a_pack_equals_its_endpoint(client, pack_bodies)
 def test_every_journey_result_in_a_pack_equals_a_search_for_the_same_pair(
     client, pack_bodies
 ):
-    """A pack result is the whole journey, which is what searching it returns."""
+    """A pack result is the whole journey, which is what searching it returns.
+
+    The served id now also names the boarded leg, so it is the pack's trip id plus
+    the exact pair searched. Everything else is compared byte for byte.
+    """
     checked = 0
     for name, body in pack_bodies.items():
         if not name.startswith("journeys-"):
@@ -261,12 +265,17 @@ def test_every_journey_result_in_a_pack_equals_a_search_for_the_same_pair(
                     "date": service_date,
                 },
             ).json()["results"]
-            match = next(
-                (item for item in served if item["id"] == result["id"]), None
+            expected_id = (
+                f"{result['id']}~{result['departure']['stopId']}"
+                f"~{result['arrival']['stopId']}"
             )
-            assert match is not None, (name, result["id"])
+            match = next(
+                (item for item in served if item["id"] == expected_id), None
+            )
+            assert match is not None, (name, expected_id)
             result.pop("freshness", None)
             match.pop("freshness", None)
+            match["id"] = result["id"]
             assert canonical(result) == canonical(match), (name, result["id"])
             checked += 1
     assert checked >= 5

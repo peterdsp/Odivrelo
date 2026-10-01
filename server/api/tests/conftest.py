@@ -28,6 +28,7 @@ BAY_A1_EXTERNAL_ID = "stop-aloria-bay-a1"
 BAY_A2_EXTERNAL_ID = "stop-aloria-bay-a2"
 ORAVO_EXTERNAL_ID = "stop-oravo-junction"
 MISTONA_EXTERNAL_ID = "stop-mistona-village"
+VERAKI_EXTERNAL_ID = "stop-veraki-harbour"
 
 DAYTIME_DATE = "2026-10-02"
 SPRING_FORWARD_DATE = "2026-03-29"
@@ -37,6 +38,11 @@ CALENDAR_ADDED_DATE = "2026-04-11"
 CALENDAR_NORMAL_DATE = "2026-04-08"
 
 ADMIN_TOKEN = "test-admin-token-that-is-long-enough-1234567890"
+
+
+def trip_of(journey_id: str) -> str:
+    """The trip part of a journey id, which now also carries its boarded leg."""
+    return journey_id.split("~")[0]
 
 
 @pytest.fixture(scope="session")

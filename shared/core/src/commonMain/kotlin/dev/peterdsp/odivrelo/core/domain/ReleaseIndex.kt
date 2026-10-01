@@ -1,5 +1,6 @@
 package dev.peterdsp.odivrelo.core.domain
 
+import dev.peterdsp.odivrelo.core.model.BoardingPoint
 import dev.peterdsp.odivrelo.core.model.BoardingRule
 import dev.peterdsp.odivrelo.core.model.Coverage
 import dev.peterdsp.odivrelo.core.model.CoverageState
@@ -17,6 +18,9 @@ import dev.peterdsp.odivrelo.core.model.OperatorSummary
 import dev.peterdsp.odivrelo.core.model.Place
 import dev.peterdsp.odivrelo.core.model.PlaceKind
 import dev.peterdsp.odivrelo.core.model.PositionQuality
+import dev.peterdsp.odivrelo.core.model.ReviewState
+import dev.peterdsp.odivrelo.core.model.SegmentRole
+import dev.peterdsp.odivrelo.core.model.SelectedSegment
 import dev.peterdsp.odivrelo.core.model.Source
 import dev.peterdsp.odivrelo.core.model.StopBody
 import dev.peterdsp.odivrelo.core.model.UnavailableReason
@@ -198,14 +202,102 @@ internal class ReleaseIndex(
     }
 
     /**
-     * The journey a detail screen shows, restricted to nothing: the publisher's
-     * detail body is returned as published, with freshness recomputed against
-     * the current clock so an old cached copy cannot look new.
+     * The journey a detail screen shows, headlined by the leg the id names.
+     *
+     * The whole run is kept, with each stop marked board, alight or served
+     * outside the leg, but the headline departure, arrival and duration are the
+     * traveller's own leg, so a detail agrees with the search result that opened
+     * it. A bare id, or a leg that runs the whole way, returns the published body
+     * unchanged apart from freshness and the stop roles. Freshness is recomputed
+     * against the current clock so an old cached copy cannot look new.
      */
     fun journeyDetail(day: JourneysPack, journeyId: String, now: Instant): JourneyDetailBody? {
-        val detail = day.journeys[journeyId] ?: return null
+        val tripId = tripIdOf(journeyId)
+        val detail = day.journeys[tripId] ?: day.journeys[journeyId] ?: return null
         val checkedAt = detail.freshness.checkedAt
-        return detail.copy(freshness = ServiceTime.freshness(checkedAt, now.toString()))
+        val fresh = detail.copy(freshness = ServiceTime.freshness(checkedAt, now.toString()))
+
+        val ordered = fresh.stops.sortedBy { it.sequence }
+        if (ordered.isEmpty()) return fresh
+
+        val (boardIndex, alightIndex) = segmentIndices(ordered, journeyId)
+        val board = ordered[boardIndex]
+        val alight = ordered[alightIndex]
+        val marked = ordered.mapIndexed { index, stop ->
+            stop.copy(segmentRole = segmentRoleOf(index, boardIndex, alightIndex))
+        }
+        val selectedSegment = SelectedSegment(board.stopId, alight.stopId)
+
+        if (boardIndex == 0 && alightIndex == ordered.size - 1) {
+            return fresh.copy(stops = marked, selectedSegment = selectedSegment)
+        }
+
+        val departureAt = board.departureAt ?: board.arrivalAt ?: fresh.departure.at
+        val arrivalAt = alight.arrivalAt ?: alight.departureAt ?: fresh.arrival.at
+        val departureInstant = ServiceTime.parseInstantOrNull(departureAt)
+        val arrivalInstant = ServiceTime.parseInstantOrNull(arrivalAt)
+        val duration = if (departureInstant != null && arrivalInstant != null) {
+            ServiceTime.durationMinutes(departureInstant, arrivalInstant)
+        } else {
+            fresh.durationMinutes
+        }
+        val crosses = if (departureInstant != null && arrivalInstant != null) {
+            ServiceTime.crossesMidnight(departureInstant, arrivalInstant)
+        } else {
+            fresh.crossesMidnight
+        }
+        return fresh.copy(
+            id = composeJourneyId(tripId, board.stopId, alight.stopId),
+            departure = JourneyEndpoint(
+                at = departureAt,
+                stopId = board.stopId,
+                stopName = nameOf(board),
+                quality = board.timeQuality,
+            ),
+            arrival = JourneyEndpoint(
+                at = arrivalAt,
+                stopId = alight.stopId,
+                stopName = nameOf(alight),
+                quality = alight.timeQuality,
+            ),
+            durationMinutes = duration,
+            intermediateStopCount = marked.count { it.sequence > board.sequence && it.sequence < alight.sequence },
+            crossesMidnight = crosses,
+            boardingPoint = boardingPointFor(board.stopId, fresh),
+            selectedSegment = selectedSegment,
+            stops = marked,
+        )
+    }
+
+    /** Resolve the board and alight positions named by a journey id, whole as a fallback. */
+    private fun segmentIndices(ordered: List<JourneyStop>, journeyId: String): Pair<Int, Int> {
+        val whole = 0 to ordered.size - 1
+        val (_, boardStopId, alightStopId) = parseJourneyIdParts(journeyId) ?: return whole
+        if (boardStopId == null || alightStopId == null) return whole
+        val boardIndex = ordered.indexOfFirst { it.stopId == boardStopId }
+        if (boardIndex < 0) return whole
+        val alightIndex = ordered.indexOfLast { it.stopId == alightStopId }
+        if (alightIndex <= boardIndex) return whole
+        return boardIndex to alightIndex
+    }
+
+    /** The boarding point for the leg: the body's own when it matches, else the stop's. */
+    private fun boardingPointFor(stopId: String, detail: JourneyDetailBody): BoardingPoint? {
+        detail.boardingPoint?.takeIf { it.stopId == stopId }?.let { return it }
+        val stop = stops[stopId] ?: return detail.boardingPoint
+        val point = stop.boardingPoints.firstOrNull()
+        return BoardingPoint(
+            stopId = stopId,
+            name = stop.name,
+            terminalName = stop.parentName,
+            bay = point?.bay ?: stop.bay,
+            latitude = stop.latitude,
+            longitude = stop.longitude,
+            instructions = point?.instructions ?: stop.instructions,
+            reviewState = point?.reviewState ?: ReviewState.CANDIDATE,
+            reviewedAt = point?.reviewedAt,
+            stepFree = point?.stepFree,
+        )
     }
 
     /**
@@ -256,7 +348,7 @@ internal class ReleaseIndex(
             alighting.sequence == ordered.last().sequence
 
         return Journey(
-            id = summary.id,
+            id = composeJourneyId(tripIdOf(summary.id), boarding.stopId, alighting.stopId),
             operator = summary.operator,
             departure = JourneyEndpoint(
                 at = departureAt,
@@ -414,4 +506,35 @@ internal object SearchText {
         }
         return builder.toString().trim()
     }
+}
+
+private const val JOURNEY_ID_SEPARATOR = "~"
+
+/** A journey id that carries the boarded leg: trip, boarding stop, alighting stop. */
+internal fun composeJourneyId(tripId: String, boardStopId: String, alightStopId: String): String =
+    "$tripId$JOURNEY_ID_SEPARATOR$boardStopId$JOURNEY_ID_SEPARATOR$alightStopId"
+
+/** The trip part of a journey id, whether or not it carries a leg. */
+internal fun tripIdOf(journeyId: String): String = journeyId.substringBefore(JOURNEY_ID_SEPARATOR)
+
+/**
+ * Split a journey id into its trip and, when present, its leg. A bare id is the
+ * whole run. Any other shape returns null so the caller falls back rather than
+ * reading a malformed id as a different journey.
+ */
+internal fun parseJourneyIdParts(journeyId: String): Triple<String, String?, String?>? {
+    val parts = journeyId.split(JOURNEY_ID_SEPARATOR)
+    return when {
+        parts.size == 1 && parts[0].isNotEmpty() -> Triple(parts[0], null, null)
+        parts.size == 3 && parts.all { it.isNotEmpty() } -> Triple(parts[0], parts[1], parts[2])
+        else -> null
+    }
+}
+
+internal fun segmentRoleOf(index: Int, boardIndex: Int, alightIndex: Int): SegmentRole = when {
+    index == boardIndex -> SegmentRole.BOARD
+    index == alightIndex -> SegmentRole.ALIGHT
+    index in (boardIndex + 1) until alightIndex -> SegmentRole.ON_SEGMENT
+    index < boardIndex -> SegmentRole.BEFORE_BOARD
+    else -> SegmentRole.AFTER_ALIGHT
 }

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { BoardingRule, JourneyStop } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
@@ -52,17 +53,34 @@ function RuleBadge({ rule, kind }: { rule: BoardingRule; kind: 'pickup' | 'dropo
 export function StopTimeline({ stops, boardingStopId, linkStops = true, sectionLevel = 2 }: StopTimelineProps) {
   const { t, name, formatClock } = useI18n();
   const StopHeading = sectionLevel === 2 ? 'h3' : 'h4';
+  const boardRef = useRef<HTMLLIElement | null>(null);
+
+  // Bring the boarded stop into view when the list first renders, so a long run
+  // opens on the traveller's own leg. Reduced motion is honoured, and a stop
+  // already in view is not scrolled.
+  useEffect(() => {
+    const node = boardRef.current;
+    if (!node) return;
+    const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    node.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+  }, [boardingStopId]);
+
   return (
     <ol className="od-timeline" aria-label={t('journey.stops')}>
       {stops.map((stop, index) => {
-        const isBoarding = stop.stopId === boardingStopId;
+        const isBoarding = stop.segmentRole === 'board' || stop.stopId === boardingStopId;
+        const isAlighting = stop.segmentRole === 'alight';
+        const isOutside = stop.segmentRole === 'beforeBoard' || stop.segmentRole === 'afterAlight';
         const isLast = index === stops.length - 1;
         return (
           <li
+            ref={isBoarding ? boardRef : undefined}
             key={`${stop.stopId}-${stop.sequence}`}
             className={[
               'od-timeline__item',
               isBoarding ? 'od-timeline__item--boarding' : '',
+              isAlighting ? 'od-timeline__item--alighting' : '',
+              isOutside ? 'od-timeline__item--outside' : '',
               index === 0 ? 'od-timeline__item--first' : '',
               isLast ? 'od-timeline__item--last' : '',
             ]
@@ -98,6 +116,9 @@ export function StopTimeline({ stops, boardingStopId, linkStops = true, sectionL
                 {!stop.arrivalAt && !stop.departureAt ? <span className="od-timeline__time">{t('journey.noTime')}</span> : null}
               </p>
               <p className="od-timeline__badges">
+                {isBoarding ? <Badge tone="accent" icon="check">{t('journey.segmentBoard')}</Badge> : null}
+                {isAlighting ? <Badge tone="info" icon="check">{t('journey.segmentAlight')}</Badge> : null}
+                {isOutside ? <Badge tone="neutral">{t('journey.segmentOutside')}</Badge> : null}
                 <TimeQualityBadge quality={stop.timeQuality} />
                 <RuleBadge rule={stop.pickup} kind="pickup" />
                 <RuleBadge rule={stop.dropoff} kind="dropoff" />

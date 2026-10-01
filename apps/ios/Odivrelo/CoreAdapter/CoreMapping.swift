@@ -88,6 +88,15 @@ enum CoreMapping {
         BoardingRule.fromKotlinName(value.name)
     }
 
+    static func segmentRole(_ value: OdivreloSegmentRole) -> SegmentRole {
+        SegmentRole.fromKotlinName(value.name)
+    }
+
+    static func selectedSegment(_ value: OdivreloSelectedSegment?) -> SelectedSegment? {
+        guard let value else { return nil }
+        return SelectedSegment(boardStopId: value.boardStopId, alightStopId: value.alightStopId)
+    }
+
     static func unavailableReason(_ value: OdivreloUnavailableReason?) -> UnavailableReason? {
         guard let value else { return nil }
         return UnavailableReason.fromKotlinName(value.name)
@@ -336,7 +345,8 @@ enum CoreMapping {
             departureAt: date(value.departureAt),
             timeQuality: timeQuality(value.timeQuality),
             pickup: boardingRule(value.pickup),
-            dropoff: boardingRule(value.dropoff)
+            dropoff: boardingRule(value.dropoff),
+            segmentRole: segmentRole(value.segmentRole)
         )
     }
 
@@ -386,6 +396,7 @@ enum CoreMapping {
                 freshness: freshness(body.freshness),
                 confidence: confidence(body.confidence),
                 boardingPoint: boardingPoint(body.boardingPoint),
+                selectedSegment: selectedSegment(body.selectedSegment),
                 stops: body.stops.map(journeyStop),
                 geometry: geometry(body.geometry),
                 restrictions: body.restrictions.map {

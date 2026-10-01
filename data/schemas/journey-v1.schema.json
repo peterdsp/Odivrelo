@@ -11,6 +11,7 @@
       "type": "object",
       "required": [
         "boardingPoint",
+        "selectedSegment",
         "stops",
         "geometry",
         "restrictions",
@@ -21,6 +22,9 @@
       "properties": {
         "boardingPoint": {
           "$ref": "#/$defs/BoardingPoint"
+        },
+        "selectedSegment": {
+          "$ref": "#/$defs/SelectedSegment"
         },
         "stops": {
           "type": "array",
@@ -363,7 +367,8 @@
         "departureAt",
         "timeQuality",
         "pickup",
-        "dropoff"
+        "dropoff",
+        "segmentRole"
       ],
       "properties": {
         "stopId": {
@@ -396,6 +401,9 @@
         },
         "dropoff": {
           "$ref": "#/$defs/BoardingRule"
+        },
+        "segmentRole": {
+          "$ref": "#/$defs/SegmentRole"
         }
       },
       "additionalProperties": false
@@ -605,6 +613,34 @@
         "prohibited",
         "unknown"
       ]
+    },
+    "SegmentRole": {
+      "type": "string",
+      "description": "Where a stop sits relative to the traveller's own leg. board is where they\nget on, alight is where they get off, onSegment is a stop they ride\nthrough, and beforeBoard and afterAlight are stops the coach also serves\noutside the chosen leg. A whole-journey view marks the first stop board and\nthe last alight.\n",
+      "enum": [
+        "board",
+        "onSegment",
+        "alight",
+        "beforeBoard",
+        "afterAlight"
+      ]
+    },
+    "SelectedSegment": {
+      "type": "object",
+      "description": "The leg this detail headlines: the stop the traveller boards and the stop\nthey leave. Both are present in the stop list.\n",
+      "required": [
+        "boardStopId",
+        "alightStopId"
+      ],
+      "properties": {
+        "boardStopId": {
+          "type": "string"
+        },
+        "alightStopId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     },
     "ServiceDate": {
       "type": "string",

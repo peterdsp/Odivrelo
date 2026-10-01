@@ -29,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -40,6 +41,7 @@ import dev.peterdsp.odivrelo.R
 import dev.peterdsp.odivrelo.core.model.BoardingRule
 import dev.peterdsp.odivrelo.core.model.JourneyDetailBody
 import dev.peterdsp.odivrelo.core.model.JourneyStop
+import dev.peterdsp.odivrelo.core.model.SegmentRole
 import dev.peterdsp.odivrelo.core.model.ReviewState
 import dev.peterdsp.odivrelo.features.FailureReason
 import dev.peterdsp.odivrelo.features.Loadable
@@ -527,6 +529,14 @@ private fun StopRow(
             BoardingRule.COORDINATE_WITH_OPERATOR -> R.string.dropoff_coordinate
         },
     )
+    val segmentLabel = when (stop.segmentRole) {
+        SegmentRole.BOARD -> context.getString(R.string.journey_segment_board)
+        SegmentRole.ALIGHT -> context.getString(R.string.journey_segment_alight)
+        SegmentRole.BEFORE_BOARD, SegmentRole.AFTER_ALIGHT ->
+            context.getString(R.string.journey_segment_outside)
+        SegmentRole.ON_SEGMENT -> null
+    }
+    val outside = stop.segmentRole == SegmentRole.BEFORE_BOARD || stop.segmentRole == SegmentRole.AFTER_ALIGHT
 
     Column(
         modifier = Modifier
@@ -534,11 +544,13 @@ private fun StopRow(
             .heightIn(min = Space.touchTarget)
             .clickable(onClick = onClick)
             .padding(vertical = Space.x2)
+            .alpha(if (outside) 0.6f else 1f)
             .testTag("journey-stop-" + stop.stopId)
             .semantics(mergeDescendants = true) {
                 contentDescription = listOfNotNull(
                     context.getString(R.string.a11y_stop_sequence, index + 1, total),
                     name,
+                    segmentLabel,
                     arrival?.let { context.getString(R.string.journey_view_list) + " " + it },
                     departure,
                     pickup,
@@ -561,6 +573,12 @@ private fun StopRow(
             horizontalArrangement = Arrangement.spacedBy(Space.x2),
             verticalArrangement = Arrangement.spacedBy(Space.x1),
         ) {
+            when (stop.segmentRole) {
+                SegmentRole.BOARD -> segmentLabel?.let { Badge(it, Tone.WARNING) }
+                SegmentRole.ALIGHT -> segmentLabel?.let { Badge(it, Tone.INFO) }
+                SegmentRole.BEFORE_BOARD, SegmentRole.AFTER_ALIGHT -> segmentLabel?.let { Badge(it, Tone.NEUTRAL) }
+                SegmentRole.ON_SEGMENT -> Unit
+            }
             TimeQualityBadge(stop.timeQuality)
             Badge(pickup, if (stop.pickup == BoardingRule.ALLOWED) Tone.NEUTRAL else Tone.WARNING)
             Badge(dropoff, if (stop.dropoff == BoardingRule.ALLOWED) Tone.NEUTRAL else Tone.WARNING)

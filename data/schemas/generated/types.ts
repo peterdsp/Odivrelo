@@ -396,6 +396,7 @@ export interface components {
             provenance: components["schemas"]["Provenance"][];
             purchase: components["schemas"]["Purchase"];
             restrictions: components["schemas"]["Restriction"][];
+            selectedSegment: components["schemas"]["SelectedSegment"];
             stops: components["schemas"]["JourneyStop"][];
         };
         /**
@@ -458,6 +459,7 @@ export interface components {
             dropoff: components["schemas"]["BoardingRule"];
             name: components["schemas"]["LocalizedText"];
             pickup: components["schemas"]["BoardingRule"];
+            segmentRole: components["schemas"]["SegmentRole"];
             sequence: number;
             stopId: string;
             timeQuality: components["schemas"]["TimeQuality"];
@@ -618,6 +620,23 @@ export interface components {
         ReviewState: "candidate" | "verified" | "published" | "stale" | "withdrawn" | "quarantined";
         /** @enum {string} */
         RightsStatus: "allowed" | "permission_pending" | "prohibited" | "unknown";
+        /**
+         * @description Where a stop sits relative to the traveller's own leg. board is where they
+         *     get on, alight is where they get off, onSegment is a stop they ride
+         *     through, and beforeBoard and afterAlight are stops the coach also serves
+         *     outside the chosen leg. A whole-journey view marks the first stop board and
+         *     the last alight.
+         * @enum {string}
+         */
+        SegmentRole: "board" | "onSegment" | "alight" | "beforeBoard" | "afterAlight";
+        /**
+         * @description The leg this detail headlines: the stop the traveller boards and the stop
+         *     they leave. Both are present in the stop list.
+         */
+        SelectedSegment: {
+            alightStopId: string;
+            boardStopId: string;
+        };
         /** @description A service date interpreted in Europe/Athens. */
         ServiceDate: string;
         Source: {
@@ -824,6 +843,8 @@ export type SchemaReadinessResponse = components['schemas']['ReadinessResponse']
 export type SchemaRestriction = components['schemas']['Restriction'];
 export type SchemaReviewState = components['schemas']['ReviewState'];
 export type SchemaRightsStatus = components['schemas']['RightsStatus'];
+export type SchemaSegmentRole = components['schemas']['SegmentRole'];
+export type SchemaSelectedSegment = components['schemas']['SelectedSegment'];
 export type SchemaServiceDate = components['schemas']['ServiceDate'];
 export type SchemaSource = components['schemas']['Source'];
 export type SchemaSourcesResponse = components['schemas']['SourcesResponse'];

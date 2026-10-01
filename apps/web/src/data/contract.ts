@@ -217,6 +217,9 @@ export interface BoardingPoint {
   readonly stepFree: boolean | null;
 }
 
+/** Where a stop sits relative to the traveller's own leg. */
+export type SegmentRole = 'board' | 'onSegment' | 'alight' | 'beforeBoard' | 'afterAlight';
+
 export interface JourneyStop {
   readonly stopId: string;
   readonly sequence: number;
@@ -228,6 +231,12 @@ export interface JourneyStop {
   readonly timeQuality: TimeQuality;
   readonly pickup: BoardingRule;
   readonly dropoff: BoardingRule;
+  readonly segmentRole: SegmentRole;
+}
+
+export interface SelectedSegment {
+  readonly boardStopId: string;
+  readonly alightStopId: string;
 }
 
 export interface Geometry {
@@ -311,6 +320,7 @@ export function provenanceView(entry: Provenance, index = 0): ProvenanceView {
 
 export interface JourneyDetail extends JourneySummary {
   readonly boardingPoint: BoardingPoint;
+  readonly selectedSegment: SelectedSegment;
   readonly stops: readonly JourneyStop[];
   readonly geometry: Geometry | null;
   readonly restrictions: readonly Restriction[];

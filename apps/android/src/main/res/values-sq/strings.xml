@@ -178,6 +178,9 @@
     <string name="journey_boarding_not_reviewed">Kjo pikë hipjeje nuk është rishikuar.</string>
     <string name="journey_stops_title">Ndalesat</string>
     <string name="journey_stops_count">%1$d ndalesa</string>
+    <string name="journey_segment_board">Hip këtu</string>
+    <string name="journey_segment_alight">Zbrit këtu</string>
+    <string name="journey_segment_outside">Shërbehet, jashtë segmentit tënd</string>
     <string name="pickup_allowed">Hipje</string>
     <string name="pickup_not_allowed">Pa hipje</string>
     <string name="pickup_on_request">Hipje me kërkesë</string>

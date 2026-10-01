@@ -321,6 +321,14 @@ data class JourneyStop(
     val timeQuality: TimeQuality = TimeQuality.SCHEDULED,
     val pickup: BoardingRule = BoardingRule.ALLOWED,
     val dropoff: BoardingRule = BoardingRule.ALLOWED,
+    val segmentRole: SegmentRole = SegmentRole.ON_SEGMENT,
+)
+
+@Serializable
+@ObjCName("OdivreloSelectedSegment")
+data class SelectedSegment(
+    val boardStopId: String,
+    val alightStopId: String,
 )
 
 @Serializable
@@ -367,6 +375,7 @@ data class JourneyDetailBody(
     val freshness: Freshness,
     val confidence: Confidence,
     val boardingPoint: BoardingPoint? = null,
+    val selectedSegment: SelectedSegment? = null,
     val stops: List<JourneyStop> = emptyList(),
     val geometry: Geometry? = null,
     val restrictions: List<Restriction> = emptyList(),

@@ -732,10 +732,20 @@ components:
         reviewedAt: { type: [string, 'null'] }
         stepFree: { type: [boolean, 'null'] }
       additionalProperties: false
+    SegmentRole:
+      type: string
+      description: |
+        Where a stop sits relative to the traveller's own leg. board is where they
+        get on, alight is where they get off, onSegment is a stop they ride
+        through, and beforeBoard and afterAlight are stops the coach also serves
+        outside the chosen leg. A whole-journey view marks the first stop board and
+        the last alight.
+      enum: [board, onSegment, alight, beforeBoard, afterAlight]
     JourneyStop:
       type: object
       required:
-        [stopId, sequence, name, arrivalAt, departureAt, timeQuality, pickup, dropoff]
+        [stopId, sequence, name, arrivalAt, departureAt, timeQuality, pickup,
+         dropoff, segmentRole]
       properties:
         stopId: { type: string }
         sequence: { type: integer, minimum: 1 }
@@ -745,6 +755,17 @@ components:
         timeQuality: { $ref: '#/components/schemas/TimeQuality' }
         pickup: { $ref: '#/components/schemas/BoardingRule' }
         dropoff: { $ref: '#/components/schemas/BoardingRule' }
+        segmentRole: { $ref: '#/components/schemas/SegmentRole' }
+      additionalProperties: false
+    SelectedSegment:
+      type: object
+      description: |
+        The leg this detail headlines: the stop the traveller boards and the stop
+        they leave. Both are present in the stop list.
+      required: [boardStopId, alightStopId]
+      properties:
+        boardStopId: { type: string }
+        alightStopId: { type: string }
       additionalProperties: false
     Geometry:
       type: [object, 'null']
@@ -771,10 +792,11 @@ components:
         - { $ref: '#/components/schemas/JourneyCore' }
         - type: object
           required:
-            [boardingPoint, stops, geometry, restrictions, provenance, purchase,
-             correctionUrl]
+            [boardingPoint, selectedSegment, stops, geometry, restrictions,
+             provenance, purchase, correctionUrl]
           properties:
             boardingPoint: { $ref: '#/components/schemas/BoardingPoint' }
+            selectedSegment: { $ref: '#/components/schemas/SelectedSegment' }
             stops:
               type: array
               items: { $ref: '#/components/schemas/JourneyStop' }

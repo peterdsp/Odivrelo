@@ -288,7 +288,9 @@ class ContractDecodingTest {
             day.results.forEach { summary ->
                 val detail = day.journeys[summary.id]
                 assertNotNull(detail, "$date has no detail for ${summary.id}")
-                assertEquals(summary.id, detail.id)
+                // The detail body headlines a leg, so its id is the trip plus that
+                // leg. The pack keys the detail by the bare trip id.
+                assertEquals(summary.id, detail.id.substringBefore("~"))
                 assertEquals(date, detail.serviceDate)
                 assertTrue(detail.stops.size >= 2, "${summary.id} has fewer than two stops")
                 assertEquals(

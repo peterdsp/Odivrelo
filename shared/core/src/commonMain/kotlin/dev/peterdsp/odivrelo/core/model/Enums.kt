@@ -254,3 +254,22 @@ enum class ErrorCode {
     @SerialName("unauthorized")
     UNAUTHORIZED,
 }
+
+@Serializable
+@ObjCName("OdivreloSegmentRole")
+enum class SegmentRole {
+    @SerialName("board")
+    BOARD,
+
+    @SerialName("onSegment")
+    ON_SEGMENT,
+
+    @SerialName("alight")
+    ALIGHT,
+
+    @SerialName("beforeBoard")
+    BEFORE_BOARD,
+
+    @SerialName("afterAlight")
+    AFTER_ALIGHT,
+}

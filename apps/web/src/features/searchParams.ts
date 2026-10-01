@@ -1,5 +1,6 @@
 import type { JourneyQuery } from '../data/PublicDataSource';
 import { isIdentifier, isServiceDate } from '../data/contract';
+import { isJourneyIdShape } from '../data/packQuery';
 import { parseArrayOf, parseString, readPref, removePref, writePref } from '../lib/prefs';
 
 /**
@@ -46,6 +47,11 @@ function id(value: string | null): string | null {
   return value && isIdentifier(value) ? value : null;
 }
 
+/** A journey link carries the boarded leg, so it is wider than a place id. */
+function journeyLink(value: string | null): string | null {
+  return value && isJourneyIdShape(value) ? value : null;
+}
+
 function hhmm(value: string | null): string | null {
   return value && HHMM.test(value) ? value : null;
 }
@@ -70,7 +76,7 @@ export function readSearchState(params: URLSearchParams): SearchState {
     departFrom: hhmm(params.get('from')),
     departTo: hhmm(params.get('to')),
     view: params.get('view') === 'map' ? 'map' : 'list',
-    journeyId: id(params.get('journey')),
+    journeyId: journeyLink(params.get('journey')),
   };
 }
 
