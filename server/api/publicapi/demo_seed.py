@@ -206,6 +206,8 @@ def seed(
     built_at: str = "unknown",
 ) -> dict[str, Any]:
     """Build the ingestion database, review it, compile it and cut a release."""
+    if data_mode != "demo":
+        raise ValueError("The demonstration seeder cannot publish real transport data")
     snapshot = load_fixture(snapshot_file)
     imported: dict[str, Any] = {}
 
@@ -253,7 +255,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--public-db", required=True)
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--reviewer", default="demo-seed")
-    parser.add_argument("--data-mode", default="demo", choices=("real", "demo"))
+    parser.add_argument("--data-mode", default="demo", choices=("demo",))
     parser.add_argument("--commit", default="unknown")
     parser.add_argument("--built-at", default="unknown")
     arguments = parser.parse_args(argv)

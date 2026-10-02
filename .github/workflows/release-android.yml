@@ -7,6 +7,11 @@ name: Release Android (internal)
 on:
   workflow_dispatch:
     inputs:
+      upload:
+        description: "Upload to Play after signing (requires an app record and service-account access)."
+        required: true
+        default: true
+        type: boolean
       track:
         description: "Google Play track"
         default: internal
@@ -134,7 +139,8 @@ jobs:
       - name: Checksums and release summary
         run: |
           {
-            echo "## Android release"
+            echo "## Signed Android artifacts"
+            echo "Play upload requested: ${{ inputs.upload }} (availability requires a successful upload and track verification)."
             echo "version code: ${ODIVRELO_VERSION_CODE:-run ${{ github.run_number }}}"
             echo '```'
             ( cd apps/android/build/outputs && \
@@ -145,6 +151,7 @@ jobs:
           ODIVRELO_VERSION_CODE: ${{ github.event.inputs.version_code || github.run_number }}
 
       - name: Service account credential (never printed)
+        if: ${{ inputs.upload }}
         env:
           PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
@@ -156,6 +163,7 @@ jobs:
       # fails the job on an upload error, so a skipped or failed upload can never
       # be reported as a successful release.
       - name: Upload the bundle to the Play internal track
+        if: ${{ inputs.upload }}
         uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJson: ${{ runner.temp }}/play-service-account.json
