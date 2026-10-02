@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -37,7 +38,7 @@ class StateRestorationTest {
         rule.onNodeWithTag("search-today").performClick()
         rule.onNodeWithTag("search-next-day").performClick()
         rule.onNodeWithTag("search-next-day").performClick()
-        rule.onNodeWithTag("search-run").performClick()
+        rule.onNodeWithTag("search-run").performScrollTo().performClick()
         rule.awaitTagPrefix("journey-")
 
         val before = rule.onRoot().printToString(maxDepth = 100)
@@ -47,7 +48,7 @@ class StateRestorationTest {
 
         // The result list is still the result list, not a fresh search form.
         rule.awaitTag("results-list")
-        rule.onNodeWithTag("results-list").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("results-list")
         rule.awaitTagPrefix("journey-")
         assertTrue(
             "the journeys did not come back after recreation",
@@ -63,7 +64,7 @@ class StateRestorationTest {
         rule.onNodeWithTag("search-today").performClick()
         rule.onNodeWithTag("search-next-day").performClick()
         rule.onNodeWithTag("search-next-day").performClick()
-        rule.onNodeWithTag("search-run").performClick()
+        rule.onNodeWithTag("search-run").performScrollTo().performClick()
         rule.awaitTagPrefix("journey-")
         rule.firstWithTagPrefix("journey-").performClick()
         rule.awaitTag("journey-boarding-point")
@@ -72,7 +73,7 @@ class StateRestorationTest {
         rule.waitForIdle()
 
         rule.awaitTag("journey-boarding-point")
-        rule.onNodeWithTag("journey-boarding-point").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("journey-boarding-point")
     }
 }
 
@@ -92,7 +93,7 @@ class ScreensTest {
         rule.completeFirstRunIfShown()
         rule.onNodeWithTag("tab-offline").performClick()
         rule.awaitTag("offline-maps-note")
-        rule.onNodeWithTag("offline-maps-note").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("offline-maps-note")
         assertTrue(
             "the offline screen must say base map tiles are not downloaded",
             rule.onAllNodesWithText(string(R.string.offline_maps_unavailable), substring = true)
@@ -105,8 +106,8 @@ class ScreensTest {
         rule.completeFirstRunIfShown()
         rule.onNodeWithTag("tab-wallet").performClick()
         rule.awaitTag("wallet-empty")
-        rule.onNodeWithTag("wallet-empty").assertIsDisplayed()
-        rule.onNodeWithTag("wallet-import").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("wallet-empty")
+        rule.assertDisplayedAfterScroll("wallet-import")
         assertTrue(
             "the wallet must say it never uploads a ticket",
             rule.onAllNodesWithText(string(R.string.wallet_never_uploaded), substring = true)
@@ -119,7 +120,7 @@ class ScreensTest {
         rule.completeFirstRunIfShown()
         rule.onNodeWithTag("tab-saved").performClick()
         rule.awaitTag("trip-ready")
-        rule.onNodeWithTag("trip-ready").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("trip-ready")
     }
 
     @Test
@@ -129,7 +130,7 @@ class ScreensTest {
         rule.awaitTag("settings-open-diagnostics")
         rule.onNodeWithTag("settings-open-diagnostics").performClick()
         rule.awaitTag("diagnostics-text")
-        rule.onNodeWithTag("diagnostics-text").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("diagnostics-text")
 
         val text = rule.onNodeWithTag("diagnostics-text").printToString(maxDepth = 10)
         listOf("password", "token", "secret", "barcode", "ticket=").forEach { forbidden ->
@@ -181,7 +182,7 @@ class DeepLinkTest {
         rule.completeFirstRunIfShown()
         open("odivrelo://nonsense-path")
         rule.awaitTag("deeplink-unresolved")
-        rule.onNodeWithTag("deeplink-unresolved").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("deeplink-unresolved")
         rule.onNodeWithTag("deeplink-unresolved-search").performClick()
         rule.awaitTag("search-origin")
     }
@@ -191,7 +192,7 @@ class DeepLinkTest {
         rule.completeFirstRunIfShown()
         open("odivrelo://offline")
         rule.awaitTag("offline-maps-note")
-        rule.onNodeWithTag("offline-maps-note").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("offline-maps-note")
     }
 
     @Test
@@ -199,7 +200,7 @@ class DeepLinkTest {
         rule.completeFirstRunIfShown()
         open("https://odivrelo.peterdsp.dev/settings")
         rule.awaitTag("settings-open-privacy")
-        rule.onNodeWithTag("settings-open-privacy").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("settings-open-privacy")
     }
 
     @Test
@@ -207,7 +208,7 @@ class DeepLinkTest {
         rule.completeFirstRunIfShown()
         open("https://example.invalid/journey/x?date=2026-10-02")
         rule.awaitTag("deeplink-unresolved")
-        rule.onNodeWithTag("deeplink-unresolved").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("deeplink-unresolved")
         assertTrue(
             "a link for another domain must be named as such",
             rule.onAllNodesWithText(
@@ -248,6 +249,6 @@ class DeepLinkTest {
         rule.waitForIdle()
 
         rule.awaitTag("wallet-import")
-        rule.onNodeWithTag("wallet-import").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("wallet-import")
     }
 }

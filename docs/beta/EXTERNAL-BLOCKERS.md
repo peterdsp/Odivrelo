@@ -129,15 +129,22 @@ identity are all checked.
 **What is already prepared.**
 
 - A working simulator build, runtime-verified on iPhone, iPad and iPhone Duo.
-- The exact export options and signing configuration, written out in
-  `BUILD-AND-RELEASE.md`.
+- A complete, runnable release workflow,
+  `.github/workflows/release-ios.yml`, against the `ios-beta` environment (now
+  created). It imports the certificate and profile into a throwaway keychain,
+  archives with manual signing and a unique build number, exports and validates
+  the IPA, uploads to TestFlight with the App Store Connect key, and cleans up
+  all signing material even on failure. It validates its required secrets by
+  name before building, so it fails cleanly rather than part way through.
 - A `PrivacyInfo.xcprivacy` derived from the code that was actually written.
 
-**Exact action needed.** Enrol or sign in with the Apple Developer account,
-register the bundle identifier `dev.peterdsp.odivrelo`, create the App Store
-Connect app record, then create an App Store Connect API key and export
-`APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID` and the `.p8` key, and
-run the archive and upload steps in `BUILD-AND-RELEASE.md`.
+**Exact action needed.** The only remaining work is owner-account steps and
+supplying credentials: enrol in the Apple Developer Program, register
+`dev.peterdsp.odivrelo`, create the App Store Connect app record and API key,
+export the distribution certificate and profile, install the seven `ios-beta`
+secrets, then run `gh workflow run release-ios.yml`. The exact steps, where to
+obtain each item, the minimum role, and the secure upload method are in
+[`OWNER-SETUP.md`](OWNER-SETUP.md).
 
 **Explicitly not done.** No disposable signing identity was invented, no
 compliance or review answer was fabricated, and a simulator build is **not**
@@ -156,13 +163,24 @@ Console app record for `dev.peterdsp.odivrelo` (which replaced
 `dev.peterdsp.poravia` on 1 October 2026; neither was ever registered).
 
 **What is already prepared.** An installable debug/QA APK, a release build and
-bundle produced unsigned and labelled as such, and the full signing
-configuration in `BUILD-AND-RELEASE.md`.
+bundle produced unsigned and labelled as such, Gradle signing wired to
+`keystore.properties`, an overridable version code so no build number is ever
+reused, an `android-app-verify.sh` that runs an authenticated signature check
+when the certificate fingerprint is supplied, and a complete, runnable release
+workflow, `.github/workflows/release-android.yml`, against the `android-beta`
+environment (now created). It materialises the keystore under a private temp
+path, builds the signed bundle with a unique version code, verifies the
+signature against the declared certificate, uploads to the Play internal track
+as a completed release, and cleans up the keystore and service account even on
+failure.
 
-**Exact action needed.** Create or restore the upload keystore, put its
-credentials in the repository secrets named in `BUILD-AND-RELEASE.md` (names
-only are recorded there, never values), create the Play Console app record,
-then run the signed release job.
+**Exact action needed.** The only remaining work is owner-account steps and
+supplying credentials: create the Play Console app record and complete its
+first-time setup, enable the Play Developer API and grant the service account
+app-specific internal-testing permission, provide or reuse the upload keystore,
+install the five `android-beta` secrets plus the `ANDROID_RELEASE_CERT_SHA256`
+variable, then run `gh workflow run release-android.yml`. The exact steps are in
+[`OWNER-SETUP.md`](OWNER-SETUP.md).
 
 **Explicitly not done.** No unprotected disposable production signing identity
 was created to claim completion, and a debug key is not used for store

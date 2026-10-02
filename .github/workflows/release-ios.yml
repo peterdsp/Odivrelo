@@ -1,0 +1,218 @@
+name: Release iOS (TestFlight)
+
+# Manual only. Never triggered by pull_request, so the distribution certificate,
+# the provisioning profile and the App Store Connect key are never exposed to
+# untrusted pull-request code. Runs against the ref explicitly selected when the
+# workflow is dispatched.
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: "Unique CFBundleVersion, never reused. Defaults to the run number."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+# One iOS release at a time; never cancel one in flight, so a cancelled upload
+# cannot race a second attempt onto the same build number.
+concurrency:
+  group: release-ios
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: "3.12"
+  JAVA_VERSION: "21"
+  BUNDLE_ID: dev.peterdsp.odivrelo
+
+jobs:
+  validate:
+    name: Validate configuration
+    runs-on: ubuntu-24.04
+    environment: ios-beta
+    timeout-minutes: 10
+    steps:
+      - name: Required secrets are present (names only, never values)
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          missing=0
+          for name in APP_STORE_CONNECT_KEY_ID APP_STORE_CONNECT_ISSUER_ID \
+                      APP_STORE_CONNECT_PRIVATE_KEY APPLE_TEAM_ID \
+                      IOS_DISTRIBUTION_P12_BASE64 IOS_DISTRIBUTION_P12_PASSWORD \
+                      IOS_PROVISIONING_PROFILE_BASE64; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::missing required secret $name in the ios-beta environment (see docs/beta/OWNER-SETUP.md)"
+              missing=1
+            else
+              echo "ok: $name is set"
+            fi
+          done
+          exit $missing
+
+  release:
+    name: Archive, export and upload to TestFlight
+    needs: validate
+    runs-on: macos-26
+    environment: ios-beta
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Generate the data release
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r server/api/requirements.txt
+          PY=python bash scripts/api-seed-demo.sh
+
+      - name: Install xcodegen and report the toolchain
+        run: |
+          brew install xcodegen
+          xcodebuild -version
+
+      - name: Build the shared XCFramework (release)
+        run: bash scripts/shared-build-xcframework.sh
+
+      - name: Generate the Xcode project with the shared core linked
+        run: bash scripts/ios-bootstrap.sh
+
+      # Import the distribution certificate and the provisioning profile into a
+      # throwaway keychain whose password is generated at runtime and never
+      # printed. The certificate and profile are written to the runner's private
+      # temp directory with a restrictive umask and deleted in the cleanup step.
+      - name: Install signing material into a temporary keychain
+        env:
+          IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          umask 077
+          KEYCHAIN="$RUNNER_TEMP/odivrelo-signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -base64 24)"
+          P12="$RUNNER_TEMP/distribution.p12"
+          PROFILE="$RUNNER_TEMP/profile.mobileprovision"
+
+          printf '%s' "$IOS_DISTRIBUTION_P12_BASE64" | base64 --decode > "$P12"
+          printf '%s' "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > "$PROFILE"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 3600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$P12" -k "$KEYCHAIN" -P "$IOS_DISTRIBUTION_P12_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" >/dev/null
+          security list-keychains -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          UUID="$(/usr/libexec/PlistBuddy -c 'Print :UUID' \
+            /dev/stdin <<< "$(security cms -D -i "$PROFILE")")"
+          cp "$PROFILE" "$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
+
+          # Report what was installed, without any secret value.
+          echo "KEYCHAIN=$KEYCHAIN" >> "$GITHUB_ENV"
+          echo "PROFILE_UUID=$UUID" >> "$GITHUB_ENV"
+          echo "Imported distribution certificate:"
+          security find-identity -v -p codesigning "$KEYCHAIN" | sed 's/[0-9A-F]\{40\}/<sha1>/'
+
+      - name: Archive the Release configuration (signed)
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          BUILD_NUMBER: ${{ github.event.inputs.build_number || github.run_number }}
+        run: |
+          xcodebuild -project apps/ios/Odivrelo.xcodeproj -scheme Odivrelo \
+            -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Odivrelo.xcarchive" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN" \
+            archive
+
+      - name: Export the signed IPA
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>$APPLE_TEAM_ID</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>provisioningProfiles</key><dict>
+              <key>$BUNDLE_ID</key><string>$PROFILE_UUID</string>
+            </dict>
+            <key>uploadSymbols</key><true/>
+            <key>destination</key><string>export</string>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Odivrelo.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export"
+          ls -la "$RUNNER_TEMP/export"
+
+      - name: Validate and upload to TestFlight
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          umask 077
+          KEYS_DIR="$HOME/.appstoreconnect/private_keys"
+          mkdir -p "$KEYS_DIR"
+          printf '%s' "$APP_STORE_CONNECT_PRIVATE_KEY" > "$KEYS_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
+          IPA="$(ls "$RUNNER_TEMP"/export/*.ipa | head -1)"
+          echo "validating $IPA"
+          xcrun altool --validate-app -f "$IPA" -t ios \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+          echo "uploading $IPA"
+          xcrun altool --upload-app -f "$IPA" -t ios \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+          {
+            echo "## iOS release"
+            echo "bundle: $BUNDLE_ID"
+            echo "build number: ${{ github.event.inputs.build_number || github.run_number }}"
+            echo "IPA: $(basename "$IPA")"
+            echo "sha256: $(shasum -a 256 "$IPA" | cut -d' ' -f1)"
+            echo ""
+            echo "Uploaded to App Store Connect. Processing, export compliance and"
+            echo "internal TestFlight availability are separate states to confirm in"
+            echo "App Store Connect; this job proves upload acceptance only."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Clean up signing and credential material
+        if: always()
+        run: |
+          security delete-keychain "$KEYCHAIN" 2>/dev/null || true
+          rm -f "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision" \
+                "$RUNNER_TEMP/distribution.p12" \
+                "$RUNNER_TEMP/profile.mobileprovision" 2>/dev/null || true
+          rm -rf "$HOME/.appstoreconnect/private_keys" 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-release-logs
+          path: |
+            ${{ runner.temp }}/export/DistributionSummary.plist
+            ${{ runner.temp }}/export/ExportOptions.plist
+            ${{ runner.temp }}/export/Packaging.log
+          retention-days: 14
+          if-no-files-found: ignore

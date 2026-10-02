@@ -1,0 +1,186 @@
+name: Release Android (internal)
+
+# Manual only. This workflow is never triggered by pull_request, so the signing
+# keystore and the Play service account are never exposed to untrusted
+# pull-request code. It runs against the ref explicitly selected when the
+# workflow is dispatched (the "Use workflow from" ref in the Actions UI).
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: "Google Play track"
+        default: internal
+        type: choice
+        options: [internal]
+      version_code:
+        description: "Unique integer version code, never reused. Defaults to the run number."
+        required: false
+        type: string
+
+# Least privilege: this workflow only reads the repository. It uploads to Play
+# through a service account, not through the GitHub token.
+permissions:
+  contents: read
+
+# One Android release at a time, and never cancel one in flight: a cancelled
+# upload could leave a half-committed release or race a second attempt onto the
+# same version code.
+concurrency:
+  group: release-android
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: "3.12"
+  JAVA_VERSION: "21"
+
+jobs:
+  # Cheap gate first, before any expensive build. Confirms the credentials the
+  # selected path needs are present, by name only, and never prints a value.
+  validate:
+    name: Validate configuration
+    runs-on: ubuntu-24.04
+    environment: android-beta
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Required secrets are present (names only, never values)
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          missing=0
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD \
+                      ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD PLAY_SERVICE_ACCOUNT_JSON; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::missing required secret $name in the android-beta environment (see docs/beta/OWNER-SETUP.md)"
+              missing=1
+            else
+              echo "ok: $name is set"
+            fi
+          done
+          if [ -z "${{ vars.ANDROID_RELEASE_CERT_SHA256 }}" ]; then
+            echo "::error::missing repository/environment variable ANDROID_RELEASE_CERT_SHA256 (the public SHA-256 of the upload certificate; see docs/beta/OWNER-SETUP.md)"
+            missing=1
+          else
+            echo "ok: ANDROID_RELEASE_CERT_SHA256 is set"
+          fi
+          exit $missing
+
+  release:
+    name: Build, sign and upload (internal)
+    needs: validate
+    runs-on: ubuntu-24.04
+    environment: android-beta
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Generate the data release and sync its packs
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r server/api/requirements.txt
+          PY=python bash scripts/api-seed-demo.sh
+          bash scripts/android-sync-packs.sh
+
+      # Decode the upload keystore to a file under the runner's private temp
+      # directory with a restrictive umask. The value is never echoed. Gradle
+      # reads it through keystore.properties, exactly as a local signed build
+      # does, so there is one signing path, not two.
+      - name: Materialise the signing keystore (never printed)
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          umask 077
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload.jks"
+          {
+            echo "storeFile=$RUNNER_TEMP/upload.jks"
+            echo "storePassword=$ANDROID_KEYSTORE_PASSWORD"
+            echo "keyAlias=$ANDROID_KEY_ALIAS"
+            echo "keyPassword=$ANDROID_KEY_PASSWORD"
+          } > keystore.properties
+
+      - name: Build the signed release bundle and APK
+        env:
+          ODIVRELO_VERSION_CODE: ${{ github.event.inputs.version_code || github.run_number }}
+        run: |
+          ./gradlew --no-daemon \
+            :apps:android:bundleRelease \
+            :apps:android:assembleRelease \
+            :apps:android:assembleReleaseSmoke \
+            :apps:android:assembleDebug
+
+      # The gate now runs in its authenticated mode: the release artifacts must
+      # be signed by exactly the declared certificate. An unsigned or
+      # wrong-certificate release fails here, before any upload.
+      - name: Verify artifacts and the release signature
+        env:
+          ODIVRELO_RELEASE_CERT_SHA256: ${{ vars.ANDROID_RELEASE_CERT_SHA256 }}
+        run: bash scripts/android-app-verify.sh --no-build
+
+      - name: Checksums and release summary
+        run: |
+          {
+            echo "## Android release"
+            echo "version code: ${ODIVRELO_VERSION_CODE:-run ${{ github.run_number }}}"
+            echo '```'
+            ( cd apps/android/build/outputs && \
+              find . \( -name '*.aab' -o -name '*.apk' \) | sort | xargs shasum -a 256 )
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          ODIVRELO_VERSION_CODE: ${{ github.event.inputs.version_code || github.run_number }}
+
+      - name: Service account credential (never printed)
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          umask 077
+          printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/play-service-account.json"
+
+      # A maintained Play publisher. Pin to a commit SHA once verified (see
+      # OWNER-SETUP.md); a version tag is the floor, not the ceiling. The action
+      # fails the job on an upload error, so a skipped or failed upload can never
+      # be reported as a successful release.
+      - name: Upload the bundle to the Play internal track
+        uses: r0adkll/upload-google-play@v1.1.3
+        with:
+          serviceAccountJson: ${{ runner.temp }}/play-service-account.json
+          packageName: dev.peterdsp.odivrelo
+          releaseFiles: apps/android/build/outputs/bundle/release/odivrelo-release.aab
+          track: ${{ github.event.inputs.track }}
+          status: completed
+          mappingFile: apps/android/build/outputs/mapping/release/mapping.txt
+
+      # Remove every piece of signing and credential material, even if a step
+      # above failed.
+      - name: Clean up signing and credential material
+        if: always()
+        run: |
+          rm -f keystore.properties \
+                "$RUNNER_TEMP/upload.jks" \
+                "$RUNNER_TEMP/play-service-account.json"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-release
+          path: |
+            apps/android/build/outputs/bundle/**/*.aab
+            apps/android/build/outputs/apk/**/*.apk
+            apps/android/build/outputs/mapping/**/mapping.txt
+          retention-days: 14
+          if-no-files-found: warn

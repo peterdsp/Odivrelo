@@ -34,6 +34,7 @@ import dev.peterdsp.odivrelo.core.model.PackPhase
 import dev.peterdsp.odivrelo.features.offline.DownloadState
 import dev.peterdsp.odivrelo.state.AppState
 import dev.peterdsp.odivrelo.state.OdivreloViewModel
+import dev.peterdsp.odivrelo.theme.LocalReduceMotion
 import dev.peterdsp.odivrelo.theme.Space
 import dev.peterdsp.odivrelo.ui.common.Badge
 import dev.peterdsp.odivrelo.ui.common.DemoNotice
@@ -361,6 +362,12 @@ private fun DownloadProgress(download: DownloadState) {
                 progress = { fraction.toFloat() },
                 modifier = Modifier.fillMaxWidth(),
             )
+        } else if (LocalReduceMotion.current) {
+            // No declared length and reduced motion is on, so a static bar
+            // rather than the animated indeterminate one. It honours the
+            // reduced-motion setting and lets the UI-test clock reach idle,
+            // exactly as LoadingState does.
+            LinearProgressIndicator(progress = { 0.25f }, modifier = Modifier.fillMaxWidth())
         } else {
             // No declared length, so an indeterminate bar rather than a
             // percentage nobody can stand behind.
