@@ -9,6 +9,7 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 
 /**
@@ -48,6 +49,18 @@ fun ComposeTestRule.awaitTagPrefix(prefix: String, timeoutMillis: Long = 30_000)
 }
 
 /**
+ * Asserts a node is on screen, scrolling to it first when it sits inside a
+ * scrollable container. On a phone viewport many legitimately-present controls
+ * are below the fold; scrolling to them keeps the "is displayed" guarantee
+ * rather than weakening it to a mere existence check.
+ */
+fun ComposeTestRule.assertDisplayedAfterScroll(tag: String) {
+    val node = onNodeWithTag(tag)
+    runCatching { node.performScrollTo() }
+    node.assertIsDisplayed()
+}
+
+/**
  * Gets past first launch when it is showing.
  *
  * First launch is a real screen backed by real persisted state, so it appears
@@ -65,7 +78,7 @@ fun ComposeTestRule.completeFirstRunIfShown() {
         tagExists("welcome-start") || tagExists("search-origin") || tagExists("tab-search")
     }
     if (tagExists("welcome-start")) {
-        onNodeWithTag("welcome-start").performClick()
+        onNodeWithTag("welcome-start").performScrollTo().performClick()
         waitUntil(BOOT_TIMEOUT_MILLIS) { tagExists("search-origin") || tagExists("tab-search") }
     }
     waitForIdle()
@@ -92,5 +105,5 @@ fun ComposeTestRule.chooseCorridor() {
     firstWithTagPrefix("place-k").performClick()
 
     awaitTag("search-run")
-    onNodeWithTag("search-run").assertIsDisplayed()
+    assertDisplayedAfterScroll("search-run")
 }

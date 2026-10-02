@@ -118,7 +118,7 @@ final class OdivreloUITests: XCTestCase {
             "the journey detail should open"
         )
 
-        app.navigationBars.buttons.element(boundBy: 0).tap()
+        app.goBackIfPushed()
 
         // The query survives the round trip.
         XCTAssertTrue(app.buttons["journey.jny.acl-0700"].waitForExistence(timeout: 10))
@@ -134,7 +134,7 @@ final class OdivreloUITests: XCTestCase {
         openFirstJourney(app)
 
         app.buttons["detail.saveTrip"].tap()
-        app.navigationBars.buttons.element(boundBy: 0).tap()
+        app.goBackIfPushed()
 
         // The saved trip is still there after a relaunch that keeps state.
         app.terminate()
@@ -142,7 +142,7 @@ final class OdivreloUITests: XCTestCase {
         relaunched.launchArguments += ["-OdivreloUseFixture", "-OdivreloFixtureScenario", "normal"]
         relaunched.launch()
 
-        relaunched.tabBars.buttons.element(boundBy: 1).tap()
+        relaunched.selectTab("trips", index: 1)
         XCTAssertTrue(
             relaunched.staticTexts.containing(
                 NSPredicate(format: "label CONTAINS[c] %@", "Aloria")
@@ -185,7 +185,7 @@ final class OdivreloUITests: XCTestCase {
     func testPackDownloadShowsProgressAndCompletes() {
         let app = launch()
         completeOnboarding(app)
-        app.tabBars.buttons.element(boundBy: 2).tap()
+        app.selectTab("offline", index: 2)
 
         let download = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "offline.download.")
@@ -205,7 +205,7 @@ final class OdivreloUITests: XCTestCase {
     func testCorruptDownloadOffersRetryAndInstallsNothing() {
         let app = launch(scenario: "corruptDownload")
         completeOnboarding(app)
-        app.tabBars.buttons.element(boundBy: 2).tap()
+        app.selectTab("offline", index: 2)
 
         let download = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "offline.download.")
@@ -226,7 +226,7 @@ final class OdivreloUITests: XCTestCase {
     func testInsufficientStorageIsStatedAndNotRetried() {
         let app = launch(scenario: "insufficientStorage")
         completeOnboarding(app)
-        app.tabBars.buttons.element(boundBy: 2).tap()
+        app.selectTab("offline", index: 2)
 
         let download = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "offline.download.")
@@ -250,7 +250,7 @@ final class OdivreloUITests: XCTestCase {
     func testWalletStartsEmptyAndExplainsItself() {
         let app = launch()
         completeOnboarding(app)
-        app.tabBars.buttons.element(boundBy: 1).tap()
+        app.selectTab("trips", index: 1)
 
         let wallet = app.buttons["trips.wallet"]
         XCTAssertTrue(wallet.waitForExistence(timeout: 10))
@@ -268,7 +268,7 @@ final class OdivreloUITests: XCTestCase {
     func testSettingsReportsVersionCommitAndCoreState() {
         let app = launch()
         completeOnboarding(app)
-        app.tabBars.buttons.element(boundBy: 3).tap()
+        app.selectTab("settings", index: 3)
 
         // Diagnostics sit at the foot of a lazy list, so they only exist once
         // scrolled into view.
@@ -285,7 +285,7 @@ final class OdivreloUITests: XCTestCase {
     func testLanguageCanBeChangedInSettings() {
         let app = launch(language: "en")
         completeOnboarding(app)
-        app.tabBars.buttons.element(boundBy: 3).tap()
+        app.selectTab("settings", index: 3)
 
         XCTAssertTrue(app.otherElements["settings.language"].waitForExistence(timeout: 10)
             || app.buttons["settings.language"].waitForExistence(timeout: 5))

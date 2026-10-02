@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -36,14 +37,14 @@ class SearchFlowTest {
         rule.waitForIdle()
         if (rule.tagExists("welcome-start")) {
             // No account field, no permission dialog, no network-only step.
-            rule.onNodeWithTag("welcome-title").assertIsDisplayed()
-            rule.onNodeWithTag("welcome-language-el").assertIsDisplayed()
-            rule.onNodeWithTag("welcome-language-en").assertIsDisplayed()
-            rule.onNodeWithTag("welcome-language-sq").assertIsDisplayed()
-            rule.onNodeWithTag("welcome-start").performClick()
+            rule.assertDisplayedAfterScroll("welcome-title")
+            rule.assertDisplayedAfterScroll("welcome-language-el")
+            rule.assertDisplayedAfterScroll("welcome-language-en")
+            rule.assertDisplayedAfterScroll("welcome-language-sq")
+            rule.onNodeWithTag("welcome-start").performScrollTo().performClick()
         }
         rule.awaitTag("search-origin")
-        rule.onNodeWithTag("search-run").assertIsDisplayed()
+        rule.onNodeWithTag("search-run").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -51,13 +52,16 @@ class SearchFlowTest {
         rule.completeFirstRunIfShown()
         rule.chooseCorridor()
 
-        // Today's service date. The bundled release names no journeys pack for
-        // it, which is a statement about this device and not about the world.
+        // A service date the bundled release names no journeys pack for, which
+        // is a statement about this device and not about the world. The release
+        // packs the demo's anchor date (2026-10-02) but not the day after it, so
+        // stepping one day forward reaches an unpacked date deterministically.
         rule.onNodeWithTag("search-today").performClick()
-        rule.onNodeWithTag("search-run").performClick()
+        rule.onNodeWithTag("search-next-day").performClick()
+        rule.onNodeWithTag("search-run").performScrollTo().performClick()
 
         rule.awaitTag("results-no-offline-pack")
-        rule.onNodeWithTag("results-no-offline-pack").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("results-no-offline-pack")
 
         // The sentence that must never appear here.
         val noService = string(R.string.results_empty_no_service_title)
@@ -78,17 +82,19 @@ class SearchFlowTest {
         rule.completeFirstRunIfShown()
         rule.chooseCorridor()
 
-        // 2026-09-30 plus two days is 2026-10-02, a date the release names.
+        // The demo release packs its anchor date, 2026-10-02, which is the date
+        // the search opens on.
         rule.onNodeWithTag("search-today").performClick()
-        rule.onNodeWithTag("search-next-day").performClick()
-        rule.onNodeWithTag("search-next-day").performClick()
-        rule.onNodeWithTag("search-run").performClick()
+        rule.onNodeWithTag("search-run").performScrollTo().performClick()
 
         rule.awaitTag("results-list")
         rule.awaitTagPrefix("journey-")
         assertTrue("no journey card rendered", rule.countWithTagPrefix("journey-") > 0)
 
         // Scheduled is the only quality this release publishes, and it says so.
+        // The notice is the last item in the results list, so scroll it into the
+        // composition before asserting it is there.
+        rule.onNodeWithTag("results-list").performScrollToKey("live")
         assertTrue(
             "the schedule-only statement is missing",
             rule.onAllNodesWithText(string(R.string.live_unavailable_title), substring = true)
@@ -101,15 +107,13 @@ class SearchFlowTest {
         rule.completeFirstRunIfShown()
         rule.chooseCorridor()
         rule.onNodeWithTag("search-today").performClick()
-        rule.onNodeWithTag("search-next-day").performClick()
-        rule.onNodeWithTag("search-next-day").performClick()
-        rule.onNodeWithTag("search-run").performClick()
+        rule.onNodeWithTag("search-run").performScrollTo().performClick()
 
         rule.awaitTagPrefix("journey-")
         rule.firstWithTagPrefix("journey-").performClick()
 
         rule.awaitTag("journey-boarding-point")
-        rule.onNodeWithTag("journey-boarding-point").assertIsDisplayed()
+        rule.assertDisplayedAfterScroll("journey-boarding-point")
 
         // Odivrelo sells nothing, and says so on the purchase surface itself.
         rule.onNodeWithTag("booking-disclaimer").performScrollTo().assertIsDisplayed()

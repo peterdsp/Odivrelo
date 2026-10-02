@@ -153,7 +153,7 @@ final class OdivreloPerformanceTests: XCTestCase {
             _ = journey.waitForExistence(timeout: 20)
             journey.tap()
             _ = app.buttons["detail.saveTrip"].waitForExistence(timeout: 20)
-            app.navigationBars.buttons.element(boundBy: 0).tap()
+            app.goBackIfPushed()
             app.terminate()
         }
     }
@@ -178,7 +178,11 @@ final class OdivreloPerformanceTests: XCTestCase {
             screen.swipeUp(velocity: .fast)
             screen.swipeUp(velocity: .fast)
             let map = app.maps.firstMatch
-            if map.waitForExistence(timeout: 10) {
+            // Only gesture when the map has a real, hittable frame. In a
+            // split-view column the element can exist with an off-screen or
+            // zero frame, and a pinch or swipe against it resolves to an
+            // infinite coordinate and throws rather than measuring anything.
+            if map.waitForExistence(timeout: 10), map.isHittable {
                 map.pinch(withScale: 1.6, velocity: 1.0)
                 map.swipeLeft()
             }

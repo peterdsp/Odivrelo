@@ -102,7 +102,10 @@ android {
         applicationId = brand.getValue("applicationId")
         minSdk = 26
         targetSdk = 36
-        versionCode = 20260930
+        // The release workflow passes a unique, monotonically increasing code so
+        // no build number is ever uploaded to Play twice. Local and CI builds
+        // keep the stable default.
+        versionCode = System.getenv("ODIVRELO_VERSION_CODE")?.toIntOrNull() ?: 20260930
         versionName = brand.getValue("version")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -13,7 +13,13 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-export JAVA_HOME="${JAVA_HOME:-/opt/homebrew/opt/openjdk@21}"
+# Any JDK 17 or newer. The machine set up by scripts/setup-android-sdk.sh keeps
+# its JDK under ~/Library/Android/jdk and not on PATH, so fall back to it.
+if [ -z "${JAVA_HOME:-}" ]; then
+  JAVA_HOME="$(ls -1d "$HOME/Library/Android/jdk"/*/Contents/Home 2>/dev/null | sort -V | tail -1)"
+  JAVA_HOME="${JAVA_HOME:-/opt/homebrew/opt/openjdk@21}"
+fi
+export JAVA_HOME
 export PATH="$JAVA_HOME/bin:$PATH"
 
 SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
@@ -154,28 +160,93 @@ inspect() { # inspect <label> <apk> <expect-minified>
 }
 
 [ -n "$DEBUG_APK" ] && inspect "debug" "$DEBUG_APK" no
-[ -n "$RELEASE_APK" ] && inspect "release (unsigned)" "$RELEASE_APK" yes
+[ -n "$RELEASE_APK" ] && inspect "release" "$RELEASE_APK" yes
 [ -n "$SMOKE_APK" ] && inspect "releaseSmoke" "$SMOKE_APK" yes "-releasesmoke"
 
 section "Signing"
 # apksigner is a shell wrapper around java, so it needs JAVA_HOME on the path
 # exactly as Gradle does; there is no system Java on this machine.
+#
+# The release gate has two modes, chosen by whether the expected release
+# certificate fingerprint is supplied. The fingerprint is a public SHA-256
+# digest of a certificate, never a secret, so it is safe to pass in or commit.
+#
+#   ODIVRELO_RELEASE_CERT_SHA256 unset -> an intentionally-unsigned build check.
+#       The release APK is expected to be UNSIGNED, because no keystore is
+#       configured. A signed release is a failure: it would mean a key was
+#       invented locally rather than the declared distribution key being used.
+#
+#   ODIVRELO_RELEASE_CERT_SHA256 set   -> an authenticated release-signing check.
+#       The release APK must be signed by exactly that certificate. An unsigned
+#       release, or one signed by any other certificate, is a failure.
+EXPECT_CERT="$(printf '%s' "${ODIVRELO_RELEASE_CERT_SHA256:-}" | tr 'A-F' 'a-f' | tr -cd '0-9a-f')"
+if [ -n "$EXPECT_CERT" ]; then
+  printf '  mode: authenticated release signing (expecting a declared certificate)\n'
+else
+  printf '  mode: intentionally-unsigned release (no certificate declared)\n'
+fi
 for pair in "debug:$DEBUG_APK" "release:$RELEASE_APK" "releaseSmoke:$SMOKE_APK"; do
   label="${pair%%:*}"; apk="${pair#*:}"
   [ -n "$apk" ] || continue
   if certs="$("$BUILD_TOOLS/apksigner" verify --print-certs "$apk" 2>/dev/null)"; then
     subject="$(printf '%s' "$certs" | sed -n 's/^Signer #1 certificate DN: //p' | head -1)"
+    sha="$(printf '%s' "$certs" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -1 | tr 'A-F' 'a-f' | tr -cd '0-9a-f')"
     printf '  %-20s signed by %s\n' "$label" "${subject:-unknown}"
-    case "$label:$subject" in
-      release:*) bad "the release APK must not be signed by a key this build invented" ;;
+    case "$label" in
+      release)
+        if [ -n "$EXPECT_CERT" ]; then
+          if [ "$sha" = "$EXPECT_CERT" ]; then
+            ok "release APK signed by the declared distribution certificate"
+          else
+            bad "release APK signed by the wrong certificate (got $sha, expected $EXPECT_CERT)"
+          fi
+        else
+          bad "release APK is signed but no ODIVRELO_RELEASE_CERT_SHA256 was declared; a release must be either intentionally unsigned or signed by the declared certificate"
+        fi
+        ;;
     esac
   else
-    printf '  %-20s UNSIGNED (deliberate, see apps/android/SIGNING.md)\n' "$label"
+    printf '  %-20s UNSIGNED\n' "$label"
     case "$label" in
       debug|releaseSmoke) bad "$label should be signed with the ordinary debug key" ;;
+      release)
+        if [ -n "$EXPECT_CERT" ]; then
+          bad "release APK is unsigned but ODIVRELO_RELEASE_CERT_SHA256 was declared; the authenticated release-signing check expects a signed release"
+        else
+          ok "release APK is intentionally unsigned (no keystore configured; see apps/android/SIGNING.md)"
+        fi
+        ;;
     esac
   fi
 done
+
+section "Release bundle (AAB)"
+# An AAB is a zip, not an APK. Validate its structure, and verify its JAR
+# signature with jarsigner, never apksigner.
+if [ -n "$BUNDLE" ]; then
+  entries="$(unzip -Z1 "$BUNDLE" 2>/dev/null)"
+  if printf '%s\n' "$entries" | grep -q '^BundleConfig.pb$' \
+     && printf '%s\n' "$entries" | grep -q '^base/manifest/AndroidManifest.xml$'; then
+    ok "AAB structure is a valid app bundle (BundleConfig.pb, base module)"
+  else
+    bad "AAB does not have the structure of an app bundle"
+  fi
+  if "$JAVA_HOME/bin/jarsigner" -verify "$BUNDLE" 2>/dev/null | grep -q 'jar verified'; then
+    if [ -n "$EXPECT_CERT" ]; then
+      ok "AAB JAR signature verifies (upload-key signed, Play re-signs with the app-signing key)"
+    else
+      bad "AAB is JAR-signed but no release certificate was declared"
+    fi
+  else
+    if [ -n "$EXPECT_CERT" ]; then
+      bad "AAB is not JAR-signed but a release certificate was declared; sign the bundle with the upload key before Play upload"
+    else
+      ok "AAB is unsigned (the upload key will sign it and Play App Signing will re-sign on upload; see apps/android/SIGNING.md)"
+    fi
+  fi
+else
+  bad "no release AAB found"
+fi
 
 section "Mapping file"
 if [ -f "$OUT/mapping/release/mapping.txt" ]; then

@@ -218,6 +218,65 @@ was re-verified: `https://odivrelo.peterdsp.dev`, release `f84a9172`, HSTS and
 full CSP, HTTP-to-HTTPS 301, deep links 200, and `robots.txt` still disallows
 all while the data is a demonstration.
 
+## Third pass, 2 October 2026: tests repaired and release machinery built
+
+### iOS UI tests: fixed on both device classes
+
+The iPad UI failures were test-portability, and they are now fixed. Each tab is
+given a stable `accessibilityIdentifier`, a `selectTab` helper taps the first
+hittable match across the bottom-bar, top-bar and sidebar presentations, a
+`goBackIfPushed` helper is a no-op on the split-view layout, and the map memory
+test guards against an off-screen frame. Result, run sequentially to avoid
+contention:
+
+- iPhone 15: 21 of 21 pass.
+- iPad Pro 13": 21 of 21 pass (the one interruption was the known iOS 27
+  simulator WebKit-accessibility crash, which passes on isolated rerun).
+
+### Android instrumentation: repaired from a total deadlock to most of the suite
+
+The suite previously timed out on every test. Three root causes were found and
+fixed, each a genuine improvement rather than a test-only hack:
+
+- **Determinism.** `LoadingState` and the indeterminate download bar now honour
+  the reduced-motion setting (the signal the theme already reads), showing a
+  static indicator. An indeterminate indicator requests frames forever and keeps
+  the Compose test clock from reaching idle; a static one lets it settle. This
+  is also the correct reduced-motion behaviour for a user.
+- **Viewport robustness.** The tests now scroll to controls that sit below the
+  fold on a phone (the welcome Start button, the search submit, and the
+  schedule-only notice at the end of the results list) before clicking or
+  asserting, rather than assuming everything is on screen.
+- **Date anchoring.** The date-dependent tests were written against a fixed
+  "today" and are re-aligned to the demo release's packed anchor date.
+
+Result on an AOSP API 34 emulator with animations disabled: 10 of 18 pass, up
+from 0. `SearchFlowTest` is fully green. The remaining failures are the
+activity-recreation restoration and deep-link cases, where
+`ActivityScenario.recreate()` does not complete on this emulator image
+("Activity never becomes DESTROYED"); that is being stabilised across images. A
+CI instrumentation job (`reactivecircus/android-emulator-runner`, KVM, software
+GPU, animations disabled) was added; it runs and uploads its full report and is
+non-blocking until the suite is green.
+
+### Release machinery built (was only documented before)
+
+- `.github/workflows/release-ios.yml` and `.github/workflows/release-android.yml`:
+  complete, manual-dispatch-only release workflows against the new `ios-beta`
+  and `android-beta` environments. They validate required secrets by name first,
+  build and sign in a throwaway keychain or from a temp keystore, verify the
+  signature, upload to TestFlight or the Play internal track, write checksums
+  and a summary, and delete all signing material even on failure.
+- `scripts/android-app-verify.sh` now has two modes: an intentionally-unsigned
+  check, and an authenticated release-signing check against a declared
+  certificate fingerprint. It also validates the AAB structure and its
+  `jarsigner` signature rather than passing a bundle to `apksigner`.
+- The Android version code is overridable (`ODIVRELO_VERSION_CODE`) so no build
+  number is reused; the iOS build number is overridable in the archive step.
+- `docs/beta/OWNER-SETUP.md` is the single consolidated guide to the account-only
+  steps and the exact secrets to install, with a secure upload method that never
+  passes a value through chat or a command line.
+
 ## Remaining external blockers
 
 Reconfirmed on 2 October 2026. Full detail and the exact unblocking action per

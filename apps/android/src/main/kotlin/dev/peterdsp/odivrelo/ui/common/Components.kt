@@ -55,6 +55,7 @@ import dev.peterdsp.odivrelo.features.EmptyReason
 import dev.peterdsp.odivrelo.features.FailureReason
 import dev.peterdsp.odivrelo.features.Loadable
 import dev.peterdsp.odivrelo.theme.LocalExtraTouchPadding
+import dev.peterdsp.odivrelo.theme.LocalReduceMotion
 import dev.peterdsp.odivrelo.theme.OdivreloTheme
 import dev.peterdsp.odivrelo.theme.Space
 
@@ -434,7 +435,17 @@ fun LoadingState(modifier: Modifier = Modifier) {
             },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CircularProgressIndicator()
+        // Under reduced motion, show a static ring rather than the spinning
+        // indeterminate one. This honours the platform and in-app reduced-motion
+        // setting (the same signal the rest of the theme already respects), and
+        // because a static indicator requests no further frames it also lets the
+        // Compose UI-test clock reach idle instead of waiting on a perpetual
+        // animation. The loading text below carries the state to a screen reader.
+        if (LocalReduceMotion.current) {
+            CircularProgressIndicator(progress = { 0.25f })
+        } else {
+            CircularProgressIndicator()
+        }
         Spacer(Modifier.height(Space.x4))
         Text(
             text = stringResource(R.string.state_loading),

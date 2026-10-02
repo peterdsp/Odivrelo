@@ -49,6 +49,13 @@ private struct MainShell: View {
                 TabContainer(tab: tab, geometry: geometry, mode: mode)
                     .tabItem {
                         Label(tab.title, systemImage: tab.systemImage)
+                            // A stable, language-independent handle for the tab
+                            // control. It carries no user-visible change: the
+                            // label and glyph above are what a person sees and
+                            // what a screen reader announces. It lets a UI test
+                            // find the tab whether the platform draws a bottom
+                            // bar, a top bar or a sidebar.
+                            .accessibilityIdentifier("tab-\(tab.rawValue)")
                     }
                     .tag(tab)
             }
