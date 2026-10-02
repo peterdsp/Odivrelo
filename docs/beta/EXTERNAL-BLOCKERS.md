@@ -239,10 +239,16 @@ real corridor, once EB-04 clears. A demonstration dataset cannot substitute.
 ## EB-06: Trademark search and native-speaker review for the name
 
 - **Affected capability:** confidence in the Odivrelo name.
-- **State:** open. For Odivrelo, **nothing has been checked yet**: no collision
-  screening, no trademark search and no native-speaker review was performed
-  when the owner chose the name on 1 October 2026. No trademark ownership or
-  clearance is claimed anywhere in the product or the documentation.
+- **State:** partly closed. **Preliminary public collision screening for
+  Odivrelo was performed on 2 October 2026** and found no material conflict:
+  the exact term is used by no third-party product in accessible sources,
+  `odivrelo.com` is unregistered, the GitHub handle is free, and no App Store
+  app bears the name (DNS, GitHub and App Store results re-verified first-hand).
+  Full dated record in `BRAND-DECISION.md`. What **remains external**: no
+  trademark register (EUIPO, USPTO, WIPO, Greek OBI, Albanian DPPI) could be
+  searched, all being CAPTCHA-gated or JavaScript-only, so registered-mark risk
+  is unknown; and a native-speaker review in Greek, English and Albanian is
+  still outstanding. No trademark ownership or clearance is claimed anywhere.
 
 The record below is what was attempted for the previous name, Poravia. The
 same register limitations will apply to Odivrelo.

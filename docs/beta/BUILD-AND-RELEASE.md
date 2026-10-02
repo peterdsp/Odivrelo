@@ -182,7 +182,10 @@ iOS target links. Building it is a prerequisite for any iOS build.
 ## 5. Android
 
 ```bash
-export JAVA_HOME=/opt/homebrew/opt/openjdk@21
+# Any JDK 17 or newer. On a machine set up by scripts/setup-android-sdk.sh the
+# bundled JDK is at ~/Library/Android/jdk/<version>/Contents/Home and is not on
+# PATH, so set JAVA_HOME explicitly:
+export JAVA_HOME="$HOME/Library/Android/jdk/jdk-17.0.20.1+1/Contents/Home"
 ./gradlew :apps:android:testDebugUnitTest
 ./gradlew :apps:android:assembleDebug        # QA APK
 ./gradlew :apps:android:assembleRelease      # release APK
@@ -194,6 +197,34 @@ declared permissions, min and target SDK against current policy, a version code
 that has never been uploaded before, native library ABIs, all three
 localisations present, resource shrinking behaviour, and the mapping file.
 Smoke-test the **release** configuration, not only debug.
+
+### Installable QA build, verified 2 October 2026
+
+The **debug** variant is the installable QA build. It is debug-signed
+(`CN=Android Debug`, APK Signature Scheme v2), so it installs on any emulator or
+developer-enabled device. It is **not** for store distribution. Its exact
+checksum, size and identity for the current build are in
+`artifacts/ARTIFACT-MANIFEST.json`; compute it directly with
+`shasum -a 256 apps/android/build/outputs/apk/debug/odivrelo-debug.apk`.
+
+- Location: `apps/android/build/outputs/apk/debug/odivrelo-debug.apk`
+- Identity: `dev.peterdsp.odivrelo`, versionName `1.0.0`, versionCode
+  `20260930`, minSdk 26, targetSdk 36
+- Install and smoke-test on an emulator or device:
+
+```bash
+adb install -r apps/android/build/outputs/apk/debug/odivrelo-debug.apk
+adb shell am start -n dev.peterdsp.odivrelo/.MainActivity
+```
+
+These four Android artifacts are distinct and must not be conflated:
+
+| Artifact | File | Signing | What it is |
+|---|---|---|---|
+| QA APK | `odivrelo-debug.apk` | debug key | installable for QA on emulator or device, not for the store |
+| Release APK | `odivrelo-release-unsigned.apk` | unsigned | needs the release keystore before it can be installed |
+| Release AAB | `odivrelo-release.aab` | unsigned | the Play upload artifact, after signing |
+| Play internal track | none yet | release key | blocked, EB-03 |
 
 ### Signing, currently blocked, EB-03
 
@@ -249,6 +280,16 @@ No Apple team, certificate, profile or App Store Connect key is configured, and
 the bundle identifier is not registered. **Nothing was invented to work around
 that.** A simulator build is delivered and is explicitly **not** an installable
 iPhone beta.
+
+These iOS states are distinct and must not be conflated:
+
+| State | What exists today |
+|---|---|
+| Simulator app | yes. Runtime-verified on iPhone 15, iPhone Duo (cover posture), iPad Pro. Runs only in the Simulator. |
+| Device archive (unsigned) | buildable. The Release configuration compiles and links the shared framework unsigned (`CODE_SIGNING_ALLOWED=NO`). Not installable on a device. |
+| Signed device build | blocked, EB-02. No signing identity. |
+| TestFlight upload | blocked, EB-02. Requires the signed build and an App Store Connect record. |
+| Available to testers | blocked, EB-02. Upload accepted is still not the same as a tester being able to install. |
 
 When access exists:
 

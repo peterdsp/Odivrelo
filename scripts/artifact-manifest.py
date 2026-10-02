@@ -137,7 +137,7 @@ def collect() -> list[dict[str, Any]]:
             "version": b["version"],
             "state": "packaged",
             "signing": "not-applicable",
-            "distribution": "pending-deployment",
+            "distribution": "deployed-via-ci; this local build is a reproducible artifact",
             "fileCount": len(files),
             "totalBytes": sum(p.stat().st_size for p in files),
             **describe(index),
@@ -240,7 +240,10 @@ def main() -> int:
         "dataRelease": release,
         "artifacts": collect(),
         "distributionState": {
-            "web": "blocked: EB-01, DNS record missing",
+            "web": (
+                "deployed and verified at https://odivrelo.peterdsp.dev "
+                "(EB-01 resolved)"
+            ),
             "ios": "blocked: EB-02, no signing identity",
             "android": "blocked: EB-03, no release keystore",
         },

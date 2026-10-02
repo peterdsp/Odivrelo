@@ -123,6 +123,101 @@ Local note, not a product blocker: a local Android or Kotlin build needs
 | Europe/Athens service dates, past-midnight, GTFS beyond 24:00, DST | met | both 2026 DST transitions tested; past-midnight renders as 25:10:00 |
 | Production acquisition on the Raspberry Pi | blocked | EB-07: the Pi is not reachable from here; a locally runnable equivalent and the deploy script are delivered |
 
+## Second verification pass, 2 October 2026
+
+A deeper pass over device, adaptive, artifact and naming checks that the first
+pass did not fully cover. Where a runtime check genuinely could not run, the
+precise limitation is recorded rather than marked passed.
+
+### Installable QA artifacts, distinguished
+
+- **Android QA APK (debug):** `apps/android/build/outputs/apk/debug/odivrelo-debug.apk`,
+  built from `8e6053f`. Identity `dev.peterdsp.odivrelo`, versionName `1.0.0`,
+  versionCode `20260930`, minSdk 26, targetSdk 36. Debug-signed, re-verified
+  (`apksigner`: `CN=Android Debug`, APK Signature Scheme v2), so it installs on
+  an emulator or a developer-enabled device. Install and launch commands and the
+  four-artifact distinction (QA APK vs unsigned release APK vs unsigned AAB vs
+  Play internal track) are in `BUILD-AND-RELEASE.md`; checksums are in
+  `artifacts/ARTIFACT-MANIFEST.json`.
+- **iOS states, distinguished:** simulator app (runtime-verified), unsigned
+  device archive (buildable), signed device build / TestFlight / tester
+  availability (all blocked, EB-02). Table in `BUILD-AND-RELEASE.md`.
+
+### Device and adaptive runtime
+
+| Target | What was exercised | Status |
+|---|---|---|
+| iPhone | 192 tests incl `testSearchToBoardingDetailAndBackPreservesState`; welcome, My trips, search, journey detail (bay A1) via validated deep link | verified |
+| iPad Pro 13" | App runs; full UI suite run on the iPad destination: 21 executed, 11 passed, 10 failed | verified behaviour; the 10 failures are test-portability, not app defects (see below) |
+| iPhone Duo | Runs on the Duo simulator in cover posture | partial: the toolchain exposes no posture or fold control (`apps/ios/artifacts/duo-runtime-findings.txt`), so the inner posture could not be selected |
+| Android phone | Full journey (welcome, search, picker, results, journey detail bay A1), adaptive navigation rail and two-pane master-detail | verified (stable run) |
+| Android foldable | App renders correctly on the OPENED inner display (1768x2208) and survives CLOSED and OPENED posture transitions with no app crash | partial: the `nostavela_foldable` emulator's `system_server` ANRs on posture changes and reports the same window size for both states, so a posture-driven layout change could not be captured on this AVD |
+
+On iPad the 11 passing tests include cold launch in all three languages,
+onboarding without an account or permission, the non-dismissible demonstration
+notice, the not-covered and offline states, the accessibility filter, and every
+performance test (cold-launch time, search latency, results and journey-detail
+scroll). The 10 failures are all the tests that navigate by tapping the tab bar:
+the UI tests were written for the iPhone bottom tab bar, but iPadOS 26 presents
+the same `TabView` as a top bar or sidebar, so the `tabBars` and some button
+lookups find no match (nine "no matches found" plus one infinite-coordinate tap
+in a memory test). No content assertion failed on iPad. The two-column adaptive
+layout itself is in the code: `WindowGeometry` selects a two-column
+`NavigationSplitView` on regular width and a single column on compact. This is a
+test-portability gap, recorded as such, not an iPad app defect.
+
+### Restoration (activity and process)
+
+- **iOS: verified.** `testSearchToBoardingDetailAndBackPreservesState` passes in
+  the 192-test run on iPhone.
+- **Android: implemented, on-device automated run environment-blocked.** The
+  session state is mirrored into `SavedStateHandle` on every change (survives
+  process death) and `rememberSaveable` is used across Search, Journey detail,
+  Wallet and Settings. The instrumentation tests that assert this
+  (`a_search_survives_activity_recreation`,
+  `b_a_selected_journey_survives_activity_recreation`,
+  `a_link_is_not_re_applied_when_the_activity_is_recreated`) exist but **do not
+  run in CI** (CI runs `testDebugUnitTest` only) and **could not be run here**
+  for two independent reasons: the Compose instrumentation suite deadlocks on the
+  indeterminate `CircularProgressIndicator` shown during data seeding, so
+  Compose's idle synchronisation never settles and every test ends in a 60 s
+  `ComposeTimeoutException`; and the headless, resource-limited emulator is
+  additionally too constrained to drive reliably (recurring `system_server` and
+  `SystemUI` ANRs, and it fails to boot at all at 4 GB). This is a test-harness
+  and environment limitation, not a product defect: the app renders and every
+  flow works under manual drive with no app ANR or crash in logcat.
+
+### Accessibility and screen readers
+
+- **Web: verified** with axe across the e2e suite, which exercises the actual
+  ARIA and semantics that assistive technology consumes.
+- **iOS and Android: labels present, speech output not automatable here.** The
+  Android `every_tab_is_labelled_for_a_screen_reader_and_is_large_enough_to_hit`
+  instrumentation test asserts screen-reader labels and touch-target sizes but is
+  blocked for the reason above. Driving actual VoiceOver or TalkBack speech could
+  not be automated in this environment, which was investigated:
+  `xcrun simctl ui` exposes only appearance, contrast and content size with no
+  VoiceOver control, `idb` is not installed, and the Android emulator was too
+  unstable to enable and drive TalkBack. This is recorded as a precise
+  limitation, not a pass.
+
+### Naming
+
+Preliminary public collision screening for Odivrelo was performed and found no
+material conflict (`BRAND-DECISION.md`, dated 2 October 2026). The domain,
+GitHub handle and App Store results were re-verified first-hand. Trademark
+registers could not be searched and a native-speaker review is still
+outstanding; both remain external under EB-06.
+
+### Artifact manifest and deployment
+
+`artifacts/ARTIFACT-MANIFEST.json` was regenerated against `8e6053f`, and the
+script's stale distribution claim was corrected (`web: "blocked: EB-01, DNS
+record missing"` is false; it now records deployed and verified). The live site
+was re-verified: `https://odivrelo.peterdsp.dev`, release `f84a9172`, HSTS and
+full CSP, HTTP-to-HTTPS 301, deep links 200, and `robots.txt` still disallows
+all while the data is a demonstration.
+
 ## Remaining external blockers
 
 Reconfirmed on 2 October 2026. Full detail and the exact unblocking action per
