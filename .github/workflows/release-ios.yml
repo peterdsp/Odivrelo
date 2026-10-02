@@ -7,6 +7,11 @@ name: Release iOS (TestFlight)
 on:
   workflow_dispatch:
     inputs:
+      upload:
+        description: "Upload to TestFlight after signing (requires an existing App Store Connect app record)."
+        required: true
+        default: true
+        type: boolean
       build_number:
         description: "Unique CFBundleVersion, never reused. Defaults to the run number."
         required: false
@@ -137,6 +142,8 @@ jobs:
             -configuration Release -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/Odivrelo.xcarchive" \
             CODE_SIGN_STYLE=Manual \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=YES \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
@@ -168,7 +175,37 @@ jobs:
             -exportPath "$RUNNER_TEMP/export"
           ls -la "$RUNNER_TEMP/export"
 
+      - name: Verify and retain the signed IPA
+        run: |
+          set -euo pipefail
+          IPA="$(find "$RUNNER_TEMP/export" -maxdepth 1 -name '*.ipa' -print -quit)"
+          test -n "$IPA"
+          mkdir -p "$RUNNER_TEMP/ipa-verification"
+          unzip -q "$IPA" -d "$RUNNER_TEMP/ipa-verification"
+          APP="$(find "$RUNNER_TEMP/ipa-verification/Payload" -maxdepth 1 -name '*.app' -print -quit)"
+          test -n "$APP"
+          codesign --verify --deep --strict "$APP"
+          test -f "$APP/embedded.mobileprovision"
+          shasum -a 256 "$IPA" > "$RUNNER_TEMP/export/IPA-SHA256.txt"
+          {
+            echo "## Signed iOS artifact"
+            echo "Signed archive and exported IPA verified."
+            echo "Upload requested: ${{ inputs.upload }}"
+            echo "A build-only run does not establish TestFlight availability."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain signed beta artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-signed-beta
+          path: |
+            ${{ runner.temp }}/export/*.ipa
+            ${{ runner.temp }}/export/IPA-SHA256.txt
+          retention-days: 14
+          if-no-files-found: error
+
       - name: Validate and upload to TestFlight
+        if: ${{ inputs.upload }}
         env:
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
