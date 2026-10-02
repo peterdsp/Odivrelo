@@ -12,6 +12,18 @@ Host: macOS 27.0 arm64, Python 3.12.14, Node 24.20.0, JDK 21, Xcode 27.0.
 Artifacts live in the gitignored `artifacts/` and `apps/*/artifacts/`
 directories. They are not committed. Retention in CI is 7 days.
 
+> **Reconciliation, 2 October 2026.** The header above records when these rows
+> were first captured (`5a2fd62` on `codex/beta-1.0.0`). The suites and client
+> flows were re-run against current `main` (`8e6053f`) on 2 October 2026, with
+> the per-platform results, the device and adaptive coverage, the installable QA
+> APK details, and the preliminary name screening consolidated in
+> [`REQUIREMENT-MATRIX.md`](REQUIREMENT-MATRIX.md). The local toolchain on 2
+> October was JDK 17 (bundled at `~/Library/Android/jdk`, not JDK 21) and the
+> same Xcode 27 and Node 24; CI uses its own pinned toolchain. Where a device
+> runtime genuinely could not be exercised (iPhone Duo inner posture, a
+> posture-driven layout change on the foldable emulator), the precise limitation
+> is recorded in `REQUIREMENT-MATRIX.md` rather than marked passed.
+
 ---
 
 ## A. Data pipeline, compiler, GTFS and release

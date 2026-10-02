@@ -31,10 +31,37 @@
   product does not say it is a Greek word, does not translate it and does not
   explain where it came from. The About copy in every client says exactly
   that and no more.
-- **No trademark ownership or clearance is claimed.** No collision screening,
-  trademark search or native-speaker review was performed for Odivrelo as part
-  of this rename. `EXTERNAL-BLOCKERS.md` EB-06 carries the follow-up, which is
-  a launch blocker and not a beta blocker.
+- **No trademark ownership or clearance is claimed.** A preliminary public
+  collision screening for Odivrelo was performed on 2 October 2026 and found no
+  material conflict (recorded below). That is screening for engineering
+  purposes, not legal clearance: no trademark register could be searched, and a
+  native-speaker review is still outstanding. `EXTERNAL-BLOCKERS.md` EB-06
+  carries the remaining follow-up, which is a launch blocker and not a beta
+  blocker.
+
+### Preliminary collision screening for Odivrelo, 2 October 2026
+
+Public, read-only screening for engineering purposes. It is not legal clearance.
+The DNS, GitHub and App Store results below were re-verified first-hand; the
+trademark registers could not be searched and are recorded as gaps, not passes.
+
+| Check | Method | Dated finding |
+|---|---|---|
+| General web | search for exact "Odivrelo" and lookalikes | No third-party product, company or brand uses the exact term in accessible results. Only the owner's own assets appear. Nearest real brand is ODILO (Spanish ed-tech), phonetically adjacent, not an obvious in-category conflict; worth a closer look at professional-clearance stage. |
+| Apple App Store | iTunes Search API, `term=odivrelo` | No app named Odivrelo. Results are unrelated fuzzy matches. Re-verified first-hand (resultCount with no Odivrelo entry). |
+| Google Play | scoped web search | No Odivrelo listing found, but Play is JavaScript-rendered and was not directly enumerable, so treat as not-found-in-accessible-sources, not confirmed-absent. |
+| Domain `odivrelo.com` | WHOIS (Verisign registry) and DNS | Not registered, does not resolve. "No match for domain ODIVRELO.COM". Re-verified first-hand. A separately purchased domain is not a release dependency. |
+| GitHub handle | GitHub REST API | `odivrelo` is free (404). Re-verified first-hand. |
+| X, Instagram, Facebook handles | HTTP probes | Inconclusive: all sit behind login or bot walls. Not verified either way. |
+| Trademark registers | EUIPO TMview, USPTO, WIPO, Greek OBI, Albanian DPPI | **Not searched.** All CAPTCHA-gated, JavaScript-only, or connection-reset. Registered-mark risk is genuinely unknown and remains EB-06. |
+| Meaning, Greek and English | preliminary observation | No obvious bad or confusing meaning. Greek reads in the `odi-`/road family, which is apt. |
+| Meaning, Albanian | preliminary observation | No clearly offensive resemblance identified, but the `-vrel-` segment is the lowest-confidence of the three and still needs a native Albanian speaker. |
+
+**Verdict.** Preliminary screening surfaced no concrete material collision that
+would warrant changing the name, so Odivrelo is kept. This is not clearance: a
+professional trademark search (including an ODILO similarity assessment) and a
+native-speaker linguistic review in Greek, English and Albanian remain
+outstanding under EB-06.
 - **Dromiqo** is listed in `brand.json.legacyNames` because the owner named it
   among previous names for this product. It never appeared in this repository;
   it is on the list so that the rename gate stops it from appearing now.
