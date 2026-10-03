@@ -88,20 +88,43 @@ The production release path was verified to refuse this candidate dataset:
 `release_production` against the NAP ingest db fails closed with "no published
 trips", so candidate real data cannot accidentally ship.
 
-## Not done this session (honest gaps)
+## Status by area (updated 4 October 2026)
 
-- Real data population (Section 2): blocked on Pi access; NAP 2020 parser not
-  built yet.
-- Web and Android basemap, main Map destination, filters, locate-me, clustering.
+Done and verified since the first session:
+
+- Pi recovery closed: inspected read-only, no KTEL data (runs Syrmos rail).
+- NAP 2020 parser built and imported: 42 operators, 1,340 candidate trips.
+- Rename gate repaired for the historical evidence references.
+- Web OpenFreeMap basemap with visible attribution, verified in a preview build
+  (style, tiles and attribution load; route and stop overlays draw on top).
+
+Not done yet (honest gaps):
+
+- Embedded Android map (MapLibre Native). The shared model carries the stop
+  coordinates; the map itself is not implemented.
+- Main Map destination (as opposed to the journey-detail map) on any platform;
+  stop/operator/route filters, clustering, locate-me.
+- Current, publishable real data: NAP 2020 is historical and city-level, operator
+  reuse rights remain `unknown`, and no live KTEL GPS feed exists. Current-source
+  acquisition is tracked in the operator source ledger.
 - Live feed adapter, normalized live contract, live/estimated/stale states.
-- Mobile build and runtime verification of the iOS and Android changes.
-- Deployment and beta uploads were not performed this session.
+- iOS and Android map changes are not yet built or run on a device here.
+- Deployment and beta uploads were not performed.
+
+Android instrumentation note: the suite is non-blocking in CI. On 4 October it
+had 11 failures that reproduce on a local host-GPU emulator (so not a CI GPU
+issue). Nine are pre-existing (deep-link teardown and activity-recreation cases
+the suite comment already flags as being stabilised). Two, `SearchFlowTest.c/d`,
+fail because the demonstration dataset's latest packed date is 2026-10-02 and the
+test searches "today" (now past it); this is a demo date time-bomb that hits any
+run after 2026-10-02 on any branch, not a code regression. The proper fix is to
+re-anchor the demo dataset to the current date, which is deferred because 23
+test sites hard-code the fixed demo dates.
 
 ## Smallest owner actions to unblock
 
-1. Make the Pi reachable or export `ktel.db`/`ktel-public.db` (read-only), so the
-   real raw rows can be recovered and reconciled. Exact commands in
-   `DATA-RECOVERY-INVENTORY.md`.
-2. Choose a basemap provider for web and Android (see `LIVE-MAP-PARITY.md`).
-3. Confirm whether to scrape operator sites given `unknown` rights, or keep to
-   NAP 2020 plus recovered Pi data only.
+1. A path to current, boarding-level real data: operator reuse permission, or a
+   current NAP resource. Without it the apps stay schedule-demo over a reviewable
+   candidate dataset. See the operator source ledger.
+2. Authorisation to send the prepared operator permission requests, if that route
+   is chosen.

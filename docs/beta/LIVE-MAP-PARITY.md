@@ -36,15 +36,18 @@ coverage. Syrmos evidence is from a read-only inspection of
   It draws the route line and stop markers from data the page holds.
 - Pan, zoom, fit (recentre) controls, keyboard navigation on. Honours reduced
   motion. The stop list is the accessible equivalent; markers are aria-hidden.
-- Fixed this session: the route line draws, but stop markers read
-  `stop.longitude`/`stop.latitude`, which the contract never populated, so every
-  marker was placed at `undefined` and `savedTrips.ts` `mapData` was always
-  false (no journey counted as having offline map data). See the data fix below.
-- Still missing versus the requirement: a working basemap with attribution, an
-  accessible main Map destination (the map is journey-detail only), stop and
-  operator/route filters, clustering, locate-me. The tileless choice is a
-  deliberate product stance that the owner should confirm or replace with a real
-  provider (see Decisions).
+- Fixed: the route line draws, and stop markers now read real per-stop
+  coordinates resolved by id (the contract previously omitted them, so markers
+  were placed at `undefined` and `savedTrips.ts` `mapData` was always false).
+- Basemap added (4 October 2026): the map now loads the free, keyless OpenFreeMap
+  `liberty` style through MapLibre, with the OpenFreeMap and OpenStreetMap
+  attribution visible. Verified in a preview build with Playwright: the style and
+  tiles fetch and the attribution renders. The provider URL is configurable via
+  `VITE_MAP_STYLE_URL`; empty keeps the offline-first tileless diagram. The CSP
+  now allows exactly `https://tiles.openfreemap.org` and nothing else.
+- Still missing versus the requirement: an accessible main Map destination (the
+  map is journey-detail only), stop and operator/route filters, clustering, and
+  locate-me.
 
 ### iOS (`apps/ios/.../JourneyDetail/RouteMapSection.swift`)
 
@@ -112,12 +115,24 @@ CI workflows or a local Xcode and emulator pass.
   refresh, freshness and aging) remain to be built, and the exact missing feed
   (a permitted KTEL vehicle-position source) is not yet found.
 
-## Decisions the owner needs to make
+## Provider decision (made 4 October 2026)
 
-1. Basemap provider for web and Android. Options: keep web tileless and add a
-   real provider only where terms fit; adopt the Syrmos keyless Esri Gray Canvas
-   approach (no key, public endpoints, check terms for commercial use and
-   offline caching); or a keyed provider with credentials kept server-side. This
-   choice gates the web and Android basemap work.
-2. Whether to invest in an embedded Android map now (new dependency plus
-   emulator verification) or keep the external handoff for the current beta.
+- Web: MapLibre GL JS with the OpenFreeMap `liberty` style (done, verified).
+- Android: MapLibre Native with OpenFreeMap (to implement).
+- iOS: MapKit (kept).
+
+OpenFreeMap's public instance is free, keyless, permits commercial use and
+requires attribution with no SLA. The provider URL stays configurable, and the
+route and stop list remain the fallback during a provider outage. No planet
+download and no paid commitment.
+
+## CI evidence (PR #21, as of 4 October 2026)
+
+- Data pipeline, public API, contract drift, Web, shared core and Android build,
+  and iOS build and tests: passing.
+- Rename gate: repaired this session.
+- Android instrumentation (non-blocking): 11 failures that reproduce on a local
+  host-GPU emulator. Nine are pre-existing deep-link and activity-recreation
+  cases; two (`SearchFlowTest.c/d`) are the demo date time-bomb described in
+  `REAL-PRODUCT-ACCEPTANCE.md`. CI build and test success does not prove a person
+  can use the map; the Android map still needs building and an interactive run.
