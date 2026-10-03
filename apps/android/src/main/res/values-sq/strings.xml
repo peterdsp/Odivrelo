@@ -195,7 +195,7 @@
     <string name="journey_provenance_retrieved">Marrë %1$s</string>
     <string name="journey_view_map">Harta</string>
     <string name="journey_view_list">Listë</string>
-    <string name="journey_map_note">Nuk ka harta offline. Harta hapet në aplikacionin e hartave të pajisjes.</string>
+    <string name="journey_map_note">Harta ka nevojë për lidhje. Pa lidhje, lista e ndalesave më poshtë është e plotë. Mund ta hapësh vendndodhjen edhe në aplikacionin e hartave të pajisjes.</string>
     <string name="journey_open_in_maps">Hap në harta</string>
     <string name="journey_no_map_app">Nuk u gjet aplikacion hartash në këtë pajisje.</string>
     <string name="journey_correction">Raporto një gabim</string>

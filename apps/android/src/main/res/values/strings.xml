@@ -195,7 +195,7 @@
     <string name="journey_provenance_retrieved">Ανακτήθηκε %1$s</string>
     <string name="journey_view_map">Χάρτης</string>
     <string name="journey_view_list">Λίστα</string>
-    <string name="journey_map_note">Δεν υπάρχουν χάρτες εκτός σύνδεσης. Ο χάρτης ανοίγει στην εφαρμογή χαρτών της συσκευής.</string>
+    <string name="journey_map_note">Ο χάρτης χρειάζεται σύνδεση. Εκτός σύνδεσης, η λίστα στάσεων πιο κάτω είναι πλήρης. Μπορείς επίσης να ανοίξεις την τοποθεσία στην εφαρμογή χαρτών της συσκευής.</string>
     <string name="journey_open_in_maps">Άνοιγμα στους χάρτες</string>
     <string name="journey_no_map_app">Δεν βρέθηκε εφαρμογή χαρτών σε αυτή τη συσκευή.</string>
     <string name="journey_correction">Αναφορά λάθους</string>
