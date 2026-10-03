@@ -28,7 +28,17 @@ export interface AppConfig {
   readonly dataSource: DataSourceKind;
   readonly apiBaseUrl: string | null;
   readonly staticDataBase: string;
+  /**
+   * The MapLibre style the basemap loads. Defaults to the free, keyless
+   * OpenFreeMap "liberty" style. Set `VITE_MAP_STYLE_URL` to point at another
+   * provider, or to the empty string to draw the route and stops on a plain
+   * background with no network request (the offline-first diagram).
+   */
+  readonly mapStyleUrl: string;
 }
+
+/** The documented free, keyless, attribution-required OpenFreeMap style. */
+export const DEFAULT_MAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
 
 function readEnv(): AppConfig {
   const env = import.meta.env ?? {};
@@ -37,7 +47,9 @@ function readEnv(): AppConfig {
   // Static is the default, and stays the default when no API is configured:
   // a selection that cannot work is not honoured silently.
   const dataSource: DataSourceKind = requested === 'http' && apiBaseUrl ? 'http' : 'static';
-  return { dataSource, apiBaseUrl, staticDataBase: '/data/' };
+  const mapStyleUrl =
+    typeof env.VITE_MAP_STYLE_URL === 'string' ? env.VITE_MAP_STYLE_URL : DEFAULT_MAP_STYLE_URL;
+  return { dataSource, apiBaseUrl, staticDataBase: '/data/', mapStyleUrl };
 }
 
 export const appConfig: AppConfig = readEnv();
