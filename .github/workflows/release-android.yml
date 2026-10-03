@@ -21,6 +21,12 @@ on:
         description: "Unique integer version code, never reused. Defaults to the run number."
         required: false
         type: string
+      release_channel:
+        description: "Dataset channel. demo ships the labelled demo; production needs a reviewed real dataset and never falls back to demo."
+        required: false
+        default: demo
+        type: choice
+        options: [demo, production]
 
 # Least privilege: this workflow only reads the repository. It uploads to Play
 # through a service account, not through the GitHub token.
@@ -92,10 +98,12 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Generate the data release and sync its packs
+        env:
+          RELEASE_CHANNEL: ${{ github.event.inputs.release_channel || vars.RELEASE_CHANNEL || 'demo' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r server/api/requirements.txt
-          PY=python bash scripts/api-seed-demo.sh
+          PY=python bash scripts/build-release.sh
           bash scripts/android-sync-packs.sh
 
       # Decode the upload keystore to a file under the runner's private temp

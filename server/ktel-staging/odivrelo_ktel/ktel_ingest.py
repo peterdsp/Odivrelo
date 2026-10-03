@@ -86,6 +86,7 @@ def import_normalized_snapshot(
         "lines": 0,
         "journeyPatterns": 0,
         "trips": 0,
+        "serviceCalendars": 0,
         "quarantined": 0,
     }
     stop_place_ids: dict[str, str] = {}
@@ -438,9 +439,13 @@ def import_normalized_snapshot(
             )
             counters["trips"] += 1
 
+        counters["serviceCalendars"] = len(
+            _import_service_calendars(conn, payload, run_id, retrieved_at)
+        )
+
         records_seen = sum(
             counters[key] for key in (
-                "stopPlaces", "stops", "lines", "journeyPatterns", "trips"
+                "stopPlaces", "stops", "lines", "journeyPatterns", "trips", "serviceCalendars"
             )
         )
         conn.execute(
@@ -464,6 +469,116 @@ def import_normalized_snapshot(
         conn.execute("ROLLBACK")
         raise
     return {"importRunId": run_id, **counters}
+
+
+def calendar_id(operator_id: str, source_id: str, external_id: str) -> str:
+    return f"kc_{stable_entity_id(operator_id, source_id, 'calendar', external_id)}"
+
+
+def _import_service_calendars(
+    connection: sqlite3.Connection, payload: dict[str, Any],
+    run_id: str, retrieved_at: str,
+) -> dict[str, str]:
+    """Insert service calendars, their exceptions, and bind trips to them."""
+    operator_id = str(payload["operatorId"])
+    source_id = str(payload["sourceId"])
+    identifiers: dict[str, str] = {}
+    for item in payload.get("serviceCalendars", []):
+        external_id = str(item["externalId"])
+        entity_id = calendar_id(operator_id, source_id, external_id)
+        identifiers[external_id] = entity_id
+        connection.execute(
+            """
+            INSERT INTO ktel_service_calendars(
+                id, operator_id, name, valid_from, valid_until, monday, tuesday,
+                wednesday, thursday, friday, saturday, sunday, source_id,
+                verification_state, publication_state
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'candidate')
+            ON CONFLICT(id) DO UPDATE SET
+                name=excluded.name,
+                valid_from=excluded.valid_from,
+                valid_until=excluded.valid_until,
+                monday=excluded.monday,
+                tuesday=excluded.tuesday,
+                wednesday=excluded.wednesday,
+                thursday=excluded.thursday,
+                friday=excluded.friday,
+                saturday=excluded.saturday,
+                sunday=excluded.sunday,
+                verification_state=excluded.verification_state,
+                publication_state='candidate'
+            """,
+            (
+                entity_id,
+                operator_id,
+                str(item["name"]),
+                item.get("validFrom"),
+                item.get("validUntil"),
+                *[
+                    1 if item.get(day) else 0
+                    for day in (
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "sunday",
+                    )
+                ],
+                source_id,
+                item.get("verificationState", "candidate"),
+            ),
+        )
+        _record_source_row(
+            connection, run_id, source_id, operator_id, "service_calendar",
+            external_id, item, retrieved_at,
+        )
+        # Each calendar is a complete snapshot, so removed exceptions cannot
+        # survive re-import and silently cancel a restored service.
+        connection.execute(
+            "DELETE FROM ktel_calendar_exceptions WHERE calendar_id=?", (entity_id,)
+        )
+        for exception in item.get("exceptions", []):
+            connection.execute(
+                """
+                INSERT INTO ktel_calendar_exceptions(
+                    calendar_id, service_date, exception_type, source_id, note
+                ) VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(calendar_id, service_date) DO UPDATE SET
+                    exception_type=excluded.exception_type,
+                    note=excluded.note
+                """,
+                (
+                    entity_id,
+                    str(exception["serviceDate"]),
+                    str(exception["exceptionType"]),
+                    source_id,
+                    exception.get("note"),
+                ),
+            )
+
+    for trip in payload.get("trips", []):
+        external_calendar = trip.get("calendarExternalId")
+        entity_id = identifiers.get(str(external_calendar)) if external_calendar else None
+        if external_calendar and entity_id is None:
+            raise ValueError(
+                f"trip {trip['externalId']} references unknown calendar "
+                f"{external_calendar}"
+            )
+        connection.execute(
+            "UPDATE ktel_trips SET calendar_id=? "
+            "WHERE operator_id=? AND source_id=? AND external_id=? "
+            "AND service_date IS ?",
+            (
+                entity_id,
+                operator_id,
+                source_id,
+                str(trip["externalId"]),
+                trip.get("serviceDate"),
+            ),
+        )
+    return identifiers
 
 
 def review_entity(

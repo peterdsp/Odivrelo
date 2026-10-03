@@ -121,6 +121,10 @@ def compile_public_database(
         line_ids = {row["id"] for row in lines}
         pattern_ids = {row["id"] for row in patterns}
         calendar_ids = {row["id"] for row in calendars}
+        # A withheld calendar must withhold its trips. Clearing the reference
+        # would reinterpret recurring service as an approved date-specific trip.
+        trips = [row for row in trips
+                 if row["calendar_id"] is None or row["calendar_id"] in calendar_ids]
         trip_ids = {row["id"] for row in trips}
 
         for row in stops:
@@ -134,8 +138,6 @@ def compile_public_database(
                 row["line_id"] = None
             if row["pattern_id"] not in pattern_ids:
                 row["pattern_id"] = None
-            if row["calendar_id"] not in calendar_ids:
-                row["calendar_id"] = None
 
         pattern_stops = [
             row for row in _rows(

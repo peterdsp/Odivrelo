@@ -1,15 +1,8 @@
 """Load the labelled Aloria demonstration dataset and cut a release from it.
 
-Everything the normalized snapshot contract already covers goes through
-``odivrelo_ktel.ktel_ingest.import_normalized_snapshot``, including the invented
-operator row, which the fixture declares in its ``demoOperators`` block. One
-thing the importer does not cover yet is written here directly, with the same
-review and rights semantics:
-
-* service calendars and their exceptions, because the snapshot importer has no
-  calendar section yet. The rows are inserted with their real ``source_id`` and
-  start as candidates, then reach ``published`` only through
-  ``ktel_ingest.review_entity`` like every other entity.
+The normalized snapshot importer handles transport entities, service calendars,
+exceptions and trip bindings in one transaction. This module only selects the
+invented fixture and reviews its demonstration rows.
 
 Compilation, GTFS export and release generation are not reimplemented: they are
 ``ktel_publish`` and ``ktel_release`` called as they stand. The packs those
@@ -28,7 +21,7 @@ from . import packs  # noqa: E402
 from .brand import BRAND  # noqa: E402
 from odivrelo_ktel import ktel_db, ktel_release  # noqa: E402
 from odivrelo_ktel.ktel_ingest import import_normalized_snapshot, review_entity  # noqa: E402
-from odivrelo_ktel.ktel_registry import seed_registry, stable_entity_id  # noqa: E402
+from odivrelo_ktel.ktel_registry import seed_registry  # noqa: E402
 
 #: ``server/api/publicapi/demo_seed.py`` -> ... -> repo root.
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -58,107 +51,6 @@ def load_fixture(path: Path) -> dict[str, Any]:
             "through the demo seeder"
         )
     return payload
-
-
-def calendar_id(operator_id: str, source_id: str, external_id: str) -> str:
-    return f"kc_{stable_entity_id(operator_id, source_id, 'calendar', external_id)}"
-
-
-def import_calendars(
-    connection: sqlite3.Connection, payload: dict[str, Any]
-) -> dict[str, str]:
-    """Insert service calendars, their exceptions, and bind trips to them."""
-    operator_id = str(payload["operatorId"])
-    source_id = str(payload["sourceId"])
-    identifiers: dict[str, str] = {}
-    for item in payload.get("serviceCalendars", []):
-        external_id = str(item["externalId"])
-        entity_id = calendar_id(operator_id, source_id, external_id)
-        identifiers[external_id] = entity_id
-        connection.execute(
-            """
-            INSERT INTO ktel_service_calendars(
-                id, operator_id, name, valid_from, valid_until, monday, tuesday,
-                wednesday, thursday, friday, saturday, sunday, source_id,
-                verification_state, publication_state
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'candidate')
-            ON CONFLICT(id) DO UPDATE SET
-                name=excluded.name,
-                valid_from=excluded.valid_from,
-                valid_until=excluded.valid_until,
-                monday=excluded.monday,
-                tuesday=excluded.tuesday,
-                wednesday=excluded.wednesday,
-                thursday=excluded.thursday,
-                friday=excluded.friday,
-                saturday=excluded.saturday,
-                sunday=excluded.sunday,
-                verification_state=excluded.verification_state
-            """,
-            (
-                entity_id,
-                operator_id,
-                str(item["name"]),
-                item.get("validFrom"),
-                item.get("validUntil"),
-                *[
-                    1 if item.get(day) else 0
-                    for day in (
-                        "monday",
-                        "tuesday",
-                        "wednesday",
-                        "thursday",
-                        "friday",
-                        "saturday",
-                        "sunday",
-                    )
-                ],
-                source_id,
-                item.get("verificationState", "candidate"),
-            ),
-        )
-        for exception in item.get("exceptions", []):
-            connection.execute(
-                """
-                INSERT INTO ktel_calendar_exceptions(
-                    calendar_id, service_date, exception_type, source_id, note
-                ) VALUES (?, ?, ?, ?, ?)
-                ON CONFLICT(calendar_id, service_date) DO UPDATE SET
-                    exception_type=excluded.exception_type,
-                    note=excluded.note
-                """,
-                (
-                    entity_id,
-                    str(exception["serviceDate"]),
-                    str(exception["exceptionType"]),
-                    source_id,
-                    exception.get("note"),
-                ),
-            )
-
-    for trip in payload.get("trips", []):
-        external_calendar = trip.get("calendarExternalId")
-        if not external_calendar:
-            continue
-        entity_id = identifiers.get(str(external_calendar))
-        if entity_id is None:
-            raise ValueError(
-                f"trip {trip['externalId']} references unknown calendar "
-                f"{external_calendar}"
-            )
-        connection.execute(
-            "UPDATE ktel_trips SET calendar_id=? "
-            "WHERE operator_id=? AND source_id=? AND external_id=? "
-            "AND service_date IS ?",
-            (
-                entity_id,
-                operator_id,
-                source_id,
-                str(trip["externalId"]),
-                trip.get("serviceDate"),
-            ),
-        )
-    return identifiers
 
 
 def publish_reviewed(
@@ -216,7 +108,6 @@ def seed(
         ktel_db.migrate(connection)
         seed_registry(connection)
         imported["snapshot"] = import_normalized_snapshot(connection, snapshot)
-        import_calendars(connection, snapshot)
         if rights_pending_file is not None:
             pending = load_fixture(rights_pending_file)
             imported["rightsPending"] = import_normalized_snapshot(connection, pending)

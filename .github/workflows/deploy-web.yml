@@ -12,6 +12,15 @@ on:
         description: Why this deployment is being run
         required: true
         type: string
+      release_channel:
+        description: >
+          Which dataset to ship. "demo" builds the labelled Aloria demonstration
+          release. "production" builds from a reviewed real dataset and fails if
+          none is provided; it never falls back to demo.
+        required: false
+        default: demo
+        type: choice
+        options: [demo, production]
 
 permissions:
   contents: read
@@ -38,10 +47,15 @@ jobs:
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
       - name: Generate the public release packs and assert their properties
+        env:
+          # Default demo keeps tag deploys shipping the clearly labelled
+          # demonstration release. Flip to production, with a reviewed dataset
+          # wired in, for a real launch. The build guards the result either way.
+          RELEASE_CHANNEL: ${{ github.event.inputs.release_channel || vars.RELEASE_CHANNEL || 'demo' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r server/api/requirements.txt
-          PY=python bash scripts/ci-pipeline-smoke.sh
+          PY=python bash scripts/build-release.sh
       - name: Copy packs into the web public directory
         run: bash scripts/web-sync-packs.sh
       - run: npm ci

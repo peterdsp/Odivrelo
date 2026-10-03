@@ -16,6 +16,12 @@ on:
         description: "Unique CFBundleVersion, never reused. Defaults to the run number."
         required: false
         type: string
+      release_channel:
+        description: "Dataset channel. demo ships the labelled demo; production needs a reviewed real dataset and never falls back to demo."
+        required: false
+        default: demo
+        type: choice
+        options: [demo, production]
 
 permissions:
   contents: read
@@ -79,10 +85,12 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Generate the data release
+        env:
+          RELEASE_CHANNEL: ${{ github.event.inputs.release_channel || vars.RELEASE_CHANNEL || 'demo' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r server/api/requirements.txt
-          PY=python bash scripts/api-seed-demo.sh
+          PY=python bash scripts/build-release.sh
 
       - name: Install xcodegen and report the toolchain
         run: |
@@ -90,7 +98,7 @@ jobs:
           xcodebuild -version
 
       - name: Build the shared XCFramework (release)
-        run: bash scripts/shared-build-xcframework.sh
+        run: bash scripts/shared-build-xcframework.sh --release
 
       - name: Generate the Xcode project with the shared core linked
         run: bash scripts/ios-bootstrap.sh
