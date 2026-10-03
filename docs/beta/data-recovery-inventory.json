@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-03",
+  "generatedBy": "data recovery pass, local checkout /Users/peterdsp/git/Odivrelo",
+  "statusVocabulary": [
+    "recovered_raw",
+    "aggregate_metadata_only",
+    "candidate_records",
+    "published_records",
+    "fixture_only",
+    "stale",
+    "missing",
+    "restricted",
+    "corrupt"
+  ],
+  "headlineQuestion": {
+    "question": "Where were the 19,872 reported raw KTEL records?",
+    "answer": "They were never stored as individual rows in this repository or its artifacts. The number 19,872 is the sum of the integer 'stops' field across the 26 ktel- TicketWeb tenants in the 'ticketwebTenants' array of server/ktel-staging/pkg/ktel/operators.json. Those are observed aggregate counts from the July 2026 directory pass, not persisted records. The TicketWeb source is configured retentionMode 'metadata_only', retentionDays 0, rightsStatus 'permission_pending', so the raw bodies were deliberately not retained. If raw rows were ever materialized they could only survive on the Raspberry Pi at ~/syrmos-api/db/ktel.db, which is currently unreachable from this host (192.168.10.10:22 connection timed out).",
+    "verifiedSums": {
+      "26_ktel_tenants": {"stopGroups": 5378, "stops": 19872, "webActiveStops": 511},
+      "all_28_tenants": {"stopGroups": 5420, "stops": 19957, "webActiveStops": 519},
+      "additionalTenants": ["amorgos-bus", "hypertours-trikala"]
+    }
+  },
+  "artifacts": [
+    {
+      "id": "operators-json",
+      "location": "server/ktel-staging/pkg/ktel/operators.json",
+      "sha256_prefix": "25e8e840bd60b71a",
+      "bytes": 18441,
+      "format": "json",
+      "collectionTime": "2026-07-26T00:00:00Z",
+      "operatorsOrTenants": "64 operator entries, 28 ticketwebTenants (26 ktel- + amorgos-bus + hypertours-trikala)",
+      "rowCounts": {"operators": 64, "ticketwebTenants": 28, "sources": 5},
+      "effectiveDates": "registryVerifiedAt 2026-07-26",
+      "sourceUrl": "https://ktelbus.com/category/ktel/",
+      "retention": "ticketweb source metadata_only, retentionDays 0",
+      "permissionEvidence": "ticketweb rightsStatus permission_pending; poays-directory rightsStatus unknown",
+      "status": "aggregate_metadata_only",
+      "note": "Holds the headline counts as aggregate integers only. Does not contain the 19,872 individual stop rows."
+    },
+    {
+      "id": "registry-json",
+      "location": "data/operators/registry.json",
+      "sha256_prefix": "0dfd8f415a11cbb1",
+      "bytes": 44266,
+      "format": "json",
+      "collectionTime": "2026-07-26T00:00:00Z",
+      "operatorsOrTenants": "62 federation operators",
+      "rowCounts": {"operators": 62},
+      "effectiveDates": "verifiedAt 2026-07-26",
+      "sourceUrl": "https://ktelbus.com/category/ktel/",
+      "retention": "metadata and content digests only (daily directory checks)",
+      "permissionEvidence": "Every operator directory source rightsStatus 'unknown'. No documented operator reuse grant. NAP is the only 'permitted' source but failed the freshness and completeness gate for 1.0.0.",
+      "status": "aggregate_metadata_only",
+      "note": "Separate acquisition registry. 62 federation baseline. operators.json adds 2 (64 total). Reconcile, do not double count."
+    },
+    {
+      "id": "nap-2020-xlsx",
+      "location": "artifacts/nap/nap-ktel-2020.xlsx",
+      "sha256_prefix": "b01d4711774b7a87",
+      "bytes": 231397,
+      "format": "xlsx",
+      "collectionTime": "downloaded locally 2026-09-30",
+      "operatorsOrTenants": "43 worksheets, one per prefecture (Ν.ΘΕΣΣΑΛΟΝΙΚΗΣ, Ν.ΕΥΒΟΙΑΣ, and so on)",
+      "rowCounts": {"worksheets": 43, "totalRowElementsInclHeaders": 5205},
+      "effectiveDates": "2020 dataset, historical",
+      "sourceUrl": "https://data.nap.gov.gr/el/dataset/information-about-transport-by-long-distance-buses-in-greece",
+      "retention": "raw_persistent",
+      "permissionEvidence": "ODbL-1.0, termsStatus reviewed, rightsStatus allowed, legalReviewedAt 2026-07-26. NAP server TLS certificate currently expired.",
+      "status": "recovered_raw",
+      "note": "The one legally clear real dataset available locally. Use for historical facts and discovery, verify changeable facts (current times, boarding points) against current sources. Do not treat as proof of current departures."
+    },
+    {
+      "id": "ingest-db",
+      "location": "artifacts/ingest.db",
+      "sha256_prefix": "d6a93fdcfe027223",
+      "bytes": 319488,
+      "format": "sqlite",
+      "collectionTime": "2026-10-02T16:24:16Z (sources created_at)",
+      "operatorsOrTenants": "65 operator rows (64 directory + demo-aloria-coach); real transport rows all demo",
+      "rowCounts": {"ktel_operators": 65, "ktel_sources": 5, "ktel_operator_sources": 64, "ktel_source_records": 20, "ktel_stops": 7, "ktel_stop_places": 1, "ktel_lines": 2, "ktel_journey_patterns": 3, "ktel_trips": 5, "ktel_stop_times": 15, "ktel_service_calendars": 2, "ktel_calendar_exceptions": 2, "ktel_source_artifacts": 0, "ktel_review_events": 19, "ktel_publication_releases": 0},
+      "effectiveDates": "demo service dates 2026-03-29, 2026-04-08, 2026-04-11, 2026-10-02",
+      "sourceUrl": "n/a",
+      "retention": "working ingestion store",
+      "permissionEvidence": "all transport records carry source_id manual-review for the invented Aloria operator",
+      "status": "fixture_only",
+      "note": "All stops, trips and stop_times are the fictional Aloria demo (coordinates near 0,0; fictional addresses). No real KTEL transport rows present."
+    },
+    {
+      "id": "public-db",
+      "location": "artifacts/public.db",
+      "sha256_prefix": "348f4d6367652d96",
+      "bytes": 282624,
+      "format": "sqlite",
+      "collectionTime": "2026-10-02T16:24:16Z",
+      "operatorsOrTenants": "65 operator rows; one publication release",
+      "rowCounts": {"ktel_operators": 65, "ktel_stops": 5, "ktel_trips": 4, "ktel_lines": 1, "ktel_stop_places": 1, "ktel_publication_releases": 1, "ktel_source_records": 0, "ktel_source_artifacts": 0},
+      "effectiveDates": "published_at 2026-10-02T16:24:16Z",
+      "sourceUrl": "n/a",
+      "retention": "disposable compiled public artifact",
+      "permissionEvidence": "release 1d2fb30387cfc23b, status published; source_records and source_artifacts tables empty (lineage not carried into public db)",
+      "status": "published_records",
+      "note": "Published release contains only the Aloria demo: 5 stops, 4 trips, 1 line."
+    },
+    {
+      "id": "release-manifest",
+      "location": "artifacts/releases/odivrelo/manifest.json",
+      "sha256_prefix": "602a2885672aff6e",
+      "bytes": 2794,
+      "format": "json",
+      "collectionTime": "2026-10-02T19:24",
+      "operatorsOrTenants": "Odivrelo product release 1d2fb30387cfc23b",
+      "rowCounts": {"stops": 5, "trips": 4, "lines": 1, "journeyPatterns": 2, "serviceCalendars": 2, "stopPlaces": 1},
+      "effectiveDates": "publishedAt 2026-10-02T16:24:16Z; journey packs for 2026-03-29, 2026-04-08, 2026-04-11, 2026-10-02",
+      "sourceUrl": "n/a",
+      "retention": "retained release with manifest-previous.json rollback copy",
+      "permissionEvidence": "n/a",
+      "status": "published_records",
+      "note": "Client-facing pack manifest. Demo content only."
+    },
+    {
+      "id": "aloria-fixture",
+      "location": "data/fixtures/aloria-demo-snapshot.json",
+      "sha256_prefix": "1b8f0687ef09a6ff",
+      "bytes": 16423,
+      "format": "json",
+      "collectionTime": "fixture",
+      "operatorsOrTenants": "demo-aloria-coach (fictional)",
+      "rowCounts": {},
+      "effectiveDates": "demo",
+      "sourceUrl": "n/a",
+      "retention": "test and explicit demo builds only",
+      "permissionEvidence": "clearly labelled fictional",
+      "status": "fixture_only",
+      "note": "Source of the Aloria demo. Keep for tests and explicit demo builds; must never reach a production release by default."
+    }
+  ],
+  "sources": [
+    {"id": "poays-directory", "rightsStatus": "unknown", "retentionMode": "metadata_only", "allowed": ["directory"], "assessment": "directory links only, no timetable reuse grant"},
+    {"id": "ticketweb", "rightsStatus": "permission_pending", "retentionMode": "metadata_only", "retentionDays": 0, "allowed": ["directory", "booking", "stop", "fare"], "assessment": "origin of the 5,378/19,872/511 observed counts; raw bodies not retained; reuse not granted"},
+    {"id": "greek-nap-ktel", "rightsStatus": "allowed", "license": "ODbL-1.0", "retentionMode": "raw_persistent", "allowed": ["directory", "schedule", "fare", "stop"], "assessment": "legally clear; 2020 vintage; passed licence gate, failed freshness gate for 1.0.0"},
+    {"id": "openstreetmap", "rightsStatus": "allowed", "license": "ODbL-1.0", "retentionMode": "raw_persistent", "allowed": ["geometry", "stop"], "assessment": "geometry and stop candidates, weekly diff with manual review"},
+    {"id": "manual-review", "rightsStatus": "allowed", "retentionMode": "redacted", "allowed": ["directory", "schedule", "fare", "stop", "geometry", "alert"], "assessment": "internal review channel; currently holds only the Aloria demo"}
+  ],
+  "remoteLocations": [
+    {
+      "id": "raspberry-pi-ktel-db",
+      "host": "syrmos-pi / petrospi (192.168.10.10)",
+      "paths": ["~/syrmos-api/db/syrmos.db", "~/syrmos-api/data/syrmos.db", "~/syrmos-api/out/ktel/", "~/syrmos-api/reference/", "~/hodomap/data/"],
+      "status": "inspected_no_ktel_data",
+      "inspectedAt": "2026-10-03",
+      "evidence": "Pi access restored. Read-only inspection (sqlite3 CLI absent on Pi; used the Pi venv python sqlite3 module). The documented ~/syrmos-api/db/ktel.db and ktel-public.db DO NOT EXIST. A full search of /mnt/media and the home tree (maxdepth 5) found no ktel*.db, ktel-public*, ingest.db or public.db anywhere. syrmos.db has 28 tables, all rail/urban (stations, lines, line_stations, scheduled_trips, scheduled_trip_stops, frequency_bands, stasy_status, rail_news, fare_products, ...), zero ktel_* tables. data/syrmos.db has 11 tables, zero ktel_*. out/ktel/ is rail output misleadingly named (M3_AIR, DK1, X3 line schedules; oasa-airport-buses). reference/ is STASY rail PDFs. No log in ~/syrmos-api ever fetched ktelbus.com, ktelbus.gr, ticketweb or data.nap.gov.gr. The ~/hodomap checkout (original Odivrelo name) holds only data/operators/registry.json plus fixtures/schemas READMEs: no database, no raw stops, same metadata-only state as the local checkout.",
+      "notCopied": "syrmos.db and data/syrmos.db were deliberately NOT snapshotted or copied. They are the separate Syrmos rail product's live databases, contain no KTEL rows, and the engagement must not touch Syrmos or copy unrelated data.",
+      "ownerAction": "None remaining for recovery. The Pi holds no KTEL coach data to recover."
+    }
+  ],
+  "gapExplanation": {
+    "finding": "records_not_retained",
+    "detail": "The July 2026 TicketWeb pass recorded aggregate counts under a metadata_only, zero-day retention policy with permission_pending rights. The individual stop bodies were therefore never normalized or persisted into ingest.db. The current releases ship the labelled Aloria demo because no real source passed the data gate: TicketWeb reuse is not granted, NAP 2020 passed the licence gate but failed the freshness and completeness gate for 1.0.0. The demo was generated by the release path, not an overwrite of a prior real import.",
+    "ruledOut": [
+      "lost_during_migration (no evidence of a prior real import existing in git history or local artifacts)",
+      "overwritten_by_demo_generation (no prior real rows found that could have been overwritten)",
+      "held_remotely (CLOSED 2026-10-03: Pi inspected read-only after access was restored; it runs the Syrmos rail product and contains no KTEL database, no compiled KTEL artifact and no raw TicketWeb rows; the hodomap checkout there is the same metadata-only state as local)"
+    ],
+    "unresolved": [],
+    "conclusion": "The 19,872 individual TicketWeb rows were never retained anywhere, locally or on the Pi. They existed only as the aggregate counts in operators.json. This question is now permanently closed. The only real, permitted dataset available is the historical NAP 2020 workbook."
+  }
+}
