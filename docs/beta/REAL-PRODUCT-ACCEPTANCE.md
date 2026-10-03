@@ -94,14 +94,17 @@ Done and verified since the first session:
 
 - Pi recovery closed: inspected read-only, no KTEL data (runs Syrmos rail).
 - NAP 2020 parser built and imported: 42 operators, 1,340 candidate trips.
-- Rename gate repaired for the historical evidence references.
+- Rename gate repaired for the historical evidence references (CI green).
 - Web OpenFreeMap basemap with visible attribution, verified in a preview build
   (style, tiles and attribution load; route and stop overlays draw on top).
+- Embedded Android MapLibre map, verified on the emulator: the OpenFreeMap tiles
+  and fonts load (logcat HTTP 200) and the route and emphasised stops render.
+- iOS stops resolved by id with a located-stop fallback (CI build verifies it).
+- Current-source ledger started; Athens-Delphi current times verified; NAP 2020
+  confirmed as the latest NAP resource.
 
 Not done yet (honest gaps):
 
-- Embedded Android map (MapLibre Native). The shared model carries the stop
-  coordinates; the map itself is not implemented.
 - Main Map destination (as opposed to the journey-detail map) on any platform;
   stop/operator/route filters, clustering, locate-me.
 - Current, publishable real data: NAP 2020 is historical and city-level, operator
