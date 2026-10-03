@@ -450,6 +450,8 @@
         "stopId",
         "sequence",
         "name",
+        "latitude",
+        "longitude",
         "arrivalAt",
         "departureAt",
         "timeQuality",
@@ -467,6 +469,18 @@
         },
         "name": {
           "$ref": "#/$defs/LocalizedText"
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ]
         },
         "arrivalAt": {
           "type": [

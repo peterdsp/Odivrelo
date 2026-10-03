@@ -50,11 +50,24 @@ struct RouteMapSection: View {
         }
     }
 
+    /// Stops carry their own coordinate, resolved by stop id. Drawing them from
+    /// the stop list is what makes a marker a real stop and not a bend in the
+    /// route line.
+    private var locatedStops: [JourneyStop] {
+        detail.journey.stops.filter { $0.latitude != nil && $0.longitude != nil }
+    }
+
     private func map(_ geometry: RouteGeometry) -> some View {
         let coordinates = geometry.coordinates.compactMap { pair -> CLLocationCoordinate2D? in
             guard pair.count == 2 else { return nil }
             return CLLocationCoordinate2D(latitude: pair[1], longitude: pair[0])
         }
+        let stops = locatedStops
+        let stopCoordinates = stops.compactMap { stop -> CLLocationCoordinate2D? in
+            guard let latitude = stop.latitude, let longitude = stop.longitude else { return nil }
+            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        }
+        let language = model.settings.effectiveLanguageTag
 
         return Map(position: $camera, interactionModes: [.pan, .zoom]) {
             if geometry.confidence == .reviewed {
@@ -69,30 +82,17 @@ struct RouteMapSection: View {
                     )
             }
 
-            // The contract publishes coordinates on the route geometry, not on
-            // each call, so the vertices are drawn without a name. Pairing a
-            // vertex with a stop by position would be a guess, and the stop
-            // list above already carries every name in order.
-            ForEach(Array(coordinates.enumerated()), id: \.offset) { _, coordinate in
-                Annotation("", coordinate: coordinate) {
-                    Circle()
-                        .fill(Theme.Palette.surface)
-                        .stroke(Theme.Palette.primary, lineWidth: 3)
-                        .frame(width: 10, height: 10)
-                        .accessibilityHidden(true)
-                }
-            }
-
-            if let point = detail.journey.boardingPoint,
-               let latitude = point.latitude,
-               let longitude = point.longitude {
-                Annotation(
-                    point.name.resolved(for: model.settings.effectiveLanguageTag),
-                    coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                ) {
-                    Image(systemName: "mappin.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(Theme.Palette.focus, Theme.Palette.primary)
+            // Each stop is placed at its own coordinate, resolved by stop id, and
+            // labelled with its real name. The boarded and alighted stops of the
+            // selected segment are prominent; stops outside the segment are muted.
+            ForEach(stops) { stop in
+                if let latitude = stop.latitude, let longitude = stop.longitude {
+                    Annotation(
+                        stop.name.resolved(for: language),
+                        coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                    ) {
+                        stopMarker(for: stop.segmentRole)
+                    }
                 }
             }
         }
@@ -106,8 +106,36 @@ struct RouteMapSection: View {
         .accessibilityLabel(L10n.detailMap)
         .accessibilityHint(L10n.a11yMapHint)
         .onAppear {
-            guard !coordinates.isEmpty else { return }
-            camera = .region(Self.region(covering: coordinates))
+            let framing = stopCoordinates.isEmpty ? coordinates : stopCoordinates
+            guard !framing.isEmpty else { return }
+            camera = .region(Self.region(covering: framing))
+        }
+    }
+
+    /// The marker for a stop, styled by its role in the selected segment:
+    /// the boarded and alighted stops stand out, stops outside the segment are
+    /// muted, exactly as the stop list treats them.
+    @ViewBuilder
+    private func stopMarker(for role: SegmentRole) -> some View {
+        switch role {
+        case .board, .alight:
+            Image(systemName: role == .board ? "figure.walk.arrival" : "figure.walk.departure")
+                .font(.title3)
+                .foregroundStyle(Theme.Palette.focus, Theme.Palette.primary)
+                .accessibilityHidden(true)
+        case .onSegment:
+            Circle()
+                .fill(Theme.Palette.surface)
+                .stroke(Theme.Palette.primary, lineWidth: 3)
+                .frame(width: 12, height: 12)
+                .accessibilityHidden(true)
+        case .beforeBoard, .afterAlight:
+            Circle()
+                .fill(Theme.Palette.surface)
+                .stroke(Theme.Palette.textSecondary, lineWidth: 2)
+                .frame(width: 9, height: 9)
+                .opacity(0.6)
+                .accessibilityHidden(true)
         }
     }
 

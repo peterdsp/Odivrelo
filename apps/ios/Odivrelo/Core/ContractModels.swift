@@ -689,6 +689,11 @@ public struct JourneyStop: Hashable, Codable, Sendable, Identifiable {
     public var stopId: String
     public var sequence: Int
     public var name: LocalisedText
+    /// The stop's own coordinate, resolved by stop id. A map plots the stop here,
+    /// never at a route geometry vertex. `nil` when the stop has no reviewed
+    /// coordinate yet.
+    public var latitude: Double?
+    public var longitude: Double?
     public var arrivalAt: Date?
     public var departureAt: Date?
     public var timeQuality: TimeQuality
@@ -701,6 +706,8 @@ public struct JourneyStop: Hashable, Codable, Sendable, Identifiable {
         stopId: String,
         sequence: Int,
         name: LocalisedText,
+        latitude: Double? = nil,
+        longitude: Double? = nil,
         arrivalAt: Date?,
         departureAt: Date?,
         timeQuality: TimeQuality,
@@ -711,6 +718,8 @@ public struct JourneyStop: Hashable, Codable, Sendable, Identifiable {
         self.stopId = stopId
         self.sequence = sequence
         self.name = name
+        self.latitude = latitude
+        self.longitude = longitude
         self.arrivalAt = arrivalAt
         self.departureAt = departureAt
         self.timeQuality = timeQuality
