@@ -67,15 +67,20 @@ coverage. Syrmos evidence is from a read-only inspection of
 
 ### Android (`apps/android/.../ui/journey/JourneyDetailScreen.kt`)
 
-- `MapOrList` shows explanatory UI and an external maps handoff. There is no map
-  library in the Android build (no MapLibre, osmdroid, Google or Mapbox
-  dependency) and therefore no embedded interactive map at all.
-- Changed this session: the shared model now carries per-stop coordinates, so
-  the data an embedded map needs is available. The embedded map itself is not
-  implemented.
-- Missing: everything the requirement asks for on Android. This is the largest
-  remaining map gap and needs a provider choice plus a new dependency, then
-  emulator verification.
+- Embedded map added (4 October 2026): a MapLibre Native map
+  (`org.maplibre.gl:android-sdk` 11.8.0) now replaces the external-maps handoff
+  in the journey detail. `CoachMap` loads the OpenFreeMap liberty basemap, draws
+  the route line and the stops resolved by their own coordinates, emphasises the
+  boarded and alighted stops, and wires the MapView lifecycle through the Compose
+  `AndroidView`. MapLibre renders its own OpenFreeMap and OpenStreetMap
+  attribution. The external handoff is kept as a secondary action and the stop
+  list stays the complete alternative.
+- Verified on the emulator: the Χάρτης toggle shows the MapLibre map with the
+  route and emphasised endpoints, and logcat confirms the OpenFreeMap tiles and
+  fonts load (HTTP 200). The tiles draw ocean because the demo coordinates are
+  fictional; real coordinates would show terrain.
+- Still missing: an accessible main Map destination, stop/operator/route filters,
+  clustering, and locate-me (shared with Web and iOS).
 
 ## What changed this session (stop coordinates by id)
 
@@ -118,8 +123,9 @@ CI workflows or a local Xcode and emulator pass.
 ## Provider decision (made 4 October 2026)
 
 - Web: MapLibre GL JS with the OpenFreeMap `liberty` style (done, verified).
-- Android: MapLibre Native with OpenFreeMap (to implement).
-- iOS: MapKit (kept).
+- Android: MapLibre Native with OpenFreeMap (done, verified on the emulator).
+- iOS: MapKit, stops resolved by id with a located-stop fallback (code done,
+  verified by the iOS CI build; interactive run still to capture).
 
 OpenFreeMap's public instance is free, keyless, permits commercial use and
 requires attribution with no SLA. The provider URL stays configurable, and the
