@@ -52,11 +52,12 @@ There are both data requirements and unfinished integration work:
    `deploy-web.yml` calls `ci-pipeline-smoke.sh`, which calls
    `api-seed-demo.sh`; the mobile release workflows also call the demo seeder.
    Adding store secrets cannot change that selection.
-2. The normalized importer and reviewed compiler exist, but service-calendar
-   import still lives in `publicapi/demo_seed.py`, and there is no equivalent
-   documented, verified end-to-end real-source release job in the current
-   deployment workflows. Real delivery needs its own reviewed-input path,
-   contract checks, release selection and runtime verification.
+2. Service-calendar import was isolated in `publicapi/demo_seed.py`. It now
+   runs in the normal snapshot importer, atomically with trips, exceptions
+   and source records. Re-import removes obsolete exceptions and returns
+   calendars to candidate status for review. Unknown calendar references roll
+   back the snapshot. Regression tests cover these cases. A separate verified
+   real-source deployment selection and runtime verification remain required.
 3. No current real corridor is imported, reviewed and published. The existing
    NAP evidence records a licensed but old city-level workbook, not a usable
    current departure/boarding-point feed. Operator-source permission and

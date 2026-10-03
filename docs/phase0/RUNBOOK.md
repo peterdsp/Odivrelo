@@ -39,6 +39,16 @@ PYTHONPATH=. ../../$PY scripts/ktel_pipeline.py import-normalized \
   --file ../../data/fixtures/aloria-demo-snapshot.json
 ```
 
+The snapshot importer now also accepts `serviceCalendars`: each entry has
+`externalId`, `name`, optional `validFrom`/`validUntil`, weekday booleans, and
+`exceptions` containing `serviceDate` and `exceptionType` (`added` or `removed`).
+Trips use `calendarExternalId` to reference a calendar in the same snapshot.
+Calendars, exceptions and trip bindings commit atomically with the other rows;
+an unknown calendar reference rolls back the import. A calendar re-import
+replaces its exceptions and returns it to candidate status, withholding dependent
+trips until reviewed again. Removing a trip's calendar reference makes it
+date-specific again. The demo and real-source import paths share this logic.
+
 Rows land as `candidate`. Nothing is public yet. Rows with invalid coordinates
 are quarantined at import and counted in the run summary.
 
