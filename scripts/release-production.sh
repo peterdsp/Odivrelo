@@ -27,7 +27,7 @@ SLUG="$("$PY" -c 'import json;print(json.load(open("brand.json"))["slug"])')"
 # Read <PREFIX>_NAME, then the legacy PORAVIA_ and HODOMAP_ spellings.
 setting() {
   local suffix="$1" fallback="$2" name value
-  for name in "${PREFIX}" PORAVIA HODOMAP; do
+  for name in "${PREFIX}" PORAVIA HODOMAP; do  # branded, then legacy prefixes
     value="$(eval "printf '%s' \"\${${name}_${suffix}:-}\"")"
     if [ -n "$value" ]; then printf '%s' "$value"; return; fi
   done

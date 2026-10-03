@@ -11,8 +11,9 @@ completion.
   contains no KTEL data at all. Access was restored and it was inspected
   read-only. It runs the separate Syrmos rail product (`syrmos.db`: 28 rail
   tables, zero `ktel_*`). No `ktel.db`/`ktel-public.db`/`ingest.db` exists
-  anywhere; no log fetched ktelbus/ticketweb/nap; the `hodomap` checkout holds
-  only `registry.json`. The 19,872 was an aggregate (sum of the `stops` field
+  anywhere; no log fetched ktelbus/ticketweb/nap; the legacy `hodomap` checkout
+  (Odivrelo's former name) holds only `registry.json`. The 19,872 was an
+  aggregate (sum of the `stops` field
   across 26 TicketWeb tenants in `operators.json`), never retained rows. Question
   permanently closed. See `DATA-RECOVERY-INVENTORY.md`.
 - How many underlying rows were recovered? Zero from the Pi (none exist). The

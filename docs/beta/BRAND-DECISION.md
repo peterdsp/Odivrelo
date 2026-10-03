@@ -304,6 +304,8 @@ are historical or compatibility references, never current branding.
 | `docs/PILOT_DECISION.md`, `docs/pilot/**`, `docs/KTEL_*` | the product's former name in dated decisions | Same reason. Each is introduced as the former name. |
 | Git history and commit messages before 30 September 2026 | the former name | History is not rewritten. |
 | `docs/AUTONOMOUS-BETA-DELIVERY-PROMPT.md` | the former name | It is the instruction that commissioned the rename. |
+| `docs/REAL-DATA-AND-LIVE-MAP-DELIVERY-PROMPT.md` | the former names and the `poravia`/`hodomap` data roots | It is the delivery instruction that quotes the former names and the data-recovery paths to investigate. |
+| `docs/beta/data-recovery-inventory.json` | `hodomap`/`syrmos` paths on the Pi | Machine-readable recovery evidence: the Pi's real `~/hodomap` and `~/syrmos-api` paths are facts of the investigation, not branding. |
 
 Any occurrence outside this table is a defect. The rename gate greps the tree,
 the built artifacts and the deployed site for `hodomap`, `hodo` and unresolved

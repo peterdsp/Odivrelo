@@ -114,9 +114,9 @@ Finding: the Pi contains no KTEL coach data of any kind.
   `~/syrmos-api/reference/` is STASY rail PDFs.
 - No log under `~/syrmos-api` ever fetched `ktelbus.com`, `ktelbus.gr`,
   `ticketweb` or `data.nap.gov.gr`.
-- The `~/hodomap` checkout (the original Odivrelo name) holds only
-  `data/operators/registry.json` and README stubs: no database, no raw stops,
-  the same metadata-only state as this local checkout.
+- The `~/hodomap` checkout (the legacy HodoMap name, formerly used by Odivrelo)
+  holds only `data/operators/registry.json` and README stubs: no database, no raw
+  stops, the same metadata-only state as this local checkout.
 
 The Pi runs the separate Syrmos rail product. Its databases were deliberately
 not snapshotted or copied: they contain no KTEL rows, and this engagement must
