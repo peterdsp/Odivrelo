@@ -18,22 +18,26 @@ struct RouteMapSection: View {
     var body: some View {
         SectionCard(L10n.detailMap, systemImage: "map") {
             VStack(alignment: .leading, spacing: Theme.Space.small) {
-                if let geometry = detail.journey.geometry,
-                   geometry.confidence.isDrawable,
-                   geometry.coordinates.count >= 2 {
-                    map(geometry)
-                    BadgeFlow {
-                        GeometryConfidenceBadge(geometry.confidence)
-                        StatusBadge(
-                            geometry.attribution ?? L10n.commonNotStated,
-                            systemImage: "c.circle",
-                            tone: .neutral
-                        )
+                // The map renders when there is either a drawable route shape or
+                // at least one stop with a real coordinate. A journey with located
+                // stops but no reviewed geometry still gets a map of its stops,
+                // rather than falling back to the list only.
+                if drawableGeometry != nil || !locatedStops.isEmpty {
+                    map(drawableGeometry)
+                    if let geometry = drawableGeometry {
+                        BadgeFlow {
+                            GeometryConfidenceBadge(geometry.confidence)
+                            StatusBadge(
+                                geometry.attribution ?? L10n.commonNotStated,
+                                systemImage: "c.circle",
+                                tone: .neutral
+                            )
+                        }
+                        Text(geometry.method ?? L10n.commonNotStated)
+                            .font(.caption)
+                            .foregroundStyle(Theme.Palette.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    Text(geometry.method ?? L10n.commonNotStated)
-                        .font(.caption)
-                        .foregroundStyle(Theme.Palette.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
                 } else {
                     StateMessageView(
                         kind: .empty(systemImage: "map"),
@@ -50,6 +54,15 @@ struct RouteMapSection: View {
         }
     }
 
+    /// The route geometry only when it is drawable as a line. A journey can still
+    /// render a stop map without it.
+    private var drawableGeometry: RouteGeometry? {
+        guard let geometry = detail.journey.geometry,
+              geometry.confidence.isDrawable,
+              geometry.coordinates.count >= 2 else { return nil }
+        return geometry
+    }
+
     /// Stops carry their own coordinate, resolved by stop id. Drawing them from
     /// the stop list is what makes a marker a real stop and not a bend in the
     /// route line.
@@ -57,8 +70,8 @@ struct RouteMapSection: View {
         detail.journey.stops.filter { $0.latitude != nil && $0.longitude != nil }
     }
 
-    private func map(_ geometry: RouteGeometry) -> some View {
-        let coordinates = geometry.coordinates.compactMap { pair -> CLLocationCoordinate2D? in
+    private func map(_ geometry: RouteGeometry?) -> some View {
+        let coordinates = (geometry?.coordinates ?? []).compactMap { pair -> CLLocationCoordinate2D? in
             guard pair.count == 2 else { return nil }
             return CLLocationCoordinate2D(latitude: pair[1], longitude: pair[0])
         }
@@ -70,16 +83,18 @@ struct RouteMapSection: View {
         let language = model.settings.effectiveLanguageTag
 
         return Map(position: $camera, interactionModes: [.pan, .zoom]) {
-            if geometry.confidence == .reviewed {
-                MapPolyline(coordinates: coordinates)
-                    .stroke(Theme.Palette.primary, lineWidth: 6)
-            } else {
-                // Unreviewed geometry is dotted, never a solid confident line.
-                MapPolyline(coordinates: coordinates)
-                    .stroke(
-                        Theme.Palette.primary,
-                        style: StrokeStyle(lineWidth: 4, lineCap: .round, dash: [2, 9])
-                    )
+            if coordinates.count >= 2 {
+                if geometry?.confidence == .reviewed {
+                    MapPolyline(coordinates: coordinates)
+                        .stroke(Theme.Palette.primary, lineWidth: 6)
+                } else {
+                    // Unreviewed geometry is dotted, never a solid confident line.
+                    MapPolyline(coordinates: coordinates)
+                        .stroke(
+                            Theme.Palette.primary,
+                            style: StrokeStyle(lineWidth: 4, lineCap: .round, dash: [2, 9])
+                        )
+                }
             }
 
             // Each stop is placed at its own coordinate, resolved by stop id, and
