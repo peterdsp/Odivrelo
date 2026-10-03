@@ -796,11 +796,16 @@ def journey_detail(
         arrival = row["arrival_at"]
         departure = row["departure_at"]
         rule = rules.get((trip["pattern_id"], row["stop_id"]))
+        stop_row = stops.get(row["stop_id"])
         stop_list.append(
             {
                 "stopId": row["stop_id"],
                 "sequence": row["stop_sequence"],
-                "name": _stop_names(stops.get(row["stop_id"])),
+                "name": _stop_names(stop_row),
+                # Resolve the stop's own coordinates by id. A client places the
+                # stop here; a route geometry vertex is not a stop identity.
+                "latitude": stop_row["latitude"] if stop_row else None,
+                "longitude": stop_row["longitude"] if stop_row else None,
                 "arrivalAt": (
                     iso(project_onto_service_date(arrival, template, resolved))
                     if arrival

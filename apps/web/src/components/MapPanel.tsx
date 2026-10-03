@@ -73,7 +73,14 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
         ]);
         if (cancelled) return;
 
-        const stopPoints = stops.map((s) => [s.longitude, s.latitude] as [number, number]);
+        // Only stops with real, resolved coordinates are placed on the map. A
+        // stop without a reviewed coordinate is skipped rather than plotted at
+        // 0,0; the stop list above still carries it.
+        const locatedStops = stops.filter(
+          (s): s is JourneyStop & { latitude: number; longitude: number } =>
+            Number.isFinite(s.latitude) && Number.isFinite(s.longitude),
+        );
+        const stopPoints = locatedStops.map((s) => [s.longitude, s.latitude] as [number, number]);
         const linePoints = geometry ? geometry.coordinates.map((c) => [c[0], c[1]] as [number, number]) : stopPoints;
         const bounds = boundsOf(linePoints.length > 1 ? linePoints : stopPoints);
         if (!bounds) return;
@@ -150,7 +157,7 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
             });
           }
 
-          for (const stop of stops) {
+          for (const stop of locatedStops) {
             const element = globalThis.document.createElement('div');
             element.className =
               stop.stopId === boardingStopId ? 'od-map-marker od-map-marker--boarding' : 'od-map-marker';

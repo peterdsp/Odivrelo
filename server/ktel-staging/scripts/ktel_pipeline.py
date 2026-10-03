@@ -11,10 +11,15 @@ from typing import Any
 
 from openpyxl import load_workbook
 
-from odivrelo_ktel import ktel_db
+from odivrelo_ktel import ktel_db, nap_parser
 from odivrelo_ktel.ktel_ingest import import_normalized_snapshot, review_entity
 from odivrelo_ktel.ktel_publish import compile_public_database
-from odivrelo_ktel.ktel_registry import content_hash, seed_registry, stable_entity_id
+from odivrelo_ktel.ktel_registry import (
+    content_hash,
+    load_registry,
+    seed_registry,
+    stable_entity_id,
+)
 from odivrelo_ktel.ktel_ticketweb import bounded_execution_plan
 
 
@@ -219,6 +224,70 @@ def command_stage_nap(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
+def command_normalize_nap(args: argparse.Namespace) -> dict[str, Any]:
+    """Parse the NAP workbook into the import contract and load it as candidates.
+
+    This is the real-data path for the only permitted KTEL source. It never
+    publishes: the 2020 data is city-level and stale, so every row stays a
+    candidate for review. It is idempotent, so re-running updates in place.
+    """
+    path = Path(args.path)
+    retrieved_at = args.retrieved_at or _now_iso()
+    workbook = load_workbook(path, read_only=True, data_only=True)
+    try:
+        with _connect(args.db) as connection:
+            registry = load_registry()
+            index = nap_parser.load_operator_index(registry["operators"])
+            per_operator: list[dict[str, Any]] = []
+            unmapped: list[str] = []
+            totals = {
+                "stops": 0, "lines": 0, "journeyPatterns": 0,
+                "trips": 0, "serviceCalendars": 0, "quarantined": 0,
+            }
+            for worksheet in workbook.worksheets:
+                if worksheet.title == "ΠΛΗΡΟΦΟΡΙΕΣ":
+                    continue
+                rows = list(worksheet.iter_rows(values_only=True))
+                sheet = nap_parser.parse_sheet(worksheet.title, rows)
+                operator_id = nap_parser.map_operator(worksheet.title, index)
+                if operator_id is None:
+                    unmapped.append(worksheet.title)
+                    continue
+                snapshot = nap_parser.build_snapshot(
+                    sheet, operator_id, retrieved_at
+                )
+                result = import_normalized_snapshot(connection, snapshot)
+                for key in totals:
+                    totals[key] += int(result.get(key, 0))
+                per_operator.append(
+                    {
+                        "prefecture": worksheet.title,
+                        "operatorId": operator_id,
+                        "routeRows": sheet.rows,
+                        "trips": int(result.get("trips", 0)),
+                        "ambiguousDayTrips": sum(
+                            1 for t in sheet.trips if t["days"].ambiguous
+                        ),
+                    }
+                )
+            connection.commit()
+    finally:
+        workbook.close()
+    return {
+        "source": "greek-nap-ktel",
+        "workbook": str(path),
+        "vintage": nap_parser.NAP_VINTAGE_YEAR,
+        "publicationState": "candidate",
+        "published": 0,
+        "reason": "2020 city-level data fails freshness and boarding gates; "
+        "held as reviewable candidates, never shipped.",
+        "operatorsMapped": len(per_operator),
+        "operatorsUnmapped": unmapped,
+        "totals": totals,
+        "perOperator": sorted(per_operator, key=lambda item: -item["trips"]),
+    }
+
+
 def command_publish(args: argparse.Namespace) -> dict[str, Any]:
     ingest_path = args.db or ktel_db.DEFAULT_KTEL_DB_PATH
     with _connect(ingest_path):
@@ -295,6 +364,15 @@ def parser() -> argparse.ArgumentParser:
     )
     nap.add_argument("--retrieved-at")
     nap.set_defaults(handler=command_stage_nap)
+
+    normalize = commands.add_parser(
+        "normalize-nap-xlsx",
+        help="parse the NAP workbook into the import contract as candidates "
+        "(never published)",
+    )
+    normalize.add_argument("path")
+    normalize.add_argument("--retrieved-at")
+    normalize.set_defaults(handler=command_normalize_nap)
 
     publish = commands.add_parser(
         "publish",

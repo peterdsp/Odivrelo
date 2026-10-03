@@ -411,3 +411,20 @@ def test_readyz_refuses_to_serve_the_demo_release_as_real_data(seeded):
     assert body["status"] == "not_ready"
     assert body["checks"]["dataMode"] == "failed"
     assert any("real data" in problem for problem in body["problems"])
+
+
+@pytest.mark.parametrize("data_mode", ["real", "unknown"])
+def test_demo_seeder_cannot_relabel_invented_rows_as_real(tmp_path, data_mode):
+    ingest = tmp_path / "ingest.db"
+    public = tmp_path / "public.db"
+    releases = tmp_path / "releases"
+    with pytest.raises(ValueError, match="cannot publish real transport data"):
+        demo_seed.seed(
+            ingest_db_path=ingest,
+            public_db_path=public,
+            release_out_dir=releases,
+            data_mode=data_mode,
+        )
+    assert not ingest.exists()
+    assert not public.exists()
+    assert not releases.exists()

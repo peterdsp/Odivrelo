@@ -186,6 +186,37 @@ def test_journey_detail_carries_stops_geometry_and_provenance(client, seeded, id
 
     assert journey["provenance"][0]["sourceId"] == "manual-review"
     assert journey["provenance"][0]["rightsStatus"] == "allowed"
+
+
+def test_journey_stops_resolve_their_own_coordinates_by_id(client, seeded, ids):
+    """Each journey stop carries its own coordinate, not a geometry vertex.
+
+    A map must place a stop at the stop's resolved location. This guards the
+    contract against the regression where stops shipped without coordinates and a
+    client fell back to route geometry vertices (which are not stop identities).
+    """
+    journey_id = ids["trip-daytime"]
+    response = client.get(
+        f"/v1/journeys/{journey_id}", params={"date": DAYTIME_DATE}
+    )
+    assert response.status_code == 200
+    journey = response.json()["journey"]
+
+    for stop in journey["stops"]:
+        assert "latitude" in stop and "longitude" in stop
+        assert isinstance(stop["latitude"], (int, float))
+        assert isinstance(stop["longitude"], (int, float))
+
+    # The boarded stop's coordinate is the stop's own, matching the stop detail
+    # resolved by the same id, and is distinct from the other stops.
+    board = journey["stops"][0]
+    assert board["stopId"] == ids[BAY_A1_EXTERNAL_ID]
+    stop_detail = client.get(f"/v1/stops/{board['stopId']}").json()["stop"]
+    assert board["latitude"] == stop_detail["latitude"]
+    assert board["longitude"] == stop_detail["longitude"]
+
+    coordinates = {(s["latitude"], s["longitude"]) for s in journey["stops"]}
+    assert len(coordinates) == len(journey["stops"])
     assert journey["purchase"]["kind"] == "online"
     assert journey["correctionUrl"].startswith(BRAND.url)
     assert journey["restrictions"] == []

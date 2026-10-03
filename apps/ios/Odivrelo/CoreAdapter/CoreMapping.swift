@@ -341,6 +341,8 @@ enum CoreMapping {
             stopId: value.stopId,
             sequence: Int(value.sequence),
             name: text(value.name),
+            latitude: value.latitude?.doubleValue,
+            longitude: value.longitude?.doubleValue,
             arrivalAt: date(value.arrivalAt),
             departureAt: date(value.departureAt),
             timeQuality: timeQuality(value.timeQuality),

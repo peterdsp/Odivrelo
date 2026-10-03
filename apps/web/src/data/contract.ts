@@ -224,8 +224,11 @@ export interface JourneyStop {
   readonly stopId: string;
   readonly sequence: number;
   readonly name: Localized;
-  readonly latitude: number;
-  readonly longitude: number;
+  // The stop's own coordinates, resolved by stop id, or null when the stop has
+  // no reviewed coordinate yet. A map plots the stop here, never at a route
+  // geometry vertex.
+  readonly latitude: number | null;
+  readonly longitude: number | null;
   readonly arrivalAt: string | null;
   readonly departureAt: string | null;
   readonly timeQuality: TimeQuality;

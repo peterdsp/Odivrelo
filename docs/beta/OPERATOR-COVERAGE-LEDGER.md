@@ -6,7 +6,7 @@ honest answer to "how much of the country does Odivrelo actually cover with
 real data", kept separate from the invented demonstration dataset that the
 1.0.0 beta ships.
 
-Last reviewed: 2 October 2026.
+Last reviewed: 3 October 2026.
 
 ## States
 
@@ -21,11 +21,16 @@ Last reviewed: 2 October 2026.
 
 ## Headline
 
-- **62 federation operators discovered. 0 imported, 0 validated, 0 published
-  with real data.** Every one of the 62 operator directory sources is
-  `rightsStatus: unknown`: no operator has granted documented reuse rights, so
-  no real timetable can lawfully reach a public release. This is the single
-  blocker, tracked as [EB-04](EXTERNAL-BLOCKERS.md#eb-04-source-reuse-rights-for-any-real-greek-coach-corridor).
+- **62 federation operators discovered. 42 imported as candidates from the NAP
+  2020 workbook. 0 validated, 0 published with real data.** The 42 come from the
+  one permitted source (NAP, ODbL 1.0) and are held strictly as candidates: the
+  data is 2020 vintage and city-level, so it fails the freshness and
+  boarding-evidence gates and is never shipped. The operator directory sources
+  remain `rightsStatus: unknown`, so no operator-sourced timetable can lawfully
+  reach a release, tracked as [EB-04](EXTERNAL-BLOCKERS.md#eb-04-source-reuse-rights-for-any-real-greek-coach-corridor).
+- **Raspberry Pi recovery closed (3 Oct 2026).** The Pi holds no KTEL data: it
+  runs the separate Syrmos rail product. The 19,872 figure was an aggregate, never
+  retained rows. See [`DATA-RECOVERY-INVENTORY.md`](DATA-RECOVERY-INVENTORY.md).
 - **1 national source permitted, but stale and incomplete.** The Greek National
   Access Point long-distance bus dataset is ODbL 1.0 (reuse allowed), but it is
   rejected for publication on fitness, not rights. See the per-source note
@@ -35,6 +40,38 @@ Last reviewed: 2 October 2026.
   open ocean so no row can be mistaken for a real terminal, and every client
   shows a persistent, non-dismissible notice in Greek, English and Albanian.
   Nationwide real coverage is therefore not claimed anywhere.
+
+## NAP 2020 candidate import (3 October 2026)
+
+The only permitted real dataset, the Greek NAP long-distance bus workbook
+(ODbL 1.0, 2020 vintage), was parsed into the import contract and loaded as
+candidates by `scripts/ktel_pipeline.py normalize-nap-xlsx`. Full per-operator
+counts are in `docs/beta/nap-reconciliation.json`.
+
+Reconciliation funnel `discovered -> parsed -> candidate -> (not published)`:
+
+| Stage | Count | Note |
+|---|---|---|
+| Prefecture sheets discovered | 42 | one per prefecture, plus a contact sheet |
+| Operators mapped | 42 of 62 | each sheet mapped to a registry operator |
+| Route rows parsed | 1,048 | both workbook layouts handled |
+| Trips (time-expanded) | 1,340 | comma-separated times expanded to one trip each |
+| Distinct cities | 54 | city-level origins and destinations |
+| Distinct city pairs | 258 | one line and pattern per pair |
+| Service calendars | 228 | from Greek day prose |
+| Candidate trips | 1,340 | every row is `publication_state=candidate` |
+| **Published** | **0** | 2020 and city-level: fails freshness and boarding gates |
+
+Why nothing is published, by excluded group:
+
+- All 1,340 trips: 2020 vintage, so they fail the freshness gate. They are a
+  historical candidate for review, not current service.
+- All 263 stops: city-level with no coordinate, so they can never be a physical
+  boarding point and stay candidate.
+- 513 trips carry an ambiguous day pattern (for example `ΚΑΘΗΜΕΡΙΝΑ`, kept as
+  daily with an ambiguity flag) and need human confirmation of the weekdays.
+- Ν.ΒΟΙΩΤΙΑΣ spans two operators (ktel-thiva, ktel-livadeia); it is assigned to
+  the capital operator and flagged for a reviewer to split.
 
 ## Source inventory, from `data/operators/registry.json`
 

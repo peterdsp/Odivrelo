@@ -109,82 +109,35 @@ wildcard or unrelated record was touched, nothing was purchased, and the
 
 ---
 
-## EB-02: Apple signing identity and App Store Connect access
+## EB-02: App Store Connect app record and beta distribution
 
-- **Affected capability:** an installable iPhone beta. TestFlight upload,
-  processing, and availability to testers.
-- **State:** blocked.
-
-**What is missing.** No Apple Developer team identifier, no distribution
-signing certificate and no provisioning profile are configured on this machine,
-and no App Store Connect API key is available. There is no existing app record
-for `dev.peterdsp.odivrelo`, because the identifier is new. (It replaced
-`dev.peterdsp.poravia` on 1 October 2026; nothing was registered under either.)
-
-**What was attempted.** The Release configuration is built and validated as far
-as signing allows. Entitlements, usage descriptions, the privacy manifest,
-bundled resources, localisations, the linked shared framework and bundle
-identity are all checked.
-
-**What is already prepared.**
-
-- A working simulator build, runtime-verified on iPhone, iPad and iPhone Duo.
-- A complete, runnable release workflow,
-  `.github/workflows/release-ios.yml`, against the `ios-beta` environment (now
-  created). It imports the certificate and profile into a throwaway keychain,
-  archives with manual signing and a unique build number, exports and validates
-  the IPA, uploads to TestFlight with the App Store Connect key, and cleans up
-  all signing material even on failure. It validates its required secrets by
-  name before building, so it fails cleanly rather than part way through.
-- A `PrivacyInfo.xcprivacy` derived from the code that was actually written.
-
-**Exact action needed.** The only remaining work is owner-account steps and
-supplying credentials: enrol in the Apple Developer Program, register
-`dev.peterdsp.odivrelo`, create the App Store Connect app record and API key,
-export the distribution certificate and profile, install the seven `ios-beta`
-secrets, then run `gh workflow run release-ios.yml`. The exact steps, where to
-obtain each item, the minimum role, and the secure upload method are in
-[`OWNER-SETUP.md`](OWNER-SETUP.md).
-
-**Explicitly not done.** No disposable signing identity was invented, no
-compliance or review answer was fabricated, and a simulator build is **not**
-being reported as an installable iPhone beta.
+- **State:** credentials and provisioning resolved on 2 October 2026;
+  store-record creation and actual distribution remain outstanding.
+- All seven `ios-beta` secrets are installed. The existing Apple API key
+  authenticated, the distribution certificate/private key are valid, and an
+  Odivrelo-specific profile was created after registering
+  `dev.peterdsp.odivrelo` and enabling Associated Domains.
+- A read-only App Store Connect app lookup returned no matching app record.
+  Create the Odivrelo iOS app record for the registered bundle ID, then upload
+  and verify processing and internal TestFlight availability. Do not request
+  replacement credentials or a new developer membership as a default remedy.
+- See [the activation report](CREDENTIAL-AND-DATA-STATUS.md) for verified
+  facts. Signed-build output is separate from tester installability.
 
 ---
 
-## EB-03: Android release signing key and Play Console access
+## EB-03: Google Play app record and application access
 
-- **Affected capability:** a signed release bundle, Play internal-track upload,
-  and availability to testers.
-- **State:** blocked.
-
-**What is missing.** No release keystore is present, and there is no Play
-Console app record for `dev.peterdsp.odivrelo` (which replaced
-`dev.peterdsp.poravia` on 1 October 2026; neither was ever registered).
-
-**What is already prepared.** An installable debug/QA APK, a release build and
-bundle produced unsigned and labelled as such, Gradle signing wired to
-`keystore.properties`, an overridable version code so no build number is ever
-reused, an `android-app-verify.sh` that runs an authenticated signature check
-when the certificate fingerprint is supplied, and a complete, runnable release
-workflow, `.github/workflows/release-android.yml`, against the `android-beta`
-environment (now created). It materialises the keystore under a private temp
-path, builds the signed bundle with a unique version code, verifies the
-signature against the declared certificate, uploads to the Play internal track
-as a completed release, and cleans up the keystore and service account even on
-failure.
-
-**Exact action needed.** The only remaining work is owner-account steps and
-supplying credentials: create the Play Console app record and complete its
-first-time setup, enable the Play Developer API and grant the service account
-app-specific internal-testing permission, provide or reuse the upload keystore,
-install the five `android-beta` secrets plus the `ANDROID_RELEASE_CERT_SHA256`
-variable, then run `gh workflow run release-android.yml`. The exact steps are in
-[`OWNER-SETUP.md`](OWNER-SETUP.md).
-
-**Explicitly not done.** No unprotected disposable production signing identity
-was created to claim completion, and a debug key is not used for store
-distribution.
+- **State:** all five signing/publishing secrets and the upload certificate
+  fingerprint installed on 2 October 2026; Play app access remains unresolved.
+- The existing upload keystore validated and the existing Google service
+  account obtained an access token. No replacement signing key was generated.
+- The authenticated publisher API returned HTTP 404 for
+  `dev.peterdsp.odivrelo`. Confirm the Play Console app record/initial upload
+  and app-specific access for this service account. Authentication alone does
+  not establish app access or an available test-track release.
+- See [the activation report](CREDENTIAL-AND-DATA-STATUS.md). No claim of
+  Play upload or tester availability follows merely from installing secrets.
 
 ---
 
@@ -222,7 +175,9 @@ point-level data for at least one corridor.
    (PILOT-05).
 4. Obtain a human legal read on the ODbL share-alike obligation before
    publishing any database derived from the NAP dataset.
-5. Only then flip `dataMode` to `real`. No code change is required.
+5. Complete and verify the real-source release integration described in
+   [the activation and data audit](CREDENTIAL-AND-DATA-STATUS.md), then deploy
+   the reviewed release. A mode flip cannot replace this work.
 
 **Re-checked 2 October 2026.** A fresh read-only discovery pass found no source
 that is simultaneously rights-cleared, fresh, and boarding-point-level for even

@@ -744,12 +744,17 @@ components:
     JourneyStop:
       type: object
       required:
-        [stopId, sequence, name, arrivalAt, departureAt, timeQuality, pickup,
-         dropoff, segmentRole]
+        [stopId, sequence, name, latitude, longitude, arrivalAt, departureAt,
+         timeQuality, pickup, dropoff, segmentRole]
       properties:
         stopId: { type: string }
         sequence: { type: integer, minimum: 1 }
         name: { $ref: '#/components/schemas/LocalizedText' }
+        # The stop's own coordinates, resolved by stop id. A map must place a
+        # stop here, never at a route geometry vertex. null when the stop has no
+        # reviewed coordinate yet, so a client can skip it rather than plot 0,0.
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
         arrivalAt: { type: [string, 'null'] }
         departureAt: { type: [string, 'null'] }
         timeQuality: { $ref: '#/components/schemas/TimeQuality' }
