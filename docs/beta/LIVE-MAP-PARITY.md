@@ -109,9 +109,10 @@ CI workflows or a local Xcode and emulator pass.
 
 - No live coach GPS feed is connected on any Odivrelo platform. The clients are
   scheduled-only today.
-- No permitted live KTEL coach feed has been identified. Syrmos uses OASA
-  telematics and rail live feeds, which are not KTEL intercity coverage and must
-  not be substituted.
+- No permitted live KTEL coach feed has been identified in the sources
+  investigated so far. This is an open investigation, not proof none exists.
+  Syrmos uses OASA telematics and rail live feeds, which are not KTEL intercity
+  coverage and must not be substituted.
 - Explicit live/estimated/scheduled/stale states are not implemented on any
   Odivrelo platform yet. The scheduled state is the only truthful state the data
   supports now.

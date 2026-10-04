@@ -68,16 +68,34 @@ unconfirmed and the boarding points are city-level.
 | Parser status | not built |
 | Remaining gap | read the official schedule page for exact times and validity; assess reuse rights; obtain boarding points |
 
-## All federation operators
+### Athens to Nafplio: official hub confirmed (4 October 2026)
 
-The 62 federation operators plus the two additional known TicketWeb tenants are
-inventoried in `data/operators/registry.json` and
-`server/ktel-staging/pkg/ktel/operators.json`, each with its official directory
-URL. Their current status is uniform and unchanged: discovered, directory URL on
-record, `rightsStatus: unknown`, not acquired. This ledger is extended operator
-by operator as each official timetable page is read and assessed, starting from
-the two pilot corridors above. The aggregate counts (5,378 / 19,872 / 511) are
-TicketWeb observations, not a dataset to reuse.
+`https://www.ktelargolida.gr/en/3226-2/` is the official KTEL Argolida schedules
+hub. It lists 14 routes (Athens-Argolida, Nafplio-Argos, and so on) with per-route
+sub-pages that carry the times, notes extra services on Fridays, Sundays and
+holidays and reduced service at Christmas, New Year and Easter, and gives official
+contact numbers. Exact per-time parsing, effective dates, boarding points and
+reuse rights remain to close, the same gaps as Athens-Delphi.
+
+## Per-operator assessment
+
+A structured row per federation operator and the two additional tenants is in
+`docs/beta/operator-source-ledger.json` (64 rows). Each row carries the operator
+id, official directory URL, status, any official sources found, inspection
+timestamp, effective period, physical-boarding evidence, reuse-rights evidence,
+NAP candidate count (historical lineage only), adapter status and open questions.
+
+Status taxonomy: `uninspected`, `investigated_no_source`, `source_found`,
+`permitted`, `restricted`, `candidate`, `reviewed`, `published`.
+
+Current counts (4 October 2026): 64 total, 2 `source_found` (the pilot corridors
+above), 62 `uninspected` (each with its official directory URL on record). This
+is an unfinished national investigation, not a finding that every operator needs
+the same action; it is worked operator by operator from this scaffold. A stored
+`unknown` rights flag is an open assessment, neither a prohibition nor a grant.
+The aggregate counts (5,378 / 19,872 / 511) are TicketWeb observations, not a
+dataset to reuse. Zero operators are `published`: no current, boarding-level,
+rights-cleared record exists yet.
 
 ## Live vehicle feeds
 

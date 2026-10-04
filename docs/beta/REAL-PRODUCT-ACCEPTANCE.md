@@ -108,7 +108,7 @@ Not done yet (honest gaps):
 - Main Map destination (as opposed to the journey-detail map) on any platform;
   stop/operator/route filters, clustering, locate-me.
 - Current, publishable real data: NAP 2020 is historical and city-level, operator
-  reuse rights remain `unknown`, and no live KTEL GPS feed exists. Current-source
+  reuse rights remain `unknown`, and no permitted live KTEL feed has been identified in the investigated sources. Current-source
   acquisition is tracked in the operator source ledger.
 - Live feed adapter, normalized live contract, live/estimated/stale states.
 - iOS and Android map changes are not yet built or run on a device here.
