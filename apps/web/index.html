@@ -28,9 +28,9 @@
                base-uri 'self';
                script-src 'self' 'wasm-unsafe-eval';
                style-src 'self' 'unsafe-inline';
-               img-src 'self' blob: data:;
+               img-src 'self' blob: data: https://tiles.openfreemap.org;
                font-src 'self';
-               connect-src 'self';
+               connect-src 'self' https://tiles.openfreemap.org;
                worker-src 'self' blob:;
                child-src blob:;
                frame-src blob:;

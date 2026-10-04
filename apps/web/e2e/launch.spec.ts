@@ -170,8 +170,13 @@ test.describe('the static host files', () => {
     expect(csp).toBeTruthy();
     expect(csp).toContain("default-src 'self'");
     expect(csp).toContain("object-src 'none'");
-    // No third party is permitted to load anything at all.
-    expect(csp).not.toMatch(/https:\/\/(?!odivrelo)/);
+    // The only permitted third party is the OpenFreeMap basemap provider, and
+    // only for the basemap: it may be connected to and its sprite images loaded,
+    // nothing else. Every other https origin is still forbidden.
+    const allowedThirdParty = 'https://tiles.openfreemap.org';
+    const withoutAllowed = csp!.split(allowedThirdParty).join('');
+    expect(withoutAllowed).not.toMatch(/https:\/\/(?!odivrelo)/);
+    expect(csp).toContain(`connect-src 'self' ${allowedThirdParty}`);
   });
 
   test('serves the release packs the static source reads', async ({ request }) => {

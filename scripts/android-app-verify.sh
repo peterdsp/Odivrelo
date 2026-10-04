@@ -23,7 +23,9 @@ export JAVA_HOME
 export PATH="$JAVA_HOME/bin:$PATH"
 
 SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
-BUILD_TOOLS="$(ls -1d "$SDK"/build-tools/* 2>/dev/null | sort -V | tail -1)"
+# Pin the verifier to the stable tools matching compileSdk rather than picking
+# whichever preview version happens to sort last on a hosted runner.
+BUILD_TOOLS="$SDK/build-tools/36.0.0"
 AAPT2="$BUILD_TOOLS/aapt2"
 OUT="apps/android/build/outputs"
 
@@ -189,13 +191,13 @@ for pair in "debug:$DEBUG_APK" "release:$RELEASE_APK" "releaseSmoke:$SMOKE_APK";
   label="${pair%%:*}"; apk="${pair#*:}"
   [ -n "$apk" ] || continue
   if certs="$("$BUILD_TOOLS/apksigner" verify --print-certs "$apk" 2>/dev/null)"; then
-    subject="$(printf '%s' "$certs" | sed -n 's/^Signer #1 certificate DN: //p' | head -1)"
-    sha="$(printf '%s' "$certs" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -1 | tr 'A-F' 'a-f' | tr -cd '0-9a-f')"
+    subject="$(printf '%s' "$certs" | sed -n 's/^Signer .* certificate DN: //p' | head -1)"
+    sha="$(printf '%s' "$certs" | sed -n 's/^Signer .* certificate SHA-256 digest: //p' | tr 'A-F' 'a-f' | tr -d ':' | sort -u)"
     printf '  %-20s signed by %s\n' "$label" "${subject:-unknown}"
     case "$label" in
       release)
         if [ -n "$EXPECT_CERT" ]; then
-          if [ "$sha" = "$EXPECT_CERT" ]; then
+          if [[ "$sha" =~ ^[0-9a-f]{64}$ ]] && [ "$sha" = "$EXPECT_CERT" ]; then
             ok "release APK signed by the declared distribution certificate"
           else
             bad "release APK signed by the wrong certificate (got $sha, expected $EXPECT_CERT)"

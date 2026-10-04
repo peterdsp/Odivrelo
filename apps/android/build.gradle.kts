@@ -248,6 +248,10 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.documentfile)
 
+    // Embedded coach map. MapLibre Native renders the OpenFreeMap basemap and the
+    // route and stop overlays, the same provider the Web client uses.
+    implementation(libs.maplibre.android)
+
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)

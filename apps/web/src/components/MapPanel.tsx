@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { appConfig } from '../config';
 import type { Geometry, JourneyStop } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
 import { BRAND_COLORS } from '../styles/brandColors.generated';
@@ -58,6 +59,10 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
   const mapRef = useRef<{ zoomIn: () => void; zoomOut: () => void; fit: () => void; remove: () => void } | null>(null);
   const [failed, setFailed] = useState<Error | null>(null);
   const [ready, setReady] = useState(false);
+  // The basemap tiles are a network resource. If the provider is unreachable
+  // (offline, or a provider outage) the route and stop overlays still draw and
+  // the stop list below stays authoritative; this just notes the missing imagery.
+  const [tilesFailed, setTilesFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,33 +78,47 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
         ]);
         if (cancelled) return;
 
-        const stopPoints = stops.map((s) => [s.longitude, s.latitude] as [number, number]);
+        // Only stops with real, resolved coordinates are placed on the map. A
+        // stop without a reviewed coordinate is skipped rather than plotted at
+        // 0,0; the stop list above still carries it.
+        const locatedStops = stops.filter(
+          (s): s is JourneyStop & { latitude: number; longitude: number } =>
+            Number.isFinite(s.latitude) && Number.isFinite(s.longitude),
+        );
+        const stopPoints = locatedStops.map((s) => [s.longitude, s.latitude] as [number, number]);
         const linePoints = geometry ? geometry.coordinates.map((c) => [c[0], c[1]] as [number, number]) : stopPoints;
         const bounds = boundsOf(linePoints.length > 1 ? linePoints : stopPoints);
         if (!bounds) return;
 
+        // The configured basemap style, or an empty tileless style that fetches
+        // nothing when no provider is configured. The provider URL is
+        // configurable (VITE_MAP_STYLE_URL); the default is OpenFreeMap, which is
+        // free, keyless and attribution-required.
+        const styleUrl = appConfig.mapStyleUrl;
+        const tilelessStyle = {
+          version: 8 as const,
+          glyphs: undefined,
+          sources: {},
+          layers: [
+            {
+              id: 'od-background',
+              type: 'background' as const,
+              paint: { 'background-color': getComputedStyle(node).getPropertyValue('--od-map-water').trim() || '#e3eeec' },
+            },
+          ],
+        };
+
         const map = new MapLibreMap({
           container: node,
-          // A style with no sources of its own and no glyphs or sprite: nothing
-          // is fetched from anywhere.
-          style: {
-            version: 8,
-            glyphs: undefined,
-            sources: {},
-            layers: [
-              {
-                id: 'od-background',
-                type: 'background',
-                paint: { 'background-color': getComputedStyle(node).getPropertyValue('--od-map-water').trim() || '#e3eeec' },
-              },
-            ],
-          },
+          style: styleUrl ? styleUrl : tilelessStyle,
           bounds: [
             [bounds.minLon, bounds.minLat],
             [bounds.maxLon, bounds.maxLat],
           ],
           fitBoundsOptions: { padding: 48, animate: false },
-          attributionControl: false,
+          // The basemap provider's attribution must stay visible. MapLibre reads
+          // it from the style's sources (OpenFreeMap and OpenStreetMap).
+          attributionControl: styleUrl ? { compact: true } : false,
           // Keyboard navigation is on by default and stays on: the canvas is
           // focusable and arrow keys pan, +/- zoom.
           keyboard: true,
@@ -110,9 +129,14 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
           fadeDuration: reducedMotion ? 0 : 300,
         });
 
-        map.on('error', () => {
-          // A style or rendering error must not take the page down; the list is
-          // still authoritative.
+        map.on('error', (event: { error?: { status?: number; message?: string } }) => {
+          // A style, tile or rendering error must not take the page down; the
+          // stop list below is still authoritative. A failed tile or style fetch
+          // is noted so the reader knows the imagery, not the route, is missing.
+          const message = event?.error?.message ?? '';
+          if (styleUrl && (event?.error?.status != null || /tile|style|sprite|glyph|fetch|load/i.test(message))) {
+            if (!cancelled) setTilesFailed(true);
+          }
         });
 
         map.on('load', () => {
@@ -150,7 +174,7 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
             });
           }
 
-          for (const stop of stops) {
+          for (const stop of locatedStops) {
             const element = globalThis.document.createElement('div');
             element.className =
               stop.stopId === boardingStopId ? 'od-map-marker od-map-marker--boarding' : 'od-map-marker';
@@ -219,7 +243,9 @@ export function MapPanel({ stops, geometry, boardingStopId, heightPx = 360, redu
       </div>
       <div className="od-map__notes">
         <GeometryBadge confidence={geometry?.confidence ?? 'unverified'} />
-        <p className="od-map__note">{t('journey.mapNoTiles')}</p>
+        {!appConfig.mapStyleUrl || tilesFailed ? (
+          <p className="od-map__note">{t('journey.mapNoTiles')}</p>
+        ) : null}
         {geometry ? <p className="od-map__attribution">{geometry.attribution}</p> : null}
       </div>
     </div>

@@ -20,7 +20,7 @@ report() { printf '\n%s\n' "$1"; fail=1; }
 #
 # Paths where a historical reference is deliberate. Every entry here is also
 # listed in docs/beta/BRAND-DECISION.md under the legacy-reference allowlist.
-ALLOWLIST_RE='^(docs/AUTONOMOUS-BETA-DELIVERY-PROMPT\.md|docs/beta/BRAND-DECISION\.md|docs/beta/ARCHITECTURE-DECISIONS\.md|docs/beta/EXECUTION-STATUS\.md|docs/beta/EXTERNAL-BLOCKERS\.md|docs/PILOT_DECISION\.md|docs/pilot/|docs/phase0/|docs/KTEL_|docs/INDEX\.md|docs/NATIONAL_EXECUTION_PLAN\.md|docs/ROADMAP\.md|docs/PRODUCT_DIFFERENTIATION\.md|docs/LIVE_COACH_MAP_AND_ETA\.md|server/ktel-staging/syrmos-api-integration\.patch|scripts/check-brand\.sh|scripts/verify-deployment\.sh|CHANGELOG\.md|brand\.json)'
+ALLOWLIST_RE='^(docs/AUTONOMOUS-BETA-DELIVERY-PROMPT\.md|docs/REAL-DATA-AND-LIVE-MAP-DELIVERY-PROMPT\.md|docs/beta/data-recovery-inventory\.json|docs/beta/BRAND-DECISION\.md|docs/beta/ARCHITECTURE-DECISIONS\.md|docs/beta/EXECUTION-STATUS\.md|docs/beta/EXTERNAL-BLOCKERS\.md|docs/PILOT_DECISION\.md|docs/pilot/|docs/phase0/|docs/KTEL_|docs/INDEX\.md|docs/NATIONAL_EXECUTION_PLAN\.md|docs/ROADMAP\.md|docs/PRODUCT_DIFFERENTIATION\.md|docs/LIVE_COACH_MAP_AND_ETA\.md|server/ktel-staging/syrmos-api-integration\.patch|scripts/check-brand\.sh|scripts/verify-deployment\.sh|CHANGELOG\.md|brand\.json)'
 
 if [ "${1:-}" = "--dist" ]; then
   dist="${2:?--dist needs a directory}"

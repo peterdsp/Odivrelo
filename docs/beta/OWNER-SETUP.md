@@ -1,9 +1,16 @@
 # Owner setup: the account-only steps for mobile beta distribution
 
-Everything that can be built, verified and configured without the credentials is
-already done. What remains needs the Apple and Google account holder, because it
-is enrolment, identity, legal acceptance, or a credential only the owner can
-mint. Nothing here can be fabricated or bypassed with an API.
+> **Credential activation, 2 October 2026:** All seven `ios-beta` secrets,
+> all five `android-beta` secrets, and the Android certificate fingerprint are
+> now installed and validated using the owner's existing release setup. The
+> Odivrelo Apple bundle ID, Associated Domains capability, and distribution
+> profile have also been created. Do not ask the owner to enrol again or
+> recreate these credentials. The remaining account checks are an Odivrelo
+> App Store Connect app record and Google Play app-record/access setup.
+> See [the verified activation report](CREDENTIAL-AND-DATA-STATUS.md).
+> The provisioning checklist below is retained as a setup reference, not a
+> claim that its already-completed steps are still missing.
+
 
 Last updated: 2 October 2026.
 
@@ -62,8 +69,7 @@ Unblocks: [`release-ios.yml`](../../.github/workflows/release-ios.yml).
    two-factor, identity verification and the paid membership. Minimum role to
    mint the items below: **Admin** or **Account Holder**.
 2. **Register the bundle identifier** `dev.peterdsp.odivrelo` under
-   Certificates, Identifiers & Profiles. Confirm it matches this project before
-   first use; it has never been registered.
+   Certificates, Identifiers & Profiles. It is now registered; preserve the existing identifier.
 3. **Create the App Store Connect app record** for that bundle id. Set the
    primary language and the beta app information. This is the record TestFlight
    builds attach to.

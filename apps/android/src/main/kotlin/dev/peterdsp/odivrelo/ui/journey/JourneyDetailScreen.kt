@@ -31,7 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -410,6 +413,21 @@ private fun MapOrList(
     }
 
     if (showMap) {
+        Spacer(Modifier.height(Space.x3))
+        // The embedded OpenFreeMap map, with the route and the stops resolved by
+        // their own coordinates. The stop list below stays the complete,
+        // accessible alternative.
+        CoachMap(
+            stops = journey.stops,
+            geometry = journey.geometry,
+            boardingStopId = journey.selectedSegment?.boardStopId ?: journey.boardingPoint?.stopId,
+            alightStopId = journey.selectedSegment?.alightStopId,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(320.dp)
+                .clip(RoundedCornerShape(Space.x3))
+                .testTag("journey-map"),
+        )
         Spacer(Modifier.height(Space.x3))
         InfoPanel(
             title = stringResource(R.string.journey_map_note),

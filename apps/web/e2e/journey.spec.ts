@@ -341,27 +341,30 @@ test.describe('the map is never the only path', () => {
     await shoot(page, testInfo, 'journey-detail-no-map');
   });
 
-  test('loads the map only when it is asked for, and says it ships no imagery', async ({ page, browserName }, testInfo) => {
+  test('loads the map only when it is asked for, with an attributed basemap', async ({ page }, testInfo) => {
     await skipOnboarding(page);
     await page.goto(`/journey/${encodeURIComponent(facts.journeyId!)}?date=${query.date}`);
     await waitForApp(page);
 
     await page.getByRole('button', { name: 'Εμφάνιση χάρτη' }).click();
-    // Headless Firefox on a GPU-less CI runner cannot always create the WebGL
-    // context the map needs; the app then replaces the panel with its text
-    // fallback, which the test above covers. So on Firefox only, wait for the
-    // map to settle (loaded, or replaced by the fallback) and skip if it fell
-    // back. The imagery note shows before either, so it cannot decide this.
-    // Chromium and WebKit are held to the full assertions below.
-    if (browserName === 'firefox') {
-      const map = page.locator('#journey-map');
-      const fallback = map.getByText('δεν φορτώθηκε');
-      await expect(map.locator('.od-map__canvas[data-ready]').or(fallback)).toBeVisible({ timeout: 20_000 });
-      test.skip((await fallback.count()) > 0, 'this Firefox has no usable WebGL, so the map showed its fallback');
+
+    // The map is loaded on demand. It needs WebGL, which a GPU-less CI runner
+    // cannot always provide; when it cannot, the app replaces the panel with its
+    // text fallback, which the stop list backs up. So the map has settled when
+    // either its canvas is ready or the fallback is shown, on every engine.
+    const map = page.locator('#journey-map');
+    const canvas = map.locator('.od-map__canvas[data-ready]');
+    const fallback = map.getByText('δεν φορτώθηκε');
+    await expect(canvas.or(fallback)).toBeVisible({ timeout: 20_000 });
+
+    if (await canvas.count()) {
+      // The basemap loaded: its attribution must be visible, and the OpenFreeMap
+      // and OpenStreetMap credit is the one third party the CSP permits.
+      await expect(map.locator('.maplibregl-ctrl-attrib')).toContainText(/OpenStreetMap/i, {
+        timeout: 20_000,
+      });
+      await expect(page.getByRole('group', { name: 'Χειριστήρια χάρτη' })).toBeVisible();
     }
-    // The panel appears, and it states that no background imagery is loaded.
-    await expect(page.locator('#journey-map')).toContainText('υπόβαθρο χάρτη', { timeout: 20_000 });
-    await expect(page.getByRole('group', { name: 'Χειριστήρια χάρτη' })).toBeVisible();
 
     await expectNoAxeViolations(page, testInfo, 'journey-with-map');
     await shoot(page, testInfo, 'journey-with-map');

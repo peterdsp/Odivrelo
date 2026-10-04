@@ -195,7 +195,7 @@
     <string name="journey_provenance_retrieved">Retrieved %1$s</string>
     <string name="journey_view_map">Map</string>
     <string name="journey_view_list">List</string>
-    <string name="journey_map_note">There are no offline maps. The map opens in the device\'s own maps application.</string>
+    <string name="journey_map_note">The map needs a connection. Offline, the stop list below is complete. You can also open the location in the device\'s own maps application.</string>
     <string name="journey_open_in_maps">Open in maps</string>
     <string name="journey_no_map_app">No maps application was found on this device.</string>
     <string name="journey_correction">Report a mistake</string>

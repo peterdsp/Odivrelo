@@ -457,6 +457,8 @@ export interface components {
             arrivalAt: string | null;
             departureAt: string | null;
             dropoff: components["schemas"]["BoardingRule"];
+            latitude: number | null;
+            longitude: number | null;
             name: components["schemas"]["LocalizedText"];
             pickup: components["schemas"]["BoardingRule"];
             segmentRole: components["schemas"]["SegmentRole"];

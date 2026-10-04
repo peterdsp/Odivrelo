@@ -316,6 +316,11 @@ data class JourneyStop(
     val stopId: String,
     val sequence: Int,
     val name: LocalizedText,
+    // The stop's own coordinate, resolved by stop id. A map plots the stop here,
+    // never at a route geometry vertex. Null when the stop has no reviewed
+    // coordinate yet, so a client skips it rather than plotting 0,0.
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val arrivalAt: String? = null,
     val departureAt: String? = null,
     val timeQuality: TimeQuality = TimeQuality.SCHEDULED,

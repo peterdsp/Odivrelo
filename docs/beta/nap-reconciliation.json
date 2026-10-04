@@ -1,0 +1,395 @@
+{
+  "source": "greek-nap-ktel",
+  "vintage": 2020,
+  "licence": "ODbL-1.0",
+  "publicationState": "candidate",
+  "published": 0,
+  "funnel": {
+    "sheets": 42,
+    "routeRows": 1048,
+    "trips": 1340,
+    "distinctCities": 54,
+    "distinctCityPairs": 258,
+    "ambiguousDayTrips": 513
+  },
+  "operators": [
+    {
+      "prefecture": "Ν.ΘΕΣΣΑΛΟΝΙΚΗΣ",
+      "operatorId": "ktel-thessaloniki",
+      "operatorEn": "KTEL Thessaloniki",
+      "routeRows": 257,
+      "trips": 257,
+      "cityPairs": 44,
+      "ambiguousDayTrips": 144
+    },
+    {
+      "prefecture": "Ν.ΚΑΒΑΛΑΣ",
+      "operatorId": "ktel-kavala",
+      "operatorEn": "KTEL Kavala",
+      "routeRows": 68,
+      "trips": 68,
+      "cityPairs": 7,
+      "ambiguousDayTrips": 46
+    },
+    {
+      "prefecture": "Ν.ΤΡΙΚΑΛΩΝ",
+      "operatorId": "ktel-trikala",
+      "operatorEn": "KTEL Trikala",
+      "routeRows": 19,
+      "trips": 64,
+      "cityPairs": 11,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΗΡΑΚΛΕΙΟΥ-ΛΑΣΙΘΕΙΟΥ",
+      "operatorId": "ktel-heraklion-lasithi",
+      "operatorEn": "KTEL Heraklion-Lasithi",
+      "routeRows": 60,
+      "trips": 60,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 56
+    },
+    {
+      "prefecture": "Ν.ΜΑΓΝΗΣΙΑΣ",
+      "operatorId": "ktel-magnesia",
+      "operatorEn": "KTEL Magnesia",
+      "routeRows": 19,
+      "trips": 51,
+      "cityPairs": 9,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΚΑΡΔΙΤΣΑΣ",
+      "operatorId": "ktel-karditsa",
+      "operatorEn": "KTEL Karditsa",
+      "routeRows": 21,
+      "trips": 48,
+      "cityPairs": 9,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΕΥΒΟΙΑΣ",
+      "operatorId": "ktel-evia",
+      "operatorEn": "KTEL Evia",
+      "routeRows": 40,
+      "trips": 40,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 37
+    },
+    {
+      "prefecture": "Ν.ΠΙΕΡΙΑΣ",
+      "operatorId": "ktel-pieria",
+      "operatorEn": "KTEL Pieria",
+      "routeRows": 39,
+      "trips": 39,
+      "cityPairs": 3,
+      "ambiguousDayTrips": 25
+    },
+    {
+      "prefecture": "Ν.ΣΕΡΡΩΝ",
+      "operatorId": "ktel-serres",
+      "operatorEn": "KTEL Serres",
+      "routeRows": 37,
+      "trips": 37,
+      "cityPairs": 6,
+      "ambiguousDayTrips": 26
+    },
+    {
+      "prefecture": "Ν.ΡΟΔΟΠΗΣ",
+      "operatorId": "ktel-rhodope",
+      "operatorEn": "KTEL Rhodope",
+      "routeRows": 35,
+      "trips": 35,
+      "cityPairs": 6,
+      "ambiguousDayTrips": 12
+    },
+    {
+      "prefecture": "Ν.ΛΑΡΙΣΑΣ",
+      "operatorId": "ktel-larissa",
+      "operatorEn": "KTEL Larissa",
+      "routeRows": 5,
+      "trips": 35,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΔΡΑΜΑΣ",
+      "operatorId": "ktel-drama",
+      "operatorEn": "KTEL Drama",
+      "routeRows": 34,
+      "trips": 34,
+      "cityPairs": 5,
+      "ambiguousDayTrips": 27
+    },
+    {
+      "prefecture": "Ν.ΗΛΕΙΑΣ",
+      "operatorId": "ktel-ileia",
+      "operatorEn": "KTEL Ileia",
+      "routeRows": 18,
+      "trips": 34,
+      "cityPairs": 7,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΙΩΑΝΝΙΝΩΝ",
+      "operatorId": "ktel-ioannina",
+      "operatorEn": "KTEL Ioannina",
+      "routeRows": 33,
+      "trips": 33,
+      "cityPairs": 11,
+      "ambiguousDayTrips": 21
+    },
+    {
+      "prefecture": "Ν.ΞΑΝΘΗΣ",
+      "operatorId": "ktel-xanthi",
+      "operatorEn": "KTEL Xanthi",
+      "routeRows": 31,
+      "trips": 31,
+      "cityPairs": 6,
+      "ambiguousDayTrips": 8
+    },
+    {
+      "prefecture": "Ν.ΗΜΑΘΙΑΣ",
+      "operatorId": "ktel-imathia",
+      "operatorEn": "KTEL Imathia",
+      "routeRows": 30,
+      "trips": 30,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 7
+    },
+    {
+      "prefecture": "Ν.ΚΟΡΙΝΘΙΑΣ",
+      "operatorId": "ktel-corinthia",
+      "operatorEn": "KTEL Corinthia",
+      "routeRows": 4,
+      "trips": 29,
+      "cityPairs": 2,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΦΘΙΩΤΙΔΑΣ",
+      "operatorId": "ktel-fthiotida",
+      "operatorEn": "KTEL Fthiotida",
+      "routeRows": 28,
+      "trips": 28,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 22
+    },
+    {
+      "prefecture": "Ν.ΚΟΖΑΝΗΣ",
+      "operatorId": "ktel-kozani",
+      "operatorEn": "KTEL Kozani",
+      "routeRows": 11,
+      "trips": 27,
+      "cityPairs": 10,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΜΕΣΣΗΝΙΑΣ",
+      "operatorId": "ktel-messinia",
+      "operatorEn": "KTEL Messinia",
+      "routeRows": 11,
+      "trips": 26,
+      "cityPairs": 6,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΠΡΕΒΕΖΑΣ",
+      "operatorId": "ktel-preveza",
+      "operatorEn": "KTEL Preveza",
+      "routeRows": 25,
+      "trips": 25,
+      "cityPairs": 8,
+      "ambiguousDayTrips": 14
+    },
+    {
+      "prefecture": "Ν.ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ",
+      "operatorId": "ktel-aitoloakarnania",
+      "operatorEn": "KTEL Aitoloakarnania",
+      "routeRows": 9,
+      "trips": 25,
+      "cityPairs": 7,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΑΧΑΙΑΣ",
+      "operatorId": "ktel-achaia",
+      "operatorEn": "KTEL Achaia",
+      "routeRows": 11,
+      "trips": 24,
+      "cityPairs": 9,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΒΟΙΩΤΙΑΣ",
+      "operatorId": "ktel-livadeia",
+      "operatorEn": "KTEL Livadeia",
+      "routeRows": 23,
+      "trips": 23,
+      "cityPairs": 2,
+      "ambiguousDayTrips": 8
+    },
+    {
+      "prefecture": "Ν.ΕΒΡΟΥ",
+      "operatorId": "ktel-evros",
+      "operatorEn": "KTEL Evros",
+      "routeRows": 23,
+      "trips": 23,
+      "cityPairs": 3,
+      "ambiguousDayTrips": 14
+    },
+    {
+      "prefecture": "Ν.ΚΙΛΚΙΣ",
+      "operatorId": "ktel-kilkis",
+      "operatorEn": "KTEL Kilkis",
+      "routeRows": 22,
+      "trips": 22,
+      "cityPairs": 1,
+      "ambiguousDayTrips": 1
+    },
+    {
+      "prefecture": "Ν.ΑΡΤΑΣ",
+      "operatorId": "ktel-arta",
+      "operatorEn": "KTEL Arta",
+      "routeRows": 22,
+      "trips": 22,
+      "cityPairs": 10,
+      "ambiguousDayTrips": 10
+    },
+    {
+      "prefecture": "Ν.ΘΕΣΠΡΩΤΙΑΣ",
+      "operatorId": "ktel-thesprotia",
+      "operatorEn": "KTEL Thesprotia",
+      "routeRows": 20,
+      "trips": 20,
+      "cityPairs": 6,
+      "ambiguousDayTrips": 14
+    },
+    {
+      "prefecture": "Ν.ΛΑΚΩΝΙΑΣ",
+      "operatorId": "ktel-lakonia",
+      "operatorEn": "KTEL Lakonia",
+      "routeRows": 2,
+      "trips": 17,
+      "cityPairs": 2,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΦΩΚΙΔΑΣ",
+      "operatorId": "ktel-fokida",
+      "operatorEn": "KTEL Fokida",
+      "routeRows": 16,
+      "trips": 16,
+      "cityPairs": 5,
+      "ambiguousDayTrips": 5
+    },
+    {
+      "prefecture": "Ν.ΓΡΕΒΕΝΩΝ",
+      "operatorId": "ktel-grevena",
+      "operatorEn": "KTEL Grevena",
+      "routeRows": 9,
+      "trips": 16,
+      "cityPairs": 6,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΑΡΓΟΛΙΔΑΣ",
+      "operatorId": "ktel-argolida",
+      "operatorEn": "KTEL Argolida",
+      "routeRows": 5,
+      "trips": 15,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΛΕΥΚΑΔΑΣ",
+      "operatorId": "ktel-lefkada",
+      "operatorEn": "KTEL Lefkada",
+      "routeRows": 8,
+      "trips": 15,
+      "cityPairs": 6,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΚΑΣΤΟΡΙΑΣ",
+      "operatorId": "ktel-kastoria",
+      "operatorEn": "KTEL Kastoria",
+      "routeRows": 9,
+      "trips": 13,
+      "cityPairs": 5,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΕΥΡΥΤΑΝΙΑΣ",
+      "operatorId": "ktel-evrytania",
+      "operatorEn": "KTEL Evrytania",
+      "routeRows": 12,
+      "trips": 12,
+      "cityPairs": 5,
+      "ambiguousDayTrips": 8
+    },
+    {
+      "prefecture": "Ν.ΠΕΛΛΑΣ",
+      "operatorId": "ktel-pella",
+      "operatorEn": "KTEL Pella",
+      "routeRows": 12,
+      "trips": 12,
+      "cityPairs": 3,
+      "ambiguousDayTrips": 3
+    },
+    {
+      "prefecture": "Ν.ΖΑΚΥΝΘΟΥ",
+      "operatorId": "ktel-zakynthos",
+      "operatorEn": "KTEL Zakynthos",
+      "routeRows": 4,
+      "trips": 10,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΚΕΡΚΥΡΑΣ",
+      "operatorId": "ktel-corfu",
+      "operatorEn": "KTEL Corfu",
+      "routeRows": 4,
+      "trips": 9,
+      "cityPairs": 4,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΚΕΦΑΛΛΗΝΙΑΣ",
+      "operatorId": "ktel-kefalonia",
+      "operatorEn": "KTEL Kefalonia",
+      "routeRows": 3,
+      "trips": 6,
+      "cityPairs": 3,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΧΑΛΚΙΔΙΚΗΣ",
+      "operatorId": "ktel-halkidiki",
+      "operatorEn": "KTEL Halkidiki",
+      "routeRows": 5,
+      "trips": 5,
+      "cityPairs": 1,
+      "ambiguousDayTrips": 5
+    },
+    {
+      "prefecture": "Ν.ΧΑΝΙΩΝ-ΡΕΘΥΜΝΟΥ",
+      "operatorId": "ktel-chania-rethymno",
+      "operatorEn": "KTEL Chania-Rethymno",
+      "routeRows": 3,
+      "trips": 3,
+      "cityPairs": 3,
+      "ambiguousDayTrips": 0
+    },
+    {
+      "prefecture": "Ν.ΑΡΚΑΔΙΑΣ",
+      "operatorId": "ktel-arkadia",
+      "operatorEn": "KTEL Arkadia",
+      "routeRows": 1,
+      "trips": 1,
+      "cityPairs": 1,
+      "ambiguousDayTrips": 0
+    }
+  ]
+}

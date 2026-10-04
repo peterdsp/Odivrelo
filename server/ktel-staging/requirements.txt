@@ -1,0 +1,8 @@
+# Dependencies for the KTEL staging pipeline scripts.
+#
+# The staging test suite and the public API use only the standard library plus
+# server/api/requirements.txt. openpyxl is needed only to read the Greek NAP
+# workbook in scripts/ktel_pipeline.py (the `stage-nap-xlsx` and
+# `normalize-nap-xlsx` commands). Install it before running those:
+#   .venv/bin/pip install -r server/ktel-staging/requirements.txt
+openpyxl==3.1.5
