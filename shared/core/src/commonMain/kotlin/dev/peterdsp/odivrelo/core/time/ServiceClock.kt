@@ -1,5 +1,6 @@
 package dev.peterdsp.odivrelo.core.time
 
+import kotlin.concurrent.Volatile
 import kotlin.native.ObjCName
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
