@@ -31,6 +31,11 @@ class StateRestorationTest {
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
 
+    companion object {
+        @JvmStatic @org.junit.BeforeClass fun pinClock() = pinDemoClock()
+        @JvmStatic @org.junit.AfterClass fun unpinClock() = unpinDemoClock()
+    }
+
     @Test
     fun a_search_survives_activity_recreation() {
         rule.completeFirstRunIfShown()
@@ -85,6 +90,11 @@ class ScreensTest {
 
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
+
+    companion object {
+        @JvmStatic @org.junit.BeforeClass fun pinClock() = pinDemoClock()
+        @JvmStatic @org.junit.AfterClass fun unpinClock() = unpinDemoClock()
+    }
 
     private fun string(id: Int) = rule.activity.getString(id)
 
@@ -167,6 +177,11 @@ class DeepLinkTest {
 
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
+
+    companion object {
+        @JvmStatic @org.junit.BeforeClass fun pinClock() = pinDemoClock()
+        @JvmStatic @org.junit.AfterClass fun unpinClock() = unpinDemoClock()
+    }
 
     private fun open(uri: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))

@@ -95,7 +95,7 @@ fun OdivreloApp(activity: Activity, initialIntent: Intent?) {
 
     OdivreloTheme(
         darkTheme = dark,
-        reduceMotion = state.settings.reduceMotion || systemReduceMotion,
+        reduceMotion = state.settings.reduceMotion || systemReduceMotion || UiTestHooks.forceReduceMotion,
         largerTouchTargets = state.settings.largerTouchTargets,
     ) {
         CompositionLocalProvider(LocalOdivreloWindow provides window) {

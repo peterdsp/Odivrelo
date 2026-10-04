@@ -17,6 +17,7 @@ import dev.peterdsp.odivrelo.app.loadable
 import dev.peterdsp.odivrelo.core.model.JourneyFilters
 import dev.peterdsp.odivrelo.core.model.Place
 import dev.peterdsp.odivrelo.core.model.RecentSearch
+import dev.peterdsp.odivrelo.core.time.ServiceClock
 import dev.peterdsp.odivrelo.core.time.ServiceTime
 import dev.peterdsp.odivrelo.features.Loadable
 import dev.peterdsp.odivrelo.features.offline.DownloadTracker
@@ -36,7 +37,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 
 /**
@@ -62,7 +62,9 @@ class OdivreloViewModel(
     private val services = OdivreloServices.get(application)
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
-    private val today: String = ServiceTime.currentServiceDate(Clock.System.now())
+    // Read on demand through the injectable clock, so "today" is correct across
+    // midnight and deterministic under a test that pins the clock.
+    private val today: String get() = ServiceTime.currentServiceDate(ServiceClock.now())
 
     /**
      * The first state, built without waiting for anything.
@@ -517,7 +519,7 @@ class OdivreloViewModel(
 
     fun importTicket(uri: Uri) {
         viewModelScope.launch {
-            val now = ServiceTime.formatIsoWithAthensOffset(Clock.System.now())
+            val now = ServiceTime.formatIsoWithAthensOffset(ServiceClock.now())
             when (val outcome = services.ticketStore.import(uri, now)) {
                 is TicketImport.Imported -> {
                     refreshTickets()
