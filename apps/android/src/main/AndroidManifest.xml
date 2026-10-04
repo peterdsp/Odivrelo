@@ -30,6 +30,14 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- The MapLibre SDK declares location permissions for its locate-me feature.
+         The embedded journey map does not use location, and the app keeps its
+         deliberate no-location privacy stance, so these are stripped from the
+         merged manifest. When a locate-me control is added to a main Map screen,
+         the permission is to be reintroduced intentionally with a runtime request. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove" />
+
     <!-- Custom Tabs availability is checked before a booking handoff is offered. -->
     <queries>
         <intent>
