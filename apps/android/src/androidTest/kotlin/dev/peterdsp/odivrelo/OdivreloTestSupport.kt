@@ -13,6 +13,33 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 
 /**
+ * The instant the date-sensitive suites pin the clock to, so "today" is always a
+ * date the bundled demonstration release packs (its anchor is 2026-10-02). This
+ * is what makes a search for "today" deterministic rather than failing once the
+ * real calendar passes the demo horizon. It is 09:00 in Europe/Athens.
+ */
+const val DEMO_CLOCK_ISO = "2026-10-02T06:00:00Z"
+
+/**
+ * Pin the app's clock to a packed demo date and force reduced motion, so the
+ * suite is deterministic in both time and animation. Call from @BeforeClass.
+ * Reduced motion makes indeterminate progress indicators static, which lets the
+ * Compose test clock reach idle instead of hanging waitUntil and teardown.
+ */
+fun pinDemoClock() {
+    dev.peterdsp.odivrelo.core.time.ServiceClock.overrideNow(
+        kotlinx.datetime.Instant.parse(DEMO_CLOCK_ISO),
+    )
+    dev.peterdsp.odivrelo.ui.UiTestHooks.forceReduceMotion = true
+}
+
+/** Restore the real clock and motion. Call from a suite's @AfterClass. */
+fun unpinDemoClock() {
+    dev.peterdsp.odivrelo.core.time.ServiceClock.overrideNow(null)
+    dev.peterdsp.odivrelo.ui.UiTestHooks.forceReduceMotion = false
+}
+
+/**
  * Matches a test tag by prefix.
  *
  * Identifiers in this product are opaque and content-addressed, so a test that

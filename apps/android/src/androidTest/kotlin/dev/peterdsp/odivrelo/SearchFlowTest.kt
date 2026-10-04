@@ -30,6 +30,13 @@ class SearchFlowTest {
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
 
+    companion object {
+        // Pinned before the activity launches, so the app's "today" is a packed
+        // demo date and this suite does not change outcome as the calendar moves.
+        @JvmStatic @org.junit.BeforeClass fun pinClock() = pinDemoClock()
+        @JvmStatic @org.junit.AfterClass fun unpinClock() = unpinDemoClock()
+    }
+
     private fun string(id: Int): String = rule.activity.getString(id)
 
     @Test

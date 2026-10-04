@@ -36,7 +36,45 @@ completion.
   blocker is current, boarding-level real data: NAP 2020 is historical and
   city-level, and operator reuse rights remain unknown.
 
-## Delivered and verified this session
+## Post-PR21 continuation (4 October 2026)
+
+Android instrumentation (non-blocking in CI). Reproduced the 11 failures on a
+clean local emulator (host GPU, no ColorBuffer errors), so the cause is neither
+CI GPU nor load. Fixed and verified: the two date-dependent failures
+(`SearchFlowTest.c/d`) via a shared injectable `ServiceClock` that the suites pin
+to a packed demo date; this is the "underlying date dependency" fixed by
+injection, not by advancing an expiry. 11 -> 9. A reduced-motion test hook was
+added and ruled the remaining failures out as animation-driven.
+
+The nine remaining failures have precise, distinct root causes, so
+`continue-on-error` stays on until they are fixed (not removed dishonestly):
+- `StateRestorationTest.a/b` step the date to today+2 and expect journeys, but the
+  demo packs only fixed, non-consecutive dates. This needs the rolling demo
+  horizon (an explicit requirement): generate packs for an anchor plus N
+  consecutive days while preserving the dedicated DST and exception dates. It is a
+  server pack-generation change with blast radius on the fixed-date Python tests,
+  so it is scoped as the next step rather than half-done here.
+- Six `DeepLinkTest` cases hang at `ActivityScenario.close()` ("Activity never
+  becomes DESTROYED"). The activity is `launchMode=singleTask`, which
+  `ActivityScenario` does not tear down cleanly; `SearchFlowTest` passes because it
+  does not drive the scenario directly. The fix is a test-harness change, scoped
+  next.
+- `ScreensTest.settings_reaches_diagnostics` waits on a node after navigation;
+  under investigation with the same harness lens.
+
+Current-source ledger: `docs/beta/operator-source-ledger.json` now has one row per
+federation operator and the two tenants (64), with the status taxonomy, the two
+pilots assessed, and Athens-Nafplio's official hub confirmed. The rest are
+uninspected with their directory URL; the national investigation continues.
+
+Not done this continuation (required, remaining with exact status): the main Map
+destination + filters/clustering/locate-me on all three platforms; the
+normalized live-provider infrastructure; the rolling demo horizon and the two
+harness fixes above; production dataset retrieval on CI runners; interactive iOS
+Simulator capture; and Web deploy + TestFlight/Play beta. No current, publishable
+real data exists, so no production release is possible yet.
+
+## Delivered and verified in the first sessions
 
 1. Data recovery inventory, with machine-readable companion.
    `DATA-RECOVERY-INVENTORY.md`, `data-recovery-inventory.json`. Evidence based,
@@ -108,7 +146,7 @@ Not done yet (honest gaps):
 - Main Map destination (as opposed to the journey-detail map) on any platform;
   stop/operator/route filters, clustering, locate-me.
 - Current, publishable real data: NAP 2020 is historical and city-level, operator
-  reuse rights remain `unknown`, and no live KTEL GPS feed exists. Current-source
+  reuse rights remain `unknown`, and no permitted live KTEL feed has been identified in the investigated sources. Current-source
   acquisition is tracked in the operator source ledger.
 - Live feed adapter, normalized live contract, live/estimated/stale states.
 - iOS and Android map changes are not yet built or run on a device here.
