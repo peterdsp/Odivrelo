@@ -471,6 +471,87 @@ def import_normalized_snapshot(
     return {"importRunId": run_id, **counters}
 
 
+def import_directory_records(
+    conn: sqlite3.Connection,
+    records: list[dict[str, Any]],
+    *,
+    source_id: str = "poays-directory",
+    retrieved_at: str | None = None,
+) -> dict[str, Any]:
+    """Merge directory facts as auditable operator presentation attributes.
+
+    Registry identity remains authoritative. Conflicting observations are
+    retained for review instead of silently replacing an existing value.
+    """
+    retrieved_at = retrieved_at or _now_iso()
+    _ensure_registry_row(conn, "ktel_sources", source_id)
+    run_id = str(uuid.uuid4())
+    imported = conflicts = unmatched = 0
+    conn.execute("BEGIN")
+    try:
+        conn.execute(
+            "INSERT INTO ktel_import_runs(id, source_id, run_kind, status, started_at) VALUES (?, ?, 'identity', 'running', ?)",
+            (run_id, source_id, retrieved_at),
+        )
+        for record in records:
+            fields = record.get("fields") if isinstance(record, dict) else None
+            if not isinstance(fields, dict):
+                continue
+            url = fields.get("directoryUrl")
+            row = conn.execute(
+                "SELECT id, public_attributes FROM ktel_operators WHERE directory_url=?",
+                (url,),
+            ).fetchone()
+            if not row and url:
+                wanted_url = str(url).rstrip("/")
+                row = next(
+                    (
+                        candidate
+                        for candidate in conn.execute(
+                            "SELECT id, public_attributes, directory_url FROM ktel_operators WHERE directory_url IS NOT NULL"
+                        ).fetchall()
+                        if str(candidate["directory_url"]).rstrip("/") == wanted_url
+                    ),
+                    None,
+                )
+            if not row:
+                unmatched += 1
+                continue
+            current = json.loads(row["public_attributes"] or "{}")
+            directory = dict(current.get("directory") or {})
+            observed = {key: value for key, value in fields.items() if value not in (None, [], "")}
+            row_conflicts = list(directory.get("conflicts") or [])
+            for key, value in observed.items():
+                previous = directory.get(key)
+                if previous not in (None, value):
+                    row_conflicts.append({"field": key, "previous": previous, "current": value, "observedAt": retrieved_at, "precedence": "manual_review_required"})
+                    conflicts += 1
+                directory[key] = value
+            directory["conflicts"] = row_conflicts
+            directory["source"] = record.get("provenance") or {}
+            phones = observed.get("phones") or []
+            merged = dict(current, directory=directory, contact={
+                "phone": phones[0] if phones else None,
+                "email": observed.get("email"),
+                "address": observed.get("address"),
+            })
+            conn.execute(
+                "UPDATE ktel_operators SET official_site_url=COALESCE(?, official_site_url), public_attributes=?, updated_at=? WHERE id=?",
+                (observed.get("officialWebsite"), json.dumps(merged, ensure_ascii=False, sort_keys=True), retrieved_at, row["id"]),
+            )
+            _record_source_row(conn, run_id, source_id, row["id"], "operator", str(url or row["id"]), record, retrieved_at)
+            imported += 1
+        conn.execute(
+            "UPDATE ktel_import_runs SET status='succeeded', finished_at=?, records_seen=?, records_written=? WHERE id=?",
+            (_now_iso(), len(records), imported, run_id),
+        )
+        conn.execute("COMMIT")
+    except Exception:
+        conn.execute("ROLLBACK")
+        raise
+    return {"importRunId": run_id, "recordsSeen": len(records), "recordsImported": imported, "conflicts": conflicts, "unmatched": unmatched}
+
+
 def calendar_id(operator_id: str, source_id: str, external_id: str) -> str:
     return f"kc_{stable_entity_id(operator_id, source_id, 'calendar', external_id)}"
 

@@ -12,7 +12,7 @@ from typing import Any
 from openpyxl import load_workbook
 
 from odivrelo_ktel import ktel_db, nap_parser
-from odivrelo_ktel.ktel_ingest import import_normalized_snapshot, review_entity
+from odivrelo_ktel.ktel_ingest import import_directory_records, import_normalized_snapshot, review_entity
 from odivrelo_ktel.ktel_publish import compile_public_database
 from odivrelo_ktel.ktel_registry import (
     content_hash,
@@ -21,6 +21,12 @@ from odivrelo_ktel.ktel_registry import (
     stable_entity_id,
 )
 from odivrelo_ktel.ktel_ticketweb import bounded_execution_plan
+from odivrelo_ktel.ktel_directory import (
+    CachedRateLimitedFetcher,
+    discover_operator_urls,
+    parse_operator_page,
+    reconcile_ticketweb_tenants,
+)
 
 
 def _now_iso() -> str:
@@ -40,6 +46,49 @@ def command_seed(args: argparse.Namespace) -> dict[str, Any]:
         result["dbPath"] = args.db or ktel_db.DEFAULT_KTEL_DB_PATH
         result["schemaVersion"] = ktel_db.current_version(connection)
         return result
+
+
+def command_directory_inventory(args: argparse.Namespace) -> dict[str, Any]:
+    """Discover and parse the public directory, writing a resumable report."""
+    fetch = CachedRateLimitedFetcher(
+        args.cache_dir,
+        minimum_interval_seconds=args.interval,
+        retries=args.retries,
+        timeout_seconds=args.timeout,
+    )
+    inventory = discover_operator_urls(root_url=args.root_url, fetch=fetch, max_pages=args.max_pages)
+    records: list[dict[str, Any]] = []
+    for url in inventory["operatorUrls"]:
+        try:
+            fetch_url = url + "/" if "/ktel-" in url and not url.endswith("/") else url
+            status, _, body = fetch(fetch_url)
+            if status >= 400:
+                raise RuntimeError(f"HTTP {status}")
+            body = body.decode("utf-8", "replace")
+            records.append({"url": url, **parse_operator_page(url, body)})
+        except Exception as exc:
+            records.append({"url": url, "error": str(exc)})
+    result = {**inventory, "records": records, "retrievedAt": _now_iso(), "policy": {"readOnly": True, "sourceKind": "federation_directory", "rawRetention": "external_snapshot_reference_only"}}
+    if args.output:
+        Path(args.output).write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return result
+
+
+def command_reconcile(args: argparse.Namespace) -> dict[str, Any]:
+    operators = json.loads(Path(args.operators).read_text(encoding="utf-8"))
+    tenants = json.loads(Path(args.tenants).read_text(encoding="utf-8"))
+    if isinstance(operators, dict):
+        operators = operators.get("operators") or operators.get("records") or []
+    if isinstance(tenants, dict):
+        tenants = tenants.get("ticketwebTenants") or tenants.get("tenants") or []
+    return reconcile_ticketweb_tenants(operators, tenants)
+
+
+def command_import_directory(args: argparse.Namespace) -> dict[str, Any]:
+    payload = json.loads(Path(args.path).read_text(encoding="utf-8"))
+    records = payload.get("records") if isinstance(payload, dict) else payload
+    with _connect(args.db) as connection:
+        return import_directory_records(connection, records, retrieved_at=args.retrieved_at)
 
 
 def command_import(args: argparse.Namespace) -> dict[str, Any]:
@@ -313,6 +362,32 @@ def parser() -> argparse.ArgumentParser:
 
     seed = commands.add_parser("seed", help="seed the 62-operator registry")
     seed.set_defaults(handler=command_seed)
+
+    directory = commands.add_parser(
+        "directory-inventory", help="discover and parse public ktelbus.com operator pages"
+    )
+    directory.add_argument("--root-url", default="https://ktelbus.com/")
+    directory.add_argument("--max-pages", type=int, default=500)
+    directory.add_argument("--cache-dir")
+    directory.add_argument("--interval", type=float, default=1.0)
+    directory.add_argument("--retries", type=int, default=1)
+    directory.add_argument("--timeout", type=float, default=5.0)
+    directory.add_argument("--output")
+    directory.set_defaults(handler=command_directory_inventory)
+
+    reconcile = commands.add_parser(
+        "reconcile-ticketweb", help="reconcile directory operators and TicketWeb tenants"
+    )
+    reconcile.add_argument("operators")
+    reconcile.add_argument("tenants")
+    reconcile.set_defaults(handler=command_reconcile)
+
+    directory_import = commands.add_parser(
+        "import-directory", help="import parsed directory facts as reviewable operator provenance"
+    )
+    directory_import.add_argument("path")
+    directory_import.add_argument("--retrieved-at")
+    directory_import.set_defaults(handler=command_import_directory)
 
     import_snapshot = commands.add_parser(
         "import-normalized", help="import adapter-normalized JSON as candidates"

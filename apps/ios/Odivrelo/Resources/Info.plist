@@ -52,7 +52,7 @@
 		<string>dev.peterdsp.odivrelo.journey</string>
 	</array>
 	<key>OdivreloSourceCommit</key>
-	<string>bb79bb7ed848</string>
+	<string>5549ccbb3c23</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

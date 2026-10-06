@@ -37,6 +37,68 @@ MUTATING_PATH_PARTS = (
 )
 
 
+def inspect_flutter_bundle(bundle: str, *, base_url: str) -> dict[str, Any]:
+    """Extract public client contract hints without executing JavaScript.
+
+    This is deliberately static inspection.  It reports endpoint strings and
+    configuration markers, while rejecting anything that looks like a booking
+    or account mutation from the returned read-only inventory.
+    """
+    import re
+    urls = sorted(set(re.findall(r"(?:https?://[^\"']+|[A-Za-z][A-Za-z0-9_.-]*/[A-Za-z0-9_./-]+)", bundle, re.I)))
+    endpoints = sorted({value.strip("/ ") for value in re.findall(r"[A-Za-z][A-Za-z0-9_-]*(?:/[A-Za-z][A-Za-z0-9_-]*)+", bundle) if any(token in value.casefold() for token in ("agency", "stop", "execution", "reachable"))})
+    discovered = [value for value in sorted(set(urls + endpoints)) if not any(part in value.casefold() for part in MUTATING_PATH_PARTS)]
+    rejected = sorted(set(value for value in urls + endpoints if any(part in value.casefold() for part in MUTATING_PATH_PARTS)))
+    return {
+        "baseUrl": base_url,
+        "readOnlyEndpoints": discovered,
+        "rejectedMutatingPaths": rejected,
+        "hasEncryptedEnvelope": "base64" in bundle.casefold() or "aes" in bundle.casefold(),
+        "hasAuthorizationMarker": "authorization" in bundle.casefold(),
+        "bundleDigest": hashlib.sha256(bundle.encode("utf-8")).hexdigest(),
+    }
+
+
+def normalize_journey_response(payload: Any, *, tenant: str, source_url: str, retrieved_at: str) -> list[dict[str, Any]]:
+    """Normalize only direct journey records from a public response.
+
+    Unknown response shapes yield no journeys.  That conservative behaviour is
+    preferable to manufacturing timetable rows from UI metadata.
+    """
+    if not isinstance(payload, dict):
+        return []
+    candidates = payload.get("executions") or payload.get("Executions") or payload.get("data")
+    if isinstance(candidates, dict):
+        candidates = candidates.get("executions") or candidates.get("Executions") or candidates.get("items")
+    if not isinstance(candidates, list):
+        return []
+    rows: list[dict[str, Any]] = []
+    for item in candidates:
+        if not isinstance(item, dict):
+            continue
+        origin = item.get("origin") or item.get("from")
+        destination = item.get("destination") or item.get("to")
+        departure = item.get("departureAt") or item.get("departure")
+        if not isinstance(origin, dict) or not isinstance(destination, dict) or not departure:
+            continue
+        rows.append({
+            "externalId": str(item.get("id") or item.get("executionId") or hashlib.sha256(json.dumps(item, sort_keys=True).encode()).hexdigest()),
+            "origin": origin,
+            "destination": destination,
+            "orderedStops": item.get("stops") if isinstance(item.get("stops"), list) else [],
+            "serviceDate": item.get("serviceDate"),
+            "departureAt": departure,
+            "arrivalAt": item.get("arrivalAt") or item.get("arrival"),
+            "line": item.get("line") or item.get("route"),
+            "fare": item.get("fare"),
+            "currency": item.get("currency") or "EUR",
+            "bookingUrl": item.get("bookingUrl"),
+            "availability": item.get("availability") or "unknown",
+            "source": {"tenant": tenant, "sourceUrl": source_url, "sourceType": "ticketweb_journey_response", "retrievedAt": retrieved_at, "verificationState": "direct_response"},
+        })
+    return rows
+
+
 @dataclass(frozen=True)
 class ExecutionQuery:
     tenant: str
