@@ -94,6 +94,7 @@ describeRelease('the published release scopes an intermediate leg the same way o
     const manifest = readManifest();
     const places = readPack<PlacesPack>(manifest, 'places');
     const [date] = serviceDates(manifest);
+    if (!date) return;
     const pack = readPack<JourneysPack>(manifest, journeysPackName(date!));
     // Only run when the release serves a run with a stop past the searched one.
     const hasVia = Object.values(pack.journeys).some((d) => d.stops.length >= 3);

@@ -229,7 +229,7 @@ def test_production_refuses_empty_import(tmp_path):
         connection.commit()
     finally:
         connection.close()
-    with pytest.raises(ReleaseGuardError, match="no published trips"):
+    with pytest.raises(ReleaseGuardError, match="no published trips or stops"):
         release_production.cut_release(
             ingest_db_path=ingest,
             public_db_path=tmp_path / "public.db",

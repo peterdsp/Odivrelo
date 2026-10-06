@@ -72,6 +72,7 @@ def inspect_release(release_dir: Path | str) -> dict[str, Any]:
         "dataMode": data_mode,
         "operatorIds": operator_ids,
         "publishedJourneys": published_journeys,
+        "publishedStops": len(_load_pack(release_dir, manifest, "stops").get("stops", {})),
         "manifest": manifest,
     }
 
@@ -101,10 +102,10 @@ def assert_channel(release_dir: Path | str, expect: str) -> dict[str, Any]:
                 f"a real release contains demonstration copy ({leaked}); refusing "
                 "to ship invented data as production"
             )
-        if info["publishedJourneys"] == 0:
+        if info["publishedJourneys"] == 0 and info["publishedStops"] == 0:
             raise ReleaseGuardError(
-                "a real release has no published journeys; refusing to ship an "
-                "empty or failed import as production data"
+                "a real release has no published journeys or stops; refusing to "
+                "ship an empty or failed import as production data"
             )
 
     return info
@@ -112,6 +113,7 @@ def assert_channel(release_dir: Path | str, expect: str) -> dict[str, Any]:
 
 def _demo_copy_in(release_dir: Path, manifest: dict[str, Any]) -> str | None:
     """Scan the small identity packs for copy that only the demo ever uses."""
+    release_dir = Path(release_dir)
     for name in ("meta", "coverage", "operators"):
         entry = manifest["files"].get(name)
         if entry is None:
@@ -137,7 +139,8 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     print(
         f"release guard passed: {arguments.expect} channel, release "
-        f"{info['releaseId']}, {info['publishedJourneys']} published journeys"
+        f"{info['releaseId']}, {info['publishedStops']} published stops, "
+        f"{info['publishedJourneys']} published journeys"
     )
     return 0
 

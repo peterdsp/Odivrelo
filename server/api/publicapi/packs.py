@@ -143,6 +143,12 @@ def build_bodies(
     # rather than one that depends on when the pack was built.
     service_dates = repository.pack_service_dates(connection)
     stop_date = service_dates[0] if service_dates else repository.today_in_athens()
+    # stop_detail is also an online endpoint and intentionally resolves its
+    # indexes locally. A release pack calls it once per published stop, so
+    # reuse the immutable indexes for this one build or a national directory
+    # becomes quadratic in the number of stops.
+    stop_operators = repository._operator_index(connection)
+    stop_index = repository._stop_index(connection)
     bodies["stops"] = {
         **envelope,
         "serviceDate": stop_date,
@@ -154,6 +160,8 @@ def build_bodies(
                 data_mode=data_mode,
                 limit=repository.PACK_ROW_LIMIT,
                 now=now,
+                _operators=stop_operators,
+                _stops=stop_index,
             )["stop"]
             for stop_id in repository.all_stop_ids(connection)
         },

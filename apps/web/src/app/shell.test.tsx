@@ -12,7 +12,9 @@ import { Coverage } from '../routes/Coverage';
 import { Operators } from '../routes/Operators';
 import { NotFound } from '../routes/NotFound';
 import { StaticPackSource } from '../data/StaticPackSource';
-import { makeStaticFetch, releaseIsPresent } from '../test/release';
+import { makeStaticFetch, readManifest, releaseIsPresent } from '../test/release';
+import { readPack } from '../test/release';
+import type { MetaPack } from '../data/packShapes';
 import type { Language } from '../data/contract';
 
 /**
@@ -26,6 +28,7 @@ import type { Language } from '../data/contract';
 
 const hasRelease = releaseIsPresent();
 const describeRelease = hasRelease ? describe : describe.skip;
+const releaseIsDemo = hasRelease && readPack<MetaPack>(readManifest(), 'meta').dataMode === 'demo';
 
 function Harness({ children, language = 'el', path = '/' }: { children: ReactNode; language?: Language; path?: string }) {
   const source = new StaticPackSource({ baseUrl: '/data/', fetchImpl: makeStaticFetch() });
@@ -120,10 +123,13 @@ describeRelease('the demonstration notice', () => {
         <Welcome />
       </Harness>,
     );
-    const banner = await screen.findByTestId('demo-banner');
-    expect(banner).toBeInTheDocument();
-    // It says the region does not exist, in the active language.
-    expect(within(banner).getByText(/δεν υπάρχει/i)).toBeInTheDocument();
+    if (releaseIsDemo) {
+      const banner = await screen.findByTestId('demo-banner');
+      expect(banner).toBeInTheDocument();
+      expect(within(banner).getByText(/δεν υπάρχει/i)).toBeInTheDocument();
+    } else {
+      await waitFor(() => expect(screen.queryByTestId('demo-banner')).not.toBeInTheDocument());
+    }
   });
 
   it('cannot be dismissed, because there is no control that would dismiss it', async () => {
@@ -132,12 +138,14 @@ describeRelease('the demonstration notice', () => {
         <Welcome />
       </Harness>,
     );
-    const banner = await screen.findByTestId('demo-banner');
-    // The only interactive things inside it are the explanation disclosure and a
-    // link to the coverage page. Nothing closes it.
-    const buttons = within(banner).queryAllByRole('button');
-    for (const button of buttons) {
-      expect(button.textContent ?? '').not.toMatch(/κλείσιμο|απόρριψη|close|dismiss/i);
+    if (releaseIsDemo) {
+      const banner = await screen.findByTestId('demo-banner');
+      const buttons = within(banner).queryAllByRole('button');
+      for (const button of buttons) {
+        expect(button.textContent ?? '').not.toMatch(/κλείσιμο|απόρριψη|close|dismiss/i);
+      }
+    } else {
+      await waitFor(() => expect(screen.queryByTestId('demo-banner')).not.toBeInTheDocument());
     }
   });
 
@@ -150,8 +158,8 @@ describeRelease('the demonstration notice', () => {
     await waitFor(() => {
       const robots = document.head.querySelector('meta[name="robots"]');
       expect(robots).not.toBeNull();
-      // The operators page asks to be indexable; demo mode overrides that.
-      expect(robots!.getAttribute('content')).toBe('noindex, nofollow');
+      if (releaseIsDemo) expect(robots!.getAttribute('content')).toBe('noindex, nofollow');
+      else expect(robots!.getAttribute('content')).toBe('index, follow');
     });
   });
 

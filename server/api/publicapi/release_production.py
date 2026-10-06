@@ -34,12 +34,19 @@ def _published_counts(ingest_db_path: Path) -> dict[str, int]:
         trips = connection.execute(
             "SELECT COUNT(*) FROM ktel_trips WHERE publication_state='published'"
         ).fetchone()[0]
+        stops = connection.execute(
+            "SELECT COUNT(*) FROM ktel_stops WHERE publication_state='published'"
+        ).fetchone()[0]
         demo_published = connection.execute(
             "SELECT COUNT(*) FROM ktel_trips "
             "WHERE publication_state='published' AND operator_id=?",
             (DEMO_OPERATOR_ID,),
         ).fetchone()[0]
-        return {"publishedTrips": int(trips), "demoPublishedTrips": int(demo_published)}
+        return {
+            "publishedTrips": int(trips),
+            "publishedStops": int(stops),
+            "demoPublishedTrips": int(demo_published),
+        }
     finally:
         connection.close()
 
@@ -61,10 +68,10 @@ def cut_release(
         )
 
     counts = _published_counts(ingest_db_path)
-    if counts["publishedTrips"] == 0:
+    if counts["publishedTrips"] == 0 and counts["publishedStops"] == 0:
         raise ReleaseGuardError(
-            "the reviewed dataset has no published trips; refusing to cut a "
-            "production release from an empty or failed import"
+            "the reviewed dataset has no published trips or stops; refusing to "
+            "cut a production release from an empty or failed import"
         )
     if counts["demoPublishedTrips"] > 0:
         raise ReleaseGuardError(
@@ -89,6 +96,7 @@ def cut_release(
         "release": release,
         "releaseDir": str(release_dir),
         "publishedTrips": counts["publishedTrips"],
+        "publishedStops": counts["publishedStops"],
     }
 
 

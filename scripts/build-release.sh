@@ -47,6 +47,12 @@ case "$CHANNEL" in
     ;;
   production)
     echo "== release channel: production =="
+    DATASET_SETTING="${ODIVRELO_RELEASE_DATASET:-${PORAVIA_RELEASE_DATASET:-${HODOMAP_RELEASE_DATASET:-}}}"
+    if [ -z "$DATASET_SETTING" ]; then
+      echo "== acquiring the authorized real TicketWeb directory =="
+      DATASET_PATH="$(bash scripts/build-ticketweb-production-dataset.sh | tail -1)"
+      export "${PREFIX}_RELEASE_DATASET=$DATASET_PATH"
+    fi
     bash scripts/release-production.sh
     ;;
   *)

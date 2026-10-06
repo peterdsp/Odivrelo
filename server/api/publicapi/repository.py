@@ -1072,11 +1072,13 @@ def stop_detail(
     data_mode: str,
     limit: int,
     now: Any = None,
+    _operators: dict[str, dict[str, Any]] | None = None,
+    _stops: dict[str, sqlite3.Row] | None = None,
 ) -> dict[str, Any]:
     stop = stop_row(connection, stop_id)
     attributes = _attributes(stop)
-    operators = _operator_index(connection)
-    stops = _stop_index(connection)
+    operators = _operators if _operators is not None else _operator_index(connection)
+    stops = _stops if _stops is not None else _stop_index(connection)
 
     terminal = None
     boarding_points: list[dict[str, Any]] = []
