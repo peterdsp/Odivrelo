@@ -118,6 +118,20 @@ export function Search() {
     [source],
   );
 
+  const popularPlaces = useCallback(async () => {
+    const queries = ['ΑΘΗΝΑ', 'ΑΓΡΙΝΙΟ', 'ΠΑΤΡΑ'];
+    const results = await Promise.all(queries.map((query) => source.places(query, 8)));
+    const seen = new Set<string>();
+    return results
+      .flatMap((result) => result.places)
+      .filter((place) => {
+        if (seen.has(place.id)) return false;
+        seen.add(place.id);
+        return true;
+      })
+      .slice(0, 12);
+  }, [source]);
+
   /*
    * The date field is bounded by the dates this release actually holds a journeys
    * pack for. That is a statement about the download, not about the timetable: a
@@ -218,6 +232,7 @@ export function Search() {
               setErrors((e) => ({ ...e, origin: undefined }));
             }}
             search={searchPlaces}
+            popular={popularPlaces}
             error={errors.origin ?? null}
             required
           />
@@ -254,6 +269,7 @@ export function Search() {
               setErrors((e) => ({ ...e, destination: undefined }));
             }}
             search={searchPlaces}
+            popular={popularPlaces}
             error={errors.destination ?? null}
             required
           />

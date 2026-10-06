@@ -23,6 +23,7 @@ export interface PlaceFieldProps {
   readonly value: Place | null;
   readonly onChange: (place: Place | null) => void;
   readonly search: (query: string) => Promise<readonly Place[]>;
+  readonly popular?: () => Promise<readonly Place[]>;
   readonly error?: string | null;
   readonly hint?: string;
   readonly name: string;
@@ -39,6 +40,7 @@ export function PlaceField({
   hint,
   name,
   required = false,
+  popular,
 }: PlaceFieldProps) {
   const { t, name: localName } = useI18n();
   const id = useId();
@@ -63,16 +65,11 @@ export function PlaceField({
     async (query: string) => {
       setSearching(true);
       try {
-        const found = await search(query);
-        /*
-         * With nothing typed, lead with the terminals. A bare list of every bay
-         * at every station is noise, and the terminal is nearly always what a
-         * passenger means; typing anything shows boarding points too. The data
-         * layer returns the whole list either way, because other callers need to
-         * resolve an arbitrary place id from it.
-         */
-        const terminalsOnly = query.trim().length === 0 ? found.filter((place) => place.kind === 'stop_place') : found;
-        const shown = terminalsOnly.length > 0 ? terminalsOnly : found;
+        const found = query.trim().length === 0 && popular ? await popular() : await search(query);
+        // Empty-query suggestions are real, curated places from the release.
+        // Keep boarding points visible here because this is the useful "popular
+        // stations" surface, not an unbounded list of every bay in Greece.
+        const shown = found;
         setOptions(shown);
         setActive(shown.length > 0 ? 0 : -1);
       } catch {
