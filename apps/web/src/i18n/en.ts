@@ -68,6 +68,7 @@ export const en = {
   // -- First launch --------------------------------------------------------
   'welcome.title': 'Travel with certainty',
   'welcome.intro': 'Odivrelo tells you where to board, at what time, from which source, and how old that information is.',
+  'welcome.imageAlt': 'A sunlit Athens street with the Acropolis above the rooftops',
   'welcome.chooseLanguage': 'Choose your language',
   'welcome.languageHelp': 'You can change this at any time in Settings.',
   'welcome.doesTitle': 'What Odivrelo does',
@@ -313,6 +314,7 @@ export const en = {
   // -- Stations ------------------------------------------------------------
   'stations.title': 'Stations and stops',
   'stations.intro': 'Every terminal and boarding point in this data release.',
+  'stations.imageAlt': 'A winding Greek coastal road beside bright blue water',
   'stations.networkTitle': 'Station and line map',
   'stations.networkBody': 'The stations are real points from the current data release. The line and bus on this map are a visual simulation, not live tracking.',
   'stations.simulated': 'Simulation — not live location',

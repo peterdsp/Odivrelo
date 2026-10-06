@@ -1603,8 +1603,66 @@ svg {
 
 .od-welcome__hero {
   display: grid;
-  gap: var(--od-space-3);
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.9fr);
+  gap: var(--od-space-5);
+  align-items: center;
   justify-items: start;
+}
+
+.od-welcome__hero-copy {
+  display: grid;
+  gap: var(--od-space-3);
+}
+
+.od-travel-image {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius-large);
+  background: var(--od-surface-muted);
+  box-shadow: var(--od-shadow-card);
+}
+
+.od-travel-image img {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.od-travel-image figcaption {
+  position: absolute;
+  inset-inline-end: var(--od-space-2);
+  inset-block-end: var(--od-space-2);
+}
+
+.od-travel-image__credit {
+  display: inline-block;
+  padding: 0.25rem 0.45rem;
+  border-radius: var(--od-radius-pill);
+  background: rgb(0 0 0 / 58%);
+  color: white;
+  font-size: 0.7rem;
+  text-decoration: none;
+}
+
+.od-stations__image {
+  margin-block: var(--od-space-5) var(--od-space-6);
+}
+
+.od-stations__image img {
+  aspect-ratio: 16 / 5;
+}
+
+@media (max-width: 42rem) {
+  .od-welcome__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .od-welcome__hero-image {
+    inline-size: 100%;
+  }
 }
 
 .od-welcome__title {

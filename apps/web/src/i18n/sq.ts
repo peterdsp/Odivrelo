@@ -64,6 +64,7 @@ export const sq: Catalogue = {
   // -- First launch --------------------------------------------------------
   'welcome.title': 'Udhëto me siguri',
   'welcome.intro': 'Odivrelo të thotë nga ku hipesh, në çfarë orë, nga cili burim, dhe sa e vjetër është ajo informacion.',
+  'welcome.imageAlt': 'Një rrugë me diell në Athinë me Akropolin mbi çatitë',
   'welcome.chooseLanguage': 'Zgjidh gjuhën',
   'welcome.languageHelp': 'Mund ta ndryshosh në çdo kohë nga Cilësimet.',
   'welcome.doesTitle': 'Çfarë bën Odivrelo',
@@ -309,6 +310,7 @@ export const sq: Catalogue = {
   // -- Stations ------------------------------------------------------------
   'stations.title': 'Stacionet dhe ndalesat',
   'stations.intro': 'Çdo terminal dhe pikë hipjeje në këtë version të dhënash.',
+  'stations.imageAlt': 'Rrugë bregdetare greke pranë ujërave blu',
   'stations.networkTitle': 'Harta e stacioneve dhe linjave',
   'stations.networkBody': 'Stacionet janë pika reale nga versioni aktual i të dhënave. Linja dhe autobusi në hartë janë simulim vizual, jo gjurmim në kohë reale.',
   'stations.simulated': 'Simulim — jo vendndodhje reale',

@@ -9,6 +9,7 @@ import { Button, Card, Section } from '../components/primitives';
 import { markOnboarded } from '../features/onboarding';
 import { useAnnouncer } from '../components/Announcer';
 import type { MessageKey } from '../i18n/catalogues';
+import { GreekTravelImage } from '../components/GreekTravelImage';
 
 const DOES: readonly MessageKey[] = ['welcome.does1', 'welcome.does2', 'welcome.does3', 'welcome.does4', 'welcome.does5'];
 const DOES_NOT: readonly MessageKey[] = ['welcome.doesNot1', 'welcome.doesNot2', 'welcome.doesNot3', 'welcome.doesNot4'];
@@ -51,10 +52,19 @@ export function Welcome() {
   return (
     <div className="od-page od-page--narrow">
       <div className="od-welcome__hero">
-        <Mark size={56} decorative />
-        <h1 className="od-welcome__title">{t('welcome.title')}</h1>
-        <p className="od-welcome__tagline">{BRAND.tagline[language]}</p>
-        <p className="od-welcome__intro">{t('welcome.intro')}</p>
+        <div className="od-welcome__hero-copy">
+          <Mark size={56} decorative />
+          <h1 className="od-welcome__title">{t('welcome.title')}</h1>
+          <p className="od-welcome__tagline">{BRAND.tagline[language]}</p>
+          <p className="od-welcome__intro">{t('welcome.intro')}</p>
+        </div>
+        <GreekTravelImage
+          className="od-welcome__hero-image"
+          src="https://images.unsplash.com/photo-1700554779374-e46d83321f6e?auto=format&fit=crop&w=1200&q=82"
+          alt={t('welcome.imageAlt')}
+          credit="Αθήνα, Πλάκα"
+          href="https://unsplash.com/photos/a-city-street-lined-with-buildings-and-shops-jMjnSFHVMWU"
+        />
       </div>
 
       <Section title={t('welcome.chooseLanguage')} description={t('welcome.languageHelp')} className="od-welcome__languages">
