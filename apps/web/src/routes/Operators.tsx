@@ -90,7 +90,6 @@ export function Operators() {
           </ul>
         </Section>
       ) : null}
-      <p className="od-muted">{t('operator.noLogo')}</p>
     </div>
   );
 }
@@ -249,7 +248,6 @@ export function OperatorDetail() {
             </ExternalLink>
           </p>
         ) : null}
-        <p className="od-muted">{t('operator.noLogo')}</p>
       </Section>
 
       <Card tone="muted">

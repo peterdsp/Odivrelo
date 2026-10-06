@@ -23,11 +23,9 @@ interface NavEntry {
 const NAV: readonly NavEntry[] = [
   { to: '/search', labelKey: 'nav.search', icon: 'M10.5 10.5 14 14M11.5 7a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z', primary: true },
   { to: '/saved', labelKey: 'nav.saved', icon: 'M4 2h8v12l-4-3-4 3V2Z', primary: true },
-  { to: '/offline', labelKey: 'nav.offline', icon: 'M8 2.5v7M5 7l3 3 3-3M3 13h10', primary: true },
   { to: '/wallet', labelKey: 'nav.wallet', icon: 'M2.5 5h11v8h-11V5Zm0 3h11M10 10.5h2', primary: true },
   { to: '/operators', labelKey: 'nav.operators', icon: 'M4 12.5V6a2.5 2.5 0 0 1 5 0v4a2.5 2.5 0 0 0 5 0V3.5', primary: false },
   { to: '/stations', labelKey: 'nav.stations', icon: 'M8 1.8C5.8 1.8 4 3.6 4 5.8 4 9 8 14.2 8 14.2S12 9 12 5.8c0-2.2-1.8-4-4-4Zm0 5.4a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Z', primary: false },
-  { to: '/coverage', labelKey: 'nav.coverage', icon: 'M8 1.8 3 3.6v4.1c0 3 2.1 5.4 5 6.5 2.9-1.1 5-3.5 5-6.5V3.6L8 1.8Z', primary: false },
   { to: '/settings', labelKey: 'nav.settings', icon: 'M8 10.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Zm5.4-2.2c0 .4 0 .8-.1 1.1l1.3 1-1.4 2.4-1.5-.6a5.5 5.5 0 0 1-1 .6L10.4 14H7.6l-.3-1.5a5.5 5.5 0 0 1-1-.6l-1.5.6L3.4 10.1l1.3-1a6 6 0 0 1 0-2.2l-1.3-1 1.4-2.4 1.5.6a5.5 5.5 0 0 1 1-.6L7.6 2h2.8l.3 1.5c.35.16.68.36 1 .6l1.5-.6 1.4 2.4-1.3 1c.06.36.1.73.1 1.1Z', primary: false },
 ];
 
@@ -160,11 +158,6 @@ export function Layout() {
             <p className="od-footer__statement">{t('app.neverSellsTickets')}</p>
             <p className="od-footer__statement">{t('app.independence')}</p>
             <ul className="od-footer__links">
-              <li>
-                <NavLink to="/coverage" className="od-link">
-                  {t('nav.coverage')}
-                </NavLink>
-              </li>
               <li>
                 <NavLink to="/licences" className="od-link">
                   {t('nav.licences')}

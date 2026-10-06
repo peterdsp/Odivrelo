@@ -1373,6 +1373,71 @@ svg {
   border-color: var(--od-brand-navy);
 }
 
+.od-network-map {
+  margin-block: 1.5rem 2rem;
+  overflow: hidden;
+}
+
+.od-network-map__header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-block-end: 1rem;
+}
+
+.od-network-map__badge {
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--od-accent) 65%, transparent);
+  border-radius: 999px;
+  padding: 0.35rem 0.6rem;
+  color: var(--od-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.od-network-map__canvas {
+  min-block-size: 360px;
+  background: #dbe9e6;
+}
+
+.od-network-map__legend {
+  margin: 0.8rem 0 0;
+  color: var(--od-muted);
+  font-size: 0.86rem;
+}
+
+.od-network-map__legend-dot {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--od-primary);
+}
+
+.od-network-marker,
+.od-network-bus {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 22%);
+}
+
+.od-network-marker {
+  width: 0.72rem;
+  height: 0.72rem;
+  border: 2px solid white;
+  background: var(--od-primary);
+}
+
+.od-network-bus {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid white;
+  background: var(--od-accent);
+  font-size: 1.15rem;
+}
+
 /* --------------------------------------------------------------------------
    Two-pane
    -------------------------------------------------------------------------- */

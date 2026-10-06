@@ -13,6 +13,7 @@ import { FavoriteToggle } from '../features/FavoriteToggle';
 import { todayServiceDate } from '../lib/time';
 import { BRAND } from '../brand/brand';
 import { serviceDatesOf } from '../features/offlineGroups';
+import { StationNetworkMap } from '../components/StationNetworkMap';
 
 /** Directory of every terminal and boarding point in the release. */
 export function Stations() {
@@ -58,6 +59,8 @@ export function Stations() {
 
       {places.state.status === 'loading' ? <Loading /> : null}
       {places.state.status === 'error' ? <DataError error={places.state.error} onRetry={places.reload} /> : null}
+
+      {places.state.status === 'ready' ? <StationNetworkMap places={places.state.value.places} /> : null}
 
       {grouped.map(({ terminal, children }) => (
         <Section key={terminal.id} title={name(terminal.name)} level={2} id={`terminal-${terminal.id}`}>

@@ -247,6 +247,8 @@ export function PlaceField({
               {place.kind === 'stop_place' ? t('search.terminal') : t('search.boardingPoint')}
               {' · '}
               {place.municipality}
+              {' · '}
+              {t('search.stationCode', { code: place.id })}
               {place.kind === 'stop_place'
                 ? ` · ${t(
                     place.boardingPointCount === 0
