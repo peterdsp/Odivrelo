@@ -58,6 +58,8 @@ jobs:
           PY=python bash scripts/build-release.sh
       - name: Copy packs into the web public directory
         run: bash scripts/web-sync-packs.sh
+      - name: Split the web stops pack for Pages file limits
+        run: python3 scripts/split-web-stops-pack.py apps/web/public/data
       - run: npm ci
         working-directory: apps/web
       - name: Build, stamped with version, commit and release

@@ -202,9 +202,24 @@ export class StaticPackSource implements PublicDataSource {
       const manifest = await this.manifest(signal);
       const file = manifest.files[name];
       if (!file) throw new ContractError('not_found', `This release carries no "${name}" pack.`);
-      const bytes = await this.fetchBytes(file.path, file, signal);
       try {
-        return JSON.parse(new TextDecoder().decode(bytes)) as T;
+        const files = name === 'stops'
+          ? Object.entries(manifest.files)
+              .filter(([logicalName]) => logicalName === 'stops' || /^stops-\d+$/.test(logicalName))
+              .sort(([left], [right]) => left.localeCompare(right, undefined, { numeric: true }))
+              .map(([, value]) => value)
+          : [file];
+        const parts = await Promise.all(files.map(async (part) => {
+          const bytes = await this.fetchBytes(part.path, part, signal);
+          return JSON.parse(new TextDecoder().decode(bytes)) as T & { stops?: Record<string, unknown> };
+        }));
+        if (name === 'stops' && parts.length > 1) {
+          return {
+            ...parts[0],
+            stops: Object.assign({}, ...parts.map((part) => part.stops ?? {})),
+          } as T;
+        }
+        return parts[0] as T;
       } catch {
         throw new ContractError('integrity', `${file.path} verified but did not parse as JSON.`);
       }
