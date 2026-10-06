@@ -10,6 +10,8 @@ import hashlib
 import json
 import os
 import random
+import base64
+import subprocess
 import time
 import urllib.error
 import urllib.request
@@ -133,6 +135,7 @@ class TicketWebReadClient:
         budget: RequestBudget,
         timeout_seconds: float = 20.0,
         max_response_bytes: int = 10 * 1024 * 1024,
+        crypto_key: str | None = None,
     ) -> None:
         if "{tenant}" not in url_template:
             raise ValueError("TicketWeb URL template must contain {tenant}")
@@ -143,6 +146,7 @@ class TicketWebReadClient:
         self.budget = budget
         self.timeout_seconds = max(1.0, float(timeout_seconds))
         self.max_response_bytes = max(1024, int(max_response_bytes))
+        self.crypto_key = crypto_key
 
     @classmethod
     def from_environment(cls) -> "TicketWebReadClient":
@@ -157,6 +161,12 @@ class TicketWebReadClient:
             raise RuntimeError(
                 "KTEL_TICKETWEB_API_URL_TEMPLATE and "
                 "KTEL_TICKETWEB_AUTHORIZATION are required"
+            )
+        crypto_key = os.environ.get("KTEL_TICKETWEB_CRYPTO_KEY")
+        if not crypto_key:
+            raise RuntimeError(
+                "KTEL_TICKETWEB_CRYPTO_KEY is required for the public TicketWeb "
+                "AES transport"
             )
         if os.environ.get("KTEL_TICKETWEB_RAW_CACHE_APPROVED") == "1":
             cache: JsonDiskCache | MemoryJsonCache = JsonDiskCache(
@@ -192,7 +202,58 @@ class TicketWebReadClient:
                     os.environ.get("KTEL_TICKETWEB_JITTER_SECONDS", "0.4")
                 ),
             ),
+            crypto_key=crypto_key,
         )
+
+    def _request_body(self, payload: dict[str, Any]) -> bytes:
+        """Encode the body used by the public Flutter TicketWeb client.
+
+        TicketWeb's browser client sends ``{data: base64(AES-128-CBC(JSON))}``
+        with a zero IV and PKCS#7 padding. The key is deployment configuration,
+        because the provider may rotate the public client bundle independently
+        of Odivrelo. OpenSSL is used here instead of adding a crypto package to
+        the standard-library-only staging runtime.
+        """
+        encoded = json.dumps(
+            payload, ensure_ascii=False, separators=(",", ":")
+        ).encode("utf-8")
+        if not self.crypto_key:
+            return json.dumps(payload, separators=(",", ":")).encode("utf-8")
+        if len(self.crypto_key.encode("utf-8")) != 16:
+            raise ValueError("TicketWeb AES-128 key must be 16 UTF-8 bytes")
+        result = subprocess.run(
+            [
+                "openssl", "enc", "-aes-128-cbc",
+                "-K", self.crypto_key.encode("utf-8").hex(),
+                "-iv", "00" * 16,
+            ],
+            input=encoded,
+            capture_output=True,
+            check=True,
+        )
+        return json.dumps(
+            {"data": base64.b64encode(result.stdout).decode("ascii")},
+            separators=(",", ":"),
+        ).encode("utf-8")
+
+    def _decode_response(self, result: Any) -> Any:
+        if not self.crypto_key or not isinstance(result, dict):
+            return result
+        encrypted = result.get("data")
+        if not isinstance(encrypted, str):
+            return result
+        decoded = base64.b64decode(encrypted)
+        key_bytes = self.crypto_key.encode("utf-8")
+        decrypted = subprocess.run(
+            [
+                "openssl", "enc", "-d", "-aes-128-cbc",
+                "-K", key_bytes.hex(), "-iv", "00" * 16,
+            ],
+            input=decoded,
+            capture_output=True,
+            check=True,
+        )
+        return json.loads(decrypted.stdout.decode("utf-8"))
 
     def request(
         self,
@@ -219,7 +280,7 @@ class TicketWebReadClient:
             return cached
 
         self.budget.before_request()
-        body = json.dumps(body_obj, separators=(",", ":")).encode("utf-8")
+        body = self._request_body(body_obj)
         headers = {
             "Accept": "application/json",
             "Authorization": self.authorization,
@@ -253,7 +314,7 @@ class TicketWebReadClient:
             raise RuntimeError(
                 f"TicketWeb read failed for {tenant}/{endpoint_name}: {exc}"
             ) from exc
-        result = json.loads(raw.decode("utf-8"))
+        result = self._decode_response(json.loads(raw.decode("utf-8")))
         self.cache.put(cache_key, result)
         return result
 
