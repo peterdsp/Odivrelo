@@ -25,6 +25,7 @@ from odivrelo_ktel.ktel_registry import seed_registry
 
 db, normalized = sys.argv[1:]
 with ktel_db.connect(db) as connection:
+    ktel_db.migrate(connection)
     seed_registry(connection)
     connection.execute(
         "UPDATE ktel_sources SET rights_status='allowed', terms_status='reviewed', "
