@@ -243,7 +243,7 @@ export function PlaceField({
             <span className="od-place-option__meta">
               {place.kind === 'stop_place' ? t('search.terminal') : t('search.boardingPoint')}
               {' · '}
-              {place.municipality}
+              {place.municipality || t('app.unknown')}
               {' · '}
               {t('search.stationCode', { code: place.id })}
               {place.kind === 'stop_place'

@@ -9,8 +9,8 @@
  */
 
 /** Case- and accent-insensitive across el/en/sq, as the contract requires. */
-export function foldForSearch(value: string): string {
-  return value
+export function foldForSearch(value: string | null | undefined): string {
+  return (value ?? '')
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/[͵᾽]/g, '')
@@ -23,7 +23,7 @@ export interface SearchablePlace {
   readonly id: string;
   readonly kind: 'stop_place' | 'stop';
   readonly name: { readonly el: string; readonly en: string; readonly sq: string };
-  readonly municipality: string;
+  readonly municipality: string | null;
 }
 
 /**

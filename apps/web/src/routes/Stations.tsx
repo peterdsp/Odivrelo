@@ -70,7 +70,7 @@ export function Stations() {
             </Link>{' '}
             <CoverageBadge state={terminal.coverage} />
           </p>
-          <p className="od-muted">{terminal.municipality}</p>
+          <p className="od-muted">{terminal.municipality || t('app.unknown')}</p>
           {children.length === 0 ? (
             <p className="od-muted">{t('search.boardingPointCount_zero')}</p>
           ) : (
