@@ -265,6 +265,29 @@ legacy data root migrated.
 
 ---
 
+## EB: Google Play upload permission for the service account (4 October 2026)
+
+The Android internal-beta build, signing and artifact checks now pass (the
+MapLibre location permissions were stripped). The upload step fails at the Google
+Play Developer API:
+
+```
+Creating a new Edit for this release
+##[error]The caller does not have permission
+```
+
+This is a store-side permission on the service account the `Release Android
+(internal)` workflow uses, not a code or build problem. The same upload succeeded
+on 2 October 2026, so access changed since (a time-limited grant, a revoked role,
+or reset API access).
+
+**Exact action needed (owner).** In the Google Play Console, grant the upload
+service account permission to release to the internal testing track for
+`dev.peterdsp.odivrelo` (at least "Release to testing tracks", or re-link the
+service account and confirm the Google Play Android Developer API is enabled for
+its project). Then re-run `Release Android (internal)` with `release_channel=demo`.
+iOS TestFlight upload is unaffected and succeeded.
+
 ## Not blockers
 
 Recorded so they are not mistaken for blockers later.
