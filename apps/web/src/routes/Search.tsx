@@ -119,7 +119,10 @@ export function Search() {
   );
 
   const popularPlaces = useCallback(async () => {
-    const queries = ['ΑΘΗΝΑ', 'ΑΓΡΙΝΙΟ', 'ΠΑΤΡΑ'];
+    // These are real names observed in the current KTEL release, not demo
+    // suggestions. Exact station queries keep the useful terminal records at
+    // the top instead of returning an arbitrary page of city stops.
+    const queries = ['ΑΘΗΝΑ_ΣΤΑΘΜΟΣ', 'ΣΤΑΘΜΟΣ ΑΓΡΙΝΙΟΥ', 'ΠΑΤΡΑ ΣΤΑΘΜΟΣ'];
     const results = await Promise.all(queries.map((query) => source.places(query, 8)));
     const seen = new Set<string>();
     return results
