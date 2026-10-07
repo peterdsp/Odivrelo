@@ -54,12 +54,27 @@ STAGING="$TARGET.sync.$$"
 rm -rf "$STAGING"
 mkdir -p "$(dirname "$TARGET")"
 
-# Copy the manifest and the packs, and nothing else. A retained previous
-# manifest is a server-side rollback target, not something a client bundles.
+# Copy the manifest and only the packs it names. The release directory keeps
+# superseded packs as a rollback/debug history, but clients and static hosts
+# must never receive those stale files.
 mkdir -p "$STAGING/packs"
 cp "$RELEASE/manifest.json" "$STAGING/manifest.json"
-find "$RELEASE/packs" -maxdepth 1 -type f \( -name '*.json' -o -name '*.zip' \) \
-  -exec cp {} "$STAGING/packs/" \;
+"$PY" - "$RELEASE" "$STAGING" <<'PYCODE'
+import json
+import pathlib
+import shutil
+import sys
+
+release = pathlib.Path(sys.argv[1])
+staging = pathlib.Path(sys.argv[2])
+manifest = json.loads((release / "manifest.json").read_text())
+for entry in manifest["files"].values():
+    name = pathlib.Path(entry["path"]).name
+    source = release / "packs" / name
+    if not source.is_file():
+        raise SystemExit(f"manifest names missing pack: {name}")
+    shutil.copy2(source, staging / "packs" / name)
+PYCODE
 
 verify "$STAGING"
 
