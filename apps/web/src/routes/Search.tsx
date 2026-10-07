@@ -128,6 +128,7 @@ export function Search() {
       'ΠΑΤΡΑ ΣΤΑΘΜΟΣ',
       'TRIPOLI',
       'ASTROS',
+      'PARALIO ASTROS',
       'MEGALOPOLI',
     ];
     const results = await Promise.all(queries.map((query) => source.places(query, 8)));
