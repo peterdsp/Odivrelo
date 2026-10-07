@@ -42,8 +42,9 @@ def canonical(value: str, base: str) -> str | None:
     parsed = urllib.parse.urlsplit(urllib.parse.urljoin(base, value))
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return None
-    path = parsed.path or "/"
-    return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, path, parsed.query, ""))
+    path = urllib.parse.quote(parsed.path or "/", safe="/%:@!$&'()*+,;=-._~")
+    query = urllib.parse.quote(parsed.query, safe="/?%:@!$&'()*+,;=-._~")
+    return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, path, query, ""))
 
 
 def same_host(url: str, root: str) -> bool:
