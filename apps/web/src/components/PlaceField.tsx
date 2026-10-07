@@ -81,7 +81,7 @@ export function PlaceField({
         setSearching(false);
       }
     },
-    [search],
+    [popular, search],
   );
 
   useEffect(() => {
