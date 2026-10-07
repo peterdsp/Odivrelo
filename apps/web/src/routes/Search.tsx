@@ -122,11 +122,20 @@ export function Search() {
     // These are real names observed in the current KTEL release, not demo
     // suggestions. Exact station queries keep the useful terminal records at
     // the top instead of returning an arbitrary page of city stops.
-    const queries = ['ΑΘΗΝΑ_ΣΤΑΘΜΟΣ', 'ΣΤΑΘΜΟΣ ΑΓΡΙΝΙΟΥ', 'ΠΑΤΡΑ ΣΤΑΘΜΟΣ'];
+    const queries = [
+      'ΑΘΗΝΑ_ΣΤΑΘΜΟΣ',
+      'ΣΤΑΘΜΟΣ ΑΓΡΙΝΙΟΥ',
+      'ΠΑΤΡΑ ΣΤΑΘΜΟΣ',
+      'TRIPOLI',
+      'ASTROS',
+      'MEGALOPOLI',
+    ];
     const results = await Promise.all(queries.map((query) => source.places(query, 8)));
     const seen = new Set<string>();
     return results
-      .flatMap((result) => result.places)
+      // Give each real regional terminal a place in the first viewport instead
+      // of letting the largest Athens result set consume the whole list.
+      .flatMap((result) => result.places.slice(0, 2))
       .filter((place) => {
         if (seen.has(place.id)) return false;
         seen.add(place.id);
