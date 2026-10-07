@@ -80,6 +80,16 @@ def import_file(conn: sqlite3.Connection, path: Path, observed_at: str) -> int:
         if not origin_stop or not destination_stop:
             continue
 
+        # A stop used by a direct route-execution response is part of the
+        # published journey surface even when the broader stop crawl kept a
+        # duplicate candidate record. Promote only the exact matched records.
+        for stop_id in (origin_stop, destination_stop):
+            conn.execute("update ktel_stops set publication_state='published' where id=?", (stop_id,))
+            conn.execute(
+                "update ktel_stop_places set publication_state='published' where id=(select stop_place_id from ktel_stops where id=?)",
+                (stop_id,),
+            )
+
         line_external = str(line_data.get("id") or f"{origin.get('stopId')}->{destination.get('stopId')}")
         line_id = f"kl_{slug(operator_id + ':' + line_external)}"
         pattern_external = digest({"line": line_external, "from": origin.get("stopId"), "to": destination.get("stopId")})[:32]
