@@ -1,58 +1,100 @@
 {
   "contractVersion": "1.0.0",
   "counts": {
-    "journeyPatterns": 0,
-    "lines": 0,
+    "journeyPatterns": 140,
+    "lines": 57,
     "serviceCalendars": 0,
-    "stopPlaces": 5439,
-    "stops": 19945,
-    "trips": 0
+    "stopPlaces": 4162,
+    "stops": 14845,
+    "trips": 349
   },
   "files": {
     "coverage": {
-      "bytes": 7234,
+      "bytes": 7272,
       "mediaType": "application/json",
-      "path": "packs/coverage-0b6c9a63381db9eb.json",
-      "sha256": "0b6c9a63381db9ebe3678e7ac1bd2f307de792d7324836e43e95892c5c8fa034"
+      "path": "packs/coverage-04a674fe1f53d83c.json",
+      "sha256": "04a674fe1f53d83ca69ca9115cbc8ba657560ea7b0159126778284b4220cc453"
     },
     "gtfs": {
-      "bytes": 1131413,
+      "bytes": 855513,
       "mediaType": "application/zip",
-      "path": "packs/gtfs-70a7da253575a7ae.zip",
-      "sha256": "70a7da253575a7ae367bf40c9a00703d2d336c9fb3f752e6205a123fe31a8ff1"
+      "path": "packs/gtfs-a8ea2481c7fe22fe.zip",
+      "sha256": "a8ea2481c7fe22fe42db09f7ed4bff1d29dbbbedbf4c8eb48ee1ef341067327d"
+    },
+    "journeys-2026-10-08": {
+      "bytes": 166205,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-08-f6f9c965520e38b0.json",
+      "sha256": "f6f9c965520e38b0a8a004201e3329c8c9d3ea460b609ff87f2be4c35f9f8b8d"
+    },
+    "journeys-2026-10-09": {
+      "bytes": 192457,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-09-fca7a88ccef99c51.json",
+      "sha256": "fca7a88ccef99c511ee3a5d942cd3c4f0ad6b4e96ee4728aaf7723f9ee3e917b"
+    },
+    "journeys-2026-10-10": {
+      "bytes": 83585,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-10-397cbecca0af3a22.json",
+      "sha256": "397cbecca0af3a22d35cd700c0518096fed54975f784366bf0031a6017c8b0c2"
+    },
+    "journeys-2026-10-11": {
+      "bytes": 126600,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-11-ca517a245a9f0cb1.json",
+      "sha256": "ca517a245a9f0cb1f40fa15cae52033846ed39a75d83ff1a4b9845029d1c196d"
+    },
+    "journeys-2026-10-12": {
+      "bytes": 164432,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-12-e106d2154ad8d8c2.json",
+      "sha256": "e106d2154ad8d8c2f4643b539a8c7306aadf67866fbf68bd2476ea451b24fcd3"
+    },
+    "journeys-2026-10-13": {
+      "bytes": 152386,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-13-07b44164601e1471.json",
+      "sha256": "07b44164601e14713930b7286ae67fe56f013c948968488648e62dcf8c8f0e68"
+    },
+    "journeys-2026-10-14": {
+      "bytes": 156318,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-14-0759769ee8f37d5e.json",
+      "sha256": "0759769ee8f37d5e6dcd5f807afe9553a5c3d2c2cfe845c091dd280704fbf631"
     },
     "meta": {
-      "bytes": 1374,
+      "bytes": 1276,
       "mediaType": "application/json",
-      "path": "packs/meta-c60ea3bd9a68959e.json",
-      "sha256": "c60ea3bd9a68959ebf17d4123a137e968b79277aecd89d8c5077e72e6f9286cd"
+      "path": "packs/meta-66135b7a8eca1cfb.json",
+      "sha256": "66135b7a8eca1cfb3804edd8a45bd8356837e35991edb29b1b3c20305e51967e"
     },
     "operators": {
-      "bytes": 20562,
+      "bytes": 17090,
       "mediaType": "application/json",
-      "path": "packs/operators-53c5450d4c8c9f82.json",
-      "sha256": "53c5450d4c8c9f823de130308841df3141c772117cc1b68c012bbbd8fc886d2a"
+      "path": "packs/operators-e11158ad3c32f13d.json",
+      "sha256": "e11158ad3c32f13d56d36f4a9a988329b90c8d5ecdccab4fd127d5cb52627c47"
     },
     "places": {
-      "bytes": 9394795,
+      "bytes": 7031391,
       "mediaType": "application/json",
-      "path": "packs/places-66b0772a80f45236.json",
-      "sha256": "66b0772a80f452366b93562f629796d501f2f8ebf793bc65b2e1bcddf67f7617"
+      "path": "packs/places-9a0dd2c472affae1.json",
+      "sha256": "9a0dd2c472affae154de0a43db6ca78151c8a79df9969f12922ce9e3ce64961f"
     },
     "sources": {
-      "bytes": 2037,
+      "bytes": 2033,
       "mediaType": "application/json",
-      "path": "packs/sources-6c8f69e59a1afa74.json",
-      "sha256": "6c8f69e59a1afa74e7766fd46c7018cd0c4c658a096c51e4d997d0bd10064290"
+      "path": "packs/sources-29a376ed4756d797.json",
+      "sha256": "29a376ed4756d797012695e943ac1f0dc3254089785807ee4f0249e382e4d66e"
     },
     "stops": {
-      "bytes": 84598211,
+      "bytes": 67758975,
       "mediaType": "application/json",
-      "path": "packs/stops-289d19ad47540b97.json",
-      "sha256": "289d19ad47540b97bc7e69359aa1f64f8f2b9390f9f604595384948212604e01"
+      "path": "packs/stops-e6a0fac1f582aa36.json",
+      "sha256": "e6a0fac1f582aa36aedf277fc3a1968116e6592c6cb7728db93f150b31121c15"
     }
   },
   "product": "Odivrelo",
-  "publishedAt": "2026-10-06T21:17:36Z",
-  "releaseId": "25096e3e2ba03d82"
+  "publishedAt": "2026-10-07T08:18:20Z",
+  "releaseId": "f4819fc47755c8dc"
 }
