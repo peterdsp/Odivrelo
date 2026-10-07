@@ -67,7 +67,39 @@ def normalize_journey_response(payload: Any, *, tenant: str, source_url: str, re
     """
     if not isinstance(payload, dict):
         return []
-    candidates = payload.get("executions") or payload.get("Executions") or payload.get("data")
+    candidates = payload.get("executions") or payload.get("Executions") or payload.get("routeExecutions")
+    if isinstance(candidates, list) and any(isinstance(item, dict) and isinstance(item.get("leg1"), dict) for item in candidates):
+        rows: list[dict[str, Any]] = []
+        for item in candidates:
+            leg = item.get("leg1") if isinstance(item, dict) else None
+            if not isinstance(leg, dict):
+                continue
+            names = leg.get("stopNamesList") or []
+            origin_name = names[0] if len(names) > 0 else None
+            destination_name = names[-1] if len(names) > 1 else None
+            departure = leg.get("departureTime") or leg.get("startingPointDepartureTime")
+            if not departure or not origin_name or not destination_name:
+                continue
+            rows.append({
+                "externalId": str(leg.get("routeExecutionUuid") or leg.get("routeExecutionsId") or hashlib.sha256(json.dumps(leg, sort_keys=True).encode()).hexdigest()),
+                "origin": {"name": origin_name, "stopId": leg.get("stopFromId"), "stopGroupId": leg.get("stopGroupFromId")},
+                "destination": {"name": destination_name, "stopId": leg.get("stopToId"), "stopGroupId": leg.get("stopGroupToId")},
+                "orderedStops": leg.get("stopList") if isinstance(leg.get("stopList"), list) else [],
+                "serviceDate": str(departure)[:10],
+                "departureAt": departure,
+                "arrivalAt": leg.get("arrivalTime"),
+                "line": {"id": leg.get("routesId"), "name": leg.get("routesName")},
+                "duration": leg.get("duration"),
+                "fare": leg.get("totalAmount"),
+                "currency": "EUR",
+                "availability": leg.get("status") or "unknown",
+                "availableSeats": leg.get("availableSeats"),
+                "accessibility": {"vehicleTypeId": leg.get("vehicleTypesId"), "vehicleTypeUuid": leg.get("vehicleTypeUuid")},
+                "source": {"tenant": tenant, "sourceUrl": source_url, "sourceType": "ticketweb_route_execution", "retrievedAt": retrieved_at, "verificationState": "direct_response"},
+            })
+        return rows
+    if not isinstance(candidates, list):
+        candidates = payload.get("data")
     if isinstance(candidates, dict):
         candidates = candidates.get("executions") or candidates.get("Executions") or candidates.get("items")
     if not isinstance(candidates, list):
