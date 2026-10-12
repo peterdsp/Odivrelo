@@ -166,6 +166,7 @@ export const sq: Catalogue = {
   'results.listToggle': 'Lista',
   'results.sortedByDeparture': 'Renditur sipas orës së nisjes.',
   'results.summaryFor': 'Udhëtim nga {origin} në {departure}, mbërrin {destination} në {arrival}, me operatorin {operator}.',
+  'results.seatAvailabilityUnknown': 'Disponueshmëria e vendeve duhet kontrolluar te operatori. Përdor veprimin e blerjes për përgjigjen më të fundit.',
 
   // -- Quality vocabulary --------------------------------------------------
   'quality.scheduled': 'Orar i planifikuar',

@@ -170,6 +170,7 @@ export const en = {
   'results.listToggle': 'List',
   'results.sortedByDeparture': 'Sorted by departure time.',
   'results.summaryFor': 'Journey from {origin} at {departure}, arriving {destination} at {arrival}, operated by {operator}.',
+  'results.seatAvailabilityUnknown': 'Seat availability must be checked with the operator. Use the booking action for the latest answer.',
 
   // -- Quality vocabulary --------------------------------------------------
   'quality.scheduled': 'Scheduled time',

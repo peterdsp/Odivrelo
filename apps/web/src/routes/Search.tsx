@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import type { Place } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
 import { useHead, organizationNode } from '../hooks/useHead';
@@ -26,6 +26,8 @@ import {
 } from '../features/searchParams';
 import { BRAND } from '../brand/brand';
 import { serviceDatesOf } from '../features/offlineGroups';
+import { JourneyCard } from '../features/JourneyCard';
+import type { JourneyQuery } from '../data/PublicDataSource';
 
 /**
  * The search screen.
@@ -41,7 +43,6 @@ export function Search() {
   const { t, language, name } = useI18n();
   const { source, meta, manifest, reload } = useData();
   const dataMode = useDataMode();
-  const navigate = useNavigate();
   const { announce, alert } = useAnnouncer();
   const [params] = useSearchParams();
 
@@ -56,6 +57,7 @@ export function Search() {
   const [departTo, setDepartTo] = useState(incoming.departTo ?? '');
   const [errors, setErrors] = useState<{ origin?: string; destination?: string; date?: string }>({});
   const [recent, setRecent] = useState<RecentSearch[]>(() => readRecentSearches());
+  const [inlineQuery, setInlineQuery] = useState<JourneyQuery | null>(null);
 
   const metaValue = meta.status === 'ready' ? meta.value : null;
   const manifestValue = manifest.status === 'ready' ? manifest.value : null;
@@ -133,17 +135,25 @@ export function Search() {
     ];
     const results = await Promise.all(queries.map((query) => source.places(query, 8)));
     const seen = new Set<string>();
-    return results
-      // Give each real regional terminal a place in the first viewport instead
-      // of letting the largest Athens result set consume the whole list.
-      .flatMap((result) => result.places.slice(0, 2))
+    const candidates = results
+      // A curated suggestion must be useful for an actual search. The previous
+      // code surfaced the first two Athens records even when both were marked
+      // not_covered, which made the picker look duplicated and led directly to
+      // a dead timetable search.
+      .flatMap((result) => result.places)
+      .sort((a, b) => Number(b.coverage === 'covered') - Number(a.coverage === 'covered'));
+    return candidates
       .filter((place) => {
-        if (seen.has(place.id)) return false;
-        seen.add(place.id);
+        // Different operator imports can carry the same terminal under
+        // different opaque ids. Keep one useful visible suggestion per name;
+        // typed searches still expose the complete disambiguation set.
+        const key = `${name(place.name).trim().toLocaleLowerCase()}|${place.municipality}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
         return true;
       })
       .slice(0, 12);
-  }, [source]);
+  }, [name, source]);
 
   /*
    * The date field is bounded by the dates this release actually holds a journeys
@@ -203,7 +213,15 @@ export function Search() {
         at: new Date().toISOString(),
       }),
     );
-    navigate({ pathname: '/results', search: `?${writeSearchState(state).toString()}` });
+    setInlineQuery({
+      originId: origin.id,
+      destinationId: destination.id,
+      date,
+      operatorIds: state.operatorIds,
+      accessible: state.accessible,
+      departFrom: state.departFrom ?? undefined,
+      departTo: state.departTo ?? undefined,
+    });
   };
 
   const filterCount = activeFilterCount({
@@ -217,6 +235,12 @@ export function Search() {
     view: 'list',
     journeyId: null,
   });
+
+  const inlineResults = useAsync(
+    (signal) => (inlineQuery ? source.journeys(inlineQuery, signal) : Promise.reject(new Error('no search yet'))),
+    [source, inlineQuery],
+    { enabled: inlineQuery !== null },
+  );
 
   if (meta.status === 'loading' || manifest.status === 'loading') return <Loading />;
   if (meta.status === 'error') return <DataError error={meta.error} onRetry={reload} />;
@@ -382,6 +406,47 @@ export function Search() {
           {t('search.submit')}
         </Button>
       </Card>
+
+      {inlineQuery ? (
+        <Section
+          title={t('results.title', { origin: origin ? name(origin.name) : '', destination: destination ? name(destination.name) : '' })}
+          description={inlineQuery.date}
+        >
+          {inlineResults.state.status === 'loading' ? <Loading /> : null}
+          {inlineResults.state.status === 'error' ? <DataError error={inlineResults.state.error} onRetry={inlineResults.reload} /> : null}
+          {inlineResults.state.status === 'ready' && inlineResults.state.value.results.length === 0 ? (
+            <StateBlock
+              kind={inlineResults.state.value.unavailableReason === 'outside_coverage' ? 'restricted' : inlineResults.state.value.unavailableReason === 'no_offline_data_for_date' ? 'unavailable' : 'empty'}
+              headingLevel={3}
+              title={
+                inlineResults.state.value.unavailableReason === 'outside_coverage' ? t('results.notCoveredTitle')
+                  : inlineResults.state.value.unavailableReason === 'origin_equals_destination' ? t('results.sameTitle')
+                    : inlineResults.state.value.unavailableReason === 'no_offline_data_for_date' ? t('results.noOfflineDataTitle')
+                      : t('results.emptyTitle')
+              }
+              body={<p>
+                {inlineResults.state.value.unavailableReason === 'outside_coverage' ? t('results.notCoveredBody', { origin: origin ? name(origin.name) : '', destination: destination ? name(destination.name) : '' })
+                  : inlineResults.state.value.unavailableReason === 'origin_equals_destination' ? t('results.sameBody')
+                    : inlineResults.state.value.unavailableReason === 'no_offline_data_for_date' ? t('results.noOfflineDataBody', { date: inlineQuery.date })
+                      : t('results.emptyBody', { date: inlineQuery.date })}
+              </p>}
+              announce={false}
+            />
+          ) : null}
+          {inlineResults.state.status === 'ready' && inlineResults.state.value.results.length > 0 ? (
+            <ul className="od-list od-list--cards">
+              {inlineResults.state.value.results.map((journey) => (
+                <li key={journey.id}>
+                  <JourneyCard
+                    journey={journey}
+                    to={`/journey/${encodeURIComponent(journey.id)}?date=${encodeURIComponent(journey.serviceDate)}`}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </Section>
+      ) : null}
 
       <Section
         title={t('search.recent')}

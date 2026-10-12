@@ -134,6 +134,11 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
         ) : null}
       </p>
 
+      <p className="od-journey__note">{t('results.seatAvailabilityUnknown')}</p>
+      {journey.purchase.kind === 'online' && journey.purchase.url ? (
+        <p><a className="od-link" href={journey.purchase.url} target="_blank" rel="noreferrer">{t('booking.onlineAction', { operator: name(journey.operator.name) })}</a></p>
+      ) : null}
+
       {journey.crossesMidnight ? (
         <p className="od-journey__note">{t('results.overnightExplain', { date: journey.serviceDate })}</p>
       ) : null}

@@ -58,7 +58,16 @@ if (existsSync(manifestPath)) {
     dataMode: read('meta').dataMode ?? 'demo',
     places: read('places').places ?? [],
     operators: read('operators').operators ?? {},
-    stops: read('stops').stops ?? {},
+    // The Pages packaging step may split the national stops pack into
+    // content-addressed `stops`, `stops-1`, ... files. Prerender needs the
+    // same complete identity set to enumerate station routes, so merge those
+    // shards instead of assuming the unsplit source still exists.
+    stops: Object.fromEntries(
+      Object.keys(manifest.files)
+        .filter((name) => name === 'stops' || /^stops-\d+$/.test(name))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .flatMap((name) => Object.entries(read(name).stops ?? {})),
+    ),
     serviceDates,
     journeysByDate: Object.fromEntries(serviceDates.map((date) => [date, read(`journeys-${date}`)])),
   };

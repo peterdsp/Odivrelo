@@ -167,6 +167,7 @@ export const el: Catalogue = {
   'results.listToggle': 'Λίστα',
   'results.sortedByDeparture': 'Ταξινομημένα κατά ώρα αναχώρησης.',
   'results.summaryFor': 'Δρομολόγιο από {origin} στις {departure}, άφιξη {destination} στις {arrival}, με μεταφορέα {operator}.',
+  'results.seatAvailabilityUnknown': 'Η διαθεσιμότητα θέσεων πρέπει να ελεγχθεί από τον μεταφορέα. Χρησιμοποίησε την αγορά για την πιο πρόσφατη απάντηση.',
 
   // -- Quality vocabulary --------------------------------------------------
   'quality.scheduled': 'Προγραμματισμένη ώρα',

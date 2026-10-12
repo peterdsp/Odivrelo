@@ -30,6 +30,16 @@ export interface PlaceFieldProps {
   readonly required?: boolean;
 }
 
+export function groupPlaceOptions(found: readonly Place[], localName: (name: Place['name']) => string): readonly Place[] {
+  const grouped = new Map<string, Place>();
+  for (const place of found) {
+    const key = `${localName(place.name).trim().toLocaleLowerCase()}|${place.municipality.trim().toLocaleLowerCase()}|${place.kind}`;
+    const current = grouped.get(key);
+    if (!current || (place.coverage === 'covered' && current.coverage !== 'covered')) grouped.set(key, place);
+  }
+  return [...grouped.values()];
+}
+
 export function PlaceField({
   label,
   placeholder,
@@ -69,7 +79,12 @@ export function PlaceField({
         // Empty-query suggestions are real, curated places from the release.
         // Keep boarding points visible here because this is the useful "popular
         // stations" surface, not an unbounded list of every bay in Greece.
-        const shown = found;
+        // Imports can contain the same human-facing station more than once
+        // under different source/operator ids. Group only identical labels,
+        // municipality and place kind; the selected representative remains a
+        // real identity, while distinct terminals and boarding points stay
+        // separately selectable.
+        const shown = groupPlaceOptions(found, localName);
         setOptions(shown);
         setActive(shown.length > 0 ? 0 : -1);
       } catch {
@@ -81,7 +96,7 @@ export function PlaceField({
         setSearching(false);
       }
     },
-    [popular, search],
+    [localName, popular, search],
   );
 
   useEffect(() => {
