@@ -136,14 +136,14 @@ function pageHtml({ path, title, description, ogType = 'website', canIndex = fal
   return html.replace('</head>', `    ${social.join('\n    ')}\n  </head>`);
 }
 
-function emit(routePath, html) {
+function emit(routePath, html, { extensionless = true } = {}) {
   const directory = routePath === '/' ? dist : join(dist, routePath.replace(/^\//, ''));
   mkdirSync(directory, { recursive: true });
   writeFileSync(join(directory, 'index.html'), html);
   // A static host answers /search with a redirect to /search/ when only the
   // directory exists. A sibling search.html lets GitHub Pages and Cloudflare
   // Pages serve the extensionless deep link directly with a 200.
-  if (routePath !== '/') writeFileSync(`${directory}.html`, html);
+  if (routePath !== '/' && extensionless) writeFileSync(`${directory}.html`, html);
 }
 
 // --------------------------------------------------------------------------
@@ -223,6 +223,7 @@ if (release) {
           ...(operator.contact?.phone ? { telephone: operator.contact.phone } : {}),
         },
       }),
+      { extensionless: false },
     );
     emitted.push(`/operators/${id}`);
   }
@@ -245,6 +246,7 @@ if (release) {
           geo: { '@type': 'GeoCoordinates', latitude: stop.latitude, longitude: stop.longitude },
         },
       }),
+      { extensionless: false },
     );
     emitted.push(`/stations/${id}`);
   }
@@ -269,7 +271,7 @@ if (release) {
         arrivalTime: journey.arrival?.at,
       };
       // Journeys are date-specific, so the canonical link carries the date.
-      emit(`/journey/${id}`, pageHtml({ path: `/journey/${id}?date=${date}`, title, description, structuredData }));
+      emit(`/journey/${id}`, pageHtml({ path: `/journey/${id}?date=${date}`, title, description, structuredData }), { extensionless: false });
       emit(
         `/journey/${id}/booking`,
         pageHtml({
@@ -278,6 +280,7 @@ if (release) {
           description:
             'Το Odivrelo δεν πουλά και δεν εκδίδει εισιτήρια. Ο μεταφορέας είναι υπεύθυνος για την τιμή, το εισιτήριο, τις αλλαγές και τις επιστροφές.',
         }),
+        { extensionless: false },
       );
       emitted.push(`/journey/${id}`, `/journey/${id}/booking`);
     }
