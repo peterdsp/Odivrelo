@@ -42,4 +42,28 @@ with ktel_db.connect(db) as connection:
     print(f'published TicketWeb directory: {places} places, {stops} stops')
 PY
 
+# The directory alone is stations with no departures, and a production release
+# fails closed on zero published trips, which is why this path never completed.
+# Collect the timetables too, bounded and paced, so the dataset this script
+# emits is a whole release rather than half of one.
+echo "== timetables =="
+EXECUTIONS="$OUT/public-executions"
+START_DATE="${START_DATE:-$(date +%F)}"
+PYTHONPATH=server/ktel-staging python3 scripts/fetch-public-ktel-executions.py \
+  --start-date "$START_DATE" \
+  --days "${DAYS:-14}" \
+  --max-origins "${MAX_ORIGINS:-24}" \
+  --max-queries-per-tenant "${MAX_QUERIES:-336}" \
+  --min-interval "${MIN_INTERVAL:-1.5}" \
+  --output "$EXECUTIONS"
+
+python3 scripts/import-public-ktel-executions.py --db "$DB" --input "$EXECUTIONS"
+
+FRESH="$(sqlite3 "$DB" "SELECT COUNT(*) FROM ktel_trips WHERE publication_state='published' AND service_date >= '$START_DATE'")"
+echo "published trips on or after $START_DATE: $FRESH"
+if [ "$FRESH" -eq 0 ]; then
+  echo "no timetable landed; refusing to emit a dataset that would ship stations with no departures" >&2
+  exit 1
+fi
+
 echo "$DB"

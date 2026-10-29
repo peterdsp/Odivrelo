@@ -8,15 +8,21 @@
 #
 # demo       : build the labelled Aloria demonstration release, then assert it is
 #              unmistakably data mode demo. This is the current beta behaviour.
-# production : build from an explicit reviewed real dataset
-#              (<PREFIX>_RELEASE_DATASET), then assert it is data mode real with no
-#              demonstration operator and at least one published journey. There is
-#              no fallback to demo: a missing dataset fails the build.
+# production : build from a reviewed real dataset, then assert it is data mode
+#              real with no demonstration operator and at least one published
+#              journey. There is no fallback to demo.
+#
+#              The dataset can be named with <PREFIX>_RELEASE_DATASET. When it is
+#              not, one is collected: the authorized TicketWeb directory and then
+#              the national timetable, bounded and paced. That collection takes
+#              hours rather than minutes, and it fails rather than emitting
+#              stations with no departures, because the source publishes
+#              date-specific departures only and a release holds exactly the
+#              dates it was built from.
 #
 # The default is demo on purpose: a tag push or dispatch that names nothing keeps
-# shipping the clearly labelled demonstration dataset rather than silently
-# attempting, and failing, a production build. Flip to production only when a
-# reviewed real dataset is wired in.
+# shipping the clearly labelled demonstration dataset rather than starting a long
+# live collection nobody asked for.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
