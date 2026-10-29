@@ -76,7 +76,9 @@ struct JourneyDetailScreen: View {
             VStack(alignment: .leading, spacing: Theme.Space.medium) {
                 if model.isDemonstrationData { DemoDataNotice() }
 
-                summary(detail)
+                ProvenanceRail(RailTint(detail.journey.freshness.state)) {
+                    summary(detail)
+                }
                 boarding(detail)
                 actions(detail)
                 PurchaseSection(
@@ -108,20 +110,20 @@ struct JourneyDetailScreen: View {
 
                 LabelledValue(
                     L10n.searchOrigin,
-                    value: "\(Formatters.clock(journey.departure.at)) · "
-                        + journey.departure.stopName.resolved(for: language)
+                    figure: Formatters.clock(journey.departure.at),
+                    value: journey.departure.stopName.resolved(for: language)
                 )
                 LabelledValue(
                     L10n.searchDestination,
-                    value: (journey.crossesMidnight
+                    figure: journey.crossesMidnight
                         ? Formatters.clockWithDay(journey.arrival.at)
-                        : Formatters.clock(journey.arrival.at))
-                        + " · " + journey.arrival.stopName.resolved(for: language)
+                        : Formatters.clock(journey.arrival.at),
+                    value: journey.arrival.stopName.resolved(for: language)
                 )
                 LabelledValue(
                     L10n.detailDuration,
-                    value: Formatters.duration(minutes: journey.durationMinutes)
-                        + " · " + L10n.resultsIntermediateStops(journey.intermediateStopCount)
+                    figure: Formatters.duration(minutes: journey.durationMinutes),
+                    value: L10n.resultsIntermediateStops(journey.intermediateStopCount)
                 )
 
                 if journey.crossesMidnight {
@@ -156,7 +158,7 @@ struct JourneyDetailScreen: View {
                 )
 
                 if let fare = journey.fare {
-                    LabelledValue(L10n.detailFare, value: Formatters.fare(fare))
+                    LabelledValue(L10n.detailFare, value: Formatters.fare(fare), monospaced: true)
                 } else {
                     LabelledValue(L10n.detailFare, value: L10n.resultsNoFare)
                 }

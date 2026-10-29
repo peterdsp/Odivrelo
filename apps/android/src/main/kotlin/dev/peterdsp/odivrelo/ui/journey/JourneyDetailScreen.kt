@@ -252,7 +252,7 @@ private fun Header(
         horizontalArrangement = Arrangement.spacedBy(Space.x3),
     ) {
         Column(Modifier.weight(1f)) {
-            Text(departure, style = MaterialTheme.typography.headlineMedium)
+            Text(departure, style = OdivreloData.large)
             Text(
                 text = journey.departure.stopName.resolve(language),
                 style = MaterialTheme.typography.bodyMedium,
@@ -262,7 +262,7 @@ private fun Header(
             TimeQualityBadge(journey.departure.quality)
         }
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-            Text(arrival, style = MaterialTheme.typography.headlineMedium)
+            Text(arrival, style = OdivreloData.large)
             Text(
                 text = journey.arrival.stopName.resolve(language),
                 style = MaterialTheme.typography.bodyMedium,

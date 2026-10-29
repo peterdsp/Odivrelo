@@ -369,11 +369,25 @@ public struct LabelledValue: View {
     private let label: String
     private let value: String
     private let valueIsMonospaced: Bool
+    private let figure: String?
 
     public init(_ label: String, value: String, monospaced: Bool = false) {
         self.label = label
         self.value = value
         self.valueIsMonospaced = monospaced
+        self.figure = nil
+    }
+
+    /// A row whose value is a figure followed by a name.
+    ///
+    /// The figure is set as data, in tabular mono, and the name stays in the
+    /// sans family. They cannot be one string: a place name in a monospaced
+    /// face reads badly at every size, and in Greek and Albanian it is long.
+    public init(_ label: String, figure: String, value: String) {
+        self.label = label
+        self.value = value
+        self.valueIsMonospaced = false
+        self.figure = figure
     }
 
     public var body: some View {
@@ -400,10 +414,22 @@ public struct LabelledValue: View {
     }
 
     private var valueText: some View {
-        Text(value)
-            .font(valueIsMonospaced ? .subheadline.monospaced() : .subheadline.weight(.medium))
-            .foregroundStyle(Theme.Palette.textPrimary)
-            .fixedSize(horizontal: false, vertical: true)
+        Group {
+            if let figure {
+                // Two runs in one line: the figure in tabular mono so a column
+                // of times aligns, the name in the reading face.
+                Text(figure)
+                    .font(.subheadline.monospaced())
+                    + Text(verbatim: "  ")
+                    + Text(value)
+                    .font(.subheadline.weight(.medium))
+            } else {
+                Text(value)
+                    .font(valueIsMonospaced ? .subheadline.monospaced() : .subheadline.weight(.medium))
+            }
+        }
+        .foregroundStyle(Theme.Palette.textPrimary)
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
