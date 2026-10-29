@@ -7,6 +7,7 @@ Nothing reaches public API queries until an explicit review publishes it.
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -39,6 +40,24 @@ REVIEWABLE_TABLES = {
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+TEST_RECORD_NAME = re.compile(r"(?:^|[\s_\-])(?:test|τεστ)(?:$|[\s_\-0-9])", re.IGNORECASE)
+
+
+def is_test_record(name: str | None) -> bool:
+    """True when a name is one of an operator's own test entries.
+
+    The coordinate check already quarantines most of them, because a test stop
+    is usually dropped at a nonsense latitude. A few carry a plausible
+    coordinate and reached the published directory, where a station called
+    "ΤΕΣΤ" is not a fact a traveller can use.
+
+    This matches the word only, not merely short or numeric names: a boarding
+    bay really can be called "6" and a Greek abbreviation really can be two
+    letters, so removing those would delete real stops to tidy a list.
+    """
+    return bool(TEST_RECORD_NAME.search((name or "").strip()))
 
 
 def _state(value: str | None, *, quarantine: bool = False) -> str:
@@ -163,7 +182,8 @@ def import_normalized_snapshot(
             coord_status = coordinate_status(
                 item.get("latitude"), item.get("longitude"), dataset=dataset
             )
-            quarantine = coord_status not in {"valid", "missing"}
+            test_record = is_test_record(item.get("name"))
+            quarantine = coord_status not in {"valid", "missing"} or test_record
             state = _state(
                 item.get("publicationState"), quarantine=quarantine
             )
@@ -175,8 +195,12 @@ def import_normalized_snapshot(
                     operator_id,
                     "stop",
                     external_id,
-                    f"coordinate_{coord_status}",
-                    {"latitude": item.get("latitude"), "longitude": item.get("longitude")},
+                    "test_record_name" if test_record else f"coordinate_{coord_status}",
+                    {
+                        "latitude": item.get("latitude"),
+                        "longitude": item.get("longitude"),
+                        **({"name": item.get("name")} if test_record else {}),
+                    },
                 )
             stop_place_id = None
             if item.get("stopPlaceExternalId") is not None:
