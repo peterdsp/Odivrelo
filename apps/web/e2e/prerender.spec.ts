@@ -49,6 +49,36 @@ function entryPointExists(path: string): boolean {
   return existsSync(join(directory, 'index.html'));
 }
 
+/**
+ * The `_redirects` rules that rewrite a route to the shell with a 200.
+ *
+ * A rewrite answers a deep link with the same status and the same bytes as a
+ * prerendered file. The only thing it gives up is a per-page head, so it is
+ * used for the one route whose head is identical for every entity.
+ */
+function rewriteRules(): string[] {
+  const file = join(dist, '_redirects');
+  if (!existsSync(file)) return [];
+  return readFileSync(file, 'utf8')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('#'))
+    .filter((line) => line.split(/\s+/)[2] === '200')
+    .map((line) => line.split(/\s+/)[0] as string);
+}
+
+function matchesRewrite(path: string, rules: string[]): boolean {
+  return rules.some((rule) => {
+    const pattern = new RegExp(`^${rule.split('*').map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+')}$`);
+    return pattern.test(path);
+  });
+}
+
+/** True when a static host answers this path with 200 rather than 404.html. */
+function answers200(path: string, rules: string[]): boolean {
+  return entryPointExists(path) || matchesRewrite(path, rules);
+}
+
 test.describe('prerendered entry points', () => {
   test('every static route in the router has one', () => {
     const missing = ROUTER_PATHS.filter((route) => route.kind === 'static' && !entryPointExists(route.pattern)).map(
@@ -60,6 +90,7 @@ test.describe('prerendered entry points', () => {
   test('every operator, stop and journey in the release has one', () => {
     test.skip(facts.releaseId === 'unknown', 'no release is published in dist');
     const missing: string[] = [];
+    const rules = rewriteRules();
     for (const id of facts.operatorIds) {
       if (!entryPointExists(`/operators/${id}`)) missing.push(`/operators/${id}`);
     }
@@ -80,7 +111,7 @@ test.describe('prerendered entry points', () => {
       };
       for (const id of Object.keys(pack.journeys ?? {})) {
         if (!entryPointExists(`/journey/${id}`)) missing.push(`/journey/${id}`);
-        if (!entryPointExists(`/journey/${id}/booking`)) missing.push(`/journey/${id}/booking`);
+        if (!answers200(`/journey/${id}/booking`, rules)) missing.push(`/journey/${id}/booking`);
       }
     }
     expect(missing, 'these entities are published but have no prerendered page').toEqual([]);
@@ -121,19 +152,49 @@ test.describe('prerendered entry points', () => {
     expect(operator).toContain('application/ld+json');
   });
 
-  test('the robots directive is default-deny in the shipped bytes', () => {
+  test('every shipped page carries a robots directive', () => {
     /*
      * A crawler or link-preview fetcher that never runs JavaScript must still see
      * a directive. robots.txt governs crawling, but a disallowed URL can be indexed
      * from an external link, which is exactly what this guards against.
      */
-    const files = ['index.html', '404.html', 'search/index.html', 'operators/index.html', 'coverage/index.html'];
+    const files = [
+      'index.html',
+      '404.html',
+      'search/index.html',
+      'operators/index.html',
+      'coverage/index.html',
+      'stations/index.html',
+    ];
     for (const file of files) {
       const html = readFileSync(join(dist, file), 'utf8');
       const robots = /<meta name="robots" content="([^"]*)"/.exec(html)?.[1];
       expect(robots, `${file} ships without a robots directive`).toBeTruthy();
-      // The release is demonstration data, so nothing is indexable yet.
-      expect(robots, `${file} ships as indexable`).toBe('noindex, nofollow');
+      expect(['index, follow', 'noindex, nofollow'], `${file} ships a directive nobody chose`).toContain(robots);
+    }
+  });
+
+  test('only the pages the product publishes are indexable, and only on real data', () => {
+    /*
+     * The shell, the 404 and the search tool are not content: they are indexable
+     * never, whatever the data says. The operator, station and coverage pages are
+     * the whole reason the product publishes anything, so they follow the release.
+     * A demonstration release makes them deny too, which is what kept the invented
+     * Aloria region out of every index.
+     */
+    const list = JSON.parse(
+      readFileSync(join(WEB_ROOT, 'artifacts', 'prerendered-routes.json'), 'utf8'),
+    ) as { indexable: boolean };
+    const expected = list.indexable ? 'index, follow' : 'noindex, nofollow';
+
+    const directive = (file: string) =>
+      /<meta name="robots" content="([^"]*)"/.exec(readFileSync(join(dist, file), 'utf8'))?.[1];
+
+    for (const file of ['index.html', '404.html', 'search/index.html']) {
+      expect(directive(file), `${file} is not content and must never be indexable`).toBe('noindex, nofollow');
+    }
+    for (const file of ['operators/index.html', 'stations/index.html', 'coverage/index.html']) {
+      expect(directive(file), `${file} disagrees with the release's data mode`).toBe(expected);
     }
   });
 

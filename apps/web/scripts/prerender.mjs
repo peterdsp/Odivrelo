@@ -272,19 +272,33 @@ if (release) {
       };
       // Journeys are date-specific, so the canonical link carries the date.
       emit(`/journey/${id}`, pageHtml({ path: `/journey/${id}?date=${date}`, title, description, structuredData }), { extensionless: false });
-      emit(
-        `/journey/${id}/booking`,
-        pageHtml({
-          path: `/journey/${id}/booking?date=${date}`,
-          title: 'Πώς αγοράζεις αυτό το εισιτήριο',
-          description:
-            'Το Odivrelo δεν πουλά και δεν εκδίδει εισιτήρια. Ο μεταφορέας είναι υπεύθυνος για την τιμή, το εισιτήριο, τις αλλαγές και τις επιστροφές.',
-        }),
-        { extensionless: false },
-      );
-      emitted.push(`/journey/${id}`, `/journey/${id}/booking`);
+      emitted.push(`/journey/${id}`);
+      // The booking page is deliberately not emitted. Its title and
+      // description are the same constants for every journey, so prerendering
+      // it wrote one identical head 2,665 times and spent a seventh of the
+      // host's file budget doing it, which is what pushed the last two
+      // deployments over the limit. `public/_redirects` rewrites the route to
+      // the shell with a 200 instead, which is the same answer for the same
+      // bytes, once.
     }
   }
+}
+
+// --------------------------------------------------------------------------
+// The host refuses a deployment of more than 20,000 files, and it refuses it
+// at the very last step, after everything else has already run. Counting here
+// turns that into a build failure with a number in it, which is cheap, instead
+// of a deployment failure after a two hour collection, which is not. The
+// margin leaves room for the asset bundle and for the network growing.
+// --------------------------------------------------------------------------
+const FILE_BUDGET = 19_500;
+if (emitted.length + 1 > FILE_BUDGET) {
+  process.stderr.write(
+    `Prerender emitted ${emitted.length + 1} entry points, over the ${FILE_BUDGET} budget. ` +
+      'Cloudflare Pages rejects a deployment above 20,000 files, so this would fail at the ' +
+      'publish step. Reduce what is prerendered rather than raising this number.\n',
+  );
+  process.exit(1);
 }
 
 // --------------------------------------------------------------------------

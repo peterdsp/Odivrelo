@@ -1,0 +1,10 @@
+# Routes served by the application shell rather than their own prerendered
+# file. Cloudflare Pages applies this file, and a 200 here is a rewrite, not
+# a redirect: the address the reader shared stays in the address bar.
+#
+# The booking page carries the same title and description for every journey,
+# so prerendering one file per journey wrote the same head thousands of
+# times and pushed the deployment past the host's 20,000 file limit. Every
+# route whose head is genuinely its own is still a real file, which is why
+# only this one appears here.
+/journey/*/booking  /index.html  200
