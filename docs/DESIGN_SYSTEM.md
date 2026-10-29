@@ -1,6 +1,6 @@
 # Odivrelo Design System
 
-Status: proposed design language, version 0.1
+Status: adopted design language, version 1.0
 
 ## Design idea
 
@@ -17,6 +17,69 @@ The visual language combines:
 
 The product should never borrow operator logos or federation visual language in
 a way that suggests official affiliation.
+
+## Design thesis
+
+Most coach apps are shop fronts: they sell you a seat. Odivrelo is a register of
+checked facts about coach travel, and the design says so. Everything it claims
+carries when it was checked and who said it, and the interface puts that on the
+surface instead of burying it in small print.
+
+Two elements carry the whole identity. Everything around them stays quiet.
+
+**The provenance rail.** A 3 point vertical rule on the leading edge of every
+block of asserted fact, tinted by freshness: fresh, aging, or stale. It is the
+one place the eye learns to check, and it is the reason a traveller can trust a
+departure time. The rail is always paired with the checked-at date in words and
+figures, so colour is never the only signal.
+
+**The call list.** What the product can actually prove about boarding is the
+ordered list of places a coach calls at, each one a named stop with real
+coordinates. That list is the second signature: the traveller's own boarding
+stop marked within the full route, and the calls the operator names but
+publishes no time for shown as untimed rather than blank. It is the answer to
+"does this coach stop at my town", which is the question a timetable is for.
+
+A call with no published time says so, in words, on every platform. An empty
+gap would read as a rendering fault rather than as the absence of a published
+fact.
+
+### What the data does not support
+
+Checked against all 28 TicketWeb tenant snapshots, 19,982 stops, on
+29 October 2026:
+
+| Field | Coverage | Consequence |
+|---|---|---|
+| Coordinates | 19,982 of 19,982, 100 percent | Maps and route lines are real |
+| `webActive` | 552, 2.8 percent | Only these can originate an online booking |
+| Phone | 552, 2.8 percent | A contact fallback exists for very few stops |
+| Address | 0 | The ticket-office address promise is unmet by this source |
+| Bay or platform | 0, and no such field exists in the record | See below |
+
+So the README's "not the city, the terminal, and the bay" is **half met**: the
+terminal is real and located, the bay is not published by this source at all.
+`BayPlate` exists and is correct, but nothing reaches it from TicketWeb. It
+stays in the component set for the `manual-review` source, which is rights
+cleared and could carry a reviewed bay, and it is deliberately **not** a
+signature element, because a signature has to be something the data can fill.
+Do not add a bay row that renders empty, and do not infer a bay from a stop
+name.
+
+Everything else, navigation, controls, cards, defers. Brand colour is spent on
+primary actions and status only, which is what Apple asks for: "Minimize its use
+on controls and instead use it intentionally for primary actions or status
+indicators" (`branding.md`, Best practices).
+
+### Why figures are set as data
+
+Timetable content is data, not prose. Times, fares, durations, bay numbers and
+checked-at stamps use the mono family with tabular figures, so a column of
+departures aligns and a changed digit is visible in place. Place names, operator
+names and all reading text stay in the sans family, because that is what reads
+well at small sizes and at large accessibility sizes. Digits are shared across
+Greek, English and Albanian, so the mono family only ever has to carry figures
+and punctuation, never a localised name.
 
 The source of truth for every colour below is
 `design/tokens/odivrelo.tokens.json`. `scripts/generate-design-tokens.sh`
@@ -80,6 +143,24 @@ Rules:
 Important states always include text and an icon. Color is never the only
 signal.
 
+### Freshness palette, the provenance rail
+
+Freshness is its own encoding, kept separate from status, because "checked
+recently" is not the same claim as "success" and "past the freshness gate" is not
+the same claim as "warning". One colour means one thing.
+
+| Rail | Light | Dark | Meaning |
+|---|---|---|---|
+| Fresh | `#1E6B42` | `#7ACB97` | Checked inside the freshness window for this source |
+| Aging | `#9A5400` | `#FFC273` | Still inside the window, approaching its limit |
+| Stale | `#55697A` | `#8FA7B8` | Past the window. The fact is shown, and shown as stale |
+
+The rail is a graphic, but the freshness stamp beside it is set in the same
+colour, so each rail is audited at the stricter AA text threshold, 4.5:1, on
+every surface it can appear on. The three rails are additionally checked for
+perceptual separation in CIE Lab, minimum delta E 25, measured 41 to 70.
+`scripts/generate-design-tokens.sh` fails the build if either check fails.
+
 ### Dark mode
 
 Dark mode uses a deep navy rather than pure black:
@@ -92,6 +173,47 @@ Dark mode uses a deep navy rather than pure black:
 - Primary action: `#7CC4E8`
 - Action text: `#04202E`
 - The mark is drawn in white with the orange node, as on the app icon.
+
+## Layers and materials
+
+Apple's model has exactly two layers, and Odivrelo follows it on every platform
+that can:
+
+1. **Content layer.** Text, cards, lists, maps, the app background. When it needs
+   depth it uses opaque surfaces or standard materials. Never glass.
+2. **Functional layer.** Tab bars, toolbars, navigation bars, sheets, the search
+   panel, map controls. This is the only place the glass material belongs.
+
+`materials.md`, Liquid Glass: "Don't use Liquid Glass in the content layer ...
+including it in the content layer can result in unnecessary complexity and a
+confusing visual hierarchy."
+
+Rules this product holds itself to:
+
+- Glass appears on the functional layer only. Glass on a journey card, a result
+  row, a badge or the provenance rail is a defect.
+- Content extends beneath the bars so the material has something to pick up,
+  and a scroll edge effect carries the transition instead of a solid bar colour
+  (`layout.md`, Visual hierarchy).
+- The regular variant is the default, because every bar in this product sits
+  over text. The clear variant is used only for controls floating over the map,
+  with the documented 35 percent dimming layer when the basemap is light.
+- At most one tinted primary action per view. Bar labels stay monochrome.
+- Reduce Transparency gets an opaque fallback, Increase Contrast gets stronger
+  borders, Reduce Motion drops the morph.
+- Glass never shrinks a hit region below 44 by 44 points.
+
+The material values are tokens, not literals: `material.*` in
+`design/tokens/odivrelo.tokens.json`, surfaced as `Theme.Material` on iOS and
+`--od-material-*` on Web.
+
+### Per-platform decision
+
+| Platform | Functional layer |
+|---|---|
+| iOS, iPadOS | Real Liquid Glass through the system components, with `glassEffect` only on the few custom floating controls. Gated on availability; below that the bars stay opaque. |
+| Web | Approximated with `backdrop-filter: blur() saturate()`, a translucent fill and a hairline border. Falls back to an opaque bar where `backdrop-filter` is unsupported, and whenever `prefers-contrast: more` or `prefers-reduced-transparency` is set. |
+| Android | Deliberately none. Material 3 does not use glass, and blur is costly and inconsistent across versions. Bars are opaque tonal surfaces. Imitating iOS here would look foreign on the platform. |
 
 ## Typography
 
@@ -113,6 +235,18 @@ Scale:
 | Body | 16 | 450 | Primary reading |
 | Label | 14 | 650 | Controls and route metadata |
 | Caption | 12 | 520 | Freshness and source details |
+
+Data styles, mono family, tabular figures:
+
+| Style | Size | Weight | Use |
+|---|---:|---:|---|
+| Bay | 30 | 600 | The bay plate, the largest datum on a journey screen |
+| Data large | 22 | 550 | Departure and arrival times on a journey screen |
+| Data | 16 | 500 | Times in a result row, fares, durations |
+| Data small | 13 | 500 | Checked-at stamps on the provenance rail |
+
+Data styles carry figures and punctuation only. Any localised name, place,
+operator or status word stays in the sans family.
 
 Support Dynamic Type and browser zoom. Do not truncate place names merely to
 preserve a decorative layout.
@@ -253,6 +387,33 @@ Primary action changes with state:
 - Provides `Open original`, `Share`, `Export`, and `Delete`.
 - Supports optional biometric protection.
 - Never displays a ticket preview in the app switcher.
+
+### Provenance rail
+
+The signature element. A 3 point vertical rule on the leading edge of any block
+that asserts a fact about a journey, a stop or an operator.
+
+- Tinted fresh, aging or stale from the freshness palette.
+- Always accompanied by the checked-at date in Data small, and by the source
+  name in Caption. The rail is a fast read, not the only read.
+- One rail per asserted block. A card with a rail does not nest another.
+- Never glass, never gradient, never animated.
+- Full height of the block it marks, so it also groups the block visually.
+- The rail and its stamp together form one accessibility element, announced as
+  the freshness and the date, so a screen reader gets the same fact as the eye.
+
+### Bay plate
+
+Conditional, not a signature. No TicketWeb stop carries a bay, so this renders
+only from a reviewed `manual-review` boarding point.
+
+- A square-cornered field, `radius.plate`, 6 points, echoing terminal signage.
+- The bay identifier in the Bay style, tabular figures.
+- Label above it in Label style, one word.
+- Shown only when a reviewed boarding point exists. There is no placeholder bay
+  and no guessed bay: when the boarding point is unknown the plate is absent
+  altogether, not drawn empty.
+- At most one per journey screen.
 
 ### Operator badge
 

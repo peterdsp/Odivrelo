@@ -91,6 +91,14 @@ struct RouteTimeline: View {
 
     private func times(_ call: JourneyStop) -> some View {
         HStack(spacing: Theme.Space.small) {
+            if call.arrivalAt == nil && call.departureAt == nil {
+                // An intermediate call the operator names but publishes no time
+                // for. Saying so is the point: an empty gap here would read as a
+                // rendering fault rather than as the absence of a published fact.
+                Text(L10n.detailNoTime)
+                    .font(.caption)
+                    .foregroundStyle(Theme.Palette.textSecondary)
+            }
             if let arrival = call.arrivalAt {
                 labelled(L10n.searchDestination, Formatters.clock(arrival))
             }
@@ -119,6 +127,9 @@ struct RouteTimeline: View {
         case .beforeBoard, .afterAlight: parts.append(L10n.detailSegmentOutside)
         default: break
         }
+        if call.arrivalAt == nil && call.departureAt == nil {
+            parts.append(L10n.detailNoTime)
+        }
         if let arrival = call.arrivalAt {
             parts.append("\(L10n.searchDestination) \(Formatters.clock(arrival))")
         }
@@ -144,10 +155,12 @@ struct BoardingRuleBadge: View {
         case (.onRequest, true): L10n.detailPickupOnRequest
         case (.coordinateWithOperator, true): L10n.detailPickupCoordinate
         case (.notAllowed, true): L10n.detailPickupNotAllowed
+        case (.unknown, true): L10n.detailPickupUnknown
         case (.allowed, false): L10n.detailDropoffAllowed
         case (.onRequest, false): L10n.detailDropoffOnRequest
         case (.coordinateWithOperator, false): L10n.detailDropoffCoordinate
         case (.notAllowed, false): L10n.detailDropoffNotAllowed
+        case (.unknown, false): L10n.detailDropoffUnknown
         }
     }
 
@@ -165,6 +178,7 @@ struct BoardingRuleBadge: View {
         case .onRequest: "hand.raised.circle"
         case .coordinateWithOperator: "phone.circle"
         case .notAllowed: "minus.circle"
+        case .unknown: "questionmark.circle"
         }
     }
 
@@ -172,7 +186,7 @@ struct BoardingRuleBadge: View {
         switch rule {
         case .allowed: .success
         case .onRequest, .coordinateWithOperator: .warning
-        case .notAllowed: .neutral
+        case .notAllowed, .unknown: .neutral
         }
     }
 }

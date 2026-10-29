@@ -487,3 +487,141 @@ private struct ReservedRegionInsets: ViewModifier {
         }
     }
 }
+
+// MARK: - Provenance rail
+
+/// How fresh an asserted fact is. The design system keeps this separate from
+/// `Tone`, because "checked recently" is not the same claim as "success" and
+/// "past the freshness window" is not the same claim as "error".
+public enum RailTint: Sendable, Equatable {
+    case fresh, aging, stale
+
+    var color: Color {
+        switch self {
+        case .fresh: Theme.Palette.railFresh
+        case .aging: Theme.Palette.railAging
+        case .stale: Theme.Palette.railStale
+        }
+    }
+}
+
+/// The signature element: a rule on the leading edge of a block that asserts a
+/// fact, tinted by how fresh that fact is.
+///
+/// The rail is a fast read, never the only read. The caller always pairs it
+/// with the checked-at date in text, which is what a screen reader announces,
+/// so the rail itself is hidden from accessibility.
+public struct ProvenanceRail<Content: View>: View {
+    private let tint: RailTint
+    private let content: Content
+
+    public init(_ tint: RailTint, @ViewBuilder content: () -> Content) {
+        self.tint = tint
+        self.content = content()
+    }
+
+    public var body: some View {
+        content
+            .padding(.leading, Theme.Space.small + Self.width)
+            // An overlay matches the content's height exactly, so the rail
+            // always spans the whole block it marks, at any text size.
+            .overlay(alignment: .leading) {
+                Capsule(style: .continuous)
+                    .fill(tint.color)
+                    .frame(width: Self.width)
+                    .accessibilityHidden(true)
+            }
+    }
+
+    private static var width: CGFloat { 3 }
+}
+
+// MARK: - Bay plate
+
+/// The boarding bay, set the way a terminal sets it: a square-cornered plate in
+/// tabular figures. The loudest datum on a journey screen, because it is what a
+/// person is looking for while standing in a concourse.
+///
+/// There is no placeholder bay. A caller with no reviewed boarding point shows
+/// the honest unavailable state instead of an empty plate.
+public struct BayPlate: View {
+    private let label: String
+    private let value: String
+
+    public init(label: String, value: String) {
+        self.label = label
+        self.value = value
+    }
+
+    public var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Space.xxSmall) {
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Theme.Palette.textSecondary)
+            Text(value)
+                // A relative size, so the plate grows with Dynamic Type rather
+                // than staying fixed while everything around it scales.
+                .font(.system(.title, design: .monospaced).weight(.semibold))
+                .monospacedDigit()
+                .foregroundStyle(Theme.Palette.primaryInk)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .padding(.horizontal, Theme.Space.small)
+        .padding(.vertical, Theme.Space.xSmall)
+        .background(Theme.Palette.primarySoft, in: .rect(cornerRadius: Theme.Radius.plate))
+        .overlay {
+            RoundedRectangle(cornerRadius: Theme.Radius.plate)
+                .stroke(Theme.Palette.border, lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label), \(value)")
+    }
+}
+
+// MARK: - The functional layer
+
+/// Glass for the layer of floating controls and navigation.
+///
+/// Apple's model has exactly two layers and glass belongs only to this one, so
+/// nothing in the content layer may use this modifier. Reduce Transparency gets
+/// an opaque surface, and builds below the glass API fall back to a standard
+/// material rather than imitating it.
+public struct FunctionalGlass: ViewModifier {
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    private let cornerRadius: CGFloat
+
+    public init(cornerRadius: CGFloat) {
+        self.cornerRadius = cornerRadius
+    }
+
+    public func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+
+        if reduceTransparency {
+            content
+                .background(Theme.Palette.surface, in: shape)
+                .overlay { shape.stroke(Theme.Palette.border, lineWidth: 1) }
+        } else if #available(iOS 26.0, *) {
+            content.glassEffect(.regular, in: shape)
+        } else {
+            content
+                .background(.regularMaterial, in: shape)
+                .overlay {
+                    shape.stroke(
+                        Theme.Palette.border.opacity(Theme.Material.glassBorderOpacity),
+                        lineWidth: 1
+                    )
+                }
+        }
+    }
+}
+
+public extension View {
+    /// Applies the functional-layer material. Only for floating controls and
+    /// navigation, never for content.
+    func functionalGlass(cornerRadius: CGFloat = Theme.Radius.panel) -> some View {
+        modifier(FunctionalGlass(cornerRadius: cornerRadius))
+    }
+}

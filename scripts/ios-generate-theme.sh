@@ -56,6 +56,7 @@ radius = {k: float(v["$value"].removesuffix("px")) for k, v in tokens["radius"].
 size = {k: float(v["$value"].removesuffix("px")) for k, v in tokens["size"].items()}
 motion = {k: v for k, v in tokens["motion"].items() if k != "easing"}
 easing = tokens["motion"]["easing"]["$value"]
+material = tokens["material"]
 
 L = []
 w = L.append
@@ -103,6 +104,19 @@ w("")
 w("    public enum Size: Sendable {")
 for key, value in size.items():
     w(f"        public static let {key}: CGFloat = {value:g}")
+w("    }")
+w("")
+w("    /// The functional layer. Apple's model has exactly two layers, and glass")
+w("    /// belongs only to floating controls and navigation, never to content.")
+w("    public enum Material: Sendable {")
+w(f"        public static let glassBlurRegular: CGFloat = {float(material['glassBlurRegular']['$value'].removesuffix('px')):g}")
+w(f"        public static let glassBlurClear: CGFloat = {float(material['glassBlurClear']['$value'].removesuffix('px')):g}")
+w(f"        public static let glassSaturate: Double = {material['glassSaturate']['$value']:g}")
+w(f"        public static let glassOpacityRegular: Double = {material['glassOpacityRegular']['$value']:g}")
+w(f"        public static let glassOpacityClear: Double = {material['glassOpacityClear']['$value']:g}")
+w(f"        public static let glassBorderOpacity: Double = {material['glassBorderOpacity']['$value']:g}")
+w(f"        public static let scrimOpacity: Double = {material['scrimOpacity']['$value']:g}")
+w(f"        public static let scrollEdgeHeight: CGFloat = {float(material['scrollEdgeHeight']['$value'].removesuffix('px')):g}")
 w("    }")
 w("")
 w("    public enum Motion: Sendable {")

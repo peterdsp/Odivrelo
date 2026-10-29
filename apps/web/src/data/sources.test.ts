@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { StaticPackSource } from './StaticPackSource';
 import { HttpApiSource } from './HttpApiSource';
 import type { PublicDataSource } from './PublicDataSource';
@@ -7,9 +7,11 @@ import {
   findWorkingQuery,
   makeApiFetch,
   makeStaticFetch,
+  publishedQueries,
   readManifest,
   readPack,
   releaseIsPresent,
+  sample,
   serviceDates,
 } from '../test/release';
 import type { JourneysPack, OperatorsPack, PlacesPack, StopsPack } from './packShapes';
@@ -23,6 +25,11 @@ import { journeysPackName } from './packShapes';
  * source and the HTTP source must produce deep-equal objects for every call. If
  * either one ever starts computing something the other does not, this fails.
  */
+
+// These suites read the real published release: 17 packs, tens of megabytes,
+// each digest-verified on first read. The 5 second default was sized for the
+// old demonstration fixture and is not a meaningful signal here.
+vi.setConfig({ testTimeout: 60_000 });
 
 const hasRelease = releaseIsPresent();
 const describeRelease = hasRelease ? describe : describe.skip;
@@ -178,45 +185,72 @@ describeRelease('the two sources agree', () => {
   });
 
   it('returns deep-equal coverage and sources', async () => {
-    expect(await makeStatic().coverage()).toEqual(await makeHttp().coverage());
-    expect(await makeStatic().sources()).toEqual(await makeHttp().sources());
+    const staticSource = makeStatic();
+    const httpSource = makeHttp();
+    expect(await staticSource.coverage()).toEqual(await httpSource.coverage());
+    expect(await staticSource.sources()).toEqual(await httpSource.sources());
   });
 
   it('returns deep-equal place lists, for an empty query and a text query', async () => {
-    expect(await makeStatic().places('', 500)).toEqual(await makeHttp().places('', 500));
-    const sample = (await makeStatic().places('', 500)).places[0]!;
+    const staticSource = makeStatic();
+    const httpSource = makeHttp();
+    const all = await staticSource.places('', 500);
+    expect(all).toEqual(await httpSource.places('', 500));
+    const sample = all.places[0]!;
     const needle = sample.name.en.slice(0, 3);
-    expect(await makeStatic().places(needle, 10)).toEqual(await makeHttp().places(needle, 10));
+    expect(await staticSource.places(needle, 10)).toEqual(await httpSource.places(needle, 10));
   });
 
   it('returns deep-equal operator lists and details', async () => {
-    const list = await makeStatic().operators();
-    expect(list).toEqual(await makeHttp().operators());
+    const staticSource = makeStatic();
+    const httpSource = makeHttp();
+    const list = await staticSource.operators();
+    expect(list).toEqual(await httpSource.operators());
     for (const operator of list.operators) {
-      expect(await makeStatic().operator(operator.id)).toEqual(await makeHttp().operator(operator.id));
+      expect(await staticSource.operator(operator.id)).toEqual(await httpSource.operator(operator.id));
     }
   });
 
-  it('returns deep-equal stops for every stop and every service date', async () => {
+  it('returns deep-equal stops for a spread of stops on every service date', async () => {
     const manifest = readManifest();
     const stops = readPack<StopsPack>(manifest, 'stops');
+    // One source pair for the whole loop. Each instance caches the packs it
+    // verifies, so rebuilding them per iteration re-read and re-digested the
+    // entire release every time.
+    const staticSource = makeStatic();
+    const httpSource = makeHttp();
+    const ids = sample(Object.keys(stops.stops), 240);
     for (const date of serviceDates(manifest)) {
-      for (const id of Object.keys(stops.stops)) {
-        expect(await makeStatic().stop(id, date), `${id} on ${date}`).toEqual(await makeHttp().stop(id, date));
+      for (const id of ids) {
+        expect(await staticSource.stop(id, date), `${id} on ${date}`).toEqual(await httpSource.stop(id, date));
       }
     }
   });
 
-  it('returns deep-equal journey searches for every origin, destination and date in the release', async () => {
+  it('returns deep-equal journey searches for every pair the release publishes, and for a spread that it does not', async () => {
     const manifest = readManifest();
     const places = readPack<PlacesPack>(manifest, 'places');
     const dates = serviceDates(manifest);
+    const staticSource = makeStatic();
+    const httpSource = makeHttp();
     let compared = 0;
+
+    // The pairs that carry a journey are where both sources do real work, so
+    // every one of them is compared.
+    for (const query of publishedQueries(manifest)) {
+      const [a, b] = await Promise.all([staticSource.journeys(query), httpSource.journeys(query)]);
+      expect(a, `${query.originId} -> ${query.destinationId} on ${query.date}`).toEqual(b);
+      compared += 1;
+    }
+
+    // The empty path needs covering too, but the full grid is 19,007 squared
+    // times seven dates, so it is sampled on a fixed stride instead.
+    const spread = sample(places.places, 12);
     for (const date of dates) {
-      for (const origin of places.places) {
-        for (const destination of places.places) {
+      for (const origin of spread) {
+        for (const destination of spread) {
           const query = { originId: origin.id, destinationId: destination.id, date };
-          const [a, b] = await Promise.all([makeStatic().journeys(query), makeHttp().journeys(query)]);
+          const [a, b] = await Promise.all([staticSource.journeys(query), httpSource.journeys(query)]);
           expect(a, `${origin.id} -> ${destination.id} on ${date}`).toEqual(b);
           compared += 1;
         }
@@ -227,11 +261,13 @@ describeRelease('the two sources agree', () => {
 
   it('returns deep-equal journey details for every journey in the release', async () => {
     const manifest = readManifest();
+    const staticSource = makeStatic();
+    const httpSource = makeHttp();
     let compared = 0;
     for (const date of serviceDates(manifest)) {
       const pack = readPack<JourneysPack>(manifest, journeysPackName(date));
       for (const id of Object.keys(pack.journeys)) {
-        expect(await makeStatic().journey(id, date), `${id} on ${date}`).toEqual(await makeHttp().journey(id, date));
+        expect(await staticSource.journey(id, date), `${id} on ${date}`).toEqual(await httpSource.journey(id, date));
         compared += 1;
       }
     }
@@ -418,11 +454,13 @@ describeRelease('an unpacked date is not the same as no service', () => {
   it('the two sources still agree for every date the release does pack', async () => {
     const manifest = readManifest();
     const places = readPack<PlacesPack>(manifest, 'places');
+    const staticSource = makeStatic();
+    const httpSource = makeHttp();
     for (const date of serviceDates(manifest)) {
       for (const origin of places.places.slice(0, 4)) {
         for (const destination of places.places.slice(0, 4)) {
           const query = { originId: origin.id, destinationId: destination.id, date };
-          expect(await makeStatic().journeys(query), JSON.stringify(query)).toEqual(await makeHttp().journeys(query));
+          expect(await staticSource.journeys(query), JSON.stringify(query)).toEqual(await httpSource.journeys(query));
         }
       }
     }

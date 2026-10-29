@@ -25,12 +25,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import dev.peterdsp.odivrelo.R
 import dev.peterdsp.odivrelo.core.model.Journey
+import dev.peterdsp.odivrelo.theme.OdivreloData
 import dev.peterdsp.odivrelo.theme.Space
 import dev.peterdsp.odivrelo.ui.common.Badge
 import dev.peterdsp.odivrelo.ui.common.ConfidenceBadge
 import dev.peterdsp.odivrelo.ui.common.Formats
-import dev.peterdsp.odivrelo.ui.common.FreshnessBadge
 import dev.peterdsp.odivrelo.ui.common.OdivreloCard
+import dev.peterdsp.odivrelo.ui.common.railColor
 import dev.peterdsp.odivrelo.ui.common.StepFreeBadge
 import dev.peterdsp.odivrelo.ui.common.TimeQualityBadge
 import dev.peterdsp.odivrelo.ui.common.Tone
@@ -91,6 +92,7 @@ fun JourneyCard(
                 this.selected = selected
             },
         selected = selected,
+        railState = journey.freshness.state,
     ) {
         // Three columns that share the width by weight rather than by their own
         // appetite. A terminal name is long in every language this product
@@ -102,7 +104,7 @@ fun JourneyCard(
             verticalAlignment = Alignment.Top,
         ) {
             Column(Modifier.weight(1f)) {
-                Text(text = departure, style = MaterialTheme.typography.headlineSmall)
+                Text(text = departure, style = OdivreloData.large)
                 Text(
                     text = journey.departure.stopName.resolve(languageTag),
                     style = MaterialTheme.typography.bodyMedium,
@@ -119,7 +121,7 @@ fun JourneyCard(
             ) {
                 Text(
                     text = duration,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = OdivreloData.medium,
                     maxLines = 1,
                 )
                 Text(
@@ -142,7 +144,7 @@ fun JourneyCard(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.End,
             ) {
-                Text(text = arrival, style = MaterialTheme.typography.headlineSmall)
+                Text(text = arrival, style = OdivreloData.large)
                 Text(
                     text = journey.arrival.stopName.resolve(languageTag),
                     style = MaterialTheme.typography.bodyMedium,
@@ -192,6 +194,14 @@ fun JourneyCard(
 
         Spacer(Modifier.height(Space.x3))
 
+        Text(
+            text = Formats.freshnessLabel(context, journey.freshness),
+            style = OdivreloData.small,
+            color = railColor(journey.freshness.state),
+        )
+
+        Spacer(Modifier.height(Space.x2))
+
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(Space.x2),
@@ -208,7 +218,6 @@ fun JourneyCard(
                     ),
                 )
             }
-            FreshnessBadge(journey.freshness)
             ConfidenceBadge(journey.confidence)
             StepFreeBadge(journey.accessibleBoardingPoint)
         }

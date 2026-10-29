@@ -31,6 +31,9 @@
   --od-info-text: #174f83;
   --od-mark-ring: #0b4a6b;
   --od-mark-road: #082f45;
+  --od-rail-fresh: #1e6b42;
+  --od-rail-aging: #9a5400;
+  --od-rail-stale: #55697a;
   --od-brand-deep-teal-blue: #0b4a6b;
   --od-brand-warm-orange: #ff9f2e;
   --od-brand-light-background: #e6f1f7;
@@ -40,6 +43,7 @@
   --od-radius-large: 18px;
   --od-radius-panel: 24px;
   --od-radius-pill: 999px;
+  --od-radius-plate: 6px;
   --od-space-1: 4px;
   --od-space-2: 8px;
   --od-space-3: 12px;
@@ -56,6 +60,14 @@
   --od-font-sans: Inter, "SF Pro Text", Roboto, system-ui, sans-serif;
   --od-shadow-card: 0 6px 18px rgb(8 47 69 / 8%);
   --od-shadow-floating: 0 12px 32px rgb(8 47 69 / 14%);
+  --od-material-glass-blur-regular: 24px;
+  --od-material-glass-blur-clear: 12px;
+  --od-material-glass-saturate: 1.4;
+  --od-material-glass-opacity-regular: 0.72;
+  --od-material-glass-opacity-clear: 0.28;
+  --od-material-glass-border-opacity: 0.18;
+  --od-material-scrim-opacity: 0.35;
+  --od-material-scroll-edge-height: 28px;
   --od-motion-fast: 120ms;
   --od-motion-standard: 220ms;
   --od-motion-slow: 360ms;
@@ -95,6 +107,9 @@
     --od-info-text: #a7d2ff;
     --od-mark-ring: #ffffff;
     --od-mark-road: #ffffff;
+    --od-rail-fresh: #7acb97;
+    --od-rail-aging: #ffc273;
+    --od-rail-stale: #8fa7b8;
   }
 }
 

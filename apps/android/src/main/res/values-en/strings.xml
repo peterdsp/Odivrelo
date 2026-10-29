@@ -181,6 +181,9 @@
     <string name="journey_segment_board">Board here</string>
     <string name="journey_segment_alight">Get off here</string>
     <string name="journey_segment_outside">Served, outside your leg</string>
+    <string name="journey_no_time">No time published</string>
+    <string name="pickup_unknown">Boarding not stated</string>
+    <string name="dropoff_unknown">Setting down not stated</string>
     <string name="pickup_allowed">Boarding</string>
     <string name="pickup_not_allowed">No boarding</string>
     <string name="pickup_on_request">Boarding on request</string>

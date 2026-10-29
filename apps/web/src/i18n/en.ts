@@ -237,6 +237,8 @@ export const en = {
   'journey.dropoffAllowed': 'You can get off here',
   'journey.dropoffNotAllowed': 'No setting down here',
   'journey.dropoffOnRequest': 'Setting down on request',
+  'journey.pickupUnknown': 'Boarding not stated',
+  'journey.dropoffUnknown': 'Setting down not stated',
   'journey.arrivalAt': 'Arrives {time}',
   'journey.departureAt': 'Departs {time}',
   'journey.noTime': 'No time published',

@@ -150,8 +150,18 @@ object Display {
     }
 
     /** True when a stop can actually be boarded at, on request or otherwise. */
+    /**
+     * Whether boarding here is *not refused*, which is weaker than "allowed".
+     *
+     * `UNKNOWN` answers true, because the operator has stated nothing and every
+     * pattern stop in the current release is `UNKNOWN`: answering false would
+     * make the whole network unboardable. The interface must therefore not
+     * present a true answer here as permission; it shows the rule itself, which
+     * says "not stated" in so many words.
+     */
     fun canBoard(rule: BoardingRule): Boolean = rule != BoardingRule.NOT_ALLOWED
 
+    /** Whether setting down here is not refused. See [canBoard]. */
     fun canAlight(rule: BoardingRule): Boolean = rule != BoardingRule.NOT_ALLOWED
 
     /** Formats a byte count into a value and a unit a screen can localise. */

@@ -99,6 +99,7 @@ public enum L10n {
         "detail.dropoffCoordinate",
         "detail.dropoffNotAllowed",
         "detail.dropoffOnRequest",
+        "detail.dropoffUnknown",
         "detail.duration",
         "detail.fare",
         "detail.instructions",
@@ -106,12 +107,14 @@ public enum L10n {
         "detail.licenceLabel",
         "detail.map",
         "detail.mapUnavailableOffline",
+        "detail.noTime",
         "detail.operatingDate",
         "detail.operator",
         "detail.pickupAllowed",
         "detail.pickupCoordinate",
         "detail.pickupNotAllowed",
         "detail.pickupOnRequest",
+        "detail.pickupUnknown",
         "detail.provenance",
         "detail.restrictions",
         "detail.retrievedAt",
@@ -549,6 +552,9 @@ public extension L10n {
     /// Alighting only if requested
     static var detailDropoffOnRequest: String { string("detail.dropoffOnRequest") }
 
+    /// A boarding rule the operator has not stated, which is not a refusal
+    static var detailDropoffUnknown: String { string("detail.dropoffUnknown") }
+
     /// Label for how long the journey takes and how many stops it makes
     static var detailDuration: String { string("detail.duration") }
 
@@ -570,6 +576,9 @@ public extension L10n {
     /// Base map imagery needs a network connection
     static var detailMapUnavailableOffline: String { string("detail.mapUnavailableOffline") }
 
+    /// Shown on a route call that the operator publishes no time for
+    static var detailNoTime: String { string("detail.noTime") }
+
     /// The service date this journey belongs to
     static var detailOperatingDate: String { string("detail.operatingDate") }
 
@@ -587,6 +596,9 @@ public extension L10n {
 
     /// Boarding only if requested
     static var detailPickupOnRequest: String { string("detail.pickupOnRequest") }
+
+    /// A boarding rule the operator has not stated, which is not a refusal
+    static var detailPickupUnknown: String { string("detail.pickupUnknown") }
 
     /// Section heading for where every fact came from
     static var detailProvenance: String { string("detail.provenance") }

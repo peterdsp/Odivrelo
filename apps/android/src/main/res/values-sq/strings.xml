@@ -181,6 +181,9 @@
     <string name="journey_segment_board">Hip këtu</string>
     <string name="journey_segment_alight">Zbrit këtu</string>
     <string name="journey_segment_outside">Shërbehet, jashtë segmentit tënd</string>
+    <string name="journey_no_time">Nuk është publikuar orar</string>
+    <string name="pickup_unknown">Hipja nuk është deklaruar</string>
+    <string name="dropoff_unknown">Zbritja nuk është deklaruar</string>
     <string name="pickup_allowed">Hipje</string>
     <string name="pickup_not_allowed">Pa hipje</string>
     <string name="pickup_on_request">Hipje me kërkesë</string>

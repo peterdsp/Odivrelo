@@ -49,6 +49,14 @@ data class OdivreloStatusColors(
     val focus: Color,
     val surfaceMuted: Color,
     val textSecondary: Color,
+    /**
+     * The provenance rail. Freshness is kept apart from status on purpose:
+     * "checked recently" is not the same claim as "success", and "past the
+     * freshness window" is not the same claim as "error".
+     */
+    val railFresh: Color,
+    val railAging: Color,
+    val railStale: Color,
 )
 
 private val LightStatus = OdivreloStatusColors(
@@ -61,6 +69,9 @@ private val LightStatus = OdivreloStatusColors(
     focus = Light.focus,
     surfaceMuted = Light.surfaceMuted,
     textSecondary = Light.textSecondary,
+    railFresh = Light.railFresh,
+    railAging = Light.railAging,
+    railStale = Light.railStale,
 )
 
 private val DarkStatus = OdivreloStatusColors(
@@ -73,6 +84,9 @@ private val DarkStatus = OdivreloStatusColors(
     focus = Dark.focus,
     surfaceMuted = Dark.surfaceMuted,
     textSecondary = Dark.textSecondary,
+    railFresh = Dark.railFresh,
+    railAging = Dark.railAging,
+    railStale = Dark.railStale,
 )
 
 private val LightScheme = lightColorScheme(
@@ -226,6 +240,51 @@ private val OdivreloTypography: Typography = run {
             lineHeight = 16.sp,
             fontWeight = FontWeight.Medium,
         ),
+    )
+}
+
+/**
+ * Timetable figures are data, not prose, so they are set in the monospace
+ * family with tabular figures: a column of times aligns and a changed digit is
+ * visible in place. Only figures ever use these styles; place and operator
+ * names stay in the sans family, which reads better at every size.
+ *
+ * Sizes are in `sp`, like the rest of the scale, so the system font-size
+ * setting still scales them.
+ */
+object OdivreloData {
+    private val mono = FontFamily.Monospace
+
+    /** The bay plate, the largest datum on a journey screen. */
+    val bay: TextStyle = TextStyle(
+        fontFamily = mono,
+        fontSize = 30.sp,
+        lineHeight = 32.sp,
+        fontWeight = FontWeight.SemiBold,
+    )
+
+    /** Departure and arrival on a journey screen. */
+    val large: TextStyle = TextStyle(
+        fontFamily = mono,
+        fontSize = 22.sp,
+        lineHeight = 26.sp,
+        fontWeight = FontWeight.Medium,
+    )
+
+    /** Times in a result row, fares, durations. */
+    val medium: TextStyle = TextStyle(
+        fontFamily = mono,
+        fontSize = 16.sp,
+        lineHeight = 21.sp,
+        fontWeight = FontWeight.Medium,
+    )
+
+    /** The checked-at stamp beside the provenance rail. */
+    val small: TextStyle = TextStyle(
+        fontFamily = mono,
+        fontSize = 13.sp,
+        lineHeight = 17.sp,
+        fontWeight = FontWeight.Medium,
     )
 }
 

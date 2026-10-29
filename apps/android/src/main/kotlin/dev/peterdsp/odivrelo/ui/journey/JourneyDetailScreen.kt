@@ -50,6 +50,8 @@ import dev.peterdsp.odivrelo.features.FailureReason
 import dev.peterdsp.odivrelo.features.Loadable
 import dev.peterdsp.odivrelo.state.AppState
 import dev.peterdsp.odivrelo.state.OdivreloViewModel
+import dev.peterdsp.odivrelo.theme.OdivreloData
+import dev.peterdsp.odivrelo.theme.OdivreloTheme
 import dev.peterdsp.odivrelo.theme.Space
 import dev.peterdsp.odivrelo.ui.booking.Handoff
 import dev.peterdsp.odivrelo.ui.booking.HandoffResult
@@ -537,6 +539,8 @@ private fun StopRow(
             BoardingRule.NOT_ALLOWED -> R.string.pickup_not_allowed
             BoardingRule.ON_REQUEST -> R.string.pickup_on_request
             BoardingRule.COORDINATE_WITH_OPERATOR -> R.string.pickup_coordinate
+            // Not stated, not refused, and the commonest case in this release.
+            BoardingRule.UNKNOWN -> R.string.pickup_unknown
         },
     )
     val dropoff = context.getString(
@@ -545,6 +549,7 @@ private fun StopRow(
             BoardingRule.NOT_ALLOWED -> R.string.dropoff_not_allowed
             BoardingRule.ON_REQUEST -> R.string.dropoff_on_request
             BoardingRule.COORDINATE_WITH_OPERATOR -> R.string.dropoff_coordinate
+            BoardingRule.UNKNOWN -> R.string.dropoff_unknown
         },
     )
     val segmentLabel = when (stop.segmentRole) {
@@ -571,6 +576,7 @@ private fun StopRow(
                     segmentLabel,
                     arrival?.let { context.getString(R.string.journey_view_list) + " " + it },
                     departure,
+                    if (departure == null && arrival == null) context.getString(R.string.journey_no_time) else null,
                     pickup,
                     dropoff,
                 ).joinToString(", ")
@@ -582,8 +588,20 @@ private fun StopRow(
         ) {
             Text(name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
             Text(
-                text = departure ?: arrival ?: context.getString(R.string.quality_unknown),
-                style = MaterialTheme.typography.bodyLarge,
+                // An intermediate call the operator names but publishes no time
+                // for. "Unknown" read as an unknown time quality; the fact is
+                // that no time was published at all.
+                text = departure ?: arrival ?: context.getString(R.string.journey_no_time),
+                style = if (departure == null && arrival == null) {
+                    MaterialTheme.typography.bodyMedium
+                } else {
+                    OdivreloData.medium
+                },
+                color = if (departure == null && arrival == null) {
+                    OdivreloTheme.status.textSecondary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
             )
         }
         Spacer(Modifier.height(Space.x1))

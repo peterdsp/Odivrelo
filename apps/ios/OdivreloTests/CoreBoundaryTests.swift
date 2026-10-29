@@ -187,9 +187,15 @@ struct ContractEnumTests {
         #expect(CoverageState.fromKotlinName("brandNew") == .notCovered)
     }
 
-    @Test("An unknown boarding rule is not reported as allowed")
+    @Test("An unknown boarding rule is neither allowed nor a refusal")
     func unknownBoardingRuleIsNotAllowed() {
-        #expect(BoardingRule.fromKotlinName("mystery") == .notAllowed)
+        // It used to fall back to `.notAllowed`, which told a traveller that
+        // boarding was refused at a stop the operator had said nothing about.
+        // Every pattern stop in the current release is exactly that case, so
+        // the fallback has to be the honest one.
+        #expect(BoardingRule.fromKotlinName("mystery") == .unknown)
+        #expect(BoardingRule.fromKotlinName("mystery") != .allowed)
+        #expect(BoardingRule.fromKotlinName("mystery") != .notAllowed)
     }
 
     @Test("An unknown position quality falls back to scheduled, never live")

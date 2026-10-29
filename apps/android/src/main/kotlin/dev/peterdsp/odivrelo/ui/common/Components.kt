@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -56,6 +58,7 @@ import dev.peterdsp.odivrelo.features.FailureReason
 import dev.peterdsp.odivrelo.features.Loadable
 import dev.peterdsp.odivrelo.theme.LocalExtraTouchPadding
 import dev.peterdsp.odivrelo.theme.LocalReduceMotion
+import dev.peterdsp.odivrelo.theme.OdivreloData
 import dev.peterdsp.odivrelo.theme.OdivreloTheme
 import dev.peterdsp.odivrelo.theme.Space
 
@@ -399,6 +402,12 @@ fun KeyValueRow(label: String, value: String, modifier: Modifier = Modifier) {
 fun OdivreloCard(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
+    /**
+     * When the card asserts a fact that carries freshness, the card draws the
+     * provenance rail on its leading edge. Cards that assert nothing, such as a
+     * settings group, leave this null and get no rail.
+     */
+    railState: FreshnessState? = null,
     content: @Composable () -> Unit,
 ) {
     Surface(
@@ -418,7 +427,13 @@ fun OdivreloCard(
             },
         ),
     ) {
-        Column(Modifier.padding(Space.x4 + LocalExtraTouchPadding.current)) { content() }
+        Column(Modifier.padding(Space.x4 + LocalExtraTouchPadding.current)) {
+            if (railState == null) {
+                content()
+            } else {
+                ProvenanceRail(railState) { Column { content() } }
+            }
+        }
     }
 }
 
@@ -784,5 +799,84 @@ fun OutlinedBox(modifier: Modifier = Modifier, content: @Composable () -> Unit) 
             .padding(Space.x4),
     ) {
         content()
+    }
+}
+
+/**
+ * The provenance rail: the signature element.
+ *
+ * A rule on the leading edge of a block that asserts a fact, tinted by how
+ * fresh that fact is. It is purely visual: the caller always states the same
+ * fact in words beside it, which is what TalkBack reads, so the rail itself
+ * carries no semantics.
+ *
+ * Material 3 has no glass, deliberately. On Android this layer stays a flat
+ * tonal rule, which is what the platform's own design language does.
+ */
+@Composable
+fun ProvenanceRail(
+    state: FreshnessState,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    // `IntrinsicSize.Min` gives the Row a real height to hand the rail, so
+    // `fillMaxHeight` resolves to the content's height instead of an unbounded
+    // constraint.
+    Row(modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+        Box(
+            Modifier
+                .width(3.dp)
+                // Matches the content's height, so the rail spans the whole
+                // block it marks at any font-size setting.
+                .fillMaxHeight()
+                .background(railColor(state), RoundedCornerShape(percent = 50)),
+        )
+        Spacer(Modifier.width(Space.x3))
+        Box(Modifier.weight(1f)) { content() }
+    }
+}
+
+/** The rail's tint for a freshness state. */
+@Composable
+fun railColor(state: FreshnessState): Color = when (state) {
+    FreshnessState.FRESH -> OdivreloTheme.status.railFresh
+    FreshnessState.AGING -> OdivreloTheme.status.railAging
+    FreshnessState.STALE -> OdivreloTheme.status.railStale
+}
+
+/**
+ * The boarding bay, set the way a terminal sets it: a square-cornered plate in
+ * tabular figures, and the loudest datum on a journey screen.
+ *
+ * There is no placeholder bay. A caller with no reviewed boarding point shows
+ * the honest unavailable state rather than an empty plate.
+ */
+@Composable
+fun BayPlate(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.semantics(mergeDescendants = true) {
+            contentDescription = "$label, $value"
+        },
+        shape = MaterialTheme.shapes.extraSmall,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Column(Modifier.padding(horizontal = Space.x3, vertical = Space.x2)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = OdivreloTheme.status.textSecondary,
+            )
+            Text(
+                text = value,
+                style = OdivreloData.bay,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                maxLines = 1,
+            )
+        }
     }
 }

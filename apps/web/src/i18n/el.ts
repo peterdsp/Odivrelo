@@ -234,6 +234,8 @@ export const el: Catalogue = {
   'journey.dropoffAllowed': 'Μπορείς να αποβιβαστείς εδώ',
   'journey.dropoffNotAllowed': 'Δεν επιτρέπεται αποβίβαση εδώ',
   'journey.dropoffOnRequest': 'Αποβίβαση κατόπιν αιτήματος',
+  'journey.pickupUnknown': 'Δεν δηλώνεται επιβίβαση',
+  'journey.dropoffUnknown': 'Δεν δηλώνεται αποβίβαση',
   'journey.arrivalAt': 'Άφιξη {time}',
   'journey.departureAt': 'Αναχώρηση {time}',
   'journey.noTime': 'Δεν έχει δημοσιευθεί ώρα',

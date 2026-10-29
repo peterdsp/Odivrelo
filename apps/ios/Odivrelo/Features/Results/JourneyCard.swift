@@ -15,20 +15,24 @@ struct JourneyCard: View {
 
     var body: some View {
         Button(action: onOpen) {
-            VStack(alignment: .leading, spacing: Theme.Space.small) {
-                times
-                places
-                operatorAndDuration
-                BadgeFlow { badges }
-                if let fare = journey.fare {
-                    Text(Formatters.fare(fare))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Theme.Palette.textPrimary)
-                } else {
-                    Text(L10n.resultsNoFare)
-                        .font(.footnote)
-                        .foregroundStyle(Theme.Palette.textSecondary)
+            ProvenanceRail(RailTint(journey.freshness.state)) {
+                VStack(alignment: .leading, spacing: Theme.Space.small) {
+                    times
+                    places
+                    operatorAndDuration
+                    BadgeFlow { badges }
+                    if let fare = journey.fare {
+                        Text(Formatters.fare(fare))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Theme.Palette.textPrimary)
+                    } else {
+                        Text(L10n.resultsNoFare)
+                            .font(.footnote)
+                            .foregroundStyle(Theme.Palette.textSecondary)
+                    }
+                    freshnessStamp
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Theme.Space.medium)
@@ -140,12 +144,30 @@ struct JourneyCard: View {
         if journey.crossesMidnight {
             StatusBadge(L10n.resultsCrossesMidnight, systemImage: "moon.stars", tone: .warning)
         }
-        FreshnessBadge(journey.freshness)
         ConfidenceBadge(journey.confidence)
         PositionQualityBadge(journey.positionQuality)
         if journey.arrival.quality == .approximate {
             StatusBadge(L10n.qualityApproximate, systemImage: "clock.badge.questionmark", tone: .warning)
         }
+    }
+
+    /// What the rail means, spelled out. The rail is the fast read; this is the
+    /// one that survives colour vision differences and grayscale.
+    private var freshnessStamp: some View {
+        HStack(spacing: Theme.Space.xSmall) {
+            Image(systemName: FreshnessBadge.icon(journey.freshness))
+                .font(.caption2.weight(.semibold))
+            Text(FreshnessBadge.text(journey.freshness))
+                .font(.caption.weight(.semibold))
+            Text(Formatters.freshnessAge(journey.freshness))
+                .font(.system(.caption, design: .monospaced))
+                .monospacedDigit()
+        }
+        .foregroundStyle(RailTint(journey.freshness.state).color)
+        .fixedSize(horizontal: false, vertical: true)
+        // The card speaks freshness and age in its own accessibility value, so
+        // repeating the stamp to a screen reader would say it twice.
+        .accessibilityHidden(true)
     }
 
     // MARK: Accessibility
@@ -189,6 +211,18 @@ struct JourneyCard: View {
 
 // MARK: - Shared badges
 
+extension RailTint {
+    /// The contract decides freshness; the design system only decides how it
+    /// looks. This is the single place the two meet.
+    init(_ state: FreshnessState) {
+        switch state {
+        case .fresh: self = .fresh
+        case .aging: self = .aging
+        case .stale: self = .stale
+        }
+    }
+}
+
 struct FreshnessBadge: View {
     private let freshness: Freshness
 
@@ -212,13 +246,15 @@ struct FreshnessBadge: View {
         )
     }
 
-    private var icon: String {
+    static func icon(_ freshness: Freshness) -> String {
         switch freshness.state {
         case .fresh: "clock.badge.checkmark"
         case .aging: "clock.badge"
         case .stale: "clock.badge.exclamationmark"
         }
     }
+
+    private var icon: String { Self.icon(freshness) }
 
     private var tone: Tone {
         switch freshness.state {

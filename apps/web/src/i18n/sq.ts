@@ -233,6 +233,8 @@ export const sq: Catalogue = {
   'journey.dropoffAllowed': 'Mund të zbresh këtu',
   'journey.dropoffNotAllowed': 'Nuk lejohet zbritja këtu',
   'journey.dropoffOnRequest': 'Zbritje me kërkesë',
+  'journey.pickupUnknown': 'Hipja nuk është deklaruar',
+  'journey.dropoffUnknown': 'Zbritja nuk është deklaruar',
   'journey.arrivalAt': 'Mbërrin {time}',
   'journey.departureAt': 'Niset {time}',
   'journey.noTime': 'Nuk është publikuar orar',

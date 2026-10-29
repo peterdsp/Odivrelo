@@ -324,8 +324,11 @@ data class JourneyStop(
     val arrivalAt: String? = null,
     val departureAt: String? = null,
     val timeQuality: TimeQuality = TimeQuality.SCHEDULED,
-    val pickup: BoardingRule = BoardingRule.ALLOWED,
-    val dropoff: BoardingRule = BoardingRule.ALLOWED,
+    // Not stated is the truthful default, and it is also what every pattern stop
+    // in the current release carries. Defaulting to ALLOWED told a traveller
+    // they could board where the operator has said nothing at all.
+    val pickup: BoardingRule = BoardingRule.UNKNOWN,
+    val dropoff: BoardingRule = BoardingRule.UNKNOWN,
     val segmentRole: SegmentRole = SegmentRole.ON_SEGMENT,
 )
 

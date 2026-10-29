@@ -1297,6 +1297,30 @@
         }
       }
     },
+    "detail.dropoffUnknown": {
+      "comment": "A boarding rule the operator has not stated, which is not a refusal",
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν δηλώνεται αποβίβαση"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setting down not stated"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zbritja nuk është deklaruar"
+          }
+        }
+      }
+    },
     "detail.duration": {
       "comment": "Label for how long the journey takes and how many stops it makes",
       "extractionState": "manual",
@@ -1465,6 +1489,30 @@
         }
       }
     },
+    "detail.noTime": {
+      "comment": "Shown on a route call that the operator publishes no time for",
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν έχει δημοσιευθεί ώρα"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No time published"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuk është publikuar orar"
+          }
+        }
+      }
+    },
     "detail.operatingDate": {
       "comment": "The service date this journey belongs to",
       "extractionState": "manual",
@@ -1605,6 +1653,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hipje me kërkesë"
+          }
+        }
+      }
+    },
+    "detail.pickupUnknown": {
+      "comment": "A boarding rule the operator has not stated, which is not a refusal",
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν δηλώνεται επιβίβαση"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boarding not stated"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hipja nuk është deklaruar"
           }
         }
       }

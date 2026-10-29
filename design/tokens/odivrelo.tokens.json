@@ -35,7 +35,13 @@
       "stone200": { "$type": "color", "$value": "#C9D8E1" },
       "stone100": { "$type": "color", "$value": "#E3ECF1" },
       "canvas": { "$type": "color", "$value": "#F4F8FB" },
-      "white": { "$type": "color", "$value": "#FFFFFF" }
+      "white": { "$type": "color", "$value": "#FFFFFF" },
+      "green600": { "$type": "color", "$value": "#1E6B42" },
+      "amber800": { "$type": "color", "$value": "#9A5400" },
+      "slate600": { "$type": "color", "$value": "#55697A" },
+      "green300": { "$type": "color", "$value": "#7ACB97" },
+      "amber300": { "$type": "color", "$value": "#FFC273" },
+      "slate300": { "$type": "color", "$value": "#8FA7B8" }
     },
     "light": {
       "background": { "$type": "color", "$value": "{color.primitive.canvas}" },
@@ -67,7 +73,10 @@
       "infoSurface": { "$type": "color", "$value": "{color.primitive.blue100}" },
       "infoText": { "$type": "color", "$value": "{color.primitive.blue700}" },
       "markRing": { "$type": "color", "$value": "{color.primitive.teal600}" },
-      "markRoad": { "$type": "color", "$value": "{color.primitive.teal900}" }
+      "markRoad": { "$type": "color", "$value": "{color.primitive.teal900}" },
+      "railFresh": { "$type": "color", "$value": "{color.primitive.green600}" },
+      "railAging": { "$type": "color", "$value": "{color.primitive.amber800}" },
+      "railStale": { "$type": "color", "$value": "{color.primitive.slate600}" }
     },
     "dark": {
       "background": { "$type": "color", "$value": "#06131C" },
@@ -99,7 +108,10 @@
       "infoSurface": { "$type": "color", "$value": "#19354F" },
       "infoText": { "$type": "color", "$value": "#A7D2FF" },
       "markRing": { "$type": "color", "$value": "#FFFFFF" },
-      "markRoad": { "$type": "color", "$value": "#FFFFFF" }
+      "markRoad": { "$type": "color", "$value": "#FFFFFF" },
+      "railFresh": { "$type": "color", "$value": "{color.primitive.green300}" },
+      "railAging": { "$type": "color", "$value": "{color.primitive.amber300}" },
+      "railStale": { "$type": "color", "$value": "{color.primitive.slate300}" }
     }
   },
   "space": {
@@ -120,7 +132,8 @@
     "medium": { "$type": "dimension", "$value": "12px" },
     "large": { "$type": "dimension", "$value": "18px" },
     "panel": { "$type": "dimension", "$value": "24px" },
-    "pill": { "$type": "dimension", "$value": "999px" }
+    "pill": { "$type": "dimension", "$value": "999px" },
+    "plate": { "$type": "dimension", "$value": "6px" }
   },
   "size": {
     "touchMinimum": { "$type": "dimension", "$value": "44px" },
@@ -200,6 +213,50 @@
         "letterSpacing": "0.2px",
         "lineHeight": 1.35
       }
+    },
+    "bay": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{typography.family.mono}",
+        "fontSize": "30px",
+        "fontWeight": 600,
+        "letterSpacing": "0.5px",
+        "lineHeight": 1.0,
+        "fontVariantNumeric": "tabular-nums"
+      }
+    },
+    "dataLarge": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{typography.family.mono}",
+        "fontSize": "22px",
+        "fontWeight": 550,
+        "letterSpacing": "0px",
+        "lineHeight": 1.15,
+        "fontVariantNumeric": "tabular-nums"
+      }
+    },
+    "data": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{typography.family.mono}",
+        "fontSize": "16px",
+        "fontWeight": 500,
+        "letterSpacing": "0px",
+        "lineHeight": 1.3,
+        "fontVariantNumeric": "tabular-nums"
+      }
+    },
+    "dataSmall": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{typography.family.mono}",
+        "fontSize": "13px",
+        "fontWeight": 500,
+        "letterSpacing": "0.2px",
+        "lineHeight": 1.3,
+        "fontVariantNumeric": "tabular-nums"
+      }
     }
   },
   "motion": {
@@ -237,5 +294,15 @@
         "spread": "0px"
       }
     }
+  },
+  "material": {
+    "glassBlurRegular": { "$type": "dimension", "$value": "24px" },
+    "glassBlurClear": { "$type": "dimension", "$value": "12px" },
+    "glassSaturate": { "$type": "number", "$value": 1.4 },
+    "glassOpacityRegular": { "$type": "number", "$value": 0.72 },
+    "glassOpacityClear": { "$type": "number", "$value": 0.28 },
+    "glassBorderOpacity": { "$type": "number", "$value": 0.18 },
+    "scrimOpacity": { "$type": "number", "$value": 0.35 },
+    "scrollEdgeHeight": { "$type": "dimension", "$value": "28px" }
   }
 }

@@ -202,11 +202,24 @@ enum class BoardingRule {
     @SerialName("not_allowed")
     NOT_ALLOWED,
 
-    @SerialName("on_request")
+    // The contract and the database both spell this `request`, not
+    // `on_request`. The old spelling could never have decoded.
+    @SerialName("request")
     ON_REQUEST,
 
     @SerialName("coordinate_with_operator")
     COORDINATE_WITH_OPERATOR,
+
+    /**
+     * The operator has not stated whether a coach picks up or sets down here.
+     *
+     * This is the database default and currently the value of every pattern
+     * stop, so it is the common case, not an edge case. It must never be
+     * presented as "not allowed": not stated and refused are different facts,
+     * and only one of them is true.
+     */
+    @SerialName("unknown")
+    UNKNOWN,
 }
 
 @Serializable

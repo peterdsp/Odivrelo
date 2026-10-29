@@ -45,7 +45,10 @@ export type CoverageState = (typeof COVERAGE_STATES)[number];
 export type DataMode = 'real' | 'demo';
 export type FreshnessState = 'fresh' | 'aging' | 'stale';
 export type Confidence = 'reviewed' | 'candidate';
-export type BoardingRule = 'allowed' | 'not_allowed' | 'on_request';
+// The wire values the contract and the database actually use. `request`,
+// not `on_request`, and `unknown` for a rule the operator has not stated,
+// which is what every pattern stop in the current release carries.
+export type BoardingRule = 'allowed' | 'not_allowed' | 'request' | 'unknown';
 export type PlaceKind = 'stop_place' | 'stop';
 
 /**

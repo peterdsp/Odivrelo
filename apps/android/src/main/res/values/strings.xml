@@ -181,6 +181,9 @@
     <string name="journey_segment_board">Επιβιβαστείτε εδώ</string>
     <string name="journey_segment_alight">Αποβιβαστείτε εδώ</string>
     <string name="journey_segment_outside">Εξυπηρετείται, εκτός της διαδρομής σας</string>
+    <string name="journey_no_time">Δεν έχει δημοσιευθεί ώρα</string>
+    <string name="pickup_unknown">Δεν δηλώνεται επιβίβαση</string>
+    <string name="dropoff_unknown">Δεν δηλώνεται αποβίβαση</string>
     <string name="pickup_allowed">Επιβίβαση</string>
     <string name="pickup_not_allowed">Χωρίς επιβίβαση</string>
     <string name="pickup_on_request">Επιβίβαση με αίτημα</string>

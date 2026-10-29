@@ -165,16 +165,23 @@ export function JourneyDetailView({
   };
 
   return (
-    <article className={embedded ? 'od-detail od-detail--embedded' : 'od-page od-page--narrow od-detail'}>
+    <article
+      className={[
+        embedded ? 'od-detail od-detail--embedded' : 'od-page od-page--narrow od-detail',
+        // The provenance rail: freshness on the leading edge of the whole
+        // asserted journey, matching the result card it was opened from.
+        `od-detail--rail-${journey.freshness.state}`,
+      ].join(' ')}
+    >
       <Heading className="od-page__title">
         {t('journey.title', { origin: name(journey.departure.stopName), destination: name(journey.arrival.stopName) })}
       </Heading>
 
       <p className="od-detail__times">
-        <time dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>
+        <time className="od-data" dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>
         <span aria-hidden="true"> {'→'} </span>
-        <time dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>
-        <span className="od-detail__duration"> {formatDuration(journey.durationMinutes)}</span>
+        <time className="od-data" dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>
+        <span className="od-detail__duration od-data"> {formatDuration(journey.durationMinutes)}</span>
       </p>
 
       <p className="od-detail__badges">
@@ -212,17 +219,17 @@ export function JourneyDetailView({
         </Fact>
         {journey.routeName ? <Fact label={t('journey.route')}>{name(journey.routeName)}</Fact> : null}
         <Fact label={t('results.departs')}>
-          <time dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>{' '}
+          <time className="od-data" dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>{' '}
           <TimeQualityBadge quality={journey.departure.quality} />
         </Fact>
         <Fact label={t('results.arrives')}>
-          <time dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>{' '}
+          <time className="od-data" dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>{' '}
           <TimeQualityBadge quality={journey.arrival.quality} />
         </Fact>
         <Fact label={t('results.fare')}>
           {journey.fare ? (
             <>
-              {formatMoney(journey.fare.amount, journey.fare.currency)}
+              <span className="od-data">{formatMoney(journey.fare.amount, journey.fare.currency)}</span>
               {journey.fare.isIndicative ? <span className="od-detail__note"> {t('results.fareIndicative')}</span> : null}
             </>
           ) : (

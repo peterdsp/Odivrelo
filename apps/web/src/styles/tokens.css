@@ -53,6 +53,9 @@
   --od-info-text: #174f83;
   --od-mark-ring: #0b4a6b;
   --od-mark-road: #082f45;
+  --od-rail-fresh: #1e6b42;
+  --od-rail-aging: #9a5400;
+  --od-rail-stale: #55697a;
   --od-brand-deep-teal-blue: #0b4a6b;
   --od-brand-warm-orange: #ff9f2e;
   --od-brand-light-background: #e6f1f7;
@@ -65,6 +68,7 @@
   --od-radius-large: 18px;
   --od-radius-panel: 24px;
   --od-radius-pill: 999px;
+  --od-radius-plate: 6px;
 
   /* Space */
   --od-space-1: 4px;
@@ -93,6 +97,21 @@
   --od-type-body: 450 1rem / 1.5 var(--od-font-sans);
   --od-type-label: 650 0.875rem / 1.3 var(--od-font-sans);
   --od-type-caption: 520 0.75rem / 1.35 var(--od-font-sans);
+  --od-type-bay: 600 1.875rem / 1 var(--od-font-mono);
+  --od-type-data-large: 550 1.375rem / 1.15 var(--od-font-mono);
+  --od-type-data: 500 1rem / 1.3 var(--od-font-mono);
+  --od-type-data-small: 500 0.8125rem / 1.3 var(--od-font-mono);
+
+  /* Material: the functional layer. Glass belongs to floating controls and
+     navigation only, never to content. Values mirror design/tokens. */
+  --od-material-glass-blur-regular: 24px;
+  --od-material-glass-blur-clear: 12px;
+  --od-material-glass-saturate: 1.4;
+  --od-material-glass-opacity-regular: 0.72;
+  --od-material-glass-opacity-clear: 0.28;
+  --od-material-glass-border-opacity: 0.18;
+  --od-material-scrim-opacity: 0.35;
+  --od-material-scroll-edge-height: 28px;
 
   /* Elevation */
   --od-shadow-card: 0 6px 18px rgb(8 47 69 / 8%);
@@ -150,6 +169,9 @@
     --od-info-text: #a7d2ff;
     --od-mark-ring: #ffffff;
     --od-mark-road: #ffffff;
+    --od-rail-fresh: #7acb97;
+    --od-rail-aging: #ffc273;
+    --od-rail-stale: #8fa7b8;
     /* @generated colours:dark end */
     --od-shadow-card: 0 6px 18px rgb(0 0 0 / 40%);
     --od-shadow-floating: 0 12px 32px rgb(0 0 0 / 55%);
@@ -189,6 +211,9 @@
   --od-info-text: #a7d2ff;
   --od-mark-ring: #ffffff;
   --od-mark-road: #ffffff;
+  --od-rail-fresh: #7acb97;
+  --od-rail-aging: #ffc273;
+  --od-rail-stale: #8fa7b8;
   /* @generated colours:dark end */
   --od-shadow-card: 0 6px 18px rgb(0 0 0 / 40%);
   --od-shadow-floating: 0 12px 32px rgb(0 0 0 / 55%);

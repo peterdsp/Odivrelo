@@ -329,6 +329,12 @@
       "en": "Drop-off on request",
       "sq": "Zbritje me kërkesë"
     },
+    "detail.dropoffUnknown": {
+      "comment": "A boarding rule the operator has not stated, which is not a refusal",
+      "el": "Δεν δηλώνεται αποβίβαση",
+      "en": "Setting down not stated",
+      "sq": "Zbritja nuk është deklaruar"
+    },
     "detail.duration": {
       "comment": "Label for how long the journey takes and how many stops it makes",
       "el": "Διάρκεια",
@@ -371,6 +377,12 @@
       "en": "The map needs a connection. The stop list stays complete without it.",
       "sq": "Harta kërkon lidhje. Lista e ndalesave mbetet e plotë pa të."
     },
+    "detail.noTime": {
+      "comment": "Shown on a route call that the operator publishes no time for",
+      "el": "Δεν έχει δημοσιευθεί ώρα",
+      "en": "No time published",
+      "sq": "Nuk është publikuar orar"
+    },
     "detail.operatingDate": {
       "comment": "The service date this journey belongs to",
       "el": "Ημερομηνία εκτέλεσης",
@@ -407,6 +419,12 @@
       "en": "Pick-up on request",
       "sq": "Hipje me kërkesë"
     },
+    "detail.pickupUnknown": {
+      "comment": "A boarding rule the operator has not stated, which is not a refusal",
+      "el": "Δεν δηλώνεται επιβίβαση",
+      "en": "Boarding not stated",
+      "sq": "Hipja nuk është deklaruar"
+    },
     "detail.provenance": {
       "comment": "Section heading for where every fact came from",
       "el": "Προέλευση δεδομένων",
@@ -431,6 +449,24 @@
       "en": "Retrieved",
       "sq": "Marrë"
     },
+    "detail.segmentAlight": {
+      "comment": "Marks the stop where the traveller leaves their leg",
+      "el": "Αποβιβαστείτε εδώ",
+      "en": "Get off here",
+      "sq": "Zbrit këtu"
+    },
+    "detail.segmentBoard": {
+      "comment": "Marks the stop where the traveller boards their leg",
+      "el": "Επιβιβαστείτε εδώ",
+      "en": "Board here",
+      "sq": "Hip këtu"
+    },
+    "detail.segmentOutside": {
+      "comment": "Marks a stop the coach serves outside the chosen leg",
+      "el": "Εξυπηρετείται, εκτός της διαδρομής σας",
+      "en": "Served, outside your leg",
+      "sq": "Shërbehet, jashtë segmentit tënd"
+    },
     "detail.stepFreeNo": {
       "comment": "Reviewed as not step-free",
       "el": "Χωρίς πρόσβαση χωρίς σκαλοπάτια, ελεγμένο",
@@ -454,24 +490,6 @@
       "el": "Στάσεις",
       "en": "Stops",
       "sq": "Ndalesat"
-    },
-    "detail.segmentBoard": {
-      "comment": "Marks the stop where the traveller boards their leg",
-      "el": "Επιβιβαστείτε εδώ",
-      "en": "Board here",
-      "sq": "Hip këtu"
-    },
-    "detail.segmentAlight": {
-      "comment": "Marks the stop where the traveller leaves their leg",
-      "el": "Αποβιβαστείτε εδώ",
-      "en": "Get off here",
-      "sq": "Zbrit këtu"
-    },
-    "detail.segmentOutside": {
-      "comment": "Marks a stop the coach serves outside the chosen leg",
-      "el": "Εξυπηρετείται, εκτός της διαδρομής σας",
-      "en": "Served, outside your leg",
-      "sq": "Shërbehet, jashtë segmentit tënd"
     },
     "detail.stopsListAlternative": {
       "comment": "Explains the list carries everything the map shows",

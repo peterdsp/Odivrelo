@@ -139,8 +139,11 @@ public enum FreshnessState: String, ContractEnum {
 /// `OdivreloBoardingRule`. `coordinateWithOperator` means the stop is served only
 /// by prior arrangement, which is neither a yes nor a no.
 public enum BoardingRule: String, ContractEnum {
-    case allowed, notAllowed, onRequest, coordinateWithOperator
-    public static var unrecognised: BoardingRule { .notAllowed }
+    case allowed, notAllowed, onRequest, coordinateWithOperator, unknown
+    /// Not stated, never refused. Falling back to `notAllowed` told a traveller
+    /// they could not board at a stop the operator has simply said nothing
+    /// about, which is the commonest case in the current release.
+    public static var unrecognised: BoardingRule { .unknown }
 }
 
 /// Where a stop sits relative to the traveller's own leg.

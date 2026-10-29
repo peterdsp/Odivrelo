@@ -47,6 +47,9 @@ object OdivreloPalette {
         val infoText = Color(0xFF174F83)
         val markRing = Color(0xFF0B4A6B)
         val markRoad = Color(0xFF082F45)
+        val railFresh = Color(0xFF1E6B42)
+        val railAging = Color(0xFF9A5400)
+        val railStale = Color(0xFF55697A)
     }
 
     object Dark {
@@ -80,5 +83,8 @@ object OdivreloPalette {
         val infoText = Color(0xFFA7D2FF)
         val markRing = Color(0xFFFFFFFF)
         val markRoad = Color(0xFFFFFFFF)
+        val railFresh = Color(0xFF7ACB97)
+        val railAging = Color(0xFFFFC273)
+        val railStale = Color(0xFF8FA7B8)
     }
 }

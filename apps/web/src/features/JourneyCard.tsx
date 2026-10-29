@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import type { JourneySummary } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
 import { Badge, Card } from '../components/primitives';
-import { ConfidenceBadge, FreshnessBadge, OvernightBadge, PositionQualityBadge, TimeQualityBadge } from '../components/quality';
+import { ConfidenceBadge, OvernightBadge, PositionQualityBadge, TimeQualityBadge } from '../components/quality';
 import { isPastServiceDate } from '../lib/time';
 
 /**
@@ -28,7 +28,7 @@ export interface JourneyCardProps {
 }
 
 export function JourneyCard({ journey, to, selected = false, now, headingLevel = 3 }: JourneyCardProps) {
-  const { t, name, formatClock, formatDuration, formatMoney } = useI18n();
+  const { t, name, formatClock, formatDuration, formatMoney, formatAge } = useI18n();
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const expired = isPastServiceDate(journey.serviceDate, now);
 
@@ -41,7 +41,20 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
   });
 
   return (
-    <Card as="article" className={selected ? 'od-journey od-journey--selected' : 'od-journey'} tone="plain">
+    <Card
+      as="article"
+      className={[
+        'od-journey',
+        // The provenance rail. Freshness on the leading edge of the whole
+        // asserted block, paired with the stamp below so colour is never the
+        // only carrier.
+        `od-journey--rail-${journey.freshness.state}`,
+        selected ? 'od-journey--selected' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      tone="plain"
+    >
       <Heading className="od-journey__heading">
         {/*
           The accessible name is the full sentence; the visible text is the two
@@ -50,7 +63,8 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
           and makes the link awkward to tap.
         */}
         <Link to={to} className="od-journey__link" aria-label={summary} aria-current={selected ? 'true' : undefined}>
-          {formatClock(journey.departure.at)} {'→'} {formatClock(journey.arrival.at)}
+          <span className="od-data">{formatClock(journey.departure.at)}</span> {'→'}{' '}
+          <span className="od-data">{formatClock(journey.arrival.at)}</span>
         </Link>
       </Heading>
 
@@ -66,20 +80,20 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
         <div>
           <dt>{t('results.departs')}</dt>
           <dd>
-            <time dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>{' '}
+            <time className="od-data" dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>{' '}
             <TimeQualityBadge quality={journey.departure.quality} />
           </dd>
         </div>
         <div>
           <dt>{t('results.arrives')}</dt>
           <dd>
-            <time dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>{' '}
+            <time className="od-data" dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>{' '}
             <TimeQualityBadge quality={journey.arrival.quality} />
           </dd>
         </div>
         <div>
           <dt>{t('results.duration')}</dt>
-          <dd>{formatDuration(journey.durationMinutes)}</dd>
+          <dd className="od-data">{formatDuration(journey.durationMinutes)}</dd>
         </div>
         <div>
           <dt>{t('journey.operator')}</dt>
@@ -103,7 +117,7 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
           <dd>
             {journey.fare ? (
               <>
-                {formatMoney(journey.fare.amount, journey.fare.currency)}
+                <span className="od-data">{formatMoney(journey.fare.amount, journey.fare.currency)}</span>
                 {journey.fare.isIndicative ? (
                   <>
                     {' '}
@@ -122,9 +136,17 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
         </div>
       </dl>
 
+      {/*
+        What the rail means, in words and figures. This is the accessible
+        carrier of the freshness fact; the rail itself is purely visual.
+      */}
+      <p className="od-journey__stamp">
+        <span>{t(`freshness.${journey.freshness.state}`)}</span>
+        <span className="od-data">{t('freshness.checkedAt', { when: formatAge(journey.freshness.checkedAt, now) })}</span>
+      </p>
+
       <p className="od-journey__badges">
         {journey.crossesMidnight ? <OvernightBadge /> : null}
-        <FreshnessBadge freshness={journey.freshness} now={now} />
         <ConfidenceBadge confidence={journey.confidence} />
         <PositionQualityBadge quality={journey.positionQuality} />
         {expired ? (

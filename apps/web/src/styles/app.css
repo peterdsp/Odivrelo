@@ -326,6 +326,73 @@ svg {
   min-inline-size: 4.5rem;
 }
 
+/*
+ * The functional layer.
+ *
+ * Apple's model has two layers and glass belongs only to this one: the sticky
+ * header and the bottom navigation bar. Content keeps opaque surfaces. The
+ * opaque `background` above each rule is the real default, so a browser without
+ * `backdrop-filter` is correct rather than transparent.
+ */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .od-header,
+  .od-nav--bar {
+    background: color-mix(
+      in srgb,
+      var(--od-surface) calc(var(--od-material-glass-opacity-regular) * 100%),
+      transparent
+    );
+    -webkit-backdrop-filter: blur(var(--od-material-glass-blur-regular))
+      saturate(var(--od-material-glass-saturate));
+    backdrop-filter: blur(var(--od-material-glass-blur-regular))
+      saturate(var(--od-material-glass-saturate));
+  }
+}
+
+/*
+ * Reduce Transparency and Increase Contrast both get an opaque bar. The glass
+ * exists to keep content visible, not to be decoration, so losing it costs
+ * nothing when a person has asked for plainer surfaces.
+ */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .od-header,
+  .od-nav--bar {
+    background: var(--od-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/*
+ * The scroll edge effect: content fades where it meets the bar, instead of
+ * colliding with a hard painted edge.
+ */
+.od-header::after,
+.od-nav--bar::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  block-size: var(--od-material-scroll-edge-height);
+  pointer-events: none;
+}
+
+.od-header::after {
+  inset-block-start: 100%;
+  background: linear-gradient(to bottom, var(--od-background), transparent);
+}
+
+.od-nav--bar::before {
+  inset-block-end: 100%;
+  background: linear-gradient(to top, var(--od-background), transparent);
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .od-header::after,
+  .od-nav--bar::before {
+    display: none;
+  }
+}
+
 .od-nav--utility {
   padding: var(--od-space-4);
   border-block-start: 1px solid var(--od-border);
@@ -1036,6 +1103,52 @@ svg {
   display: grid;
   gap: var(--od-space-5);
   align-content: start;
+  position: relative;
+  /* Room for the provenance rail plus its gutter. */
+  padding-inline-start: calc(var(--od-space-4) + var(--od-space-3));
+}
+
+/*
+ * The provenance rail on the journey detail, the same device as on the result
+ * card the reader arrived from. Decorative: the freshness badge beside it
+ * states the same fact in words, which is what a screen reader announces.
+ */
+.od-detail[class*='od-detail--rail-']::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--od-space-4);
+  inline-size: 3px;
+  border-radius: var(--od-radius-pill);
+  background: var(--od-rail-stale);
+}
+
+/*
+ * Each tint is written with the same specificity as the default above it, or
+ * the attribute selector would outrank them and every rail would read stale.
+ */
+.od-detail.od-detail--rail-fresh::before {
+  background: var(--od-rail-fresh);
+}
+
+.od-detail.od-detail--rail-aging::before {
+  background: var(--od-rail-aging);
+}
+
+.od-detail.od-detail--rail-stale::before {
+  background: var(--od-rail-stale);
+}
+
+/*
+ * Embedded in the two-pane layout the rail would sit against the pane edge, so
+ * the gutter comes from the pane instead.
+ */
+.od-detail--embedded {
+  padding-inline-start: var(--od-space-3);
+}
+
+.od-detail--embedded[class*='od-detail--rail-']::before {
+  inset-inline-start: 0;
 }
 
 .od-results__head {
@@ -1070,12 +1183,105 @@ svg {
 
 .od-journey {
   gap: var(--od-space-2);
+  position: relative;
+  /* Room for the rail, plus its own gutter, so no text sits under it. */
+  padding-inline-start: calc(var(--od-space-4) + var(--od-space-3));
 }
 
+/*
+ * The provenance rail: the signature element. A rule on the leading edge of an
+ * asserted block, tinted by how fresh that fact is. It is decorative in the
+ * accessibility sense, because `.od-journey__stamp` states the same fact in
+ * words and figures, which is what a screen reader reads.
+ */
+.od-journey::before {
+  content: '';
+  position: absolute;
+  inset-block: var(--od-space-4);
+  inset-inline-start: var(--od-space-4);
+  inline-size: 3px;
+  border-radius: var(--od-radius-pill);
+  background: var(--od-rail-stale);
+}
+
+.od-journey--rail-fresh::before {
+  background: var(--od-rail-fresh);
+}
+
+.od-journey--rail-aging::before {
+  background: var(--od-rail-aging);
+}
+
+.od-journey--rail-stale::before {
+  background: var(--od-rail-stale);
+}
+
+/*
+ * Selection keeps the border colour and the tonal fill. It no longer thickens
+ * the leading border, because that edge now belongs to the rail.
+ */
 .od-journey--selected {
   border-color: var(--od-primary);
-  border-inline-start-width: 4px;
+  box-shadow: inset 0 0 0 1px var(--od-primary);
   background: var(--od-primary-soft);
+}
+
+/*
+ * Timetable figures are data, not prose: tabular so a column of times aligns
+ * and a changed digit is visible in place. Only figures ever use this; place
+ * and operator names stay in the sans family.
+ */
+.od-data {
+  font-family: var(--od-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.od-journey__stamp {
+  font: var(--od-type-data-small);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  gap: var(--od-space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  color: var(--od-rail-stale);
+}
+
+.od-journey--rail-fresh .od-journey__stamp {
+  color: var(--od-rail-fresh);
+}
+
+.od-journey--rail-aging .od-journey__stamp {
+  color: var(--od-rail-aging);
+}
+
+.od-journey--rail-stale .od-journey__stamp {
+  color: var(--od-rail-stale);
+}
+
+/*
+ * The bay plate: the sharpest promise the product makes, set the way a terminal
+ * sets it. Square-cornered, tabular, and the loudest datum on the screen.
+ */
+.od-bay {
+  display: inline-grid;
+  gap: var(--od-space-1);
+  padding: var(--od-space-2) var(--od-space-3);
+  background: var(--od-primary-soft);
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius-plate);
+}
+
+.od-bay__label {
+  font: var(--od-type-label);
+  color: var(--od-text-secondary);
+}
+
+.od-bay__value {
+  font: var(--od-type-bay);
+  font-variant-numeric: tabular-nums;
+  color: var(--od-primary-ink);
 }
 
 .od-journey__heading {
@@ -1155,6 +1361,11 @@ svg {
 .od-detail__times {
   font: var(--od-type-display);
   font-size: clamp(1.75rem, 5vw, 2.5rem);
+  /* The figures inside carry `.od-data`; the arrow between them stays sans. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--od-space-2);
 }
 
 .od-detail__duration {

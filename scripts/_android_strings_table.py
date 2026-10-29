@@ -346,6 +346,8 @@ S = [
      "This boarding point has not been reviewed.", "Kjo pikë hipjeje nuk është rishikuar."),
     ("journey_stops_title", "Στάσεις", "Stops", "Ndalesat"),
     ("journey_stops_count", "%1$d στάσεις", "%1$d stops", "%1$d ndalesa"),
+    ("journey_no_time", "Δεν έχει δημοσιευθεί ώρα", "No time published",
+     "Nuk është publikuar orar"),
     ("pickup_allowed", "Επιβίβαση", "Boarding", "Hipje"),
     ("pickup_not_allowed", "Χωρίς επιβίβαση", "No boarding", "Pa hipje"),
     ("pickup_on_request", "Επιβίβαση με αίτημα", "Boarding on request", "Hipje me kërkesë"),

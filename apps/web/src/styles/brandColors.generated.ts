@@ -44,6 +44,9 @@ export const THEME_COLORS = {
     infoText: '#174F83',
     markRing: '#0B4A6B',
     markRoad: '#082F45',
+    railFresh: '#1E6B42',
+    railAging: '#9A5400',
+    railStale: '#55697A',
   },
   dark: {
     background: '#06131C',
@@ -76,5 +79,8 @@ export const THEME_COLORS = {
     infoText: '#A7D2FF',
     markRing: '#FFFFFF',
     markRoad: '#FFFFFF',
+    railFresh: '#7ACB97',
+    railAging: '#FFC273',
+    railStale: '#8FA7B8',
   },
 } as const;

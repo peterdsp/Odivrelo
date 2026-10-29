@@ -110,6 +110,21 @@ public enum Theme: Sendable {
             light: (r: 0.823529, g: 0.905882, b: 0.949020, a: 1.000000),
             dark: (r: 0.070588, g: 0.227451, b: 0.321569, a: 1.000000)
         )
+        /// Light `#9A5400` · Dark `#FFC273`
+        public static let railAging = Color(
+            light: (r: 0.603922, g: 0.329412, b: 0.000000, a: 1.000000),
+            dark: (r: 1.000000, g: 0.760784, b: 0.450980, a: 1.000000)
+        )
+        /// Light `#1E6B42` · Dark `#7ACB97`
+        public static let railFresh = Color(
+            light: (r: 0.117647, g: 0.419608, b: 0.258824, a: 1.000000),
+            dark: (r: 0.478431, g: 0.796078, b: 0.592157, a: 1.000000)
+        )
+        /// Light `#55697A` · Dark `#8FA7B8`
+        public static let railStale = Color(
+            light: (r: 0.333333, g: 0.411765, b: 0.478431, a: 1.000000),
+            dark: (r: 0.560784, g: 0.654902, b: 0.721569, a: 1.000000)
+        )
         /// Light `#E3F3E9` · Dark `#173C29`
         public static let successSurface = Color(
             light: (r: 0.890196, g: 0.952941, b: 0.913725, a: 1.000000),
@@ -183,6 +198,9 @@ public enum Theme: Sendable {
             ("primaryInk", "#083A55", "#BEE3F5"),
             ("primaryPressed", "#083A55", "#A9D8EF"),
             ("primarySoft", "#D2E7F2", "#123A52"),
+            ("railAging", "#9A5400", "#FFC273"),
+            ("railFresh", "#1E6B42", "#7ACB97"),
+            ("railStale", "#55697A", "#8FA7B8"),
             ("successSurface", "#E3F3E9", "#173C29"),
             ("successText", "#185C38", "#9DDFB5"),
             ("surface", "#FFFFFF", "#0C1F2B"),
@@ -216,6 +234,7 @@ public enum Theme: Sendable {
         public static let large: CGFloat = 18
         public static let panel: CGFloat = 24
         public static let pill: CGFloat = 999
+        public static let plate: CGFloat = 6
     }
 
     public enum Size: Sendable {
@@ -225,6 +244,19 @@ public enum Theme: Sendable {
         public static let icon: CGFloat = 24
         public static let iconLarge: CGFloat = 32
         public static let contentMaximum: CGFloat = 1200
+    }
+
+    /// The functional layer. Apple's model has exactly two layers, and glass
+    /// belongs only to floating controls and navigation, never to content.
+    public enum Material: Sendable {
+        public static let glassBlurRegular: CGFloat = 24
+        public static let glassBlurClear: CGFloat = 12
+        public static let glassSaturate: Double = 1.4
+        public static let glassOpacityRegular: Double = 0.72
+        public static let glassOpacityClear: Double = 0.28
+        public static let glassBorderOpacity: Double = 0.18
+        public static let scrimOpacity: Double = 0.35
+        public static let scrollEdgeHeight: CGFloat = 28
     }
 
     public enum Motion: Sendable {

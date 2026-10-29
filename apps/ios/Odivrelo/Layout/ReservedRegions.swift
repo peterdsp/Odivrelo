@@ -2,34 +2,32 @@ import SwiftUI
 
 /// Supplies the regions of a window that content must avoid.
 ///
-/// ## What this build can and cannot know
+/// ## What this build can know
 ///
-/// The installed toolchain is Xcode 27.0 with the iOS 27.0 SDK. That SDK does
-/// **not** expose a public API for a foldable's reserved or occluded region:
+/// The installed toolchain is Xcode 27.1 with the iOS 27.1 SDK, and that SDK
+/// *does* expose reserved regions:
 ///
-/// * `SwiftUI.ReservedRegion` and
-///   `GeometryProxy.reservedRegions(kind:options:layoutDirectionBehavior:)`
-///   exist as linker symbols in `SwiftUICore.tbd`, but neither appears in the
-///   public `SwiftUI.swiftinterface`, so Swift cannot name them. A typecheck of
-///   `proxy.reservedRegions(kind: .all)` against `iphonesimulator27.0` fails
-///   with `value of type 'GeometryProxy' has no member 'reservedRegions'`.
-/// * `UIViewLayoutRegion` (iOS 26+) covers display-corner adaptation for the
-///   safe area, margins and readable content. It reports nothing about a fold.
-/// * No UIKit header in this SDK mentions a hinge, a posture or an occluded
-///   area, and a documentation search against the installed Xcode returns
-///   nothing for iPhone Duo reserved regions.
+/// * `GeometryProxy.reservedRegions(kind:)` returns `[SwiftUI.ReservedRegion]`,
+///   each carrying `frame`, `kind`, `margins` and `isActive`. The two kinds are
+///   `.occlusion`, an area covered by something, and `.division`, an area where
+///   content should split into two.
+/// * `UIView.reservedRegions(kind:options:)` is the UIKit equivalent, declared
+///   in `UIViewReservedRegion.h` and available from iOS 27.1.
 ///
-/// So this build takes the honest position: it never guesses. A posture is
-/// **not** inferred from an aspect ratio, a screen size or a device model, and
-/// `SystemReservedRegionSource` reports nothing until a system API can fill it.
-/// Layout therefore runs entirely on the container's real usable geometry, safe
-/// areas, Dynamic Type and the keyboard. That is correct on every device
-/// including a foldable, and stays correct the moment regions do arrive,
-/// because every layout decision already reads `WindowGeometry.reserved`.
+/// `WindowGeometryReader` reads the SwiftUI API directly from the proxy it
+/// already has, because the reading needs a live view hierarchy that this
+/// protocol's container-size signature cannot supply. A system that predates
+/// the API reports nothing, and layout falls back to pure geometry, which was
+/// always correct.
+///
+/// Note that `frame` already includes `margins`, so the rect is used as given
+/// rather than inset again.
+///
+/// A posture is still never inferred from an aspect ratio, a screen size or a
+/// device model. Every layout decision reads `WindowGeometry.reserved`.
 ///
 /// `LayoutResolverTests` drive `LayoutResolver` with explicit geometry
-/// fixtures, including asymmetric split windows. Those are supplementary
-/// evidence about the resolver, not proof of runtime foldable support.
+/// fixtures, including asymmetric split windows.
 public protocol ReservedRegionSource: Sendable {
     func regions(inContainerOfSize size: CGSize, safeArea: EdgeInsets) -> [ReservedRegion]
 }
@@ -43,10 +41,10 @@ public struct SystemReservedRegionSource: ReservedRegionSource {
     public init() {}
 
     public func regions(inContainerOfSize size: CGSize, safeArea: EdgeInsets) -> [ReservedRegion] {
-        // Integration point. The iOS 27.0 SDK exposes no public reserved-region
-        // API; see the type documentation for exactly what was checked.
-        // Reporting nothing is the truthful answer, and the geometry-driven
-        // layout handles it correctly.
+        // A container size is not enough to answer this: the system API reads
+        // from a live view. `WindowGeometryReader` performs that read against
+        // its own proxy and merges the result, so this stays empty rather than
+        // guessing from the size it was handed.
         []
     }
 }
@@ -110,6 +108,45 @@ private struct StableBottomInsetKey: PreferenceKey {
 /// that the scene fills the display, so it is correct in Split View, Slide
 /// Over, Stage Manager and any resized or repositioned window.
 public struct WindowGeometryReader<Content: View>: View {
+    /// What the system reports for this container, falling back to the injected
+    /// source on a system without the API.
+    static func reservedRegions(
+        from proxy: GeometryProxy,
+        orFrom source: any ReservedRegionSource
+    ) -> [ReservedRegion] {
+        if #available(iOS 27.1, *) {
+            let system = Self.systemRegions(from: proxy)
+            if !system.isEmpty { return system }
+        }
+        return source.regions(
+            inContainerOfSize: proxy.size,
+            safeArea: proxy.safeAreaInsets
+        )
+    }
+
+    /// Maps SwiftUI's reserved regions onto ours. Inactive regions are dropped,
+    /// because a fold that is currently flat reserves nothing.
+    @available(iOS 27.1, *)
+    private static func systemRegions(from proxy: GeometryProxy) -> [ReservedRegion] {
+        let kinds: [(SwiftUI.ReservedRegion.Kind, String)] = [
+            (.occlusion, "occlusion"),
+            (.division, "division"),
+        ]
+        return kinds.flatMap { kind, name in
+            proxy.reservedRegions(kind: kind)
+                .enumerated()
+                .filter { _, region in region.isActive }
+                .map { index, region in
+                    // `frame` already includes the region's margins.
+                    ReservedRegion(
+                        id: "system.\(name).\(index)",
+                        rect: region.frame,
+                        kind: .systemReported
+                    )
+                }
+        }
+    }
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -140,10 +177,10 @@ public struct WindowGeometryReader<Content: View>: View {
                     bottom: proxy.safeAreaInsets.bottom - keyboard,
                     trailing: proxy.safeAreaInsets.trailing
                 ),
-                reserved: regionSource.regions(
-                    inContainerOfSize: proxy.size,
-                    safeArea: proxy.safeAreaInsets
-                ),
+                // The system's own answer when it has one, and the injected
+                // source otherwise. A fixture source still works on a system
+                // that reports nothing, which is what the Debug inspector uses.
+                reserved: Self.reservedRegions(from: proxy, orFrom: regionSource),
                 keyboardInset: keyboard,
                 horizontalSizeClass: horizontalSizeClass,
                 verticalSizeClass: verticalSizeClass,

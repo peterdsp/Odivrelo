@@ -309,6 +309,41 @@ export function makeApiFetch(options: ApiFetchOptions = {}): typeof fetch {
 }
 
 /** A pair of origin and destination ids that genuinely has journeys on some date. */
+/**
+ * A deterministic, evenly spread sample of at most `limit` items.
+ *
+ * The published real release carries 19,007 places and 14,845 stops, so the
+ * exhaustive cross-products these tests were written for (against a handful of
+ * demonstration places) are now billions of comparisons and cannot finish.
+ * Sampling keeps the parity property genuinely under test and runnable. It is
+ * index-based rather than random, so a failure reproduces exactly.
+ */
+export function sample<T>(items: readonly T[], limit: number): T[] {
+  if (items.length <= limit) return [...items];
+  const step = items.length / limit;
+  const picked: T[] = [];
+  for (let index = 0; index < limit; index += 1) {
+    picked.push(items[Math.floor(index * step)] as T);
+  }
+  return picked;
+}
+
+/**
+ * Every origin, destination and date the release actually publishes a journey
+ * for. These are the pairs where the two sources do real work, so they are
+ * compared exhaustively rather than sampled.
+ */
+export function publishedQueries(manifest: Manifest): { originId: string; destinationId: string; date: string }[] {
+  const queries: { originId: string; destinationId: string; date: string }[] = [];
+  for (const date of serviceDates(manifest)) {
+    const pack = readPack<JourneysPack>(manifest, journeysPackName(date));
+    for (const summary of pack.results) {
+      queries.push({ originId: summary.departure.stopId, destinationId: summary.arrival.stopId, date });
+    }
+  }
+  return queries;
+}
+
 export function findWorkingQuery(): { originId: string; destinationId: string; date: string } | null {
   const manifest = readManifest();
   for (const date of serviceDates(manifest)) {

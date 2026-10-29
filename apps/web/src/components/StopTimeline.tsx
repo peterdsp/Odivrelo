@@ -31,20 +31,26 @@ export interface StopTimelineProps {
 const PICKUP_KEYS: Readonly<Record<BoardingRule, MessageKey>> = {
   allowed: 'journey.pickupAllowed',
   not_allowed: 'journey.pickupNotAllowed',
-  on_request: 'journey.pickupOnRequest',
+  request: 'journey.pickupOnRequest',
+  unknown: 'journey.pickupUnknown',
 };
 
 const DROPOFF_KEYS: Readonly<Record<BoardingRule, MessageKey>> = {
   allowed: 'journey.dropoffAllowed',
   not_allowed: 'journey.dropoffNotAllowed',
-  on_request: 'journey.dropoffOnRequest',
+  request: 'journey.dropoffOnRequest',
+  unknown: 'journey.dropoffUnknown',
 };
 
 function RuleBadge({ rule, kind }: { rule: BoardingRule; kind: 'pickup' | 'dropoff' }) {
   const { t } = useI18n();
-  const tone: BadgeTone = rule === 'allowed' ? 'success' : rule === 'not_allowed' ? 'neutral' : 'warning';
+  // `unknown` is neutral, not a warning. The operator has said nothing, which
+  // is not the same as refusing, and it is the commonest case in this release,
+  // so dressing it as an alert made every stop look like a problem.
+  const tone: BadgeTone =
+    rule === 'allowed' ? 'success' : rule === 'request' ? 'warning' : 'neutral';
   return (
-    <Badge tone={tone} icon={rule === 'allowed' ? 'check' : rule === 'on_request' ? 'question' : 'alert'}>
+    <Badge tone={tone} icon={rule === 'allowed' ? 'check' : rule === 'not_allowed' ? 'alert' : 'question'}>
       {t(kind === 'pickup' ? PICKUP_KEYS[rule] : DROPOFF_KEYS[rule])}
     </Badge>
   );

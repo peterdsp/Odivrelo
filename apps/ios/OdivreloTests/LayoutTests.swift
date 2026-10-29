@@ -9,13 +9,17 @@ import Testing
 /// are **supplementary evidence**: they say nothing about whether a real
 /// foldable reports such a region, because the installed SDK provides no API to
 /// ask. See `ReservedRegions.swift` for exactly what was checked.
+///
+/// `Odivrelo.ReservedRegion` is spelled out in full here because SwiftUI in the
+/// iOS 27.1 SDK exports a top-level `ReservedRegion` of its own, which shadows
+/// ours inside this test module.
 @Suite("Layout resolver")
 struct LayoutResolverTests {
     static func geometry(
         width: CGFloat,
         height: CGFloat,
         safeArea: EdgeInsets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 0),
-        reserved: [ReservedRegion] = [],
+        reserved: [Odivrelo.ReservedRegion] = [],
         keyboard: CGFloat = 0,
         horizontal: UserInterfaceSizeClass? = nil,
         dynamicType: DynamicTypeSize = .large
@@ -98,7 +102,7 @@ struct LayoutResolverTests {
     /// both sides wide enough to read.
     @Test("A split window with two usable sides becomes two columns")
     func splitWindowWithUsableSidesSplits() {
-        let region = ReservedRegion(
+        let region = Odivrelo.ReservedRegion(
             id: "fixture.split",
             rect: CGRect(x: 420, y: 0, width: 24, height: 1_000),
             kind: .inferred
@@ -111,7 +115,7 @@ struct LayoutResolverTests {
     /// The same split in a narrow window must not produce two unusable columns.
     @Test("A split window with an unusable side stays one column")
     func splitWindowWithNarrowSideStaysSingle() {
-        let region = ReservedRegion(
+        let region = Odivrelo.ReservedRegion(
             id: "fixture.split",
             rect: CGRect(x: 300, y: 0, width: 24, height: 1_000),
             kind: .inferred
@@ -122,7 +126,7 @@ struct LayoutResolverTests {
 
     @Test("An asymmetric split is reported with the larger side named")
     func asymmetryIsDetected() {
-        let region = ReservedRegion(
+        let region = Odivrelo.ReservedRegion(
             id: "fixture.split",
             rect: CGRect(x: 300, y: 0, width: 20, height: 1_000),
             kind: .inferred
@@ -138,7 +142,7 @@ struct LayoutResolverTests {
 
     @Test("A balanced split is reported as balanced")
     func balancedSplitIsBalanced() {
-        let region = ReservedRegion(
+        let region = Odivrelo.ReservedRegion(
             id: "fixture.split",
             rect: CGRect(x: 440, y: 0, width: 20, height: 1_000),
             kind: .inferred
@@ -156,7 +160,7 @@ struct LayoutResolverTests {
 
     @Test("A full-height reserved region reduces the usable width")
     func spanningRegionReducesUsableWidth() {
-        let region = ReservedRegion(
+        let region = Odivrelo.ReservedRegion(
             id: "fixture.spanning",
             rect: CGRect(x: 440, y: 0, width: 40, height: 1_000),
             kind: .systemReported
@@ -169,7 +173,7 @@ struct LayoutResolverTests {
     /// would sit under, not subtracted from the whole window's width.
     @Test("A partial-height reserved region does not reduce the usable width")
     func partialRegionDoesNotReduceWidth() {
-        let region = ReservedRegion(
+        let region = Odivrelo.ReservedRegion(
             id: "fixture.partial",
             rect: CGRect(x: 440, y: 0, width: 40, height: 200),
             kind: .systemReported
