@@ -26,6 +26,20 @@ def _rows(
     return [dict(row) for row in conn.execute(sql, tuple(params)).fetchall()]
 
 
+# The published packs are derived from the rows below, so the same rows can
+# produce different packs when the derivation changes. Correcting what a
+# terminal's `coverage` means did exactly that: identical data, 4,209 terminals
+# published as covered before and 466 after, under one release id. An offline
+# client keys an installed pack on the release id, and reports it installed
+# without re-reading its digest, so it would have kept serving the old answer
+# and said it was current.
+#
+# The id cannot hash the packs: the packs carry the id inside them. So the
+# derivation is identified here instead. Raise this whenever a change alters
+# what the packs say about unchanged rows.
+PACK_DERIVATION_VERSION = 2
+
+
 def _release_id(payload: dict[str, Any]) -> str:
     body = json.dumps(
         payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -162,6 +176,7 @@ def compile_public_database(
         ]
 
         release_basis = {
+            "packDerivationVersion": PACK_DERIVATION_VERSION,
             "operators": operators,
             "sources": sources,
             "operatorSources": operator_sources,

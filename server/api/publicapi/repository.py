@@ -155,6 +155,33 @@ def _stop_place_geometry(connection: sqlite3.Connection) -> dict[str, dict[str, 
     }
 
 
+def _served_stop_place_ids(connection: sqlite3.Connection) -> set[str]:
+    """Stop places with at least one boarding point a published trip calls at.
+
+    A terminal's coverage used to be true whenever it had any boarding point at
+    all, so 4,209 of them were published as covered while only 466 had a bay
+    anything ran from. A reader picking one of the other 3,743 was told the
+    place was covered and then told, after searching, that nothing runs. The
+    word now means the same thing for a terminal as it does for a stop:
+    something calls here.
+    """
+    return {
+        row["stop_place_id"]
+        for row in connection.execute(
+            """
+            SELECT DISTINCT s.stop_place_id
+            FROM ktel_stops s
+            JOIN ktel_stop_times st ON st.stop_id = s.id
+            JOIN ktel_trips t ON t.id = st.trip_id
+            JOIN ktel_sources src ON src.id = t.source_id
+            WHERE t.publication_state = ? AND src.rights_status = ?
+              AND s.stop_place_id IS NOT NULL
+            """,
+            (PUBLISHED, ALLOWED),
+        ).fetchall()
+    }
+
+
 def _served_stop_ids(connection: sqlite3.Connection) -> set[str]:
     return {
         row["stop_id"]
@@ -205,6 +232,7 @@ def search_places(
 
     geometry = _stop_place_geometry(connection)
     served = _served_stop_ids(connection)
+    served_places = _served_stop_place_ids(connection)
 
     entries: list[dict[str, Any]] = []
     for row in connection.execute(_PLACE_SELECT + place_clause, place_params):
@@ -222,9 +250,7 @@ def search_places(
                 "coordinateStatus": shape.get("coordinateStatus", "missing"),
                 "boardingPointCount": shape.get("boardingPointCount", 0),
                 "operatorIds": [row["operator_id"]],
-                "coverage": _coverage_state(
-                    bool(shape.get("boardingPointCount")), data_mode
-                ),
+                "coverage": _coverage_state(row["id"] in served_places, data_mode),
                 "_sort": normalize_stop_name(row["name"]),
             }
         )
