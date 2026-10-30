@@ -140,9 +140,9 @@ export function Booking() {
 
       <Card tone="muted">
         <p className="od-booking__journey">
-          <time dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>
+          <time className="od-data" dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>
           <span aria-hidden="true"> {'→'} </span>
-          <time dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>
+          <time className="od-data" dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>
           {' · '}
           <time dateTime={journey.serviceDate}>{formatServiceDate(journey.serviceDate)}</time>
         </p>

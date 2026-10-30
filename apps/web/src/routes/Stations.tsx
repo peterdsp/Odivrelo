@@ -332,7 +332,7 @@ export function StationDetail() {
                     to={`/journey/${encodeURIComponent(departure.journeyId)}?date=${departure.serviceDate}`}
                     className="od-link"
                   >
-                    {at ? <time dateTime={at}>{formatClock(at)}</time> : t('journey.noTime')}{' '}
+                    {at ? <time className="od-data" dateTime={at}>{formatClock(at)}</time> : t('journey.noTime')}{' '}
                     {t('station.towards', { destination: name(departure.headsign) })}
                   </Link>{' '}
                   <span className="od-muted">{name(departure.operator.name)}</span>{' '}

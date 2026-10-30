@@ -210,9 +210,9 @@ export function Saved() {
                       </Link>
                     </h3>
                     <p>
-                      <time dateTime={trip.detail.departure.at}>{formatClock(trip.detail.departure.at)}</time>
+                      <time className="od-data" dateTime={trip.detail.departure.at}>{formatClock(trip.detail.departure.at)}</time>
                       <span aria-hidden="true"> {'→'} </span>
-                      <time dateTime={trip.detail.arrival.at}>{formatClock(trip.detail.arrival.at)}</time>
+                      <time className="od-data" dateTime={trip.detail.arrival.at}>{formatClock(trip.detail.arrival.at)}</time>
                       {' · '}
                       <time dateTime={trip.serviceDate}>{formatServiceDate(trip.serviceDate)}</time>
                     </p>
