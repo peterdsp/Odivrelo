@@ -1,100 +1,184 @@
 {
   "contractVersion": "1.0.0",
   "counts": {
-    "journeyPatterns": 140,
-    "lines": 57,
+    "journeyPatterns": 363,
+    "lines": 264,
     "serviceCalendars": 0,
-    "stopPlaces": 4162,
-    "stops": 14845,
-    "trips": 349
+    "stopPlaces": 4222,
+    "stops": 14917,
+    "trips": 2742
   },
   "files": {
     "coverage": {
-      "bytes": 7272,
+      "bytes": 7311,
       "mediaType": "application/json",
-      "path": "packs/coverage-04a674fe1f53d83c.json",
-      "sha256": "04a674fe1f53d83ca69ca9115cbc8ba657560ea7b0159126778284b4220cc453"
+      "path": "packs/coverage-214fc8aacdcca8eb.json",
+      "sha256": "214fc8aacdcca8eb35129cc54976b6913b07738489781f3308201cb07210af79"
     },
     "gtfs": {
-      "bytes": 855513,
+      "bytes": 1161647,
       "mediaType": "application/zip",
-      "path": "packs/gtfs-a8ea2481c7fe22fe.zip",
-      "sha256": "a8ea2481c7fe22fe42db09f7ed4bff1d29dbbbedbf4c8eb48ee1ef341067327d"
+      "path": "packs/gtfs-f308c37dcdcbb707.zip",
+      "sha256": "f308c37dcdcbb70779094d00fd639b9dca0d33d7a7cff6c9adcdc8160a96c01f"
     },
     "journeys-2026-10-08": {
-      "bytes": 166205,
+      "bytes": 166377,
       "mediaType": "application/json",
-      "path": "packs/journeys-2026-10-08-f6f9c965520e38b0.json",
-      "sha256": "f6f9c965520e38b0a8a004201e3329c8c9d3ea460b609ff87f2be4c35f9f8b8d"
+      "path": "packs/journeys-2026-10-08-dcec1d92a63592c1.json",
+      "sha256": "dcec1d92a63592c1870edfea179cd22c5a5da341c1d26408dbf54c43690f809b"
     },
     "journeys-2026-10-09": {
-      "bytes": 192457,
+      "bytes": 192657,
       "mediaType": "application/json",
-      "path": "packs/journeys-2026-10-09-fca7a88ccef99c51.json",
-      "sha256": "fca7a88ccef99c511ee3a5d942cd3c4f0ad6b4e96ee4728aaf7723f9ee3e917b"
+      "path": "packs/journeys-2026-10-09-56c069f09eafaa5a.json",
+      "sha256": "56c069f09eafaa5ac5620c671f97f8db1322c4265121363ac62c7386da4358e2"
     },
     "journeys-2026-10-10": {
-      "bytes": 83585,
+      "bytes": 83673,
       "mediaType": "application/json",
-      "path": "packs/journeys-2026-10-10-397cbecca0af3a22.json",
-      "sha256": "397cbecca0af3a22d35cd700c0518096fed54975f784366bf0031a6017c8b0c2"
+      "path": "packs/journeys-2026-10-10-3d3ce976b1d46499.json",
+      "sha256": "3d3ce976b1d4649919093b54403b3af34bcb82a929aeae5f4e37baf798224fae"
     },
     "journeys-2026-10-11": {
-      "bytes": 126600,
+      "bytes": 126732,
       "mediaType": "application/json",
-      "path": "packs/journeys-2026-10-11-ca517a245a9f0cb1.json",
-      "sha256": "ca517a245a9f0cb1f40fa15cae52033846ed39a75d83ff1a4b9845029d1c196d"
+      "path": "packs/journeys-2026-10-11-89e6b131acdae430.json",
+      "sha256": "89e6b131acdae430fa93b1b070df20c95d568eb47b6331e8fe1110d4b678c407"
     },
     "journeys-2026-10-12": {
-      "bytes": 164432,
+      "bytes": 164604,
       "mediaType": "application/json",
-      "path": "packs/journeys-2026-10-12-e106d2154ad8d8c2.json",
-      "sha256": "e106d2154ad8d8c2f4643b539a8c7306aadf67866fbf68bd2476ea451b24fcd3"
+      "path": "packs/journeys-2026-10-12-2b48bbdd311e7f13.json",
+      "sha256": "2b48bbdd311e7f1305dc254fe08b1f6d76f05cddf6b127f7485de16fbebdfc39"
     },
     "journeys-2026-10-13": {
-      "bytes": 152386,
+      "bytes": 152546,
       "mediaType": "application/json",
-      "path": "packs/journeys-2026-10-13-07b44164601e1471.json",
-      "sha256": "07b44164601e14713930b7286ae67fe56f013c948968488648e62dcf8c8f0e68"
+      "path": "packs/journeys-2026-10-13-9557836fd7d100c0.json",
+      "sha256": "9557836fd7d100c0354403e357b6c998cbe9795d58c6650335deefa6582b44a3"
     },
     "journeys-2026-10-14": {
-      "bytes": 156318,
+      "bytes": 156482,
       "mediaType": "application/json",
-      "path": "packs/journeys-2026-10-14-0759769ee8f37d5e.json",
-      "sha256": "0759769ee8f37d5e6dcd5f807afe9553a5c3d2c2cfe845c091dd280704fbf631"
+      "path": "packs/journeys-2026-10-14-b9b648fdd3fd6b1f.json",
+      "sha256": "b9b648fdd3fd6b1f3264cd445de94857ca3d8fee3563ad576ea761f867ae3bd9"
+    },
+    "journeys-2026-10-29": {
+      "bytes": 236822,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-29-681037bf8e2ec806.json",
+      "sha256": "681037bf8e2ec806b1a8c4bcb5e1033e81c5fb032671f7686a214883994d390d"
+    },
+    "journeys-2026-10-30": {
+      "bytes": 1426535,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-30-9b0617dfc513a34a.json",
+      "sha256": "9b0617dfc513a34a487184f22520b232f51dfb257a25ec46d00bdc4ac85468e4"
+    },
+    "journeys-2026-10-31": {
+      "bytes": 1080991,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-10-31-a17e2b1c233f44ba.json",
+      "sha256": "a17e2b1c233f44ba59652b55f6e7f27e2d51d433884644ebb49887f286c1b482"
+    },
+    "journeys-2026-11-01": {
+      "bytes": 900218,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-01-6d1a160361bb48c7.json",
+      "sha256": "6d1a160361bb48c763c220d22e8d21114c180c7d6759c5c1e6bd22694cd5ecc7"
+    },
+    "journeys-2026-11-02": {
+      "bytes": 1198352,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-02-ce0075b9c93c01f8.json",
+      "sha256": "ce0075b9c93c01f8c1dd6fcf5fb1162ea9a70026e7e819ebf578bb315a5707c0"
+    },
+    "journeys-2026-11-03": {
+      "bytes": 1177667,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-03-7a79809afb32c651.json",
+      "sha256": "7a79809afb32c65108434134071335d4f0706ac13f1f12514c1ac24199a08ea7"
+    },
+    "journeys-2026-11-04": {
+      "bytes": 1182122,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-04-70083dd246cd9fff.json",
+      "sha256": "70083dd246cd9fffd1c0ca39690dea71d25afef3da913401941cc8a54bed4dd3"
+    },
+    "journeys-2026-11-05": {
+      "bytes": 1097491,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-05-1b35f258fdddd9aa.json",
+      "sha256": "1b35f258fdddd9aa3e5a49f5e36d0cf85b6b9c43b1e55c31f6c13779eb720034"
+    },
+    "journeys-2026-11-06": {
+      "bytes": 1127426,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-06-6a50e3f7b927ddba.json",
+      "sha256": "6a50e3f7b927ddba8f5574bccfd0e1a00c5c530dbf1e2bc75590dd3323d2d124"
+    },
+    "journeys-2026-11-07": {
+      "bytes": 942993,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-07-5ef23428e46a256f.json",
+      "sha256": "5ef23428e46a256f6e9eeae88abbc573631a648600f49163b22f4f94f92e3201"
+    },
+    "journeys-2026-11-08": {
+      "bytes": 823264,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-08-7c73081dc211ca8c.json",
+      "sha256": "7c73081dc211ca8ca285968c48fdaa8632f4af1fff3151c27ccff019ada27f26"
+    },
+    "journeys-2026-11-09": {
+      "bytes": 1083303,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-09-714821fd4f225daf.json",
+      "sha256": "714821fd4f225dafe1652918c19267683620f617850c4f0b267c42e5ffe09766"
+    },
+    "journeys-2026-11-10": {
+      "bytes": 1067447,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-10-7d0635179bac704d.json",
+      "sha256": "7d0635179bac704d370b4a2c37da966e733ee8fa3f2f4000b15276c69335f604"
+    },
+    "journeys-2026-11-11": {
+      "bytes": 1064776,
+      "mediaType": "application/json",
+      "path": "packs/journeys-2026-11-11-f04cdb3113924a5a.json",
+      "sha256": "f04cdb3113924a5ac9119dca2535ba0f3a81595233cf1d3ee048a7b4f013d7ee"
     },
     "meta": {
       "bytes": 1276,
       "mediaType": "application/json",
-      "path": "packs/meta-66135b7a8eca1cfb.json",
-      "sha256": "66135b7a8eca1cfb3804edd8a45bd8356837e35991edb29b1b3c20305e51967e"
+      "path": "packs/meta-f5bc6a3ba78cd740.json",
+      "sha256": "f5bc6a3ba78cd74007b12e2319175a35c53a12d9dfeff57066dab539ccff6720"
     },
     "operators": {
-      "bytes": 17090,
+      "bytes": 17101,
       "mediaType": "application/json",
-      "path": "packs/operators-e11158ad3c32f13d.json",
-      "sha256": "e11158ad3c32f13d56d36f4a9a988329b90c8d5ecdccab4fd127d5cb52627c47"
+      "path": "packs/operators-bd45c156cfcb3338.json",
+      "sha256": "bd45c156cfcb3338cf7cce21d9cb35520a97f708a94fb684acba94c731e2c9b7"
     },
     "places": {
-      "bytes": 7031391,
+      "bytes": 7090438,
       "mediaType": "application/json",
-      "path": "packs/places-9a0dd2c472affae1.json",
-      "sha256": "9a0dd2c472affae154de0a43db6ca78151c8a79df9969f12922ce9e3ce64961f"
+      "path": "packs/places-0a57c80efd12a60c.json",
+      "sha256": "0a57c80efd12a60cdb032adefd9588ba931b3260a342e311b3c9da7f5aa58476"
     },
     "sources": {
       "bytes": 2033,
       "mediaType": "application/json",
-      "path": "packs/sources-29a376ed4756d797.json",
-      "sha256": "29a376ed4756d797012695e943ac1f0dc3254089785807ee4f0249e382e4d66e"
+      "path": "packs/sources-e55d8374c07532a1.json",
+      "sha256": "e55d8374c07532a14749e9efa8f3f062ae2956431e5aec861e75da5da6e3a21d"
     },
     "stops": {
-      "bytes": 67758975,
+      "bytes": 67910018,
       "mediaType": "application/json",
-      "path": "packs/stops-e6a0fac1f582aa36.json",
-      "sha256": "e6a0fac1f582aa36aedf277fc3a1968116e6592c6cb7728db93f150b31121c15"
+      "path": "packs/stops-593a8e03a7a85cac.json",
+      "sha256": "593a8e03a7a85cac67b52833b6615216aed7ec64e182bfdef8f2459c2c6ecd72"
     }
   },
   "product": "Odivrelo",
-  "publishedAt": "2026-10-07T08:18:20Z",
-  "releaseId": "f4819fc47755c8dc"
+  "publishedAt": "2026-10-30T14:53:42Z",
+  "releaseId": "fc6d12357efe64da"
 }
