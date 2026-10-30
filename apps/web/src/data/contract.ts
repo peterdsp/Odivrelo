@@ -125,7 +125,16 @@ export interface Place {
   readonly kind: PlaceKind;
   readonly name: Localized;
   readonly parentId: string | null;
-  readonly municipality: string;
+  /**
+   * The municipality, when the source states one.
+   *
+   * Null for every place in the current KTEL release: the ticketing source does
+   * not publish it. This was typed as a plain string, which made
+   * `place.municipality.trim()` look safe and took the whole place picker down
+   * in production, silently, because the caller swallowed the error into an
+   * empty suggestion list.
+   */
+  readonly municipality: string | null;
   readonly latitude: number;
   readonly longitude: number;
   readonly coordinateStatus: string;
@@ -401,7 +410,16 @@ export interface StopResult extends Envelope {
   readonly id: string;
   readonly kind: PlaceKind;
   readonly name: Localized;
-  readonly municipality: string;
+  /**
+   * The municipality, when the source states one.
+   *
+   * Null for every place in the current KTEL release: the ticketing source does
+   * not publish it. This was typed as a plain string, which made
+   * `place.municipality.trim()` look safe and took the whole place picker down
+   * in production, silently, because the caller swallowed the error into an
+   * empty suggestion list.
+   */
+  readonly municipality: string | null;
   readonly latitude: number;
   readonly longitude: number;
   readonly coordinateStatus: string;

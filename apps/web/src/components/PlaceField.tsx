@@ -33,7 +33,7 @@ export interface PlaceFieldProps {
 export function groupPlaceOptions(found: readonly Place[], localName: (name: Place['name']) => string): readonly Place[] {
   const grouped = new Map<string, Place>();
   for (const place of found) {
-    const key = `${localName(place.name).trim().toLocaleLowerCase()}|${place.municipality.trim().toLocaleLowerCase()}|${place.kind}`;
+    const key = `${localName(place.name).trim().toLocaleLowerCase()}|${(place.municipality ?? '').trim().toLocaleLowerCase()}|${place.kind}`;
     const current = grouped.get(key);
     if (!current || (place.coverage === 'covered' && current.coverage !== 'covered')) grouped.set(key, place);
   }

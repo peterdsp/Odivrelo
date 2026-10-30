@@ -208,7 +208,7 @@ export function StationDetail() {
           '@context': 'https://schema.org',
           '@type': place.kind === 'stop_place' ? 'BusStation' : 'BusStop',
           name: placeName,
-          address: { '@type': 'PostalAddress', addressLocality: place.municipality },
+          ...(place.municipality ? { address: { '@type': 'PostalAddress', addressLocality: place.municipality } } : {}),
           geo: { '@type': 'GeoCoordinates', latitude: place.latitude, longitude: place.longitude },
           subjectOf: organizationNode(),
         }
@@ -258,7 +258,7 @@ export function StationDetail() {
       <FavoriteToggle kind="place" targetId={place.id} label={place.name} />
 
       <FactList>
-        <Fact label={t('station.municipality')}>{place.municipality}</Fact>
+        <Fact label={t('station.municipality')}>{place.municipality || t('app.unknown')}</Fact>
         {place.bay ? <Fact label={t('journey.boardingBay', { bay: '' }).trim()}>{place.bay}</Fact> : null}
         <Fact label={t('station.coordinates')}>
           {t('station.coordinatesValue', {
