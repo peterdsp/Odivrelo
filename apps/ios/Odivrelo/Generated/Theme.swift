@@ -10,30 +10,30 @@ import SwiftUI
 /// single identifier is correct in both appearances.
 public enum Theme: Sendable {
     public enum Palette: Sendable {
-        /// Light `#FF9F2E` · Dark `#FF9F2E`
+        /// Light `#F7941D` · Dark `#F7941D`
         public static let accent = Color(
-            light: (r: 1.000000, g: 0.623529, b: 0.180392, a: 1.000000),
-            dark: (r: 1.000000, g: 0.623529, b: 0.180392, a: 1.000000)
+            light: (r: 0.968627, g: 0.580392, b: 0.113725, a: 1.000000),
+            dark: (r: 0.968627, g: 0.580392, b: 0.113725, a: 1.000000)
         )
-        /// Light `#4A2800` · Dark `#4A2800`
+        /// Light `#5E3400` · Dark `#2E1900`
         public static let accentInk = Color(
-            light: (r: 0.290196, g: 0.156863, b: 0.000000, a: 1.000000),
-            dark: (r: 0.290196, g: 0.156863, b: 0.000000, a: 1.000000)
+            light: (r: 0.368627, g: 0.203922, b: 0.000000, a: 1.000000),
+            dark: (r: 0.180392, g: 0.098039, b: 0.000000, a: 1.000000)
         )
-        /// Light `#F4F8FB` · Dark `#06131C`
+        /// Light `#F4F4F2` · Dark `#05070A`
         public static let background = Color(
-            light: (r: 0.956863, g: 0.972549, b: 0.984314, a: 1.000000),
-            dark: (r: 0.023529, g: 0.074510, b: 0.109804, a: 1.000000)
+            light: (r: 0.956863, g: 0.956863, b: 0.949020, a: 1.000000),
+            dark: (r: 0.019608, g: 0.027451, b: 0.039216, a: 1.000000)
         )
-        /// Light `#C9D8E1` · Dark `#2A4557`
+        /// Light `#D7DAE3` · Dark `#2A3042`
         public static let border = Color(
-            light: (r: 0.788235, g: 0.847059, b: 0.882353, a: 1.000000),
-            dark: (r: 0.164706, g: 0.270588, b: 0.341176, a: 1.000000)
+            light: (r: 0.843137, g: 0.854902, b: 0.890196, a: 1.000000),
+            dark: (r: 0.164706, g: 0.188235, b: 0.258824, a: 1.000000)
         )
-        /// Light `#687F90` · Dark `#6A8497`
+        /// Light `#8A91A4` · Dark `#6E7589`
         public static let borderStrong = Color(
-            light: (r: 0.407843, g: 0.498039, b: 0.564706, a: 1.000000),
-            dark: (r: 0.415686, g: 0.517647, b: 0.592157, a: 1.000000)
+            light: (r: 0.541176, g: 0.568627, b: 0.643137, a: 1.000000),
+            dark: (r: 0.431373, g: 0.458824, b: 0.537255, a: 1.000000)
         )
         /// Light `#FCE8E5` · Dark `#47231F`
         public static let errorSurface = Color(
@@ -45,15 +45,15 @@ public enum Theme: Sendable {
             light: (r: 0.560784, g: 0.184314, b: 0.145098, a: 1.000000),
             dark: (r: 1.000000, g: 0.705882, b: 0.666667, a: 1.000000)
         )
-        /// Light `#FF9F2E` · Dark `#FF9F2E`
+        /// Light `#F7941D` · Dark `#F7941D`
         public static let focus = Color(
-            light: (r: 1.000000, g: 0.623529, b: 0.180392, a: 1.000000),
-            dark: (r: 1.000000, g: 0.623529, b: 0.180392, a: 1.000000)
+            light: (r: 0.968627, g: 0.580392, b: 0.113725, a: 1.000000),
+            dark: (r: 0.968627, g: 0.580392, b: 0.113725, a: 1.000000)
         )
-        /// Light `#083A55` · Dark `#FFD08F`
+        /// Light `#1F2B4D` · Dark `#FFC680`
         public static let focusRing = Color(
-            light: (r: 0.031373, g: 0.227451, b: 0.333333, a: 1.000000),
-            dark: (r: 1.000000, g: 0.815686, b: 0.560784, a: 1.000000)
+            light: (r: 0.121569, g: 0.168627, b: 0.301961, a: 1.000000),
+            dark: (r: 1.000000, g: 0.776471, b: 0.501961, a: 1.000000)
         )
         /// Light `#E5F0FA` · Dark `#19354F`
         public static let infoSurface = Color(
@@ -65,50 +65,50 @@ public enum Theme: Sendable {
             light: (r: 0.090196, g: 0.309804, b: 0.513725, a: 1.000000),
             dark: (r: 0.654902, g: 0.823529, b: 1.000000, a: 1.000000)
         )
-        /// Light `#0B4A6B` · Dark `#FFFFFF`
+        /// Light `#27365E` · Dark `#FFFFFF`
         public static let markRing = Color(
-            light: (r: 0.043137, g: 0.290196, b: 0.419608, a: 1.000000),
+            light: (r: 0.152941, g: 0.211765, b: 0.368627, a: 1.000000),
             dark: (r: 1.000000, g: 1.000000, b: 1.000000, a: 1.000000)
         )
-        /// Light `#082F45` · Dark `#FFFFFF`
+        /// Light `#141B33` · Dark `#FFFFFF`
         public static let markRoad = Color(
-            light: (r: 0.031373, g: 0.184314, b: 0.270588, a: 1.000000),
+            light: (r: 0.078431, g: 0.105882, b: 0.200000, a: 1.000000),
             dark: (r: 1.000000, g: 1.000000, b: 1.000000, a: 1.000000)
         )
-        /// Light `#E3ECF1` · Dark `#12293A`
+        /// Light `#EDEEF2` · Dark `#161A24`
         public static let neutralSurface = Color(
-            light: (r: 0.890196, g: 0.925490, b: 0.945098, a: 1.000000),
-            dark: (r: 0.070588, g: 0.160784, b: 0.227451, a: 1.000000)
+            light: (r: 0.929412, g: 0.933333, b: 0.949020, a: 1.000000),
+            dark: (r: 0.086275, g: 0.101961, b: 0.141176, a: 1.000000)
         )
-        /// Light `#FFFFFF` · Dark `#04202E`
+        /// Light `#FFFFFF` · Dark `#0B1026`
         public static let onPrimary = Color(
             light: (r: 1.000000, g: 1.000000, b: 1.000000, a: 1.000000),
-            dark: (r: 0.015686, g: 0.125490, b: 0.180392, a: 1.000000)
+            dark: (r: 0.043137, g: 0.062745, b: 0.149020, a: 1.000000)
         )
-        /// Light `#45596A` · Dark `#8FA7B8`
+        /// Light `#575E73` · Dark `#949BAD`
         public static let outline = Color(
-            light: (r: 0.270588, g: 0.349020, b: 0.415686, a: 1.000000),
-            dark: (r: 0.560784, g: 0.654902, b: 0.721569, a: 1.000000)
+            light: (r: 0.341176, g: 0.368627, b: 0.450980, a: 1.000000),
+            dark: (r: 0.580392, g: 0.607843, b: 0.678431, a: 1.000000)
         )
-        /// Light `#0B4A6B` · Dark `#7CC4E8`
+        /// Light `#27365E` · Dark `#AFC0F0`
         public static let primary = Color(
-            light: (r: 0.043137, g: 0.290196, b: 0.419608, a: 1.000000),
-            dark: (r: 0.486275, g: 0.768627, b: 0.909804, a: 1.000000)
+            light: (r: 0.152941, g: 0.211765, b: 0.368627, a: 1.000000),
+            dark: (r: 0.686275, g: 0.752941, b: 0.941176, a: 1.000000)
         )
-        /// Light `#083A55` · Dark `#BEE3F5`
+        /// Light `#1F2B4D` · Dark `#D7DEF8`
         public static let primaryInk = Color(
-            light: (r: 0.031373, g: 0.227451, b: 0.333333, a: 1.000000),
-            dark: (r: 0.745098, g: 0.890196, b: 0.960784, a: 1.000000)
+            light: (r: 0.121569, g: 0.168627, b: 0.301961, a: 1.000000),
+            dark: (r: 0.843137, g: 0.870588, b: 0.972549, a: 1.000000)
         )
-        /// Light `#083A55` · Dark `#A9D8EF`
+        /// Light `#1F2B4D` · Dark `#CFD9F7`
         public static let primaryPressed = Color(
-            light: (r: 0.031373, g: 0.227451, b: 0.333333, a: 1.000000),
-            dark: (r: 0.662745, g: 0.847059, b: 0.937255, a: 1.000000)
+            light: (r: 0.121569, g: 0.168627, b: 0.301961, a: 1.000000),
+            dark: (r: 0.811765, g: 0.850980, b: 0.968627, a: 1.000000)
         )
-        /// Light `#D2E7F2` · Dark `#123A52`
+        /// Light `#E6E8F0` · Dark `#1B2340`
         public static let primarySoft = Color(
-            light: (r: 0.823529, g: 0.905882, b: 0.949020, a: 1.000000),
-            dark: (r: 0.070588, g: 0.227451, b: 0.321569, a: 1.000000)
+            light: (r: 0.901961, g: 0.909804, b: 0.941176, a: 1.000000),
+            dark: (r: 0.105882, g: 0.137255, b: 0.250980, a: 1.000000)
         )
         /// Light `#9A5400` · Dark `#FFC273`
         public static let railAging = Color(
@@ -135,82 +135,82 @@ public enum Theme: Sendable {
             light: (r: 0.094118, g: 0.360784, b: 0.219608, a: 1.000000),
             dark: (r: 0.615686, g: 0.874510, b: 0.709804, a: 1.000000)
         )
-        /// Light `#FFFFFF` · Dark `#0C1F2B`
+        /// Light `#FFFFFF` · Dark `#0E1118`
         public static let surface = Color(
             light: (r: 1.000000, g: 1.000000, b: 1.000000, a: 1.000000),
-            dark: (r: 0.047059, g: 0.121569, b: 0.168627, a: 1.000000)
+            dark: (r: 0.054902, g: 0.066667, b: 0.094118, a: 1.000000)
         )
-        /// Light `#D2E7F2` · Dark `#183447`
+        /// Light `#E6E8F0` · Dark `#1E2330`
         public static let surfaceContainerHigh = Color(
-            light: (r: 0.823529, g: 0.905882, b: 0.949020, a: 1.000000),
-            dark: (r: 0.094118, g: 0.203922, b: 0.278431, a: 1.000000)
+            light: (r: 0.901961, g: 0.909804, b: 0.941176, a: 1.000000),
+            dark: (r: 0.117647, g: 0.137255, b: 0.188235, a: 1.000000)
         )
-        /// Light `#D2E7F2` · Dark `#1E3E53`
+        /// Light `#E6E8F0` · Dark `#272D3D`
         public static let surfaceContainerHighest = Color(
-            light: (r: 0.823529, g: 0.905882, b: 0.949020, a: 1.000000),
-            dark: (r: 0.117647, g: 0.243137, b: 0.325490, a: 1.000000)
+            light: (r: 0.901961, g: 0.909804, b: 0.941176, a: 1.000000),
+            dark: (r: 0.152941, g: 0.176471, b: 0.239216, a: 1.000000)
         )
-        /// Light `#E6F1F7` · Dark `#12293A`
+        /// Light `#F2F3F7` · Dark `#161A24`
         public static let surfaceMuted = Color(
-            light: (r: 0.901961, g: 0.945098, b: 0.968627, a: 1.000000),
-            dark: (r: 0.070588, g: 0.160784, b: 0.227451, a: 1.000000)
+            light: (r: 0.949020, g: 0.952941, b: 0.968627, a: 1.000000),
+            dark: (r: 0.086275, g: 0.101961, b: 0.141176, a: 1.000000)
         )
-        /// Light `#082F45` · Dark `#F2F7FA`
+        /// Light `#141B33` · Dark `#F6F6F4`
         public static let textPrimary = Color(
-            light: (r: 0.031373, g: 0.184314, b: 0.270588, a: 1.000000),
-            dark: (r: 0.949020, g: 0.968627, b: 0.980392, a: 1.000000)
+            light: (r: 0.078431, g: 0.105882, b: 0.200000, a: 1.000000),
+            dark: (r: 0.964706, g: 0.964706, b: 0.956863, a: 1.000000)
         )
-        /// Light `#45596A` · Dark `#B3C6D3`
+        /// Light `#575E73` · Dark `#AEB4C4`
         public static let textSecondary = Color(
-            light: (r: 0.270588, g: 0.349020, b: 0.415686, a: 1.000000),
-            dark: (r: 0.701961, g: 0.776471, b: 0.827451, a: 1.000000)
+            light: (r: 0.341176, g: 0.368627, b: 0.450980, a: 1.000000),
+            dark: (r: 0.682353, g: 0.705882, b: 0.768627, a: 1.000000)
         )
-        /// Light `#FFE9CC` · Dark `#4A3312`
+        /// Light `#FDEBD3` · Dark `#4A3312`
         public static let warningSurface = Color(
-            light: (r: 1.000000, g: 0.913725, b: 0.800000, a: 1.000000),
+            light: (r: 0.992157, g: 0.921569, b: 0.827451, a: 1.000000),
             dark: (r: 0.290196, g: 0.200000, b: 0.070588, a: 1.000000)
         )
-        /// Light `#4A2800` · Dark `#FFD9A3`
+        /// Light `#5E3400` · Dark `#FFD9A3`
         public static let warningText = Color(
-            light: (r: 0.290196, g: 0.156863, b: 0.000000, a: 1.000000),
+            light: (r: 0.368627, g: 0.203922, b: 0.000000, a: 1.000000),
             dark: (r: 1.000000, g: 0.850980, b: 0.639216, a: 1.000000)
         )
 
         /// Every semantic role, for contrast auditing and snapshot tests.
         public static let allRoles: [(name: String, light: String, dark: String)] = [
-            ("accent", "#FF9F2E", "#FF9F2E"),
-            ("accentInk", "#4A2800", "#4A2800"),
-            ("background", "#F4F8FB", "#06131C"),
-            ("border", "#C9D8E1", "#2A4557"),
-            ("borderStrong", "#687F90", "#6A8497"),
+            ("accent", "#F7941D", "#F7941D"),
+            ("accentInk", "#5E3400", "#2E1900"),
+            ("background", "#F4F4F2", "#05070A"),
+            ("border", "#D7DAE3", "#2A3042"),
+            ("borderStrong", "#8A91A4", "#6E7589"),
             ("errorSurface", "#FCE8E5", "#47231F"),
             ("errorText", "#8F2F25", "#FFB4AA"),
-            ("focus", "#FF9F2E", "#FF9F2E"),
-            ("focusRing", "#083A55", "#FFD08F"),
+            ("focus", "#F7941D", "#F7941D"),
+            ("focusRing", "#1F2B4D", "#FFC680"),
             ("infoSurface", "#E5F0FA", "#19354F"),
             ("infoText", "#174F83", "#A7D2FF"),
-            ("markRing", "#0B4A6B", "#FFFFFF"),
-            ("markRoad", "#082F45", "#FFFFFF"),
-            ("neutralSurface", "#E3ECF1", "#12293A"),
-            ("onPrimary", "#FFFFFF", "#04202E"),
-            ("outline", "#45596A", "#8FA7B8"),
-            ("primary", "#0B4A6B", "#7CC4E8"),
-            ("primaryInk", "#083A55", "#BEE3F5"),
-            ("primaryPressed", "#083A55", "#A9D8EF"),
-            ("primarySoft", "#D2E7F2", "#123A52"),
+            ("markRing", "#27365E", "#FFFFFF"),
+            ("markRoad", "#141B33", "#FFFFFF"),
+            ("neutralSurface", "#EDEEF2", "#161A24"),
+            ("onPrimary", "#FFFFFF", "#0B1026"),
+            ("outline", "#575E73", "#949BAD"),
+            ("primary", "#27365E", "#AFC0F0"),
+            ("primaryInk", "#1F2B4D", "#D7DEF8"),
+            ("primaryPressed", "#1F2B4D", "#CFD9F7"),
+            ("primarySoft", "#E6E8F0", "#1B2340"),
             ("railAging", "#9A5400", "#FFC273"),
             ("railFresh", "#1E6B42", "#7ACB97"),
             ("railStale", "#55697A", "#8FA7B8"),
             ("successSurface", "#E3F3E9", "#173C29"),
             ("successText", "#185C38", "#9DDFB5"),
-            ("surface", "#FFFFFF", "#0C1F2B"),
-            ("surfaceContainerHigh", "#D2E7F2", "#183447"),
-            ("surfaceContainerHighest", "#D2E7F2", "#1E3E53"),
-            ("surfaceMuted", "#E6F1F7", "#12293A"),
-            ("textPrimary", "#082F45", "#F2F7FA"),
-            ("textSecondary", "#45596A", "#B3C6D3"),
-            ("warningSurface", "#FFE9CC", "#4A3312"),
-            ("warningText", "#4A2800", "#FFD9A3"),
+            ("surface", "#FFFFFF", "#0E1118"),
+            ("surfaceContainerHigh", "#E6E8F0", "#1E2330"),
+            ("surfaceContainerHighest", "#E6E8F0", "#272D3D"),
+            ("surfaceMuted", "#F2F3F7", "#161A24"),
+            ("textPrimary", "#141B33", "#F6F6F4"),
+            ("textSecondary", "#575E73", "#AEB4C4"),
+            ("warningSurface", "#FDEBD3", "#4A3312"),
+            ("warningText", "#5E3400", "#FFD9A3"),
         ]
     }
 

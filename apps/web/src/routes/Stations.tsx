@@ -15,6 +15,7 @@ import { BRAND } from '../brand/brand';
 import { serviceDatesOf } from '../features/offlineGroups';
 import { StationNetworkMap } from '../components/StationNetworkMap';
 import { GreekTravelImage } from '../components/GreekTravelImage';
+import { COACH_PICTURE } from '../data/pictures';
 
 /** Directory of every terminal and boarding point in the release. */
 export function Stations() {
@@ -86,13 +87,7 @@ export function Stations() {
       <h1 className="od-page__title">{t('stations.title')}</h1>
       <p className="od-page__lede">{t('stations.intro')}</p>
 
-      <GreekTravelImage
-        className="od-stations__image"
-        src="https://images.unsplash.com/photo-1560859937-8cdeb9593025?auto=format&fit=crop&w=1400&q=82"
-        alt={t('stations.imageAlt')}
-        credit="Ελληνική ακτογραμμή"
-        href="https://unsplash.com/photos/coastal-highway-aerial-photo-FsBipKsA4MI"
-      />
+      <GreekTravelImage className="od-stations__image" alt={t('stations.imageAlt')} {...COACH_PICTURE} />
 
       {places.state.status === 'loading' ? <Loading /> : null}
       {places.state.status === 'error' ? <DataError error={places.state.error} onRetry={places.reload} /> : null}

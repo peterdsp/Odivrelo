@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { LANGUAGES, type Language } from '../data/contract';
+import { DepartureBoard } from '../components/DepartureBoard';
+import { GreekTravelImage } from '../components/GreekTravelImage';
+import { COACH_PICTURE, ROAD_PICTURE, TERMINAL_PICTURE } from '../data/pictures';
 import { useI18n } from '../i18n/I18nProvider';
-import { BRAND } from '../brand/brand';
 import { Mark } from '../brand/Marks';
 import { useHead } from '../hooks/useHead';
 import { useDataMode } from '../app/DataProvider';
@@ -9,7 +11,6 @@ import { Button, Card, Section } from '../components/primitives';
 import { markOnboarded } from '../features/onboarding';
 import { useAnnouncer } from '../components/Announcer';
 import type { MessageKey } from '../i18n/catalogues';
-import { GreekTravelImage } from '../components/GreekTravelImage';
 
 const DOES: readonly MessageKey[] = ['welcome.does1', 'welcome.does2', 'welcome.does3', 'welcome.does4', 'welcome.does5'];
 const DOES_NOT: readonly MessageKey[] = ['welcome.doesNot1', 'welcome.doesNot2', 'welcome.doesNot3', 'welcome.doesNot4'];
@@ -49,22 +50,41 @@ export function Welcome() {
     navigate('/search', { replace: true });
   };
 
+  // The full measure rather than the narrow one, so the page shares the
+  // header's margins instead of sitting inside them, and the board has the
+  // width an object needs.
   return (
-    <div className="od-page od-page--narrow">
+    <div className="od-page">
       <div className="od-welcome__hero">
         <div className="od-welcome__hero-copy">
           <Mark size={56} decorative />
+          {/*
+            The title is the tagline, so printing BRAND.tagline under it said the
+            same words twice. The sentence below now carries the plain statement
+            of what this is, which is what the first screen owes a stranger.
+          */}
           <h1 className="od-welcome__title">{t('welcome.title')}</h1>
-          <p className="od-welcome__tagline">{BRAND.tagline[language]}</p>
           <p className="od-welcome__intro">{t('welcome.intro')}</p>
         </div>
-        <GreekTravelImage
-          className="od-welcome__hero-image"
-          src="https://images.unsplash.com/photo-1700554779374-e46d83321f6e?auto=format&fit=crop&w=1200&q=82"
-          alt={t('welcome.imageAlt')}
-          credit="Αθήνα, Πλάκα"
-          href="https://unsplash.com/photos/a-city-street-lined-with-buildings-and-shops-jMjnSFHVMWU"
-        />
+        {/*
+          The object the page is built as, in place of a stock street
+          photograph that was loading broken at tablet and phone widths and
+          showed nothing of what Odivrelo does. Every row is a real departure
+          from the published release, and the last column is the claim no coach
+          timetable makes: when that row was last checked.
+        */}
+        <DepartureBoard />
+      </div>
+
+      {/*
+        The world the board describes: the terminal where a reader stands, and
+        the road the coach takes. Real photographs from Wikimedia Commons, under
+        their own credits, never presented as Odivrelo's own.
+      */}
+      <div className="od-welcome__world">
+        <GreekTravelImage alt={t('welcome.terminalAlt')} {...TERMINAL_PICTURE} />
+        <GreekTravelImage alt={t('welcome.roadAlt')} {...ROAD_PICTURE} />
+        <GreekTravelImage alt={t('welcome.coachAlt')} {...COACH_PICTURE} />
       </div>
 
       <Section title={t('welcome.chooseLanguage')} description={t('welcome.languageHelp')} className="od-welcome__languages">

@@ -168,3 +168,4 @@ build/
 
 # Wrangler CLI cache (account and project lookups). Local only.
 .wrangler/
+.taste-skill/

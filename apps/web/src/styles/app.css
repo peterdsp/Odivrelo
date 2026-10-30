@@ -18,6 +18,49 @@
  *    ignores it.
  */
 
+/*
+ * The two faces of the art direction, served from this origin.
+ *
+ * Never from a font CDN: Odivrelo tells the reader it contacts no third party,
+ * `launch.spec.ts` fails the build if the page requests one, and the content
+ * security policy forbids it. Both are SIL Open Font Licence 1.1, credited on
+ * the licences page. The Greek subsets are loaded first because the product
+ * ships Greek as its primary language: without them every Greek heading would
+ * silently fall back to the system face.
+ */
+@font-face {
+  font-family: Anton;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/anton-greek.woff2") format("woff2");
+  unicode-range: U+0370-03FF, U+1F00-1FFF;
+}
+@font-face {
+  font-family: Anton;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/anton-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2212;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/worksans-greek.woff2") format("woff2");
+  unicode-range: U+0370-03FF, U+1F00-1FFF;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/worksans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2212;
+}
+
 *,
 *::before,
 *::after {
@@ -27,6 +70,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Reserve the scrollbar's width at every page height, so the page keeps one
+     pair of equal margins instead of shifting 21px when content overflows. */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -181,7 +227,8 @@ svg {
   inset-block-start: 0;
   z-index: var(--od-z-header);
   background: var(--od-surface);
-  border-block-end: 1px solid var(--od-border);
+  /* A tone step against the page, not a rule: surfaces are separated by
+     a change in tone in this design, never by a hairline. */
   padding-block-start: env(safe-area-inset-top, 0px);
 }
 
@@ -240,7 +287,7 @@ svg {
 }
 
 .od-footer {
-  border-block-start: 1px solid var(--od-border);
+  /* Separated from the page by its own tone, for the same reason. */
   background: var(--od-surface-muted);
   margin-block-start: var(--od-space-12);
 }
@@ -307,7 +354,8 @@ svg {
   inset-block-end: 0;
   z-index: var(--od-z-sticky);
   background: var(--od-surface);
-  border-block-start: 1px solid var(--od-border);
+  /* Its own surface tone separates it from the page; the design has no
+     hairline dividers. */
   /* Clears both the home indicator and the virtual keyboard. */
   padding-block-end: max(env(safe-area-inset-bottom, 0px), var(--od-keyboard-inset, 0px));
 }
@@ -395,7 +443,8 @@ svg {
 
 .od-nav--utility {
   padding: var(--od-space-4);
-  border-block-start: 1px solid var(--od-border);
+  /* Space above it does the separating. */
+  margin-block-start: var(--od-space-2);
 }
 
 .od-nav__link--text {
@@ -501,7 +550,7 @@ svg {
 
 .od-card {
   background: var(--od-surface);
-  border: 1px solid var(--od-border);
+  /* Separated from the page by tone, not by an outline. */
   border-radius: var(--od-radius-large);
   padding: var(--od-space-4);
   display: grid;
@@ -913,7 +962,7 @@ svg {
 }
 
 .od-language-choice {
-  border: 1px solid var(--od-border);
+  background: var(--od-surface-muted);
   border-radius: var(--od-radius-medium);
   padding: var(--od-space-3);
   margin: 0;
@@ -1611,7 +1660,7 @@ svg {
   padding: 0.35rem 0.6rem;
   background: var(--od-warning-surface);
   color: var(--od-warning-text);
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 
@@ -1820,12 +1869,23 @@ svg {
   margin: 0;
 }
 
+/*
+ * The object leads this page, so the board is not an illustration beside the
+ * copy: the title and the one sentence come first at full width, and the board
+ * runs the whole measure under them as the first screen's dominant thing.
+ *
+ * It used to sit in a 13rem image column, which squeezed a seven row departures
+ * table into 190 points, tripped its own container query into the phone layout
+ * and pushed the page's h1 1613 points down the page.
+ */
 .od-welcome__hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.9fr);
   gap: var(--od-space-5);
-  align-items: center;
-  justify-items: start;
+  align-items: start;
+}
+
+.od-welcome__hero > .od-board {
+  width: 100%;
 }
 
 .od-welcome__hero-copy {
@@ -1862,7 +1922,9 @@ svg {
   border-radius: var(--od-radius-pill);
   background: rgb(0 0 0 / 58%);
   color: white;
-  font-size: 0.7rem;
+  /* Nothing meant to be read goes under 13px, and a licence credit is meant
+     to be read: this was 11.2px. */
+  font-size: 0.8125rem;
   text-decoration: none;
 }
 
@@ -1886,7 +1948,20 @@ svg {
 
 .od-welcome__title {
   font: var(--od-type-display);
-  font-size: clamp(2rem, 7vw, 2.5rem);
+  /*
+   * The display face is Anton, a condensed cut meant to be set large: capped at
+   * 40px it read as body copy and the first screen had nothing leading it.
+   */
+  font-size: clamp(2.75rem, 1.2rem + 6vw, 5.5rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  max-inline-size: 18ch;
+}
+
+/* The sentence that says plainly what this is, directly under the title. */
+.od-welcome__intro {
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  max-inline-size: 52ch;
 }
 
 .od-welcome__tagline {
@@ -1933,4 +2008,233 @@ svg {
   .od-two-pane[data-mode='two'][data-segments='2'] {
     column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) + var(--od-space-6));
   }
+}
+
+/* ---------------------------------------------------------------------------
+ * The departures board
+ *
+ * The object the welcome page is built as. A real board is amber figures on a
+ * near-black field, so this is a filled shape in the page's field colour, never
+ * an outlined panel. The times are the largest thing on it, because at a
+ * terminal the time is what you look for first.
+ *
+ * The last column is the point of the whole product: when the row was last
+ * checked. Its state is always a word as well as a colour, which is the project
+ * rule, so a reader who cannot separate the three rail colours still reads
+ * "Out of date".
+ * ------------------------------------------------------------------------- */
+
+.od-board {
+  margin: 0;
+  padding: clamp(1rem, 0.6rem + 1.6vw, 1.75rem);
+  background: #05070a;
+  color: #f6f6f4;
+  border-radius: var(--od-radius-panel);
+  container-type: inline-size;
+}
+
+.od-board__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-block-end: 1rem;
+}
+
+.od-board__origin {
+  font: var(--od-type-title);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.od-board__date,
+.od-board__foot {
+  font-size: 0.875rem;
+  color: #aeb4c4;
+}
+
+.od-board__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: start;
+}
+
+.od-board__table th {
+  padding-block-end: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #aeb4c4;
+  text-align: start;
+}
+
+.od-board__table td {
+  padding-block: 0.6rem;
+  vertical-align: baseline;
+}
+
+/* A tone step, not a rule: the house style forbids hairline dividers. */
+.od-board__table tbody tr + tr td {
+  box-shadow: inset 0 1px 0 rgb(246 246 244 / 10%);
+}
+
+.od-board__time {
+  font-family: var(--od-font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  font-variant-numeric: tabular-nums;
+  color: #f7941d;
+  padding-inline-end: 1rem;
+  white-space: nowrap;
+}
+
+.od-board__to {
+  padding-inline-end: 1rem;
+}
+
+.od-board__place {
+  display: block;
+  font-weight: 600;
+}
+
+.od-board__operator {
+  display: block;
+  font-size: 0.875rem;
+  color: #aeb4c4;
+}
+
+.od-board__state {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/*
+ * The board is a near-black field in both themes, so its inks cannot follow the
+ * page theme: the light theme's rail green is #1E6B42, which on this field is
+ * unreadable. These are the dark theme's rail colours, which the token audit
+ * already proves at 4.5:1 against this exact background.
+ */
+.od-board__state[data-freshness='fresh'] { color: #7acb97; }
+.od-board__state[data-freshness='aging'] { color: #ffc273; }
+.od-board__state[data-freshness='stale'],
+.od-board__state[data-freshness='unknown'] { color: #8fa7b8; }
+
+.od-board__when {
+  display: block;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: #aeb4c4;
+}
+
+.od-board__foot {
+  margin-block-start: 1rem;
+}
+
+/* On a phone the operator and the checked date stack under their row rather
+   than squeezing three columns into 390 points. */
+@container (max-width: 26rem) {
+  .od-board__table thead { display: none; }
+  .od-board__table tr { display: grid; grid-template-columns: auto 1fr; gap: 0 1rem; }
+  .od-board__table td { padding-block: 0.4rem; }
+  .od-board__time { grid-row: span 2; }
+  .od-board__table tbody tr + tr td:first-child { box-shadow: none; }
+  .od-board__table tbody tr + tr { box-shadow: inset 0 1px 0 rgb(246 246 244 / 10%); margin-block-start: 0.6rem; padding-block-start: 0.6rem; }
+}
+
+/* ---------------------------------------------------------------------------
+ * Entrances
+ *
+ * Transform and opacity only, so nothing reflows while it plays, and every
+ * move is a CSS animation with its content already in the markup: if the
+ * stylesheet or the script never arrives the page is simply there, unmoved and
+ * complete. The reduced-motion block at the top of this file zeroes the motion
+ * tokens, and the rules below collapse to their final state with it.
+ *
+ * The board's rows arrive one after another the way a split-flap board settles,
+ * which is the page's one signature move. Everything else is a plain rise.
+ * ------------------------------------------------------------------------- */
+
+/*
+ * Movement only, never a fade through unreadable text.
+ *
+ * These began as opacity fades. Sampled 300ms in, a paragraph mid-fade failed
+ * the contrast check: for a few hundred milliseconds the words really were too
+ * faint to read, which is a genuine accessibility fault and not merely an
+ * awkward measurement. Text now travels into place at full strength, so there
+ * is no moment at which it cannot be read, and the motion still reads as a
+ * board settling.
+ */
+@keyframes od-rise {
+  from { transform: translateY(1.25rem); }
+  to { transform: none; }
+}
+
+@keyframes od-flap {
+  from { transform: translateY(-0.5rem) scaleY(0.7); }
+  to { transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .od-welcome__hero-copy > * {
+    animation: od-rise var(--od-motion-slow) var(--od-easing) backwards;
+  }
+
+  .od-welcome__hero-copy > :nth-child(1) { animation-delay: 0ms; }
+  .od-welcome__hero-copy > :nth-child(2) { animation-delay: 70ms; }
+  .od-welcome__hero-copy > :nth-child(3) { animation-delay: 140ms; }
+
+  .od-board {
+    animation: od-rise var(--od-motion-slow) var(--od-easing) 120ms backwards;
+  }
+
+  .od-board__table tbody tr {
+    transform-origin: top center;
+    animation: od-flap var(--od-motion-standard) var(--od-easing) backwards;
+  }
+
+  .od-board__table tbody tr:nth-child(1) { animation-delay: 260ms; }
+  .od-board__table tbody tr:nth-child(2) { animation-delay: 330ms; }
+  .od-board__table tbody tr:nth-child(3) { animation-delay: 400ms; }
+  .od-board__table tbody tr:nth-child(4) { animation-delay: 470ms; }
+  .od-board__table tbody tr:nth-child(5) { animation-delay: 540ms; }
+  .od-board__table tbody tr:nth-child(6) { animation-delay: 610ms; }
+  .od-board__table tbody tr:nth-child(7) { animation-delay: 680ms; }
+
+  .od-welcome__languages,
+  .od-welcome__does {
+    animation: od-rise var(--od-motion-slow) var(--od-easing) 200ms backwards;
+  }
+}
+
+/* Feedback on the controls the first screen offers. */
+.od-language-choice__option {
+  transition: background-color var(--od-motion-fast) var(--od-easing),
+    transform var(--od-motion-fast) var(--od-easing);
+}
+
+.od-language-choice__option:active {
+  transform: scale(0.99);
+}
+
+/* The world the board describes: two pictures given real room, side by side on
+   a wide screen and stacked on a phone. Square corners and no outline, so they
+   read as pictures rather than cards. */
+.od-welcome__world {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  gap: var(--od-space-4);
+}
+
+.od-welcome__world .od-travel-image {
+  border: 0;
+  border-radius: var(--od-radius-panel);
+  box-shadow: none;
+}
+
+.od-welcome__world .od-travel-image img {
+  aspect-ratio: 4 / 3;
+  inline-size: 100%;
+  block-size: auto;
+  object-fit: cover;
+  display: block;
 }
