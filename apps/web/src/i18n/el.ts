@@ -239,6 +239,7 @@ export const el: Catalogue = {
   'journey.arrivalAt': 'Άφιξη {time}',
   'journey.departureAt': 'Αναχώρηση {time}',
   'journey.noTime': 'Δεν έχει δημοσιευθεί ώρα',
+  'journey.nothingPublished': 'Δεν έχει δημοσιευθεί τίποτε άλλο για τη στάση',
   'journey.restrictions': 'Όροι ταξιδιού',
   'journey.provenance': 'Από πού προέρχεται αυτό',
   'journey.provenanceHelp': 'Κάθε πηγή πίσω από αυτό το δρομολόγιο, πότε ανακτήθηκε, και με ποια βάση επιτρέπεται η αναδημοσίευσή της.',

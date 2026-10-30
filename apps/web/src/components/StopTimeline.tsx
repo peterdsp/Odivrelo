@@ -77,6 +77,10 @@ export function StopTimeline({ stops, boardingStopId, linkStops = true, sectionL
         const isBoarding = stop.segmentRole === 'board' || stop.stopId === boardingStopId;
         const isAlighting = stop.segmentRole === 'alight';
         const isOutside = stop.segmentRole === 'beforeBoard' || stop.segmentRole === 'afterAlight';
+        // Nothing at all is published about this call: no time, and neither
+        // direction stated. Said once rather than three times over.
+        const nothingPublished =
+          stop.timeQuality === 'unknown' && stop.pickup === 'unknown' && stop.dropoff === 'unknown';
         const isLast = index === stops.length - 1;
         return (
           <li
@@ -125,9 +129,26 @@ export function StopTimeline({ stops, boardingStopId, linkStops = true, sectionL
                 {isBoarding ? <Badge tone="accent" icon="check">{t('journey.segmentBoard')}</Badge> : null}
                 {isAlighting ? <Badge tone="info" icon="check">{t('journey.segmentAlight')}</Badge> : null}
                 {isOutside ? <Badge tone="neutral">{t('journey.segmentOutside')}</Badge> : null}
-                <TimeQualityBadge quality={stop.timeQuality} />
-                <RuleBadge rule={stop.pickup} kind="pickup" />
-                <RuleBadge rule={stop.dropoff} kind="dropoff" />
+                {/*
+                  An intermediate call the operator names and says nothing else
+                  about is the common case, not the exception: every pattern stop
+                  in the release has an unstated boarding rule. Three chips, one
+                  for the time and one for each direction, said the same nothing
+                  three times and put twenty seven of them on a ten stop route.
+                  One statement carries the same fact, and the chips come back
+                  the moment any of the three is actually known.
+                */}
+                {nothingPublished ? (
+                  <Badge tone="neutral" icon="question">
+                    {t('journey.nothingPublished')}
+                  </Badge>
+                ) : (
+                  <>
+                    <TimeQualityBadge quality={stop.timeQuality} />
+                    <RuleBadge rule={stop.pickup} kind="pickup" />
+                    <RuleBadge rule={stop.dropoff} kind="dropoff" />
+                  </>
+                )}
               </p>
             </div>
           </li>

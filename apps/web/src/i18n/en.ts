@@ -242,6 +242,7 @@ export const en = {
   'journey.arrivalAt': 'Arrives {time}',
   'journey.departureAt': 'Departs {time}',
   'journey.noTime': 'No time published',
+  'journey.nothingPublished': 'Nothing else published for this stop',
   'journey.restrictions': 'Conditions of travel',
   'journey.provenance': 'Where this came from',
   'journey.provenanceHelp': 'Every source behind this journey, when it was retrieved, and on what basis it may be reused.',

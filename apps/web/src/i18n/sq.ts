@@ -238,6 +238,7 @@ export const sq: Catalogue = {
   'journey.arrivalAt': 'Mbërrin {time}',
   'journey.departureAt': 'Niset {time}',
   'journey.noTime': 'Nuk është publikuar orar',
+  'journey.nothingPublished': 'Asgjë tjetër e publikuar për këtë ndalesë',
   'journey.restrictions': 'Kushtet e udhëtimit',
   'journey.provenance': 'Nga vjen kjo',
   'journey.provenanceHelp': 'Çdo burim pas këtij udhëtimi, kur është marrë, dhe mbi çfarë baze mund të ripërdoret.',
