@@ -37,7 +37,15 @@ export function groupPlaceOptions(found: readonly Place[], localName: (name: Pla
     const current = grouped.get(key);
     if (!current || (place.coverage === 'covered' && current.coverage !== 'covered')) grouped.set(key, place);
   }
-  return [...grouped.values()];
+  /*
+   * Covered places first, and otherwise in the order the search scored them.
+   * Three quarters of the network is not covered, so picking by name alone
+   * lands on a stop nothing runs from most of the time, and the reader only
+   * finds out after searching. Nothing is hidden: the rest still follow.
+   */
+  return [...grouped.values()].sort(
+    (a, b) => Number(b.coverage === 'covered') - Number(a.coverage === 'covered'),
+  );
 }
 
 export function PlaceField({
@@ -258,7 +266,14 @@ export function PlaceField({
             <span className="od-place-option__meta">
               {place.kind === 'stop_place' ? t('search.terminal') : t('search.boardingPoint')}
               {' · '}
-              {place.municipality || t('app.unknown')}
+              {/*
+                Coverage, not the municipality. The source publishes no
+                municipality at all, so that slot read "not known" on all
+                19,139 places: noise on every row. Whether anything runs from
+                here is the fact that decides if a search can succeed, and
+                14,437 of those places are not covered.
+              */}
+              {t(place.coverage === 'covered' ? 'coverage.stateCovered' : 'coverage.stateNotCovered')}
               {' · '}
               {t('search.stationCode', { code: place.id })}
               {place.kind === 'stop_place'

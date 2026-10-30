@@ -50,3 +50,20 @@ describe('groupPlaceOptions with the municipality the real release publishes', (
     expect(result.map((item) => item.id)).toEqual(['covered']);
   });
 });
+
+describe('ordering by coverage', () => {
+  it('leads with places a search can answer for, without dropping the rest', () => {
+    const named = (id: string, label: string, coverage: Place['coverage']): Place => ({
+      ...place(id, 'stop', coverage, null),
+      name: { el: label, en: label, sq: label },
+    });
+    const result = groupPlaceOptions(
+      [named('dead1', 'A', 'not_covered'), named('live', 'B', 'covered'), named('dead2', 'C', 'not_covered')],
+      (name) => name.en,
+    );
+    // 14,437 of the 19,139 places in the release are not covered, so a reader
+    // picking by name alone lands on one of those most of the time and only
+    // finds out after searching.
+    expect(result.map((item) => item.id)).toEqual(['live', 'dead1', 'dead2']);
+  });
+});
