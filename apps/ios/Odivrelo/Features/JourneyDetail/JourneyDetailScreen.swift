@@ -11,7 +11,6 @@ struct JourneyDetailScreen: View {
 
     let journeyId: String
     let serviceDate: ServiceDate
-    var isEmbedded = false
 
     @State private var state: LoadState = .loading
     /// The saved trip the core returned, not a flag. The core owns the
@@ -44,7 +43,11 @@ struct JourneyDetailScreen: View {
         }
         .background(Theme.Palette.background)
         .navigationTitle(L10n.detailTitle)
-        .navigationBarTitleDisplayMode(isEmbedded ? .inline : .large)
+        // Inline, always. A large title is for a top-level screen, and this one
+        // is always pushed or embedded. Set large, the Greek title
+        // "Λεπτομέρειες δρομολογίου" truncated to "Λεπτομέρειες δρομο…" on an
+        // iPhone, and the Albanian one is no shorter.
+        .navigationBarTitleDisplayMode(.inline)
         .task(id: "\(journeyId)|\(serviceDate.iso)") { await load() }
         .sheet(item: Binding(get: { purchaseURL.map(IdentifiedURL.init) }, set: { purchaseURL = $0?.url })) { value in
             // The operator's own page, inside the app, returning to exactly

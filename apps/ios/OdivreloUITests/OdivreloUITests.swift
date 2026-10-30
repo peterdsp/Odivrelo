@@ -42,6 +42,24 @@ final class OdivreloUITests: XCTestCase {
         }
     }
 
+    // MARK: Screenshots
+
+    /// Keeps a screenshot of the current screen in the result bundle.
+    ///
+    /// The web suite has had `shoot()` since the start, so its layouts can be
+    /// looked at after a run. These tests had nothing: they asserted that a
+    /// control exists without anyone ever seeing the screen it sits on, which
+    /// is how a design ships unreviewed on this platform. `keepAlways` is the
+    /// point, since Xcode discards attachments from passing tests by default
+    /// and a passing test is exactly when you want to look at the layout.
+    @MainActor
+    func shoot(_ app: XCUIApplication, _ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
     // MARK: Cold launch
 
     @MainActor
@@ -107,16 +125,20 @@ final class OdivreloUITests: XCTestCase {
         XCTAssertTrue(harbour.waitForExistence(timeout: 10))
         harbour.tap()
 
+        shoot(app, "search-filled")
         app.buttons["search.submit"].tap()
 
         let journey = app.buttons["journey.jny.acl-0700"]
         XCTAssertTrue(journey.waitForExistence(timeout: 15), "a result should appear")
+        shoot(app, "results")
         journey.tap()
 
         XCTAssertTrue(
             app.buttons["detail.saveTrip"].waitForExistence(timeout: 10),
             "the journey detail should open"
         )
+        // The provenance rail and the times set as data live on this screen.
+        shoot(app, "journey-detail")
 
         app.goBackIfPushed()
 

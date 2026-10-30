@@ -112,7 +112,7 @@ struct SearchScreen: View {
     @ViewBuilder
     private var detailPane: some View {
         if let id = model.session.selectedJourneyId {
-            JourneyDetailScreen(journeyId: id, serviceDate: model.session.serviceDate, isEmbedded: true)
+            JourneyDetailScreen(journeyId: id, serviceDate: model.session.serviceDate)
                 .id(id)
         } else {
             StateMessageView(
