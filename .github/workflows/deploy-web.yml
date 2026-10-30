@@ -41,8 +41,11 @@ jobs:
     runs-on: ubuntu-24.04
     # A production build collects the national timetable at one request every
     # 1.5 seconds, which is deliberate politeness towards the operators' own
-    # servers and cannot be hurried. The demo channel finishes in minutes.
-    timeout-minutes: 240
+    # servers and cannot be hurried. A fortnight across 26 operators is about
+    # 218 minutes of that, so the ceiling leaves room for the retries rather
+    # than sitting a few minutes above the expected run. The demo channel
+    # finishes in minutes.
+    timeout-minutes: 330
     permissions:
       contents: read
     steps:
@@ -68,11 +71,14 @@ jobs:
             ${{ github.event.inputs.release_channel
             || (github.event_name == 'schedule' && 'production')
             || vars.RELEASE_CHANNEL || 'demo' }}
-          # The window the scheduled rebuild collects. Seven days at 24 origin
-          # and destination pairs per operator is about two hours of paced
-          # requests; a wider window is a longer run, not more operators.
-          DAYS: "7"
-          MAX_QUERIES: "168"
+          # The window the scheduled rebuild collects, and therefore exactly
+          # what the site can answer: each run builds its dataset from scratch,
+          # so coverage is the window and nothing before or after it. A
+          # fortnight at 24 origin and destination pairs per operator is about
+          # 218 minutes of paced requests. Narrowing it shortens the run and
+          # shortens how far ahead a traveller can plan, in the same step.
+          DAYS: "14"
+          MAX_QUERIES: "336"
           MAX_ORIGINS: "24"
         run: |
           python -m pip install --upgrade pip
