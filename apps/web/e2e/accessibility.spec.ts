@@ -71,7 +71,14 @@ test.describe('structure', () => {
     for (const route of routes()) {
       await page.goto(route.path);
       await waitForApp(page);
-      await page.waitForTimeout(300);
+      /*
+       * Wait for the heading itself rather than a fixed pause. A station page
+       * cannot name itself until it has fetched and parsed a stops shard, which
+       * is 13.8MB of the real release, so a 300ms pause counted the headings of
+       * a page that had not rendered yet. It was reliable only while the packs
+       * were the small demonstration ones.
+       */
+      await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible({ timeout: 30_000 });
 
       const h1Count = await page.getByRole('heading', { level: 1 }).count();
       expect(h1Count, `${route.name} has ${h1Count} level-1 headings`).toBe(1);
