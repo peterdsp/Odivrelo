@@ -313,6 +313,13 @@ export const sq: Catalogue = {
   // -- Stations ------------------------------------------------------------
   'stations.title': 'Stacionet dhe ndalesat',
   'stations.intro': 'Çdo terminal dhe pikë hipjeje në këtë version të dhënash.',
+  'stations.filterLabel': 'Gjej një stacion ose ndalesë',
+  'stations.filterPlaceholder': 'Emri ose bashkia',
+  'stations.filterShowing': 'Po shfaqen {shown} nga {total} stacione. Shkruaj për të kërkuar të tjerët.',
+  'stations.filterMatches': '{shown} nga {total} stacione përputhen.',
+  'stations.filterHidden': '{count} stacione të tjera nuk shfaqen. Shkruaj më lart për të gjetur një.',
+  'stations.filterNoneTitle': 'Asnjë stacion nuk përputhet',
+  'stations.filterNoneBody': 'Kontrollo drejtshkrimin, ose provo bashkinë në vend të emrit të stacionit.',
   'stations.imageAlt': 'Rrugë bregdetare greke pranë ujërave blu',
   'stations.networkTitle': 'Harta e stacioneve dhe linjave',
   'stations.networkBody': 'Stacionet janë pika reale nga versioni aktual i të dhënave. Linja dhe autobusi në hartë janë simulim vizual, jo gjurmim në kohë reale.',

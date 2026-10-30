@@ -317,6 +317,13 @@ export const en = {
   // -- Stations ------------------------------------------------------------
   'stations.title': 'Stations and stops',
   'stations.intro': 'Every terminal and boarding point in this data release.',
+  'stations.filterLabel': 'Find a terminal or stop',
+  'stations.filterPlaceholder': 'Name or municipality',
+  'stations.filterShowing': 'Showing {shown} of {total} terminals. Type to search the rest.',
+  'stations.filterMatches': '{shown} of {total} terminals match.',
+  'stations.filterHidden': '{count} more terminals are not shown. Type above to find one.',
+  'stations.filterNoneTitle': 'No terminal matches that',
+  'stations.filterNoneBody': 'Check the spelling, or try the municipality instead of the terminal name.',
   'stations.imageAlt': 'A winding Greek coastal road beside bright blue water',
   'stations.networkTitle': 'Station and line map',
   'stations.networkBody': 'The stations are real points from the current data release. The line and bus on this map are a visual simulation, not live tracking.',

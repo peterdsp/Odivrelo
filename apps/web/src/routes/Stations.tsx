@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { isServiceDate, provenanceView, safeHref } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
@@ -23,6 +23,9 @@ export function Stations() {
   const dataMode = useDataMode();
   const places = useAsync((signal) => source.places('', 500, signal), [source]);
 
+  const [query, setQuery] = useState('');
+  const filterId = useId();
+
   const grouped = useMemo(() => {
     if (places.state.status !== 'ready') return [];
     const all = places.state.value.places;
@@ -30,6 +33,31 @@ export function Stations() {
       .filter((place) => place.kind === 'stop_place')
       .map((terminal) => ({ terminal, children: all.filter((child) => child.parentId === terminal.id) }));
   }, [places.state]);
+
+  /*
+   * The release publishes a national network, so this page is a directory, not
+   * a list to read top to bottom. Rendering every terminal produced a page
+   * 155,000 pixels tall, which is not a page anybody scrolls. The whole set
+   * stays reachable by typing, and a bounded number shows until then.
+   *
+   * Nothing is hidden from a crawler by this: the prerendered body is the boot
+   * shell, and the indexable content is the per-station pages, one for each of
+   * the stations in the release.
+   */
+  const needle = query.trim().toLocaleLowerCase(language);
+  const matches = useMemo(() => {
+    if (needle.length === 0) return grouped;
+    return grouped.filter(({ terminal, children }) =>
+      [name(terminal.name), terminal.municipality ?? '', ...children.map((child) => name(child.name))]
+        .join(' ')
+        .toLocaleLowerCase(language)
+        .includes(needle),
+    );
+  }, [grouped, needle, language, name]);
+
+  const FIRST_VIEW = 40;
+  const shown = needle.length > 0 ? matches : matches.slice(0, FIRST_VIEW);
+  const hiddenCount = matches.length - shown.length;
 
   useHead({
     title: t('meta.stations.title'),
@@ -71,7 +99,33 @@ export function Stations() {
 
       {places.state.status === 'ready' ? <StationNetworkMap places={places.state.value.places} /> : null}
 
-      {grouped.map(({ terminal, children }) => (
+      {places.state.status === 'ready' ? (
+        <div className="od-field">
+          <label className="od-field__label" htmlFor={filterId}>
+            {t('stations.filterLabel')}
+          </label>
+          <input
+            id={filterId}
+            className="od-field__input"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t('stations.filterPlaceholder')}
+            autoComplete="off"
+          />
+          <p className="od-field__hint" role="status">
+            {needle.length > 0
+              ? t('stations.filterMatches', { shown: matches.length, total: grouped.length })
+              : t('stations.filterShowing', { shown: shown.length, total: grouped.length })}
+          </p>
+        </div>
+      ) : null}
+
+      {places.state.status === 'ready' && needle.length > 0 && matches.length === 0 ? (
+        <StateBlock kind="empty" title={t('stations.filterNoneTitle')} body={t('stations.filterNoneBody')} />
+      ) : null}
+
+      {shown.map(({ terminal, children }) => (
         <Section key={terminal.id} title={name(terminal.name)} level={2} id={`terminal-${terminal.id}`}>
           <p>
             <Link to={`/stations/${encodeURIComponent(terminal.id)}`} className="od-link">
@@ -97,6 +151,10 @@ export function Stations() {
           )}
         </Section>
       ))}
+
+      {hiddenCount > 0 ? (
+        <p className="od-muted">{t('stations.filterHidden', { count: hiddenCount })}</p>
+      ) : null}
     </div>
   );
 }
