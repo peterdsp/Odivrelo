@@ -7,6 +7,9 @@ never disagree again.
 """
 from __future__ import annotations
 
+import pytest
+from odivrelo_ktel.ktel_gtfs import GtfsExportError
+
 from conftest import (
     BAY_A1_EXTERNAL_ID,
     DAYTIME_DATE,
@@ -100,3 +103,60 @@ def test_a_stale_segment_on_a_known_trip_falls_back_to_the_whole_run(client, ids
     ]
     assert detail["arrival"]["stopId"] == ids[ORAVO_EXTERNAL_ID]
     assert detail["selectedSegment"]["alightStopId"] == ids[ORAVO_EXTERNAL_ID]
+
+def test_a_call_without_a_published_time_is_not_a_departure(tmp_path):
+    """A departure board skips a call the operator published no time for.
+
+    The timetable source names the intermediate calls on a route but publishes a
+    time only for the ends, so a stop in the middle has a stop_time row with no
+    arrival and no departure. Reading one as a departure raised
+    `AttributeError: 'NoneType' object has no attribute 'strip'` inside the date
+    arithmetic and failed a release build. Inventing a time for it would be
+    worse: nobody can catch a coach at a time nobody published.
+    """
+    import sqlite3
+
+    from publicapi import repository
+
+    database = tmp_path / "untimed.db"
+    connection = sqlite3.connect(database)
+    connection.row_factory = sqlite3.Row
+    connection.executescript(
+        """
+        CREATE TABLE ktel_stop_times (
+            trip_id TEXT, stop_id TEXT, stop_sequence INTEGER,
+            arrival_at TEXT, departure_at TEXT, time_status TEXT
+        );
+        """
+    )
+    connection.executemany(
+        "INSERT INTO ktel_stop_times VALUES (?,?,?,?,?,?)",
+        [
+            ("trip", "origin", 1, "2026-10-30T06:00:00+02:00", "2026-10-30T06:00:00+02:00", "scheduled"),
+            ("trip", "middle", 2, None, None, "unknown"),
+            ("trip", "finish", 3, "2026-10-30T08:00:00+02:00", "2026-10-30T08:00:00+02:00", "approximate"),
+        ],
+    )
+    connection.commit()
+
+    sequence = [dict(row) for row in connection.execute(
+        "SELECT * FROM ktel_stop_times ORDER BY stop_sequence"
+    )]
+    middle = sequence[1]
+    assert middle["departure_at"] is None and middle["arrival_at"] is None
+
+    # The board's own guard: this is the condition that keeps the untimed call
+    # off the list, and it has to stay true for the row above.
+    assert not (middle["departure_at"] or middle["arrival_at"])
+
+    # And summarising from it fails loudly rather than inside date arithmetic.
+    with pytest.raises(GtfsExportError):
+        repository._summary(
+            {"id": "trip", "operator_id": "op", "service_date": "2026-10-30"},
+            service_date="2026-10-30",
+            times=sequence,
+            origin_index=1,
+            destination_index=2,
+            operators={},
+            stops={},
+        )

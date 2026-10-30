@@ -508,6 +508,14 @@ def _summary(
 
     departure_source = origin["departure_at"] or origin["arrival_at"]
     arrival_source = destination["arrival_at"] or destination["departure_at"]
+    if departure_source is None:
+        # Every journey is headlined by the time it leaves, so an origin with no
+        # published time cannot be summarised. Callers that can encounter one,
+        # such as a departure board, filter it out before reaching here; this
+        # says so rather than failing inside the date arithmetic.
+        raise GtfsExportError(
+            f"trip {trip['id']} has no published time at its origin call"
+        )
     departure = project_onto_service_date(departure_source, template, service_date)
     arrival = (
         project_onto_service_date(arrival_source, template, service_date)
@@ -1214,6 +1222,14 @@ def _next_departures(
             None,
         )
         if index is None or index == len(sequence) - 1:
+            continue
+        # A call the operator names but publishes no time for is not a departure
+        # anyone can catch, so it does not belong on a departure board. The stop
+        # still appears on the journey's own route, where it says plainly that no
+        # time was published. Listing it here would have meant inventing a time,
+        # and reading it without one crashed the board.
+        call = sequence[index]
+        if not (call["departure_at"] or call["arrival_at"]):
             continue
         try:
             summary = _summary(
