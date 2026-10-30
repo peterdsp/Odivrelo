@@ -1597,12 +1597,20 @@ svg {
   margin-block-end: 1rem;
 }
 
+/*
+ * Orange is an accent, never text: the design system says so and the token
+ * generator only ever audits it as a fill behind dark ink. Drawn as text on the
+ * light surface it measured 1.78:1 against a required 4.5:1, which axe reported
+ * on the stations page. The warning pair is a fill with dark ink on it, and it
+ * is audited in both themes.
+ */
 .od-network-map__badge {
   flex: 0 0 auto;
-  border: 1px solid color-mix(in srgb, var(--od-accent) 65%, transparent);
+  border: 1px solid var(--od-border);
   border-radius: 999px;
   padding: 0.35rem 0.6rem;
-  color: var(--od-accent);
+  background: var(--od-warning-surface);
+  color: var(--od-warning-text);
   font-size: 0.78rem;
   font-weight: 700;
 }

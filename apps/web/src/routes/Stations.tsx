@@ -106,7 +106,7 @@ export function Stations() {
           </label>
           <input
             id={filterId}
-            className="od-field__input"
+            className="od-input"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -125,8 +125,18 @@ export function Stations() {
         <StateBlock kind="empty" title={t('stations.filterNoneTitle')} body={t('stations.filterNoneBody')} />
       ) : null}
 
+      {/*
+        A directory is a list, not forty page regions. Each terminal used to be
+        a `Section`, which renders a landmark, so a screen reader met forty
+        sibling landmarks on one page and axe reported four of them sharing a
+        name, because the source publishes more than one terminal called
+        "11500". Headings inside list items carry the same structure without
+        claiming each row is a major area of the page.
+      */}
+      <ul className="od-list od-list--plain od-stations__list">
       {shown.map(({ terminal, children }) => (
-        <Section key={terminal.id} title={name(terminal.name)} level={2} id={`terminal-${terminal.id}`}>
+        <li key={terminal.id} id={`terminal-${terminal.id}`}>
+          <h2 className="od-section__title">{name(terminal.name)}</h2>
           <p>
             <Link to={`/stations/${encodeURIComponent(terminal.id)}`} className="od-link">
               {t('station.title', { name: name(terminal.name) })}
@@ -149,8 +159,9 @@ export function Stations() {
               ))}
             </ul>
           )}
-        </Section>
+        </li>
       ))}
+      </ul>
 
       {hiddenCount > 0 ? (
         <p className="od-muted">{t('stations.filterHidden', { count: hiddenCount })}</p>

@@ -324,7 +324,7 @@ export const sq: Catalogue = {
   'stations.imageAlt': 'Rrugë bregdetare greke pranë ujërave blu',
   'stations.networkTitle': 'Harta e stacioneve dhe linjave',
   'stations.networkBody': 'Stacionet janë pika reale nga versioni aktual i të dhënave. Linja dhe autobusi në hartë janë simulim vizual, jo gjurmim në kohë reale.',
-  'stations.simulated': 'Simulim — jo vendndodhje reale',
+  'stations.simulated': 'Simulim, jo vendndodhje reale',
   'stations.realStations': 'Stacione reale',
   'stations.mapUnavailable': 'Harta nuk është e disponueshme',
   'stations.mapNoTiles': 'Pikat e të dhënave mbeten të disponueshme pa sfond harte.',

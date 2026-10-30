@@ -328,7 +328,7 @@ export const en = {
   'stations.imageAlt': 'A winding Greek coastal road beside bright blue water',
   'stations.networkTitle': 'Station and line map',
   'stations.networkBody': 'The stations are real points from the current data release. The line and bus on this map are a visual simulation, not live tracking.',
-  'stations.simulated': 'Simulation — not live location',
+  'stations.simulated': 'Simulation, not live location',
   'stations.realStations': 'Real stations',
   'stations.mapUnavailable': 'The map is unavailable',
   'stations.mapNoTiles': 'The data points remain available without a map background.',
