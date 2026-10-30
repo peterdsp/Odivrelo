@@ -219,8 +219,14 @@ describeRelease('the two sources agree', () => {
     // entire release every time.
     const staticSource = makeStatic();
     const httpSource = makeHttp();
+    // Both dimensions are sampled, so the work stays flat as the release grows.
+    // Sampling only the stops left the cost scaling with the window: the release
+    // went from 7 service dates to 21 and the same 240 stops became three times
+    // the comparisons, which is a test that gets slower every time the data gets
+    // better. The property under test does not need every pair to prove itself.
     const ids = sample(Object.keys(stops.stops), 240);
-    for (const date of serviceDates(manifest)) {
+    const dates = sample(serviceDates(manifest), 7);
+    for (const date of dates) {
       for (const id of ids) {
         expect(await staticSource.stop(id, date), `${id} on ${date}`).toEqual(await httpSource.stop(id, date));
       }
