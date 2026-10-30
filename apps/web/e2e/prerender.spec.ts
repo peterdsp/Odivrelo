@@ -49,35 +49,6 @@ function entryPointExists(path: string): boolean {
   return existsSync(join(directory, 'index.html'));
 }
 
-/**
- * The `_redirects` rules that rewrite a route to the shell with a 200.
- *
- * A rewrite answers a deep link with the same status and the same bytes as a
- * prerendered file. The only thing it gives up is a per-page head, so it is
- * used for the one route whose head is identical for every entity.
- */
-function rewriteRules(): string[] {
-  const file = join(dist, '_redirects');
-  if (!existsSync(file)) return [];
-  return readFileSync(file, 'utf8')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0 && !line.startsWith('#'))
-    .filter((line) => line.split(/\s+/)[2] === '200')
-    .map((line) => line.split(/\s+/)[0] as string);
-}
-
-function matchesRewrite(path: string, rules: string[]): boolean {
-  return rules.some((rule) => {
-    const pattern = new RegExp(`^${rule.split('*').map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+')}$`);
-    return pattern.test(path);
-  });
-}
-
-/** True when a static host answers this path with 200 rather than 404.html. */
-function answers200(path: string, rules: string[]): boolean {
-  return entryPointExists(path) || matchesRewrite(path, rules);
-}
 
 test.describe('prerendered entry points', () => {
   test('every static route in the router has one', () => {
@@ -90,7 +61,6 @@ test.describe('prerendered entry points', () => {
   test('every operator, stop and journey in the release has one', () => {
     test.skip(facts.releaseId === 'unknown', 'no release is published in dist');
     const missing: string[] = [];
-    const rules = rewriteRules();
     for (const id of facts.operatorIds) {
       if (!entryPointExists(`/operators/${id}`)) missing.push(`/operators/${id}`);
     }
@@ -111,7 +81,15 @@ test.describe('prerendered entry points', () => {
       };
       for (const id of Object.keys(pack.journeys ?? {})) {
         if (!entryPointExists(`/journey/${id}`)) missing.push(`/journey/${id}`);
-        if (!answers200(`/journey/${id}/booking`, rules)) missing.push(`/journey/${id}/booking`);
+        /*
+         * The booking page deliberately has no file. Its head is the same
+         * constants for every journey, and the host refuses a deployment above
+         * 20,000 files, which one page per journey would exceed. Without a file
+         * the route serves `404.html`, which boots this app, keeps the address
+         * and renders the right screen. A rewrite is not an option: Cloudflare
+         * does not preserve the address for one. The status code is wrong and
+         * the route is `noindex`, so nothing that reads it is misled.
+         */
       }
     }
     expect(missing, 'these entities are published but have no prerendered page').toEqual([]);

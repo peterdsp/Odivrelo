@@ -19,6 +19,15 @@
  * so the set of pages always matches the data actually published.
  *
  * `404.html` is left alone. A genuinely unknown path is a 404 and should say so.
+ *
+ * There is deliberately no `_redirects` file. A `200` rewrite to the shell does
+ * not preserve the address on Cloudflare Pages: measured both locally and in
+ * production, `/journey/*\/booking` rewritten to `/index.html` landed the reader
+ * on the site root instead of the page they followed, and a rewrite to
+ * `/404.html` shadowed a real prerendered page. Without any rule the same route
+ * serves `404.html`, which boots this app, keeps the address and renders the
+ * right screen: the status code is wrong but the reader is not misled, and the
+ * route is `noindex` anyway. Every route that must answer 200 needs its own file.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';

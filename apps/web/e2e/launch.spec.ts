@@ -64,7 +64,14 @@ test.describe('cold launch', () => {
       );
       expect(permissionRequests, 'the first launch asked for a permission').toEqual([]);
 
-      await expectDemoNotice(page);
+      // The notice belongs to a demonstration release and must be absent from a
+      // real one: saying real Greek timetables are invented is as wrong as the
+      // reverse. The dedicated suite below checks both arrangements in full.
+      if (facts.dataMode === 'demo') {
+        await expectDemoNotice(page);
+      } else {
+        await expect(page.getByTestId('demo-banner')).toHaveCount(0);
+      }
       await expectNoAxeViolations(page, testInfo, `welcome-${language}`);
       await shoot(page, testInfo, `welcome-${language}`);
 
@@ -105,40 +112,65 @@ test.describe('cold launch', () => {
   });
 });
 
-test.describe('the demonstration notice', () => {
-  test('is on every route and cannot be dismissed', async ({ page }) => {
+/*
+ * These assertions follow the release's data mode rather than assuming one.
+ *
+ * They were written while every release was the invented Aloria set, so they
+ * read as permanent truths: a notice on every route, nothing indexable, no
+ * sitemap. A release built from real timetables makes all three false, and a
+ * suite that asserts the product is shipping fiction goes red the day it stops,
+ * hiding whatever else breaks. Both channels still exist, so both are checked.
+ */
+test.describe('the data mode the release declares', () => {
+  test('a demonstration release says so on every route, and a real one does not', async ({ page }) => {
     await skipOnboarding(page);
     const routes = ['/search', '/operators', '/stations', '/saved', '/offline', '/wallet', '/settings', '/coverage', '/licences'];
     for (const route of routes) {
       await page.goto(route);
       await waitForApp(page);
-      await expectDemoNotice(page);
       const banner = page.getByTestId('demo-banner');
-      // Nothing inside it closes it.
-      const closers = banner.getByRole('button', { name: /κλείσιμο|απόρριψη|close|dismiss/i });
-      await expect(closers).toHaveCount(0);
-      // It says the region is invented and does not exist.
-      await expect(banner).toContainText(/Αλόρια/);
-      await expect(banner).toContainText(/δεν υπάρχει/);
+      if (facts.dataMode === 'demo') {
+        await expectDemoNotice(page);
+        // Nothing inside it closes it.
+        const closers = banner.getByRole('button', { name: /κλείσιμο|απόρριψη|close|dismiss/i });
+        await expect(closers).toHaveCount(0);
+        // It says the region is invented and does not exist.
+        await expect(banner).toContainText(/Αλόρια/);
+        await expect(banner).toContainText(/δεν υπάρχει/);
+      } else {
+        // Telling a reader that real Greek timetables are invented is as wrong
+        // as the reverse, so the notice must be absent.
+        await expect(banner, `${route} claims real data is invented`).toHaveCount(0);
+      }
     }
   });
 
-  test('keeps the whole site out of search indexes while the data is invented', async ({ page, request }) => {
+  test('indexing follows the data mode, and is never on for invented data', async ({ page, request }) => {
     await skipOnboarding(page);
     await page.goto('/operators');
     await waitForApp(page);
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
 
     const robots = await request.get('/robots.txt');
     expect(robots.ok()).toBe(true);
-    expect(await robots.text()).toContain('Disallow: /');
-
-    // No sitemap is published while the data is invented. A static host with an
-    // SPA fallback answers any unknown path with the app shell, so the check is
-    // that nothing sitemap-shaped comes back rather than that the status is 404.
+    const robotsBody = await robots.text();
     const sitemap = await request.get('/sitemap.xml');
     const sitemapBody = sitemap.ok() ? await sitemap.text() : '';
-    expect(sitemapBody, 'a sitemap was published for demonstration data').not.toContain('<urlset');
+
+    if (facts.dataMode === 'demo') {
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+      expect(robotsBody).toContain('Disallow: /');
+      // A static host with an SPA fallback answers an unknown path with the app
+      // shell, so the check is that nothing sitemap-shaped comes back rather
+      // than that the status is 404.
+      expect(sitemapBody, 'a sitemap was published for demonstration data').not.toContain('<urlset');
+    } else {
+      // The operator directory is content the product exists to publish.
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index, follow');
+      expect(robotsBody, 'real data is still disallowed wholesale').toContain('Allow: /');
+      expect(sitemapBody, 'no sitemap was published for real data').toContain('<urlset');
+      // The data directory is machine-only whatever the mode.
+      expect(robotsBody).toContain('Disallow: /data/');
+    }
   });
 });
 

@@ -12,6 +12,12 @@ export const SCREENSHOT_DIR = join(WEB_ROOT, 'artifacts', 'screenshots');
 
 export interface ReleaseFacts {
   readonly releaseId: string;
+  /**
+   * What the release says it is. Several assertions depend on it, because a
+   * demonstration release must be labelled and kept out of every index, and a
+   * real one must be neither.
+   */
+  readonly dataMode: 'real' | 'demo';
   readonly serviceDates: readonly string[];
   readonly placeIds: readonly string[];
   readonly stopPlaceIds: readonly string[];
@@ -35,6 +41,8 @@ export function readReleaseFacts(): ReleaseFacts {
   if (!existsSync(manifestPath)) {
     return {
       releaseId: 'unknown',
+      // Nothing is published, so the safe reading is the labelled one.
+      dataMode: 'demo',
       serviceDates: [],
       placeIds: [],
       stopPlaceIds: [],
@@ -50,6 +58,7 @@ export function readReleaseFacts(): ReleaseFacts {
   };
   const read = <T>(name: string): T => JSON.parse(readFileSync(join(dataDir, manifest.files[name]!.path), 'utf8')) as T;
 
+  const meta = read<{ dataMode?: string }>('meta');
   const places = read<{ places: { id: string; kind: string; name: { el: string } }[] }>('places');
   const operators = read<{ operators: Record<string, unknown> }>('operators');
   const serviceDates = Object.keys(manifest.files)
@@ -73,6 +82,7 @@ export function readReleaseFacts(): ReleaseFacts {
 
   return {
     releaseId: manifest.releaseId,
+    dataMode: meta.dataMode === 'real' ? 'real' : 'demo',
     serviceDates,
     placeIds: places.places.map((p) => p.id),
     stopPlaceIds: places.places.filter((p) => p.kind === 'stop_place').map((p) => p.id),
