@@ -583,7 +583,9 @@ export const sq: Catalogue = {
   'licences.software': 'Programet',
   'licences.data': 'Të dhënat',
   'licences.fonts': 'Shkronjat',
-  'licences.fontsBody': 'Nuk shkarkohet asnjë shkronjë nga rrjeti. Odivrelo përdor shkronjat që ndodhen tashmë në pajisjen tënde.',
+  'licences.fontsBody': 'Odivrelo shërben dy shkronja nga domeni i vet, kështu që leximi i një faqeje nuk kërkon asgjë nga një shërbim shkronjash. Të dyja përdoren nën licencën SIL Open Font Licence 1.1.',
+  'licences.pictures': 'Fotografitë',
+  'licences.picturesBody': 'Fotografitë tregojnë botën nëpër të cilën kalojnë këto udhëtime. Asnjëra nuk tregon punën e Odivrelos, asnjëra nuk është ndryshuar, dhe secila shërbehet nga ky domen nën licencën që zgjodhi krijuesi i saj.',
 
   // -- Errors and states ---------------------------------------------------
   'state.loading': 'Po ngarkohet',

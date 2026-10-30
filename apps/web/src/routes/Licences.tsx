@@ -1,3 +1,4 @@
+import { ALL_PICTURES, TYPEFACES } from '../data/pictures';
 import { useI18n } from '../i18n/I18nProvider';
 import { useHead } from '../hooks/useHead';
 import { useData, useDataMode } from '../app/DataProvider';
@@ -94,6 +95,46 @@ export function Licences() {
 
       <Section title={t('licences.fonts')} level={2}>
         <p>{t('licences.fontsBody')}</p>
+        <ul className="od-licence-list">
+          {TYPEFACES.map((face) => (
+            <li key={face.name}>
+              <a className="od-link" href={face.href} target="_blank" rel="noreferrer">
+                {face.name}
+              </a>
+              {' · '}
+              <a className="od-link" href={face.licenceHref} target="_blank" rel="noreferrer">
+                {face.licence}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      {/*
+        The photographs carry CC BY and CC BY-SA licences, which require the
+        title, the maker and the licence to be named. The captions carry them
+        where each picture appears; this is the single place they are all
+        listed, built from the same records so the two cannot drift apart.
+      */}
+      <Section title={t('licences.pictures')} level={2}>
+        <p>{t('licences.picturesBody')}</p>
+        <ul className="od-licence-list">
+          {ALL_PICTURES.map((picture) => (
+            <li key={picture.src}>
+              <a className="od-link" href={picture.href} target="_blank" rel="noreferrer">
+                {picture.title}
+              </a>
+              {' · '}
+              {picture.creator}
+              {' · '}
+              <a className="od-link" href={picture.licenceHref} target="_blank" rel="noreferrer">
+                {picture.licence}
+              </a>
+              {' · '}
+              {picture.source}
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <Card tone="muted">

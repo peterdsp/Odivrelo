@@ -2238,3 +2238,12 @@ svg {
   object-fit: cover;
   display: block;
 }
+
+/* The licence lists: plain lines, no bullets drawn as ornament. */
+.od-licence-list {
+  margin: var(--od-space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--od-space-2);
+}

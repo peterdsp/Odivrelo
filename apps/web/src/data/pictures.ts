@@ -48,3 +48,29 @@ export const COACH_PICTURE: Picture = {
   source: COMMONS,
   href: 'https://commons.wikimedia.org/wiki/File:KTEL_Bus_at_Bus_Stop_in_Kallithea_Rhodes_19_July_2016.jpg',
 };
+
+/** Every photograph the product carries, for the licences page to list. */
+export const ALL_PICTURES: readonly Picture[] = [TERMINAL_PICTURE, ROAD_PICTURE, COACH_PICTURE];
+
+/** The typefaces the product serves, with the licence each is used under. */
+export interface Typeface {
+  readonly name: string;
+  readonly licence: string;
+  readonly licenceHref: string;
+  readonly href: string;
+}
+
+export const TYPEFACES: readonly Typeface[] = [
+  {
+    name: 'Anton',
+    licence: 'SIL Open Font Licence 1.1',
+    licenceHref: 'https://openfontlicense.org',
+    href: 'https://fonts.google.com/specimen/Anton',
+  },
+  {
+    name: 'Work Sans',
+    licence: 'SIL Open Font Licence 1.1',
+    licenceHref: 'https://openfontlicense.org',
+    href: 'https://fonts.google.com/specimen/Work+Sans',
+  },
+];

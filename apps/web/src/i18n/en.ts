@@ -587,7 +587,9 @@ export const en = {
   'licences.software': 'Software',
   'licences.data': 'Data',
   'licences.fonts': 'Typefaces',
-  'licences.fontsBody': 'No web font is downloaded. Odivrelo uses the typefaces already on your device.',
+  'licences.fontsBody': 'Odivrelo serves two typefaces from its own domain, so reading a page asks nothing of a font service. Both are used under the SIL Open Font Licence 1.1.',
+  'licences.pictures': 'Photographs',
+  'licences.picturesBody': 'The photographs show the world these journeys run through. None shows Odivrelo’s own work, none is altered, and each is served from this domain under the licence its maker chose.',
 
   // -- Errors and states ---------------------------------------------------
   'state.loading': 'Loading',
