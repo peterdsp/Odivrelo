@@ -12,9 +12,13 @@ import { provenanceView } from '../data/contract';
  *
  * This page exists so that the limits of the data are as easy to find as the data.
  * It states the coverage state, the counts behind it, and then the explicit list of
- * what is *not* covered, which is the part a passenger actually needs: no real
- * country in this release, no live tracking, no ticket sales, and no offline map
- * imagery.
+ * what is *not* covered, which is the part a passenger actually needs: no live
+ * tracking, no ticket sales, and no offline map imagery.
+ *
+ * It used to say "no real country in this release" as well. That stopped being
+ * true when the product began publishing real KTEL timetables; the demonstration
+ * strings it refers to are still in the catalogues and still correct, but they
+ * are shown only when the release declares itself a demonstration.
  */
 export function Coverage() {
   const { t, language, name, formatDateTime } = useI18n();

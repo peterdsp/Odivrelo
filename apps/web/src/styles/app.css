@@ -171,7 +171,13 @@ svg {
 
 .od-muted {
   color: var(--od-text-secondary);
-  font-size: 0.875rem;
+  /*
+   * 16px, because this class carries most of the running text on the
+   * directory pages rather than the occasional aside its name suggests. At
+   * 14px those pages were set in small grey type throughout, which is the
+   * look of a page that is still loading.
+   */
+  font-size: 1rem;
 }
 
 .od-mono {
@@ -301,7 +307,12 @@ svg {
 }
 
 .od-footer__statement {
-  font-size: 0.875rem;
+  /*
+   * Body size. This is the longest running text on most pages and it is the
+   * product's statement about what it does not do, which is exactly the part a
+   * reader should not have to squint at.
+   */
+  font-size: 1rem;
   color: var(--od-text-secondary);
   max-inline-size: var(--od-reading-maximum);
 }
@@ -505,6 +516,15 @@ svg {
 
 .od-page__title {
   font: var(--od-type-title);
+  /*
+   * Anton is a condensed display cut and wants the size: at a flat 34px every
+   * inner page opened with nothing leading it, and a first screen with no
+   * dominant element is the thing readers notice first when a page looks
+   * unfinished. Smaller than the welcome page's title, which still leads.
+   */
+  font-size: clamp(2.25rem, 1.1rem + 3.4vw, 3.75rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
 }
 
 .od-page__lede {
@@ -535,7 +555,12 @@ svg {
 
 .od-section__description {
   color: var(--od-text-secondary);
-  font-size: 0.875rem;
+  /*
+   * Running text, so it is set at the body size. At 14px this was the size
+   * most of the running text on a page was set in, which put the product's own
+   * explanations below the size anything meant to be read should be.
+   */
+  font-size: 1rem;
   max-inline-size: var(--od-reading-maximum);
 }
 
@@ -2204,6 +2229,23 @@ svg {
   .od-welcome__does {
     animation: od-rise var(--od-motion-slow) var(--od-easing) 200ms backwards;
   }
+
+  /*
+   * Every page opens the same way: its title, then each section under it,
+   * staggered. Transform only, for the reason given above the keyframes.
+   */
+  .od-page > .od-page__title,
+  .od-page > .od-page__lede,
+  .od-page > section,
+  .od-page > .od-card {
+    animation: od-rise var(--od-motion-slow) var(--od-easing) backwards;
+  }
+
+  .od-page > :nth-child(1) { animation-delay: 0ms; }
+  .od-page > :nth-child(2) { animation-delay: 60ms; }
+  .od-page > :nth-child(3) { animation-delay: 120ms; }
+  .od-page > :nth-child(4) { animation-delay: 180ms; }
+  .od-page > :nth-child(5) { animation-delay: 240ms; }
 }
 
 /* Feedback on the controls the first screen offers. */
