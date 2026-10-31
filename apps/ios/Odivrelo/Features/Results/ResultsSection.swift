@@ -75,7 +75,8 @@ struct ResultsSection: View {
                 tone: .info
             )
 
-            ForEach(result.results) { journey in
+            // The results are the board, so they arrive the way its rows do.
+            ForEach(Array(result.results.enumerated()), id: \.element.id) { position, journey in
                 JourneyCard(
                     journey: journey,
                     isSelected: showsSelection && journey.id == selectedId
@@ -83,6 +84,7 @@ struct ResultsSection: View {
                     onSelect(journey)
                 }
                 .id(journey.id)
+                .boardEntrance(index: position)
             }
         }
     }
