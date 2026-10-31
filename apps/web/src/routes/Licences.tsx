@@ -60,7 +60,7 @@ export function Licences() {
                 {notice.name}
               </ExternalLink>
               {' · '}
-              <span className="od-mono">{notice.licence}</span>
+              <span className="od-licence-name">{notice.licence}</span>
               {' · '}
               <span className="od-muted">{notice.role}</span>
             </li>
@@ -83,7 +83,7 @@ export function Licences() {
                     view.name
                   )}
                   {' · '}
-                  <span className="od-mono">{view.licence}</span>
+                  <span className="od-licence-name">{view.licence}</span>
                 </li>
               );
             })}

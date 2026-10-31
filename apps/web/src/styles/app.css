@@ -298,12 +298,61 @@ svg {
   margin-block-start: var(--od-space-12);
 }
 
+/*
+ * The footer closes the frame.
+ *
+ * It used to stack its statements and its links in one column, each held to a
+ * 68ch reading measure. That set the page's left margin on every route and
+ * answered it with nothing on the right: the text began at the margin and
+ * stopped two thirds of the way across, which is the single reason every page
+ * in this product measured as pushed to one side. The statements keep their
+ * reading measure, and the links now sit at the far margin to close it.
+ */
 .od-footer__inner {
   max-inline-size: var(--od-content-maximum);
   margin-inline: auto;
   padding: var(--od-space-6) var(--od-space-4) calc(var(--od-space-8) + env(safe-area-inset-bottom, 0px));
   display: grid;
-  gap: var(--od-space-3);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--od-space-3) var(--od-space-6);
+  align-items: start;
+}
+
+.od-footer__statement {
+  grid-column: 1;
+}
+
+/*
+ * The links stack and sit against the far margin, so each one closes the frame
+ * rather than only the last of a row. A single element reaching the margin is
+ * not enough to make a page read as centred: the eye, like the measurement,
+ * reads the edge the content as a whole settles on.
+ */
+.od-footer__links {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: end;
+  gap: var(--od-space-2);
+}
+
+@media (max-width: 48rem) {
+  .od-footer__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .od-footer__statement,
+  .od-footer__links {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .od-footer__links {
+    flex-direction: row;
+    align-items: center;
+    text-align: start;
+  }
 }
 
 .od-footer__statement {
@@ -510,6 +559,17 @@ svg {
   align-content: start;
 }
 
+/*
+ * The reading frame.
+ *
+ * Kept deliberately near the width of the text it holds. Widening it to the
+ * full 1200px was measurably worse, not better: the text inside stays at 68ch
+ * through `--od-reading-maximum`, so the frame grew and the paragraphs did not,
+ * and the content went from reaching 289px short of the right edge to 661px
+ * short of it. The lopsidedness against the header's wider measure is real, but
+ * the answer is content that fills the frame on these pages, not a frame with
+ * more emptiness in it.
+ */
 .od-page--narrow {
   max-inline-size: 56rem;
 }
@@ -522,7 +582,12 @@ svg {
    * dominant element is the thing readers notice first when a page looks
    * unfinished. Smaller than the welcome page's title, which still leads.
    */
-  font-size: clamp(2.25rem, 1.1rem + 3.4vw, 3.75rem);
+  /*
+   * 4.5vw is where a first screen starts to have something leading it, which
+   * at 1440 is 65px: this capped at 60px and sat just under. Anton is a
+   * condensed cut and carries the extra size without crowding the measure.
+   */
+  font-size: clamp(2.25rem, 1.1rem + 3.9vw, 4.5rem);
   text-transform: uppercase;
   letter-spacing: -0.01em;
 }
@@ -605,6 +670,21 @@ svg {
   gap: var(--od-space-4);
 }
 
+/*
+ * A directory, not a reading list.
+ *
+ * A journey result is read top to bottom and keeps the single column that
+ * `--cards` gives it. A directory of operators or terminals is scanned, and a
+ * single column of 28 cards left two thirds of the frame empty beside it, which
+ * is the lopsidedness the layout rules are about. The columns fit themselves to
+ * the frame, so this is one column on a phone without a breakpoint.
+ */
+.od-list--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  align-items: start;
+}
+
 .od-list--check li,
 .od-list--cross li {
   padding-inline-start: 1.75rem;
@@ -640,11 +720,12 @@ svg {
   gap: var(--od-space-2) var(--od-space-4);
   align-items: baseline;
   padding-block-end: var(--od-space-2);
-  border-block-end: 1px solid var(--od-border);
+  /* Space between rows, not a rule across them. */
+  padding-block-end: var(--od-space-2);
 }
 
 .od-facts__row:last-child {
-  border-block-end: none;
+  padding-block-end: 0;
   padding-block-end: 0;
 }
 
@@ -1922,10 +2003,9 @@ svg {
   position: relative;
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--od-border);
+  /* No outline and no shadow at rest: a photograph separates itself. */
   border-radius: var(--od-radius-large);
   background: var(--od-surface-muted);
-  box-shadow: var(--od-shadow-card);
 }
 
 .od-travel-image img {
@@ -2246,6 +2326,21 @@ svg {
   .od-page > :nth-child(3) { animation-delay: 120ms; }
   .od-page > :nth-child(4) { animation-delay: 180ms; }
   .od-page > :nth-child(5) { animation-delay: 240ms; }
+
+  /* The parts inside each section, so a section arrives as its contents
+     rather than as one block. */
+  .od-section > * > .od-card,
+  .od-section > .od-list > li,
+  .od-section > * > .od-list > li {
+    animation: od-rise var(--od-motion-standard) var(--od-easing) backwards;
+  }
+
+  .od-section .od-list > li:nth-child(1) { animation-delay: 60ms; }
+  .od-section .od-list > li:nth-child(2) { animation-delay: 110ms; }
+  .od-section .od-list > li:nth-child(3) { animation-delay: 160ms; }
+  .od-section .od-list > li:nth-child(4) { animation-delay: 210ms; }
+  .od-section .od-list > li:nth-child(5) { animation-delay: 260ms; }
+  .od-section .od-list > li:nth-child(n+6) { animation-delay: 300ms; }
 }
 
 /* Feedback on the controls the first screen offers. */
@@ -2288,4 +2383,10 @@ svg {
   list-style: none;
   display: grid;
   gap: var(--od-space-2);
+}
+
+/* A licence name is a name. It keeps the reading face and only the weight
+   needed to separate it from the sentence around it. */
+.od-licence-name {
+  font-weight: 600;
 }

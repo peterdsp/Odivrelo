@@ -62,7 +62,7 @@ export function Operators() {
 
       {operators.state.status === 'ready' ? (
         <Section title={t('operators.count_other', { count: operators.state.value.operators.length })} level={2}>
-          <ul className="od-list od-list--cards">
+          <ul className="od-list od-list--cards od-list--grid">
             {operators.state.value.operators.map((operator) => (
               <li key={operator.id}>
                 <Card as="article">

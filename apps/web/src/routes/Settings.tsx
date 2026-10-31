@@ -267,7 +267,7 @@ export function Settings() {
             {source.kind === 'static' ? t('settings.dataSourceStatic') : t('settings.dataSourceHttp')}
           </Fact>
           <Fact label={t('settings.dataSourceOrigin')}>
-            <span className="od-mono">{source.origin}</span>
+            <code className="od-mono">{source.origin}</code>
           </Fact>
           <Fact label={t('coverage.state')}>
             {dataMode === 'demo' ? t('coverage.stateDemo') : t('coverage.stateCovered')}
@@ -278,7 +278,7 @@ export function Settings() {
             {t('nav.coverage')}
           </Link>
         </p>
-        {appConfig.apiBaseUrl ? <p className="od-mono od-muted">{appConfig.apiBaseUrl}</p> : null}
+        {appConfig.apiBaseUrl ? <p className="od-muted"><code className="od-mono">{appConfig.apiBaseUrl}</code></p> : null}
       </Section>
 
       {/* -- Support -------------------------------------------------------- */}
@@ -299,16 +299,16 @@ export function Settings() {
         <p>{t('settings.markMeaning')}</p>
         <FactList>
           <Fact label={t('settings.version')}>
-            <span className="od-mono">{buildStamp.version}</span>
+            <code className="od-mono">{buildStamp.version}</code>
           </Fact>
           <Fact label={t('settings.commit')}>
-            <span className="od-mono">{buildStamp.commit}</span>
+            <code className="od-mono">{buildStamp.commit}</code>
           </Fact>
           <Fact label={t('settings.builtAt')}>
-            <span className="od-mono">{buildStamp.builtAt}</span>
+            <code className="od-mono">{buildStamp.builtAt}</code>
           </Fact>
           <Fact label={t('settings.dataRelease')}>
-            <span className="od-mono">{releaseId ?? t('app.unknown')}</span>
+            <code className="od-mono">{releaseId ?? t('app.unknown')}</code>
             {publishedAt ? <span className="od-muted"> {formatDateTime(publishedAt)}</span> : null}
           </Fact>
         </FactList>

@@ -102,20 +102,20 @@ export function StationNetworkMap({ places }: Props) {
             element.title = name(station.name);
             new Marker({ element }).setLngLat([station.longitude, station.latitude]).addTo(map);
           }
-          // Deliberately synthetic: the moving marker is a visual demonstration,
-          // never presented as a real-time vehicle position.
-          const bus = document.createElement('div');
-          bus.className = 'od-network-bus';
-          bus.textContent = '🚌';
-          bus.setAttribute('aria-hidden', 'true');
-          const busMarker = new Marker({ element: bus }).setLngLat(linePoints[0]!).addTo(map);
-          let index = 0;
-          const timer = window.setInterval(() => {
-            index = (index + 1) % linePoints.length;
-            busMarker.setLngLat(linePoints[index]!);
-          }, 1800);
+          /*
+           * There used to be a coach driving along this line: an emoji marker
+           * moved between the points every 1.8 seconds, captioned "Simulation,
+           * not live location".
+           *
+           * It was labelled honestly and it still had to go. The product tells
+           * every reader, in the footer of every page, that it does not track
+           * vehicles and that every time it shows is a scheduled time rather
+           * than a live position. An animated vehicle crossing a map is a
+           * picture of the one capability Odivrelo says it does not have, and a
+           * caption underneath does not undo what the animation says. It was
+           * also the only emoji in the product.
+           */
           cleanup = () => {
-            window.clearInterval(timer);
             map.remove();
           };
         });
@@ -156,7 +156,7 @@ export function StationNetworkMap({ places }: Props) {
         <Button tone="quiet" onClick={() => mapRef.current?.zoomOut()} aria-label={t('a11y.zoomOut')}>−</Button>
         <Button tone="quiet" onClick={() => mapRef.current?.fit()}>{t('a11y.recentre')}</Button>
       </div>
-      <p className="od-network-map__legend"><span className="od-network-map__legend-dot" /> {t('stations.realStations')} · <span aria-hidden="true">🚌</span> {t('stations.simulated')}</p>
+      <p className="od-network-map__legend"><span className="od-network-map__legend-dot" /> {t('stations.realStations')}</p>
       {(!appConfig.mapStyleUrl || tilesFailed) ? <p className="od-map__note">{t('stations.mapNoTiles')}</p> : null}
     </Card>
   );
