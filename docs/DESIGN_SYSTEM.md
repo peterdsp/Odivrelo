@@ -9,11 +9,15 @@ portal and not a government form.
 
 The visual language combines:
 
-- Deep teal blue for the brand, primary actions and orientation.
-- A light blue-grey background, so white cards and journey detail stand out.
-- Warm orange as an accent for the destination and for focus, never as text.
+- Paper and print ink: a white ground with navy type, the way a timetable is
+  printed rather than the way a portal is styled.
+- A near-black field for the departures board, which is the object the product
+  is built as and where its figures live.
+- Board amber on the action and on the board's own times, taken from what a
+  KTEL departures board actually looks like.
 - Generous white space and clear route structure.
-- Visible source and freshness states.
+- Visible source and freshness states, set as the board's last column rather
+  than as fine print.
 
 The product should never borrow operator logos or federation visual language in
 a way that suggests official affiliation.
@@ -86,9 +90,27 @@ The source of truth for every colour below is
 writes the Web, Android and iOS themes from it and audits WCAG AA contrast for
 every text pairing in both themes before it writes anything.
 
+## The object the pages are built as
+
+The welcome page is a terminal departures board, and the board's last column is
+when each row was last checked. That column is the product: no coach timetable
+prints it, because none of them records it.
+
+Its rows are real. `scripts/generate-board-sample.py` bakes them out of the
+published release at release time, taking the soonest service date that has not
+passed and the origin with the most departures on it. **Regenerate it whenever
+the release changes.** Taking the earliest date instead produced a board of
+departures three weeks gone, every row of it correctly and uselessly marked out
+of date, which is what the first attempt shipped.
+
+The board is a near-black field in both themes, so its inks cannot follow the
+page theme: the light theme's rail green is unreadable on it. It uses the dark
+theme's rail colours, which the audit already proves at 4.5:1 against that
+exact ground.
+
 ## Brand mark
 
-The mark, "Route O", is a bold ring in deep teal blue with a road (lane dashes
+The mark, "Route O", is a bold ring in the print ink with a road (lane dashes
 down its middle) sweeping up through it from the lower left to a warm orange
 node on the upper right of the ring. The masters, the generator and the rules
 are in `design/logo/` and on the brand board, `design/Odivrelo-Brand-Board.svg`.
@@ -112,24 +134,24 @@ Rules:
 
 | Token | Value | Purpose |
 |---|---|---|
-| Deep Teal Blue | `#0B4A6B` | The ring, primary actions, app icon ground |
-| Warm Orange | `#FF9F2E` | The destination node, focus, highlights. Never text on white |
-| Light Background | `#E6F1F7` | Muted surfaces and the light icon ground |
-| Navy | `#082F45` | Primary text, the road and the wordmark |
+| Print Ink | `#1F2B4D` | Primary actions, the ring, the app icon ground |
+| Board Amber | `#F7941D` | The action, the board's figures, focus. Never text on white |
+| Paper | `#F4F4F2` | The page ground |
+| Board Field | `#05070A` | The departures board, and the dark theme's ground |
 | White | `#FFFFFF` | Cards and elevated surfaces |
 
 ### Core semantic palette, light
 
 | Role | Value | Purpose |
 |---|---|---|
-| Background | `#F4F8FB` | App background |
+| Background | `#F4F4F2` | App background |
 | Surface | `#FFFFFF` | Cards |
-| Surface muted | `#E6F1F7` | Selected and supporting surfaces |
-| Text primary | `#082F45` | Body text, 13.1:1 on the background |
-| Text secondary | `#45596A` | Secondary text, 6.8:1 on the background |
-| Primary | `#0B4A6B` | Actions and links, 8.9:1 on the background |
-| Primary pressed | `#083A55` | Pressed actions and the focus ring |
-| Border | `#C9D8E1` | Dividers |
+| Surface muted | `#F2F3F7` | Selected and supporting surfaces |
+| Text primary | `#141B33` | Body text, 15.4:1 on the background |
+| Text secondary | `#575E73` | Secondary text, 5.9:1 on the background |
+| Primary | `#27365E` | Actions and links, 10.7:1 on the background |
+| Primary pressed | `#1F2B4D` | Pressed actions and the focus ring |
+| Border | `#D7DAE3` | Dividers |
 
 ### Status palette
 
@@ -217,11 +239,20 @@ The material values are tokens, not literals: `material.*` in
 
 ## Typography
 
-Use platform-native typography with matching metrics:
+Two faces on the web, platform-native on the native clients:
 
-- Web: Inter with a system fallback.
+- Web display: **Anton**, for titles and the board's figures. A condensed heavy
+  cut, set large with tight tracking, which is what a departures board uses.
+- Web text: **Work Sans**.
 - iOS: SF Pro.
 - Android: Roboto.
+
+Both web faces are served from Odivrelo's own domain, under the SIL Open Font
+Licence 1.1, with their Greek subsets loaded first. **Never from a font CDN**:
+the product tells every reader that it contacts no third party, an end to end
+test fails the build on any third party request, and the content security
+policy forbids it. Without the Greek subsets every Greek heading falls back to
+the system face without saying so, which is the common way this breaks.
 
 All chosen families must support Greek, English and Albanian.
 
@@ -297,7 +328,7 @@ The map is useful evidence, not decoration.
 - Coach routes use Route Teal unless multiple routes need differentiation.
 - Selected route is 6 pixels wide with a contrasting casing.
 - Unselected routes are 3 pixels wide.
-- Stops are white circles with a teal border.
+- Stops are white circles with a print ink border.
 - Terminals use a larger filled marker.
 - Unverified geometry uses a dotted line and an explicit label.
 - Ferry segments use a blue dashed line.
