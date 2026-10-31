@@ -98,3 +98,68 @@ every found picture with its licence. Leave the branch ready to push.
   bay. The interface must not offer what the data does not carry.
 - The contrast gate covers 79 pairings and runs inside
   `scripts/generate-design-tokens.sh`.
+
+---
+
+# Outcome, 14:40
+
+The session ran from 03:05 to the 15:00 deadline. What follows is what was
+measured, not what was intended.
+
+## Done and measured
+
+| Surface | At the start | Now |
+| --- | --- | --- |
+| six app screens | judged by the wrong ruleset | 0 FAIL each, under `--app` |
+| settings | 5 FAIL | 0 |
+| welcome | 0 FAIL | 0 |
+| operators, coverage, licences | 4 FAIL each | 2 each |
+| stations | 6 FAIL | 3 |
+
+Cleared across the product: `focal-point`, `still-page`, `mono`, `hairline`,
+`emoji`, `shadow`, `body-size`, and five text sizes that sat below the readable
+floor in shared code.
+
+Also done in the same branch, before this plan was written: the art direction
+itself on the welcome page, the palette and the two self-hosted faces across
+web, iOS and Android, the Apple HIG review, and an App Intent for the next
+coach from a terminal.
+
+## Open, with the reason
+
+**`few-pictures` on four pages.** The floor is four real pictures. These are
+directories of real data. A terminal photograph on the station directory is
+meaningful; padding a licences page with stock photography is decoration,
+which the same guidance forbids. Answer it per page or defend it per page, but
+do not pad it.
+
+**`off-centre` on four pages.** Seven attempts, each measured. The rule reads
+the 98th percentile of text extents, so on a 129 box page roughly 125 boxes
+must reach the right margin. This product's pages are built from short strings:
+operator names, "266 stops", "Covered". The threshold is calibrated on
+marketing pages with wide prose and does not fit a data directory. The footer
+defect it uncovered was real and is fixed.
+
+**`empty-screens` on stations.** Four of seven desktop screens are mostly
+ground. That is a composition question about what a station directory should
+show, and it is genuinely open.
+
+**iOS, the one Critical finding in the product.** At
+`accessibility-extra-extra-extra-large` the tab bar takes a frame of 393 by 793
+and swallows every tap on the search form, so a journey cannot be searched by
+finger or by VoiceOver. Proven as a controlled pair: passes at `large`, fails
+at XXXL. Not the app's code; it is SwiftUI tab bar behaviour at accessibility
+sizes. This outranks every layout threshold above and is the first thing to
+pick up.
+
+**Android** has the new palette compiled but nothing has looked at it.
+
+## For whoever continues
+
+`sources.test.ts` times out above roughly load average 100 and says
+`Test timed out in 60000ms`. Check `uptime` before believing a failure there.
+
+When the gate disagrees with you, instrument the gate. Seven attempts at
+`off-centre` failed by reasoning about the page; the eighth succeeded by
+replicating the rule's own arithmetic in the browser and reading which
+elements set its numbers. It was the footer, on every route, the whole time.
