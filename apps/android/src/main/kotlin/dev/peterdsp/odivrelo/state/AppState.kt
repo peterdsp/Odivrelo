@@ -115,8 +115,29 @@ data class AppState(
                 .sorted()
         }.orEmpty()
 
+    /**
+     * Whether the release on this device is a demonstration.
+     *
+     * The release says so itself, and it is the only thing that knows. This
+     * used to be `settings.showsDemoNotice || meta...isDemo`, and the settings
+     * value defaults to [AppDataMode.DEMO] and is only ever changed by someone
+     * opening Settings and choosing. So a build carrying real KTEL timetables
+     * greeted its first reader with "Aloria does not exist and no journey here
+     * is real", over real departures from real terminals.
+     *
+     * Telling a reader that real timetables are invented is as damaging as the
+     * reverse, and the first screen was where it said it.
+     *
+     * Falling back to the stored preference was not enough either: the welcome
+     * screen is shown before the release has been read, so the fallback was
+     * what ran, and it still said demonstration. Until the release has spoken
+     * the app now says nothing. The notice appears as soon as a demonstration
+     * release is read, a moment later, which is the right way round: a notice
+     * that arrives a beat late is a smaller harm than one that calls real
+     * departures invented.
+     */
     val isDemo: Boolean
-        get() = settings.showsDemoNotice || meta.valueOrNull?.isDemo == true
+        get() = meta.valueOrNull?.isDemo == true
 
     override fun equals(other: Any?): Boolean = this === other || (
         other is AppState &&
