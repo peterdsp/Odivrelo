@@ -74,6 +74,7 @@ reason it stands.
 - The duration row reads as two numbers running together.
 
 Gate: the controlled pair passes at both text sizes, 171 tests still green.
+  (Outcome: the pair was measuring the fixture, see below.)
 
 ## Phase 5: Android (12:30 to 13:30)
 
@@ -144,35 +145,31 @@ defect it uncovered was real and is fixed.
 ground. That is a composition question about what a station directory should
 show, and it is genuinely open.
 
-**iOS, the one Critical finding in the product.** At
-`accessibility-extra-extra-extra-large` a journey cannot be searched: the
-origin field does not open its picker from a tap at its centre, at a tenth of
-the way down it, or from a touch delivered straight to its own screen point.
-The same `.tap()` works at `large`. Proven as a controlled pair on one binary.
+**iOS at the largest text size: withdrawn, there is no defect.** This section
+previously recorded, as the product's one Critical finding, that a journey
+could not be searched at `accessibility-extra-extra-extra-large`. Walking the
+whole flow on the real release on 5 Nov disproves it: both pickers open, both
+accept a place, and the search button ends up enabled.
+`testJourneyIsSearchableAtLargestTextSize` keeps that honest.
 
-**The cause is not known, and the earlier claim that it was the tab bar is
-withdrawn.** That claim rested on the bar reporting a frame of 393 by 793 and
-on the field reporting `isHittable=false`. Running the control shows both are
-true at `large` as well, where every tap lands:
+Two reading errors produced the finding, and both are worth keeping.
 
-    large (passes): origin 321 x 52,  hittable=false, toolbar (0,59,393,793)
-    XXXL  (fails):  origin 330 x 363, hittable=false, toolbar (0,59,393,793)
+The first is the indicator. "Did the picker open" was answered with
+`app.sheets.count`, but the picker is a navigation push, so that count is zero
+either way. The navigation bars say it plainly: `From | Search` is an open
+picker.
 
-Four candidate fixes were tried and each measured rather than assumed: capping
-the bar's label size (toolbar frame identical to the pixel), the adaptable tab
-style (identical again), giving the button an explicit hit shape, and limiting
-the field's height from 363 points to 300. None moved it. The app's own layout
-code is not involved: `avoidingReservedRegions` acts only on an iPhone Duo
-splitting region, and the one `.toolbar` in the app is in a deep link sheet
-outside this flow. All four experiments are reverted.
+The second is the subject. Every UI test launches with `-OdivreloUseFixture`,
+so all of it measured `FixtureCoreClient` and Aloria's invented names, never
+the app. The real release carries Greek names of a different length, and length
+is the one variable that genuinely changes at this text size.
 
-The remaining untried option is to replace the system tab bar above
-`accessibility3` with a custom control. That is a navigation change rather than
-a patch and deserves its own session.
-
-When reproducing: boot the simulator **before** setting the content size.
-`simctl` silently does nothing on a shut down device, and the run then happens
-at the default size and looks like a pass. That produced one false green here.
+Four candidate fixes were tried against this and each was measured rather than
+assumed: capping the bar's label size, the adaptable tab style, an explicit hit
+shape, and limiting the field's height. None moved the symptom because there
+was no symptom. **A cause that keeps evaporating under measurement is evidence
+the symptom is mismeasured.** That reading was available four eliminations
+earlier than it was taken.
 
 **Android** has the new palette compiled but nothing has looked at it.
 

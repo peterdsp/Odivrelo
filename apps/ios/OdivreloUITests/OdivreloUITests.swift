@@ -60,6 +60,62 @@ final class OdivreloUITests: XCTestCase {
         add(attachment)
     }
 
+    // MARK: Accessibility sizes
+
+    /// A journey can be searched at the largest text size, on the real release.
+    ///
+    /// This test exists because of a wrong diagnosis. An earlier run of the
+    /// fixture flow found no `place.*` buttons after tapping the origin and
+    /// concluded the field did not open its picker at
+    /// `accessibility-extra-extra-extra-large`, which was recorded as the
+    /// product's one Critical defect. Two things were wrong with that. The
+    /// picker is a navigation push, not a sheet, so `app.sheets` is empty even
+    /// when it is open and was never the right thing to read. And the flow was
+    /// the fixture's, not the app's: the release this test runs against carries
+    /// Greek place names of a different length, which is the variable that
+    /// actually changes at this text size.
+    ///
+    /// So this launches the real core, with no `-OdivreloUseFixture`, and walks
+    /// the whole search: both pickers open, both accept a place, and the search
+    /// button ends up enabled. Set the content size on a **booted** simulator
+    /// before running it; `simctl` does nothing on a shut down device and the
+    /// run then silently happens at the default size.
+    @MainActor
+    func testJourneyIsSearchableAtLargestTextSize() {
+        let app = XCUIApplication()
+        app.launchArguments += ["-OdivreloSkipOnboarding", "-OdivreloResetState"]
+        app.launch()
+
+        let origin = app.buttons["search.origin"]
+        XCTAssertTrue(origin.waitForExistence(timeout: 30), "the search form should appear")
+        origin.tap()
+
+        let places = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'place.'"))
+        XCTAssertTrue(
+            places.firstMatch.waitForExistence(timeout: 15),
+            "the origin picker should open and list places"
+        )
+        places.firstMatch.tap()
+        XCTAssertTrue(origin.waitForExistence(timeout: 10), "choosing an origin should return to the form")
+
+        let destination = app.buttons["search.destination"]
+        XCTAssertTrue(destination.waitForExistence(timeout: 10))
+        destination.tap()
+        XCTAssertTrue(
+            places.firstMatch.waitForExistence(timeout: 15),
+            "the destination picker should open and list places"
+        )
+        if places.count > 1 {
+            places.element(boundBy: 1).tap()
+        } else {
+            places.firstMatch.tap()
+        }
+
+        let submit = app.buttons["search.submit"]
+        XCTAssertTrue(submit.waitForExistence(timeout: 10))
+        XCTAssertTrue(submit.isEnabled, "a journey must be searchable at the largest text size")
+    }
+
     // MARK: Cold launch
 
     @MainActor
