@@ -1540,10 +1540,6 @@ svg {
   gap: var(--od-space-2);
 }
 
-.od-detail__duration {
-  font: var(--od-type-heading);
-  color: var(--od-text-secondary);
-}
 
 .od-detail__actions,
 .od-pack__actions {
@@ -2634,4 +2630,47 @@ svg {
   margin-inline: auto;
   font-size: 0.9375rem;
   color: var(--od-text-secondary);
+}
+
+/* ---------------------------------------------------------------------------
+   The journey summary: the three facts a traveller checks first.
+
+   A summary, not a claim: every value here is stated again in full further
+   down the page with its own quality badge. Equal columns, a tone step rather
+   than boxes, numbers in the tabular face so they align.
+--------------------------------------------------------------------------- */
+
+.od-detail__summary {
+  list-style: none;
+  margin: 0;
+  padding: var(--od-space-4) 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--od-space-4);
+  border-block: 1px solid var(--od-border);
+}
+
+.od-detail__summary-item {
+  display: grid;
+  gap: 0.125rem;
+  min-inline-size: 0;
+}
+
+.od-detail__summary-value {
+  font-size: 1.0625rem;
+  font-weight: 650;
+  color: var(--od-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.od-detail__summary-label {
+  font-size: 0.8125rem;
+  color: var(--od-text-secondary);
+}
+
+@media (max-width: 26rem) {
+  .od-detail__summary {
+    grid-template-columns: 1fr;
+    gap: var(--od-space-3);
+  }
 }

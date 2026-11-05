@@ -233,6 +233,10 @@ export const el: Catalogue = {
   // -- Journey detail ------------------------------------------------------
   'journey.title': '{origin} προς {destination}',
   'journey.operatingDate': 'Ημερομηνία εκτέλεσης',
+  'journey.summaryDuration': 'Διάρκεια',
+  'journey.summaryStops': 'Στάσεις',
+  'journey.summaryChecked': 'Ελέγχθηκε',
+  'journey.summaryDirect': 'Απευθείας',
   'journey.operator': 'Μεταφορέας',
   'journey.route': 'Γραμμή',
   'journey.boarding': 'Από πού επιβιβάζεσαι',

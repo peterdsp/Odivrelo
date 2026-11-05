@@ -232,6 +232,10 @@ export const sq: Catalogue = {
   // -- Journey detail ------------------------------------------------------
   'journey.title': '{origin} për {destination}',
   'journey.operatingDate': 'Data e kryerjes',
+  'journey.summaryDuration': 'Kohëzgjatja',
+  'journey.summaryStops': 'Ndalesat',
+  'journey.summaryChecked': 'Kontrolluar',
+  'journey.summaryDirect': 'Direkt',
   'journey.operator': 'Operatori',
   'journey.route': 'Linja',
   'journey.boarding': 'Nga ku hipesh',

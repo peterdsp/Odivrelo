@@ -236,6 +236,10 @@ export const en = {
   // -- Journey detail ------------------------------------------------------
   'journey.title': '{origin} to {destination}',
   'journey.operatingDate': 'Operating date',
+  'journey.summaryDuration': 'Duration',
+  'journey.summaryStops': 'Stops',
+  'journey.summaryChecked': 'Checked',
+  'journey.summaryDirect': 'Direct',
   'journey.operator': 'Operator',
   'journey.route': 'Route',
   'journey.boarding': 'Where to board',

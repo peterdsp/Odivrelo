@@ -58,7 +58,7 @@ export function JourneyDetailView({
   snapshot = null,
   snapshotReleaseId,
 }: JourneyDetailViewProps) {
-  const { t, name, formatClock, formatDateTime, formatDuration, formatMoney, formatServiceDate } = useI18n();
+  const { t, name, formatClock, formatDateTime, formatDuration, formatMoney, formatServiceDate, formatServiceDateShort } = useI18n();
   const { source, storageAvailable } = useData();
   const layout = useLayout();
   const { announce, alert } = useAnnouncer();
@@ -181,7 +181,6 @@ export function JourneyDetailView({
         <time className="od-data" dateTime={journey.departure.at}>{formatClock(journey.departure.at)}</time>
         <span aria-hidden="true"> {'→'} </span>
         <time className="od-data" dateTime={journey.arrival.at}>{formatClock(journey.arrival.at)}</time>
-        <span className="od-detail__duration od-data"> {formatDuration(journey.durationMinutes)}</span>
       </p>
 
       <p className="od-detail__badges">
@@ -194,6 +193,33 @@ export function JourneyDetailView({
           </Badge>
         ) : null}
       </p>
+
+      {/*
+        The three facts a traveller checks first, together, before the long
+        fact list. Each is already stated elsewhere on the page; this is a
+        summary, so it adds no claim of its own. The checked date is the
+        release's own timestamp, not a freshness adjective.
+      */}
+      <ul className="od-detail__summary">
+        <li className="od-detail__summary-item">
+          <span className="od-detail__summary-value od-data">{formatDuration(journey.durationMinutes)}</span>
+          <span className="od-detail__summary-label">{t('journey.summaryDuration')}</span>
+        </li>
+        <li className="od-detail__summary-item">
+          <span className="od-detail__summary-value">
+            {journey.intermediateStopCount === 0
+              ? t('journey.summaryDirect')
+              : journey.intermediateStopCount}
+          </span>
+          <span className="od-detail__summary-label">{t('journey.summaryStops')}</span>
+        </li>
+        <li className="od-detail__summary-item">
+          <span className="od-detail__summary-value od-data">
+            <time dateTime={journey.freshness.checkedAt}>{formatServiceDateShort(journey.freshness.checkedAt.slice(0, 10))}</time>
+          </span>
+          <span className="od-detail__summary-label">{t('journey.summaryChecked')}</span>
+        </li>
+      </ul>
 
       {expired ? (
         <StateBlock
