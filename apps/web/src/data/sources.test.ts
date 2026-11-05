@@ -472,3 +472,40 @@ describeRelease('an unpacked date is not the same as no service', () => {
     }
   });
 });
+
+describeRelease('an abandoned load', () => {
+  /**
+   * The manifest and each pack are fetched once and the promise is cached, so
+   * every later caller gets the same download. That made the first caller's
+   * abort signal everyone's abort signal: when a component unmounted mid-load,
+   * the shared promise rejected with an AbortError, and callers that correctly
+   * ignore AbortErrors sat on "loading" forever with no request in flight and
+   * nothing shown. React Strict Mode reproduced it on every dev mount.
+   */
+  it('does not let one caller giving up wedge the next one', async () => {
+    const source = new StaticPackSource({ baseUrl: '/data/', fetchImpl: makeStaticFetch() });
+
+    const abandoned = new AbortController();
+    const first = source.manifest(abandoned.signal).catch(() => 'rejected' as const);
+    abandoned.abort();
+    await first;
+
+    // The second caller must still get a manifest, not inherit the abort.
+    const manifest = await source.manifest();
+    expect(manifest.releaseId).toBeTruthy();
+    expect(manifest.files.meta).toBeTruthy();
+  });
+
+  it('serves a pack to a later caller after an earlier one aborts', async () => {
+    const source = new StaticPackSource({ baseUrl: '/data/', fetchImpl: makeStaticFetch() });
+
+    const abandoned = new AbortController();
+    const first = source.operators(abandoned.signal).catch(() => 'rejected' as const);
+    abandoned.abort();
+    await first;
+
+    const operators = await source.operators();
+    expect(Array.isArray(operators.operators)).toBe(true);
+    expect(operators.operators.length).toBeGreaterThan(0);
+  });
+});

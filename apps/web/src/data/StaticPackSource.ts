@@ -142,12 +142,18 @@ export class StaticPackSource implements PublicDataSource {
     }
   }
 
-  async manifest(signal?: AbortSignal): Promise<Manifest> {
+  async manifest(_signal?: AbortSignal): Promise<Manifest> {
     if (!this.manifestPromise) {
       this.manifestPromise = (async () => {
         let bytes: ArrayBuffer;
         try {
-          bytes = await this.fetchBytes('manifest.json', null, signal);
+          // Deliberately not the caller's signal. This promise is cached and
+          // handed to every later caller, so binding it to the first caller's
+          // signal means that caller going away rejects it for everyone, with
+          // an AbortError the callers correctly ignore. The result is a source
+          // stuck on "loading" with no request in flight and no error shown.
+          // A caller that abandons the load simply stops listening.
+          bytes = await this.fetchBytes('manifest.json', null, undefined);
         } catch (error) {
           // The manifest is the one mutable file, so it is always fetched. With
           // no connection, the copy stored when the packs were installed is used
@@ -195,11 +201,14 @@ export class StaticPackSource implements PublicDataSource {
   }
 
   /** Reads and caches one logical pack, verified against the manifest digest. */
-  private pack<T>(name: string, signal?: AbortSignal): Promise<T> {
+  private pack<T>(name: string, _signal?: AbortSignal): Promise<T> {
     const cached = this.packCache.get(name);
     if (cached) return cached as Promise<T>;
     const promise = (async () => {
-      const manifest = await this.manifest(signal);
+      // Cached like the manifest, and for the same reason not bound to the
+      // caller's signal: packs are immutable and shared, so one component
+      // unmounting must not cancel a download the rest of the app is awaiting.
+      const manifest = await this.manifest();
       const file = manifest.files[name];
       if (!file) throw new ContractError('not_found', `This release carries no "${name}" pack.`);
       try {
@@ -210,7 +219,7 @@ export class StaticPackSource implements PublicDataSource {
               .map(([, value]) => value)
           : [file];
         const parts = await Promise.all(files.map(async (part) => {
-          const bytes = await this.fetchBytes(part.path, part, signal);
+          const bytes = await this.fetchBytes(part.path, part, undefined);
           return JSON.parse(new TextDecoder().decode(bytes)) as T & { stops?: Record<string, unknown> };
         }));
         if (name === 'stops' && parts.length > 1) {
