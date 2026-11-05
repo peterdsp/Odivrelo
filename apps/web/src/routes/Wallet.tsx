@@ -158,7 +158,7 @@ export function Wallet() {
           body={<p>{t('offline.storageUnavailableBody')}</p>}
         />
       ) : (
-        <Section title={t('wallet.import')} level={2} description={t('wallet.importHelp', { max: formatBytes(MAX_WALLET_BYTES, language) })}>
+        <Section title={t('wallet.import')} level={2}>
           <TextField
             id="wallet-label"
             label={`${t('wallet.label')} (${t('app.optional')})`}
@@ -168,7 +168,13 @@ export function Wallet() {
             onChange={(event) => setLabel(event.target.value)}
           />
           <div className="od-field">
-            <label className="od-field__label" htmlFor="wallet-file">
+            {/*
+              The section heading already says "add a ticket file", so a
+              visible label under it printed the same words twice. The input
+              still needs an accessible name, so the label stays and is hidden
+              visually rather than removed.
+            */}
+            <label className="od-field__label od-visually-hidden" htmlFor="wallet-file">
               {t('wallet.import')}
             </label>
             <input
