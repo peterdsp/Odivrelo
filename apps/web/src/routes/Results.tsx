@@ -81,10 +81,30 @@ export function Results() {
     return map;
   }, [places.state]);
 
-  const originName = state.originId ? name(placeById.get(state.originId)?.name) || state.originId : '';
-  const destinationName = state.destinationId ? name(placeById.get(state.destinationId)?.name) || state.destinationId : '';
-
   const value: JourneysResult | null = results.state.status === 'ready' ? results.state.value : null;
+
+  /**
+   * The names of the two ends of the search.
+   *
+   * The places lookup is a paged directory keyed by place, so a search made
+   * with a stop id, which is what a result link carries, misses it. The
+   * journeys themselves name both ends, so those are preferred and the
+   * directory is only the fallback.
+   *
+   * There is deliberately no fall back to the identifier. A traveller reading
+   * "KS_EC414DEAE56F1B506A0ECA69 to KS_B2CA3AFF2965E2A49A047ECB" has been told
+   * nothing; an empty heading is at least not noise, and every other part of
+   * the screen still names the stops.
+   */
+  const firstResult = value?.results[0] ?? null;
+  const originName =
+    name(firstResult?.departure.stopName) ||
+    (state.originId ? name(placeById.get(state.originId)?.name) : '') ||
+    '';
+  const destinationName =
+    name(firstResult?.arrival.stopName) ||
+    (state.destinationId ? name(placeById.get(state.destinationId)?.name) : '') ||
+    '';
 
   useHead({
     title:
@@ -145,7 +165,23 @@ export function Results() {
   const list = (
     <div className="od-results">
       <div className="od-results__head">
-        <h1 className="od-page__title">{t('results.title', { origin: originName, destination: destinationName })}</h1>
+        {/*
+          A working screen, so the heading is a noun at reading size rather
+          than the landing page's display cut. Greek terminal names are long
+          and the condensed uppercase face clipped them; this one wraps.
+        */}
+        <h1 className="od-results__title">
+          {originName && destinationName ? (
+            <>
+              <span>{originName}</span>
+              <span className="od-results__arrow" aria-hidden="true">{'\u2192'}</span>
+              <span className="od-results__to">{t('results.to')}</span>
+              <span>{destinationName}</span>
+            </>
+          ) : (
+            t('results.title', { origin: originName, destination: destinationName })
+          )}
+        </h1>
         <p className="od-results__meta">
           <span>{state.date ? t('search.date') : ''}</span>{' '}
           {state.date ? <time dateTime={state.date}>{state.date}</time> : null}
@@ -303,9 +339,23 @@ export function Results() {
     </div>
   );
 
+  /*
+   * The detail pane keeps its frame when nothing is selected.
+   *
+   * On a wide window the pane is half the screen, and rendering nothing into
+   * it left that half blank with no explanation of what it was for. A resting
+   * state says what will appear there. Only in the two-pane layout: when one
+   * pane fits, the detail genuinely replaces the list and a placeholder would
+   * hide the results.
+   */
   const detail =
     state.journeyId && state.date ? (
       <JourneyDetailView journeyId={state.journeyId} serviceDate={state.date} headingLevel={2} embedded />
+    ) : layout.twoPane && value && value.results.length > 0 ? (
+      <div className="od-detail-resting">
+        <p className="od-detail-resting__title">{t('results.restingTitle')}</p>
+        <p className="od-detail-resting__body">{t('results.restingBody')}</p>
+      </div>
     ) : null;
 
   return (

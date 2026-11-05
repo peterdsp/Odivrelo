@@ -147,6 +147,9 @@ export const el: Catalogue = {
 
   // -- Results -------------------------------------------------------------
   'results.title': '{origin} προς {destination}',
+  'results.to': 'προς',
+  'results.restingTitle': 'Διάλεξε δρομολόγιο',
+  'results.restingBody': 'Οι στάσεις, η θέση επιβίβασης, ο μεταφορέας και η ημερομηνία ελέγχου κάθε στοιχείου εμφανίζονται εδώ.',
   'results.count_zero': 'Κανένα δρομολόγιο',
   'results.count_one': '{count} δρομολόγιο',
   'results.count_other': '{count} δρομολόγια',

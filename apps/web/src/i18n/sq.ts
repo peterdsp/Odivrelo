@@ -146,6 +146,9 @@ export const sq: Catalogue = {
 
   // -- Results -------------------------------------------------------------
   'results.title': '{origin} për {destination}',
+  'results.to': 'drejt',
+  'results.restingTitle': 'Zgjidh një udhëtim',
+  'results.restingBody': 'Ndalesat, vendi i hipjes, operatori dhe data kur u kontrollua secili fakt shfaqen këtu.',
   'results.count_zero': 'Asnjë udhëtim',
   'results.count_one': '{count} udhëtim',
   'results.count_other': '{count} udhëtime',

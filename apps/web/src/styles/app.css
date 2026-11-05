@@ -2565,3 +2565,73 @@ svg {
   font-size: 0.875rem;
   color: var(--od-text-secondary);
 }
+
+/* ---------------------------------------------------------------------------
+   The results heading.
+
+   A screen people work in, so the title is a noun at reading size, not the
+   landing page's display cut. The two terminal names wrap independently: Greek
+   terminal names run long, and set in a condensed uppercase face they were
+   clipped at the column edge.
+--------------------------------------------------------------------------- */
+
+.od-results__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+  min-inline-size: 0;
+  font-family: var(--od-font-sans);
+  font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
+  font-weight: 680;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--od-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.od-results__arrow {
+  color: var(--od-accent);
+  font-weight: 700;
+}
+
+/* The arrow carries the direction visually; this carries it for a screen
+   reader, which would otherwise hear two names and no relationship. */
+.od-results__to {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The detail pane before anything is selected: a frame with a reason, rather
+   than half a wide screen left blank. */
+.od-detail-resting {
+  display: grid;
+  align-content: center;
+  gap: var(--od-space-2);
+  min-block-size: 16rem;
+  padding: var(--od-space-6);
+  border: 1px dashed var(--od-border);
+  border-radius: var(--od-radius-large);
+  background: var(--od-neutral-surface);
+  text-align: center;
+}
+
+.od-detail-resting__title {
+  margin: 0;
+  font-weight: 650;
+  color: var(--od-text-primary);
+}
+
+.od-detail-resting__body {
+  margin: 0;
+  max-inline-size: 34ch;
+  margin-inline: auto;
+  font-size: 0.9375rem;
+  color: var(--od-text-secondary);
+}

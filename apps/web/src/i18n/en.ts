@@ -150,6 +150,9 @@ export const en = {
 
   // -- Results -------------------------------------------------------------
   'results.title': '{origin} to {destination}',
+  'results.to': 'to',
+  'results.restingTitle': 'Pick a journey',
+  'results.restingBody': 'Its stops, boarding bay, operator and the date each fact was checked appear here.',
   'results.count_zero': 'No journeys',
   'results.count_one': '{count} journey',
   'results.count_other': '{count} journeys',
