@@ -17,7 +17,7 @@ import { useAnnouncer } from './Announcer';
 // Button
 // ---------------------------------------------------------------------------
 
-export type ButtonTone = 'primary' | 'secondary' | 'quiet' | 'danger';
+export type ButtonTone = 'primary' | 'secondary' | 'quiet' | 'danger' | 'accent';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   readonly tone?: ButtonTone;

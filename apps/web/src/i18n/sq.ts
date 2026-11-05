@@ -91,6 +91,17 @@ export const sq: Catalogue = {
 
   // -- Search --------------------------------------------------------------
   'search.title': 'Gjej një udhëtim',
+  'search.heroTitle': 'Udhëto me siguri',
+  'search.heroPictureAlt': 'Një rrugë nëpër kodrat e Peloponezit.',
+  'search.heroLede': 'Odivrelo të tregon ku hipën, në cilën orë, nga cili burim, dhe sa e vjetër është ajo informatë.',
+  'search.capability.coaches': 'Autobusë dhe autokarë',
+  'search.capability.coachesNote': 'Operatorët në këtë botim',
+  'search.capability.freshness': 'Fakte me datë',
+  'search.capability.freshnessNote': 'Secili tregon kur u kontrollua',
+  'search.capability.wallet': 'Biletat e tua',
+  'search.capability.walletNote': 'Ruhen në këtë pajisje',
+  'search.capability.offline': 'Punon pa internet',
+  'search.capability.offlineNote': 'Udhëtime dhe skedarë të ruajtur',
   'search.origin': 'Nga',
   'search.destination': 'Për',
   'search.originPlaceholder': 'Terminal, qytet ose pikë hipjeje',

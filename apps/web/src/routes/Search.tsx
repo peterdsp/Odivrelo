@@ -25,6 +25,8 @@ import {
   type SearchState,
 } from '../features/searchParams';
 import { BRAND } from '../brand/brand';
+import { GreekTravelImage } from '../components/GreekTravelImage';
+import { ROAD_PICTURE } from '../data/pictures';
 import { serviceDatesOf } from '../features/offlineGroups';
 import { JourneyCard } from '../features/JourneyCard';
 import type { JourneyQuery } from '../data/PublicDataSource';
@@ -247,17 +249,41 @@ export function Search() {
   if (manifest.status === 'error') return <DataError error={manifest.error} onRetry={reload} />;
 
   return (
-    <div className="od-page od-page--narrow">
-      <h1 className="od-page__title">{t('search.title')}</h1>
+    <div className="od-page od-search-page">
+      {/*
+        The landing composition: the claim, the picture of the world the product
+        describes, and the form, read in that order. The picture is editorial
+        context from Wikimedia with its credit attached; it is never evidence of
+        a service, which is why it carries no operator, time or route.
+      */}
+      <div className="od-hero">
+        <div className="od-hero__frame">
+          <GreekTravelImage
+            className="od-hero__picture"
+            src={ROAD_PICTURE.src}
+            alt={t('search.heroPictureAlt')}
+            title={ROAD_PICTURE.title}
+            creator={ROAD_PICTURE.creator}
+            licence={ROAD_PICTURE.licence}
+            licenceHref={ROAD_PICTURE.licenceHref}
+            source={ROAD_PICTURE.source}
+            href={ROAD_PICTURE.href}
+          />
+        </div>
 
-      {metaValue ? (
-        <p className="od-page__lede">
-          <CoverageBadge state={metaValue.coverage.state} />{' '}
-          <span>{name(metaValue.coverage.note)}</span>
-        </p>
-      ) : null}
+        <div className="od-hero__column">
+          <div className="od-hero__words">
+            <h1 className="od-hero__title">{t('search.heroTitle')}</h1>
+            <p className="od-hero__lede">{t('search.heroLede')}</p>
+            {metaValue ? (
+              <p className="od-hero__coverage">
+                <CoverageBadge state={metaValue.coverage.state} />{' '}
+                <span>{name(metaValue.coverage.note)}</span>
+              </p>
+            ) : null}
+          </div>
 
-      <Card as="form" className="od-search-form">
+      <Card as="form" className="od-search-form od-search-form--floating">
         <div className="od-search-form__places">
           <PlaceField
             name="origin"
@@ -402,10 +428,31 @@ export function Search() {
           </div>
         </Disclosure>
 
-        <Button tone="primary" full type="submit" onClick={(event) => { event.preventDefault(); submit(); }}>
+        <Button tone="accent" full type="submit" onClick={(event) => { event.preventDefault(); submit(); }}>
           {t('search.submit')}
         </Button>
       </Card>
+        </div>
+      </div>
+
+      {/*
+        Four capabilities, each one a thing the product actually does. None of
+        them claims live data: the release is dated and the freshness of every
+        fact is shown beside it.
+      */}
+      <ul className="od-capabilities">
+        {([
+          ['search.capability.coaches', 'search.capability.coachesNote'],
+          ['search.capability.freshness', 'search.capability.freshnessNote'],
+          ['search.capability.wallet', 'search.capability.walletNote'],
+          ['search.capability.offline', 'search.capability.offlineNote'],
+        ] as const).map(([titleKey, noteKey]) => (
+          <li key={titleKey} className="od-capabilities__item">
+            <span className="od-capabilities__title">{t(titleKey)}</span>
+            <span className="od-capabilities__note">{t(noteKey)}</span>
+          </li>
+        ))}
+      </ul>
 
       {inlineQuery ? (
         <Section

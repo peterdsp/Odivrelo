@@ -92,6 +92,17 @@ export const el: Catalogue = {
 
   // -- Search --------------------------------------------------------------
   'search.title': 'Βρες δρομολόγιο',
+  'search.heroTitle': 'Ταξίδεψε με βεβαιότητα',
+  'search.heroPictureAlt': 'Δρόμος μέσα από τους λόφους της Πελοποννήσου.',
+  'search.heroLede': 'Το Odivrelo σου λέει πού επιβιβάζεσαι, τι ώρα, από ποια πηγή, και πόσο παλιά είναι αυτή η πληροφορία.',
+  'search.capability.coaches': 'Λεωφορεία και πούλμαν',
+  'search.capability.coachesNote': 'Μεταφορείς σε αυτή την έκδοση',
+  'search.capability.freshness': 'Στοιχεία με ημερομηνία',
+  'search.capability.freshnessNote': 'Καθένα δείχνει πότε ελέγχθηκε',
+  'search.capability.wallet': 'Τα δικά σου εισιτήρια',
+  'search.capability.walletNote': 'Μένουν σε αυτή τη συσκευή',
+  'search.capability.offline': 'Λειτουργεί εκτός σύνδεσης',
+  'search.capability.offlineNote': 'Αποθηκευμένα δρομολόγια και αρχεία',
   'search.origin': 'Από',
   'search.destination': 'Προς',
   'search.originPlaceholder': 'Σταθμός, πόλη ή θέση επιβίβασης',

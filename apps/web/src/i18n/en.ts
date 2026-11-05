@@ -95,6 +95,17 @@ export const en = {
 
   // -- Search --------------------------------------------------------------
   'search.title': 'Find a journey',
+  'search.heroTitle': 'Travel with certainty',
+  'search.heroPictureAlt': 'A road through the Peloponnese hills.',
+  'search.heroLede': 'Odivrelo tells you where to board, at what time, from which source, and how old that information is.',
+  'search.capability.coaches': 'Buses and coaches',
+  'search.capability.coachesNote': 'Operators in this release',
+  'search.capability.freshness': 'Dated facts',
+  'search.capability.freshnessNote': 'Each one shows when it was checked',
+  'search.capability.wallet': 'Your own tickets',
+  'search.capability.walletNote': 'Kept on this device',
+  'search.capability.offline': 'Works offline',
+  'search.capability.offlineNote': 'Saved journeys and files',
   'search.origin': 'From',
   'search.destination': 'To',
   'search.originPlaceholder': 'Terminal, town or boarding point',

@@ -786,6 +786,23 @@ svg {
   background: var(--od-primary-pressed);
 }
 
+/**
+ * The warm accent, for the one action a screen exists for.
+ *
+ * The ink is the dark token rather than white: white on #f7941d measures about
+ * 2.1:1, which fails AA at any size, and an inaccessible primary action is not
+ * a trade this product makes for a brand colour.
+ */
+.od-button--accent {
+  background: var(--od-accent);
+  color: var(--od-accent-ink);
+  font-weight: 650;
+}
+
+.od-button--accent:hover {
+  filter: brightness(0.95);
+}
+
 .od-button--secondary {
   background: var(--od-surface);
   color: var(--od-primary-ink);
@@ -2389,4 +2406,162 @@ svg {
    needed to separate it from the sentence around it. */
 .od-licence-name {
   font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------------
+   The search landing composition.
+
+   One editorial claim, a picture of the world the product describes, and the
+   form the page exists for. The form overlaps the picture on a wide screen so
+   the two read as one composition rather than a banner with a form beneath it;
+   on a narrow screen it stacks, because overlapping a form onto a photograph
+   on a phone costs legibility and gains nothing.
+
+   Every value is a token. No gradient, no glow, no decorative shape.
+--------------------------------------------------------------------------- */
+
+.od-search-page {
+  max-width: var(--od-content-maximum);
+}
+
+.od-hero {
+  position: relative;
+  display: grid;
+  gap: var(--od-space-5);
+  margin-bottom: var(--od-space-5);
+}
+
+.od-hero__frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--od-radius-large);
+  background: var(--od-neutral-surface);
+}
+
+.od-hero__picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.od-hero__title {
+  font-family: var(--od-font-display);
+  /* Fluid, so the two-line claim stays two lines from 320px to 1920px. */
+  font-size: clamp(2.25rem, 1.2rem + 4.4vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  margin: 0 0 var(--od-space-3);
+  color: var(--od-text-primary);
+  text-wrap: balance;
+}
+
+.od-hero__lede {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--od-text-secondary);
+}
+
+.od-hero__coverage {
+  margin: var(--od-space-3) 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.od-hero__column {
+  display: grid;
+  gap: var(--od-space-5);
+  align-content: start;
+}
+
+.od-search-form--floating {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+/* The credit sits on the picture, so it needs its own readable surface rather
+   than link colours over a photograph. */
+.od-hero__picture {
+  position: relative;
+  height: 100%;
+  margin: 0;
+}
+
+.od-hero__picture .od-travel-image__credit {
+  position: absolute;
+  inset: auto 0 0 0;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgb(0 0 0 / 0.62);
+  color: #ffffff;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.od-hero__picture .od-travel-image__credit a {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Wide: the words and the picture share the row, and the form lifts into it. */
+@media (min-width: 62rem) {
+  .od-hero {
+    /* The claim and the form share the left column; the picture holds the
+       right for the whole height, so neither half of the row is left empty. */
+    grid-template-columns: minmax(26rem, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: var(--od-space-6);
+  }
+
+  .od-hero__column {
+    order: -1;
+  }
+
+  .od-hero__frame {
+    height: 100%;
+    min-height: 26rem;
+  }
+
+  .od-hero__picture,
+  .od-hero__picture img {
+    height: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   What the product does. Four facts, not four icon cards.
+--------------------------------------------------------------------------- */
+
+.od-capabilities {
+  list-style: none;
+  margin: var(--od-space-5) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--od-space-4);
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+}
+
+.od-capabilities__item {
+  display: grid;
+  gap: 0.125rem;
+  padding-top: 0.75rem;
+  /* A tone step rather than a hairline box: the group reads as a row of facts. */
+  border-top: 2px solid var(--od-accent);
+}
+
+.od-capabilities__title {
+  font-weight: 650;
+  color: var(--od-text-primary);
+}
+
+.od-capabilities__note {
+  font-size: 0.875rem;
+  color: var(--od-text-secondary);
 }
