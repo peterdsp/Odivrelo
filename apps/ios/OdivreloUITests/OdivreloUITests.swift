@@ -67,9 +67,16 @@ final class OdivreloUITests: XCTestCase {
     /// Not an assertion test. It exists so the design can be reviewed from the
     /// actual app rather than from a description of it, which on this platform
     /// is otherwise nobody's job. It runs without `-OdivreloUseFixture`, so
-    /// every screen here shows real KTEL data: a screenshot of the fixture
-    /// shows invented places and says so on its own first screen, which makes
-    /// it worse than no screenshot when someone is judging the interface.
+    /// every screen shows real KTEL data: a screenshot of the fixture shows
+    /// invented places and says so on its own first screen, which makes it
+    /// worse than no screenshot when someone is judging the interface.
+    ///
+    /// Every tap here goes through an accessibility identifier. An earlier
+    /// version fell back to `buttons.element(boundBy: 2)` when it could not
+    /// find a result row, which tapped the Offline tab and filed the Offline
+    /// screen under the name "journey detail". A screenshot that lies about
+    /// what it shows is worse than a missing one, so a step that cannot find
+    /// its target now takes no picture at all.
     @MainActor
     func testCaptureTheScreens() {
         let app = XCUIApplication()
@@ -81,45 +88,102 @@ final class OdivreloUITests: XCTestCase {
         shoot(app, "01-search")
 
         let places = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'place.'"))
-        origin.tap()
-        if places.firstMatch.waitForExistence(timeout: 15) {
-            shoot(app, "02-place-picker")
-            places.firstMatch.tap()
-        }
-
-        let destination = app.buttons["search.destination"]
-        if destination.waitForExistence(timeout: 10) {
-            destination.tap()
-            if places.firstMatch.waitForExistence(timeout: 15) {
-                if places.count > 1 { places.element(boundBy: 1).tap() } else { places.firstMatch.tap() }
-            }
-        }
-        shoot(app, "03-search-filled")
-
+        let journeys = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'journey.'"))
         let submit = app.buttons["search.submit"]
-        if submit.waitForExistence(timeout: 10), submit.isEnabled {
-            submit.tap()
-            // The results either arrive, say there are none, or say why not.
-            // All three are screens worth seeing, so nothing is asserted here.
-            sleep(6)
-            shoot(app, "04-results")
 
-            let row = app.cells.firstMatch.exists ? app.cells.firstMatch : app.buttons.element(boundBy: 2)
-            if row.exists, row.isHittable {
-                row.tap()
-                sleep(4)
-                shoot(app, "05-journey-detail")
-            }
+        origin.tap()
+        guard places.firstMatch.waitForExistence(timeout: 20) else {
+            XCTFail("the origin picker listed nothing")
+            return
+        }
+        shoot(app, "02-place-picker")
+        places.firstMatch.tap()
+
+        // Most pairs of terminals have no service between them, and "nothing
+        // runs between these two" is a screen worth seeing but not the one
+        // wanted here. Try destinations in turn until a journey actually
+        // appears, and settle for whatever the last one shows if none does.
+        var found = false
+        for candidate in 1..<3 where !found {
+            let destination = app.buttons["search.destination"]
+            guard destination.waitForExistence(timeout: 10) else { break }
+            destination.tap()
+            guard places.firstMatch.waitForExistence(timeout: 20) else { break }
+            guard places.count > candidate else { break }
+            places.element(boundBy: candidate).tap()
+
+            guard submit.waitForExistence(timeout: 10), submit.isEnabled else { continue }
+            submit.tap()
+            found = journeys.firstMatch.waitForExistence(timeout: 25)
+        }
+
+        shoot(app, found ? "03-results" : "03-results-nothing-runs")
+
+        if found {
+            journeys.firstMatch.tap()
+            XCTAssertTrue(
+                app.buttons["detail.saveTrip"].waitForExistence(timeout: 20),
+                "tapping a journey should open its detail"
+            )
+            shoot(app, "04-journey-detail")
         }
 
         for (index, tab) in ["My trips", "Offline", "Settings"].enumerated() {
             let button = app.tabBars.buttons[tab]
-            if button.waitForExistence(timeout: 6), button.isHittable {
-                button.tap()
-                sleep(3)
-                shoot(app, "0\(6 + index)-\(tab.lowercased().replacingOccurrences(of: " ", with: "-"))")
-            }
+            guard button.waitForExistence(timeout: 8), button.isHittable else { continue }
+            button.tap()
+            sleep(3)
+            shoot(app, "0\(5 + index)-\(tab.lowercased().replacingOccurrences(of: " ", with: "-"))")
         }
+    }
+
+    // MARK: The answer is visible
+
+    /// Tapping "Search journeys" shows the answer without anyone scrolling.
+    ///
+    /// The form fills a phone screen, so the answer renders below the fold and
+    /// under a tab bar that content passes beneath. During review the button
+    /// was read as dead, because nothing visibly happened when it was pressed.
+    /// Whether the answer is departures or "nothing runs between these two",
+    /// it has to arrive where the person who asked can see it.
+    @MainActor
+    func testTheAnswerArrivesOnScreen() {
+        let app = XCUIApplication()
+        app.launchArguments += ["-OdivreloSkipOnboarding", "-OdivreloResetState"]
+        app.launch()
+
+        let origin = app.buttons["search.origin"]
+        XCTAssertTrue(origin.waitForExistence(timeout: 30))
+
+        let places = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'place.'"))
+        origin.tap()
+        XCTAssertTrue(places.firstMatch.waitForExistence(timeout: 20))
+        places.firstMatch.tap()
+
+        let destination = app.buttons["search.destination"]
+        XCTAssertTrue(destination.waitForExistence(timeout: 10))
+        destination.tap()
+        XCTAssertTrue(places.firstMatch.waitForExistence(timeout: 20))
+        places.element(boundBy: 1).tap()
+
+        let submit = app.buttons["search.submit"]
+        XCTAssertTrue(submit.waitForExistence(timeout: 10))
+        submit.tap()
+
+        // Either shape of answer counts; what matters is that one of them is
+        // on screen rather than waiting below the fold.
+        let empty = app.otherElements["results.empty"]
+        let journeys = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'journey.'"))
+        let answered = NSPredicate(format: "exists == true")
+        expectation(for: answered, evaluatedWith: empty, handler: nil)
+        waitForExpectations(timeout: 30)
+
+        let screen = app.windows.firstMatch.frame
+        let answer = empty.exists ? empty.frame : journeys.firstMatch.frame
+        XCTAssertTrue(
+            screen.contains(CGPoint(x: answer.midX, y: answer.minY + 1)),
+            "the answer starts at \(answer.minY) on a \(screen.height) point screen, which is off it"
+        )
     }
 
     // MARK: Accessibility sizes
