@@ -1,9 +1,10 @@
+import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useI18n } from '../i18n/I18nProvider';
 import { useHead, organizationNode } from '../hooks/useHead';
 import { useData, useDataMode } from '../app/DataProvider';
 import { useAsync } from '../hooks/useAsync';
-import { Card, ExternalLink, Fact, FactList, Section } from '../components/primitives';
+import { Card, ExternalLink, Fact, FactList, Section, TextField } from '../components/primitives';
 import { DataError, Loading } from '../components/states';
 import { CoverageBadge, RightsBadge } from '../components/quality';
 import { FavoriteToggle } from '../features/FavoriteToggle';
@@ -25,6 +26,30 @@ export function Operators() {
   const { source } = useData();
   const dataMode = useDataMode();
   const operators = useAsync((signal) => source.operators(signal), [source]);
+  const [query, setQuery] = useState('');
+
+  /**
+   * The directory, filtered by name and ordered so the operators a reader can
+   * actually travel with come first.
+   *
+   * Alphabetical order put two operators carrying no routes in this release at
+   * the very top, so the first thing anyone saw was "0 routes in this release"
+   * twice over. Operators with routes lead now, most routes first, and the
+   * ones carrying none keep their place at the end rather than being hidden:
+   * the release does list them, and saying so is the point of this page.
+   */
+  const shown = useMemo(() => {
+    if (operators.state.status !== 'ready') return [];
+    const needle = query.trim().toLocaleLowerCase(language);
+    return operators.state.value.operators
+      .filter((operator) => !needle || name(operator.name).toLocaleLowerCase(language).includes(needle))
+      .slice()
+      .sort((left, right) => {
+        const byRoutes = right.coverage.routeCount - left.coverage.routeCount;
+        if (byRoutes !== 0) return byRoutes;
+        return name(left.name).localeCompare(name(right.name), language);
+      });
+  }, [operators.state, query, name, language]);
 
   useHead({
     title: t('meta.operators.title'),
@@ -61,9 +86,19 @@ export function Operators() {
       {operators.state.status === 'error' ? <DataError error={operators.state.error} onRetry={operators.reload} /> : null}
 
       {operators.state.status === 'ready' ? (
-        <Section title={t('operators.count_other', { count: operators.state.value.operators.length })} level={2}>
+        <>
+        <TextField
+          id="operator-search"
+          type="search"
+          label={t('operators.searchLabel')}
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={t('operators.searchPlaceholder')}
+        />
+
+        <Section title={t('operators.count_other', { count: shown.length })} level={2}>
           <ul className="od-list od-list--cards od-list--grid">
-            {operators.state.value.operators.map((operator) => (
+            {shown.map((operator) => (
               <li key={operator.id}>
                 <Card as="article">
                   <h3 className="od-card__title">
@@ -89,6 +124,7 @@ export function Operators() {
             ))}
           </ul>
         </Section>
+        </>
       ) : null}
     </div>
   );
