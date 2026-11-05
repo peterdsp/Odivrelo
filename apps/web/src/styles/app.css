@@ -2057,6 +2057,24 @@ svg {
   text-decoration: none;
 }
 
+/*
+ * The links inside the credit, which carry the title and the licence.
+ *
+ * The caption sets white on a dark scrim, but the anchors kept the page's
+ * link colour and were mid-blue on near-black: the two things the licence
+ * actually requires be legible were the two that were not. Underlined rather
+ * than coloured, since colour cannot do the work here.
+ */
+.od-travel-image__credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.od-travel-image__credit a:hover {
+  text-decoration-thickness: 2px;
+}
+
 .od-stations__image {
   margin-block: var(--od-space-5) var(--od-space-6);
 }
@@ -2511,11 +2529,6 @@ svg {
   line-height: 1.4;
 }
 
-.od-hero__picture .od-travel-image__credit a {
-  color: #ffffff;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
 
 /* Wide: the words and the picture share the row, and the form lifts into it. */
 @media (min-width: 62rem) {
