@@ -173,6 +173,21 @@ earlier than it was taken.
 
 **Android** has the new palette compiled but nothing has looked at it.
 
+## Open, needing a healthy simulator
+
+`OdivreloUITests.testTheAnswerArrivesOnScreen` has never been run. It checks
+that tapping "Search journeys" brings the answer on screen, and it prints the
+answer's position against the screen height when it fails. The fix it covers is
+committed and compiles.
+
+Run it, and then run it again with the `revealAnswer` call removed, to be sure
+it can fail. A test that passes either way proves nothing, which is the same
+trap as `simctl ui content_size` on a shut down device.
+
+CoreSimulator died with `Mach error -308 - (ipc/mig) server died` on seven
+consecutive runs on 5 Nov, surviving a service kill and a device erase, and
+ended up unable to launch the unit suite either. It wants a machine restart.
+
 ## For whoever continues
 
 `sources.test.ts` times out above roughly load average 100 and says
