@@ -546,6 +546,7 @@ export const en = {
   'settings.underline': 'Underline all links',
   'settings.storage': 'Storage on this device',
   'settings.storageUsed': '{used} used',
+  'settings.storageUsedLabel': 'Total in use',
   'settings.storageOf': '{used} of {quota} available to this site',
   'settings.storagePacks': 'Offline data',
   'settings.storageWallet': 'Ticket files',

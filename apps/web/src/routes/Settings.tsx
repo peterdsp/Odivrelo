@@ -187,7 +187,15 @@ export function Settings() {
                 { count: usage.tripCount },
               )}
             </Fact>
-            <Fact label={t('settings.storageUsed', { used: '' }).trim()}>
+            {/*
+              A real label, not the sentence stripped of its value. Rendering
+              "{used} used" with an empty value and trimming gave the row the
+              label "used", and in the other catalogues "σε χρήση" and "në
+              përdorim": lowercase fragments sitting beside Offline data,
+              Ticket files and Saved trips. The sentence form is still used
+              for the value itself.
+            */}
+            <Fact label={t('settings.storageUsedLabel')}>
               {usage.quotaBytes !== null && usage.usageBytes !== null
                 ? t('settings.storageOf', {
                     used: formatBytes(usage.usageBytes, language),

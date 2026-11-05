@@ -543,6 +543,7 @@ export const el: Catalogue = {
   'settings.underline': 'Υπογράμμιση όλων των συνδέσμων',
   'settings.storage': 'Αποθηκευτικός χώρος σε αυτή τη συσκευή',
   'settings.storageUsed': '{used} σε χρήση',
+  'settings.storageUsedLabel': 'Σύνολο σε χρήση',
   'settings.storageOf': '{used} από {quota} διαθέσιμα σε αυτόν τον ιστότοπο',
   'settings.storagePacks': 'Δεδομένα εκτός σύνδεσης',
   'settings.storageWallet': 'Αρχεία εισιτηρίων',

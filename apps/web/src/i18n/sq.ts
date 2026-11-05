@@ -542,6 +542,7 @@ export const sq: Catalogue = {
   'settings.underline': 'Nënvizo të gjitha lidhjet',
   'settings.storage': 'Hapësira ruajtjeje në këtë pajisje',
   'settings.storageUsed': '{used} në përdorim',
+  'settings.storageUsedLabel': 'Totali në përdorim',
   'settings.storageOf': '{used} nga {quota} në dispozicion të kësaj faqeje',
   'settings.storagePacks': 'Të dhëna offline',
   'settings.storageWallet': 'Skedarë biletash',
