@@ -128,6 +128,8 @@ export const sq: Catalogue = {
   'search.recent': 'Kërkimet e fundit',
   'search.clearRecent': 'Pastro kërkimet e fundit',
   'search.noRecent': 'Kërkimet e tua të fundit do të shfaqen këtu. Ato mbeten në këtë pajisje.',
+  'search.startFromAthens': 'Nis nga Athina',
+  'search.originSet': 'Nisja u vendos te {place}',
   'search.results': 'Sugjerime',
   'search.terminal': 'Terminal',
   'search.boardingPoint': 'Pikë hipjeje',

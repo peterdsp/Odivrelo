@@ -132,6 +132,8 @@ export const en = {
   'search.recent': 'Recent searches',
   'search.clearRecent': 'Clear recent searches',
   'search.noRecent': 'Your recent searches will appear here. They stay on this device.',
+  'search.startFromAthens': 'Start from Athens',
+  'search.originSet': 'Origin set to {place}',
   'search.results': 'Suggestions',
   'search.terminal': 'Terminal',
   'search.boardingPoint': 'Boarding point',

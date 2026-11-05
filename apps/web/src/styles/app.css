@@ -1703,6 +1703,17 @@ svg {
   gap: var(--od-space-2);
 }
 
+/* The tile attribution is a credit the licence requires, so it is text meant
+   to be read and is held to the same floor as the rest of the page. MapLibre
+   ships it at 12px, which the readability check fails and a reader on a phone
+   fails with it. The selector reaches into the library's own markup because
+   that is where the size is set; there is no option for it. */
+.maplibregl-ctrl-attrib,
+.maplibregl-ctrl-attrib-inner,
+.maplibregl-ctrl-attrib a {
+  font: var(--od-type-caption);
+}
+
 :root[data-theme='dark'] .od-map {
   --od-map-water: #17302c;
 }
@@ -2673,4 +2684,32 @@ svg {
     grid-template-columns: 1fr;
     gap: var(--od-space-3);
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Starting points, when there is no history to offer instead.
+
+   Real places from the release, not a written-down list: most journeys in it
+   begin in Athens, and a first visit otherwise reached an empty form with an
+   empty recent list and nothing to act on.
+--------------------------------------------------------------------------- */
+
+.od-start {
+  margin-top: var(--od-space-4);
+}
+
+.od-start__label {
+  margin: 0 0 var(--od-space-3);
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--od-text-secondary);
+}
+
+.od-start__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--od-space-2);
 }

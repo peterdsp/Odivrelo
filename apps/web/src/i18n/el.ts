@@ -129,6 +129,8 @@ export const el: Catalogue = {
   'search.recent': 'Πρόσφατες αναζητήσεις',
   'search.clearRecent': 'Καθαρισμός πρόσφατων αναζητήσεων',
   'search.noRecent': 'Οι πρόσφατες αναζητήσεις σου θα εμφανίζονται εδώ. Μένουν σε αυτή τη συσκευή.',
+  'search.startFromAthens': 'Ξεκίνα από την Αθήνα',
+  'search.originSet': 'Αφετηρία: {place}',
   'search.results': 'Προτάσεις',
   'search.terminal': 'Σταθμός',
   'search.boardingPoint': 'Θέση επιβίβασης',

@@ -59,6 +59,37 @@ export function Search() {
   const [departTo, setDepartTo] = useState(incoming.departTo ?? '');
   const [errors, setErrors] = useState<{ origin?: string; destination?: string; date?: string }>({});
   const [recent, setRecent] = useState<RecentSearch[]>(() => readRecentSearches());
+
+  /*
+   * Athens terminals, read from the release rather than written down here.
+   *
+   * Most journeys in this release start in Athens, and a first-time reader
+   * arrived at an empty form with an empty recent list and nothing to act on.
+   * These are real places from the directory: if a release stops carrying
+   * them, the row disappears rather than offering a terminal that is not in
+   * the data.
+   */
+  const athensPlaces = useAsync((signal) => source.places('ΑΘΗΝΑ', 40, signal), [source]);
+
+  /*
+   * The release carries dozens of Athens stops and many share the bare name
+   * "ΑΘΗΝΑ", so the first four from the directory were four identical
+   * buttons. Only the ones that name their terminal can be acted on, and the
+   * list is deduplicated by the name actually rendered.
+   */
+  const athensStarts = useMemo(() => {
+    if (athensPlaces.state.status !== 'ready') return [];
+    const seen = new Set<string>();
+    const named: Place[] = [];
+    for (const place of athensPlaces.state.value.places) {
+      const label = name(place.name).trim();
+      if (!label || !label.includes('(') || seen.has(label)) continue;
+      seen.add(label);
+      named.push(place);
+      if (named.length === 4) break;
+    }
+    return named;
+  }, [athensPlaces.state, name]);
   const [inlineQuery, setInlineQuery] = useState<JourneyQuery | null>(null);
 
   const metaValue = meta.status === 'ready' ? meta.value : null;
@@ -513,7 +544,30 @@ export function Search() {
         }
       >
         {recent.length === 0 ? (
-          <p className="od-muted">{t('search.noRecent')}</p>
+          <>
+            <p className="od-muted">{t('search.noRecent')}</p>
+            {athensStarts.length > 0 ? (
+              <div className="od-start">
+                <p className="od-start__label">{t('search.startFromAthens')}</p>
+                <ul className="od-start__list">
+                  {athensStarts.map((place) => (
+                    <li key={place.id}>
+                      <Button
+                        tone="secondary"
+                        onClick={() => {
+                          setOrigin(place);
+                          setErrors((e) => ({ ...e, origin: undefined }));
+                          announce(t('search.originSet', { place: name(place.name) }));
+                        }}
+                      >
+                        {name(place.name)}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </>
         ) : (
           <ul className="od-list od-list--plain">
             {recent.map((entry) => (
