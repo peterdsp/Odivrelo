@@ -60,6 +60,68 @@ final class OdivreloUITests: XCTestCase {
         add(attachment)
     }
 
+    // MARK: Screens, for looking at
+
+    /// Walks the product on the real release and keeps a picture of each screen.
+    ///
+    /// Not an assertion test. It exists so the design can be reviewed from the
+    /// actual app rather than from a description of it, which on this platform
+    /// is otherwise nobody's job. It runs without `-OdivreloUseFixture`, so
+    /// every screen here shows real KTEL data: a screenshot of the fixture
+    /// shows invented places and says so on its own first screen, which makes
+    /// it worse than no screenshot when someone is judging the interface.
+    @MainActor
+    func testCaptureTheScreens() {
+        let app = XCUIApplication()
+        app.launchArguments += ["-OdivreloSkipOnboarding", "-OdivreloResetState"]
+        app.launch()
+
+        let origin = app.buttons["search.origin"]
+        XCTAssertTrue(origin.waitForExistence(timeout: 30))
+        shoot(app, "01-search")
+
+        let places = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'place.'"))
+        origin.tap()
+        if places.firstMatch.waitForExistence(timeout: 15) {
+            shoot(app, "02-place-picker")
+            places.firstMatch.tap()
+        }
+
+        let destination = app.buttons["search.destination"]
+        if destination.waitForExistence(timeout: 10) {
+            destination.tap()
+            if places.firstMatch.waitForExistence(timeout: 15) {
+                if places.count > 1 { places.element(boundBy: 1).tap() } else { places.firstMatch.tap() }
+            }
+        }
+        shoot(app, "03-search-filled")
+
+        let submit = app.buttons["search.submit"]
+        if submit.waitForExistence(timeout: 10), submit.isEnabled {
+            submit.tap()
+            // The results either arrive, say there are none, or say why not.
+            // All three are screens worth seeing, so nothing is asserted here.
+            sleep(6)
+            shoot(app, "04-results")
+
+            let row = app.cells.firstMatch.exists ? app.cells.firstMatch : app.buttons.element(boundBy: 2)
+            if row.exists, row.isHittable {
+                row.tap()
+                sleep(4)
+                shoot(app, "05-journey-detail")
+            }
+        }
+
+        for (index, tab) in ["My trips", "Offline", "Settings"].enumerated() {
+            let button = app.tabBars.buttons[tab]
+            if button.waitForExistence(timeout: 6), button.isHittable {
+                button.tap()
+                sleep(3)
+                shoot(app, "0\(6 + index)-\(tab.lowercased().replacingOccurrences(of: " ", with: "-"))")
+            }
+        }
+    }
+
     // MARK: Accessibility sizes
 
     /// A journey can be searched at the largest text size, on the real release.

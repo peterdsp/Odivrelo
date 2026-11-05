@@ -150,6 +150,19 @@ struct PlacePickerSheet: View {
     private func load() async {
         state = .loading
         do {
+            // Nothing typed yet: offer the places a coach actually leaves from
+            // rather than the head of the pack, which is source-data noise.
+            // PlaceRanking carries the reasoning and the measurements.
+            if query.isEmpty {
+                let scanned = try await model.core.searchPlaces(
+                    query: "",
+                    limit: PlaceRanking.scanLimit
+                )
+                var ranked = scanned
+                ranked.places = PlaceRanking.suggestions(from: scanned.places, limit: 60)
+                state = .loaded(ranked)
+                return
+            }
             let result = try await model.core.searchPlaces(query: query, limit: 60)
             state = .loaded(result)
         } catch let error as CoreError {

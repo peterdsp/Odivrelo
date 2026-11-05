@@ -75,15 +75,17 @@ struct TerminalQuery: EntityStringQuery {
             .map { TerminalEntity(id: $0.id, name: $0.name.resolved(for: IntentCore.languageTag)) }
     }
 
-    /// Offered before anyone types. Only places something actually runs from:
-    /// of the 19,139 places in the release, most have no service at all, and a
-    /// picker full of them would be a picker full of dead ends.
+    /// Offered before anyone types, and ranked by how much service a place has.
+    ///
+    /// Filtering to covered places is necessary but was not sufficient: the
+    /// pack is in name order, so reading the first sixty and keeping the
+    /// covered ones offered "11.500", "1ο ΓΥΜΝΑΣΙΟ" and "21 ΧΛΜ Δ/Σ" as the
+    /// terminals to ask about. Ranking by boarding points offers Tripoli,
+    /// Kerkyra, Kiato and Trikala instead. PlaceRanking holds the reasoning.
     func suggestedEntities() async throws -> [TerminalEntity] {
         let core = try IntentCore.make()
-        let found = try await core.searchPlaces(query: "", limit: 60)
-        return found.places
-            .filter { $0.coverage == .covered }
-            .prefix(12)
+        let found = try await core.searchPlaces(query: "", limit: PlaceRanking.scanLimit)
+        return PlaceRanking.suggestions(from: found.places, limit: 12)
             .map { TerminalEntity(id: $0.id, name: $0.name.resolved(for: IntentCore.languageTag)) }
     }
 }

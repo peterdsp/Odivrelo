@@ -156,6 +156,34 @@ class OdivreloCoreTest {
     // -- Place search --------------------------------------------------------
 
     @Test
+    fun theEmptyQueryOffersServedTerminalsBusiestFirst() = runTest {
+        val core = core()
+        try {
+            val offered = core.searchPlaces("", 20).places
+
+            assertTrue(offered.isNotEmpty(), "an empty query must still offer somewhere to start")
+            assertTrue(
+                offered.all { it.coverage == CoverageState.COVERED },
+                "a place with no service is a dead end and is never offered: " +
+                    offered.filter { it.coverage != CoverageState.COVERED }.map { it.id },
+            )
+            assertTrue(
+                offered.all { it.kind == PlaceKind.STOP_PLACE },
+                "the offer is terminals, which is what someone names when they say where they are going",
+            )
+
+            val bays = offered.map { it.boardingPointCount }
+            assertEquals(
+                bays.sortedDescending(),
+                bays,
+                "the busiest terminal leads; ordering by name opens on the source data's own noise",
+            )
+        } finally {
+            core.close()
+        }
+    }
+
+    @Test
     fun placeSearchIsAccentAndCaseInsensitiveInGreek() = runTest {
         val core = core()
         try {

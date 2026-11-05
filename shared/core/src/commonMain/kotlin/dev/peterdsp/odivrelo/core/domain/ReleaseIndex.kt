@@ -83,9 +83,20 @@ internal class ReleaseIndex(
         val folded = SearchText.fold(query)
         val safeLimit = limit.coerceAtLeast(0)
         if (folded.isEmpty()) {
+            // Nobody has typed anything, so this is an offer rather than an
+            // answer, and it is ordered by how much service a place has.
+            //
+            // By name it opened on the source data's own noise: a hyphen, two
+            // rows of exclamation marks, a school and six postal codes, of
+            // which almost none carry a coach. Of 19,139 places, 959 have any
+            // service at all, so an alphabetical head is a list of dead ends
+            // that happens to start with punctuation.
+            //
+            // By service it opens on Tripoli, Kerkyra, Kiato, Trikala and
+            // Kavala, which are the places someone is going to.
             return places
-                .filter { it.kind == PlaceKind.STOP_PLACE }
-                .sortedWith(PLACE_ORDER)
+                .filter { it.kind == PlaceKind.STOP_PLACE && it.coverage == CoverageState.COVERED }
+                .sortedWith(PLACE_OFFER_ORDER)
                 .take(safeLimit)
         }
         return places
@@ -459,6 +470,19 @@ internal class ReleaseIndex(
     private companion object {
         val PLACE_ORDER: Comparator<Place> =
             compareBy<Place> { if (it.kind == PlaceKind.STOP_PLACE) 0 else 1 }
+                .thenBy { SearchText.fold(it.name.el ?: it.name.en.orEmpty()) }
+                .thenBy { it.id }
+
+        /// What to offer before anyone has typed: the busiest terminals first.
+        ///
+        /// Boarding points are the only measure of size the release carries,
+        /// and they track what a traveller means by a big station: Tripoli has
+        /// 75, Kerkyra 54, Kiato 49, and the median served place has two.
+        /// Name order is kept as the tie-break so the list is stable between
+        /// releases rather than reshuffling on equal counts.
+        val PLACE_OFFER_ORDER: Comparator<Place> =
+            compareByDescending<Place> { it.boardingPointCount }
+                .thenByDescending { it.operatorIds.size }
                 .thenBy { SearchText.fold(it.name.el ?: it.name.en.orEmpty()) }
                 .thenBy { it.id }
     }
