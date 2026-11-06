@@ -68,16 +68,12 @@ struct SearchScreen: View {
                     if model.isDemonstrationData { DemoDataNotice() }
                     form
                     resultsSection
-                        .id(Self.answerAnchor)
                 }
                 .readableColumn(geometry)
                 .padding(.vertical, Theme.Space.medium)
             }
             .scrollDismissesKeyboard(.interactively)
             .onAppear { restoreScroll(proxy) }
-            .onChange(of: search.state) { previous, current in
-                revealAnswer(proxy, from: previous, to: current)
-            }
         }
     }
 
@@ -338,32 +334,6 @@ struct SearchScreen: View {
             model.route.searchPath.append(
                 .journey(id: journey.id, serviceDate: model.session.serviceDate)
             )
-        }
-    }
-
-    /// Where the form's answer begins.
-    private static let answerAnchor = "search.answer"
-
-    /// Put the answer where the person who asked for it can see it.
-    ///
-    /// The form fills a phone screen on its own, so the answer renders below
-    /// the fold and under a tab bar that content scrolls beneath. Tapping
-    /// "Search journeys" then looks like it did nothing, whether the answer is
-    /// four departures or "nothing runs between these two". It was read as a
-    /// dead button once during review, which is the clearest evidence that a
-    /// reader cannot tell the difference.
-    ///
-    /// Only a search leaving `loading` moves the view. Restoring a session, or
-    /// a result arriving without the person having asked just now, leaves the
-    /// scroll position alone.
-    private func revealAnswer(
-        _ proxy: ScrollViewProxy,
-        from previous: SearchViewModel.State,
-        to current: SearchViewModel.State
-    ) {
-        guard previous == .loading, current != .loading else { return }
-        withAnimation(.easeOut(duration: Theme.Motion.standard)) {
-            proxy.scrollTo(Self.answerAnchor, anchor: .top)
         }
     }
 

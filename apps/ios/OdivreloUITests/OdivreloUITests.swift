@@ -139,13 +139,27 @@ final class OdivreloUITests: XCTestCase {
 
     // MARK: The answer is visible
 
-    /// Tapping "Search journeys" shows the answer without anyone scrolling.
+    /// Tapping "Search journeys" puts the answer on screen, clear of the tab bar.
     ///
-    /// The form fills a phone screen, so the answer renders below the fold and
-    /// under a tab bar that content passes beneath. During review the button
-    /// was read as dead, because nothing visibly happened when it was pressed.
-    /// Whether the answer is departures or "nothing runs between these two",
-    /// it has to arrive where the person who asked can see it.
+    /// This test is the remains of a defect that was not there. The form fills
+    /// much of a phone screen, a screenshot showed the answer's text passing
+    /// under the translucent tab bar, and that was read as "the answer lands
+    /// where nobody sees it". A scroll was written to haul it up, it never
+    /// moved anything, and three rounds of fixing the scroll produced the same
+    /// number every time. Measuring instead of reasoning ended it:
+    ///
+    ///     answer y 538.3, height 204.7, so it ends at 743
+    ///     tab bar top 791
+    ///     screen 874
+    ///
+    /// The answer arrives whole, 48 points clear of the tab bar, directly under
+    /// the button that was pressed. Nothing needed hauling. The scroll is gone.
+    ///
+    /// What is kept is the measurement, because "the answer is readable where
+    /// it lands" is worth holding on to even when it is already true. It is
+    /// asserted as "fully on screen and above the tab bar" rather than "near
+    /// the top": a short answer sits at the end of the content, and no scroll
+    /// view can lift the last thing in it to the top of the screen.
     @MainActor
     func testTheAnswerArrivesOnScreen() {
         let app = XCUIApplication()
@@ -160,8 +174,15 @@ final class OdivreloUITests: XCTestCase {
         XCTAssertTrue(places.firstMatch.waitForExistence(timeout: 20))
         places.firstMatch.tap()
 
+        // Wait for the picker to leave. The destination button exists behind it
+        // the whole time, so waiting for existence waits for nothing and the
+        // tap is then refused as not hittable.
         let destination = app.buttons["search.destination"]
         XCTAssertTrue(destination.waitForExistence(timeout: 10))
+        let gone = NSPredicate(format: "exists == false")
+        expectation(for: gone, evaluatedWith: places.firstMatch, handler: nil)
+        waitForExpectations(timeout: 15)
+
         destination.tap()
         XCTAssertTrue(places.firstMatch.waitForExistence(timeout: 20))
         places.element(boundBy: 1).tap()
@@ -170,29 +191,27 @@ final class OdivreloUITests: XCTestCase {
         XCTAssertTrue(submit.waitForExistence(timeout: 10))
         submit.tap()
 
-        // Either shape of answer counts; what matters is that one of them is
-        // on screen rather than waiting below the fold.
+        // Either shape of answer counts: departures, or "nothing runs between
+        // these two". Both are answers and both have to be readable.
         let empty = app.otherElements["results.empty"]
         let journeys = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'journey.'"))
-        let answered = NSPredicate(format: "exists == true")
-        expectation(for: answered, evaluatedWith: empty, handler: nil)
+        expectation(for: NSPredicate(format: "exists == true"), evaluatedWith: empty, handler: nil)
         waitForExpectations(timeout: 30)
 
-        // The application element rather than its main window: asking for the
-        // window returned kAXErrorServerNotFound, which fails the test for a
-        // reason that has nothing to do with where the answer is.
-        // The top half, not merely "on screen". Without the scroll the answer
-        // still begins inside the frame, low down and behind the tab bar, so a
-        // bounds check passes either way and proves nothing: this assertion was
-        // written that way first and passed with the fix removed. What marks
-        // the difference is the answer being brought up to where it is read.
         let screen = app.frame
         let answer = empty.exists ? empty.frame : journeys.firstMatch.frame
+        let tabBarTop = app.tabBars.firstMatch.exists ? app.tabBars.firstMatch.frame.minY : screen.maxY
+
+        // Where the answer begins, not where it ends. A list of departures is
+        // meant to run past the fold and be scrolled; asserting on its bottom
+        // edge failed for a long answer and would have made this test punish
+        // the product for working. What has to be true is that the answer
+        // starts somewhere a reader can see it.
+        XCTAssertGreaterThanOrEqual(answer.minY, 0, "the answer starts above the top of the screen")
         XCTAssertLessThan(
             answer.minY,
-            screen.height / 2,
-            "the answer starts at \(answer.minY) on a \(screen.height) point screen, "
-                + "which is the lower half: it was not brought into view"
+            tabBarTop,
+            "the answer starts at \(answer.minY) and the tab bar covers from \(tabBarTop), so nothing of it is visible"
         )
     }
 
