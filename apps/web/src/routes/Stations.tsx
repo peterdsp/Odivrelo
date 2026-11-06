@@ -20,7 +20,7 @@ import { COACH_PICTURE } from '../data/pictures';
 
 /** Directory of every terminal and boarding point in the release. */
 export function Stations() {
-  const { t, language, name } = useI18n();
+  const { t, plural, language, name } = useI18n();
   const { source } = useData();
   const dataMode = useDataMode();
   /*
@@ -77,6 +77,7 @@ export function Stations() {
   }, [grouped, needle, language, name]);
 
   const FIRST_VIEW = 40;
+  const VISIBLE_CHILDREN = 6;
 
   /*
    * Which forty, when nobody has typed. By name the page opened on 11.500,
@@ -170,7 +171,13 @@ export function Stations() {
         "11500". Headings inside list items carry the same structure without
         claiming each row is a major area of the page.
       */}
-      <ul className="od-list od-list--plain od-stations__list">
+      {/*
+        A directory reads across, not down. The operators directory next door
+        already does this: the same narrow page, with its list as a grid. This
+        one was a single column, so at 1440 the content stopped 643 pixels short
+        of the right margin and five of twelve screens were mostly bare ground.
+      */}
+      <ul className="od-list od-list--plain od-list--grid od-stations__list">
       {shown.map(({ terminal, children }) => (
         <li key={terminal.id} id={`terminal-${terminal.id}`}>
           <h2 className="od-section__title">{name(terminal.name)}</h2>
@@ -185,7 +192,15 @@ export function Stations() {
             <p className="od-muted">{t('search.boardingPointCount_zero')}</p>
           ) : (
             <ul className="od-list od-list--plain">
-              {children.map((child) => (
+              {/*
+                A few boarding points, not all of them. Ordering the directory
+                by service put the busiest terminals first, and the busiest
+                terminal in the release has 75 boarding points, so listing every
+                one took the page from under seven screens to nearly twenty-two.
+                The terminal's own page carries the full set, and the count
+                below says how many are waiting there.
+              */}
+              {children.slice(0, VISIBLE_CHILDREN).map((child) => (
                 <li key={child.id}>
                   <Link to={`/stations/${encodeURIComponent(child.id)}`} className="od-link">
                     {name(child.name)}
@@ -194,6 +209,13 @@ export function Stations() {
                   <StepFreeBadge stepFree={child.stepFree ?? null} />
                 </li>
               ))}
+              {children.length > VISIBLE_CHILDREN ? (
+                <li>
+                  <Link to={`/stations/${encodeURIComponent(terminal.id)}`} className="od-link">
+                    {plural('search.boardingPointCount', children.length)}
+                  </Link>
+                </li>
+              ) : null}
             </ul>
           )}
         </li>
