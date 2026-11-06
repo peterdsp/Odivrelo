@@ -173,6 +173,36 @@ earlier than it was taken.
 
 **Android** has the new palette compiled but nothing has looked at it.
 
+## Correction: the place offer was fixed on two clients, not four
+
+Commit 513076d says "one wrong order, four broken lists". That is wrong, and
+the mistake was reasoning from the architecture instead of reading the call
+sites.
+
+**iOS picker and the App Intent: fixed.** Both go through the Kotlin core's
+`searchPlaces`, and the picker was looked at: Tripoli 75, Kerkyra 54, Kiato 49.
+
+**Web: not fixed, and has its own copy of the bug.** `apps/web/src/data/packQuery.ts`
+implements `searchPlaces` in TypeScript against the packs directly; the web
+client never calls the Kotlin core. Its empty-query branch sorts terminals
+first but filters nothing by coverage and does not rank by service, so it
+leads with the same pack-order names the iOS picker used to show. Read from
+the source, not run: three attempts to exercise it in vitest failed on the
+harness rather than the code, and it was not worth a fourth in a part of the
+tree another session is editing.
+
+**Android: never had this bug and still does not get the better list.**
+`OdivreloViewModel.openPlacePicker` sets `places = Loadable.Idle` and queries
+nothing, so the picker opens on "type to search" rather than on a list. Taking
+the core's improved offer would mean calling `setPlaceQuery("")` when the
+picker opens. Not done here: it cannot be built or seen on this machine, and
+shipping a change to a client nobody can look at is how a fixture build
+reached a phone earlier in this session.
+
+That leaves a real product question for a person: iOS now offers the busiest
+terminals before anyone types, and Android asks them to type first. Either is
+defensible; diverging by accident is not.
+
 ## Open, needing a healthy simulator
 
 `OdivreloUITests.testTheAnswerArrivesOnScreen` has never been run. It checks
