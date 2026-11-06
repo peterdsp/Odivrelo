@@ -1,5 +1,6 @@
 import { useId, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
+import type { Place } from '../data/contract';
 import { isServiceDate, provenanceView, safeHref } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
 import { useHead, organizationNode } from '../hooks/useHead';
@@ -22,7 +23,15 @@ export function Stations() {
   const { t, language, name } = useI18n();
   const { source } = useData();
   const dataMode = useDataMode();
-  const places = useAsync((signal) => source.places('', 500, signal), [source]);
+  /*
+   * The whole place pack, not a page of it. StaticPackSource already holds
+   * every place in memory and `limit` only slices the array, so asking for all
+   * of them costs no extra network. Asking for 500 cost something worse: the
+   * slice is in name order, so the directory could only ever rank the front of
+   * the alphabet. Tripoli, the busiest terminal in the release at 75 boarding
+   * points, was not in the window and could not be offered.
+   */
+  const places = useAsync((signal) => source.places('', Number.MAX_SAFE_INTEGER, signal), [source]);
 
   const [query, setQuery] = useState('');
   const filterId = useId();
@@ -30,9 +39,20 @@ export function Stations() {
   const grouped = useMemo(() => {
     if (places.state.status !== 'ready') return [];
     const all = places.state.value.places;
+    // One pass to gather children by parent, rather than a scan of every place
+    // for every terminal. Over the whole release that difference is thousands
+    // of terminals times nineteen thousand places, which is not something to
+    // do while somebody waits for a directory.
+    const childrenOf = new Map<string, Place[]>();
+    for (const place of all) {
+      if (!place.parentId) continue;
+      const bucket = childrenOf.get(place.parentId);
+      if (bucket) bucket.push(place);
+      else childrenOf.set(place.parentId, [place]);
+    }
     return all
       .filter((place) => place.kind === 'stop_place')
-      .map((terminal) => ({ terminal, children: all.filter((child) => child.parentId === terminal.id) }));
+      .map((terminal) => ({ terminal, children: childrenOf.get(terminal.id) ?? [] }));
   }, [places.state]);
 
   /*
@@ -57,7 +77,29 @@ export function Stations() {
   }, [grouped, needle, language, name]);
 
   const FIRST_VIEW = 40;
-  const shown = needle.length > 0 ? matches : matches.slice(0, FIRST_VIEW);
+
+  /*
+   * Which forty, when nobody has typed. By name the page opened on 11.500,
+   * 16XLM, 21 KM, 43 km, 6 and 6.5 km: the KTEL source data's own noise, which
+   * sorts to the front of the alphabet and carries no coach. Of the places in
+   * the release, under a twentieth have any service, so forty taken off the
+   * top of a name sort is forty dead ends.
+   *
+   * Ordering the bounded view by how much service a terminal has puts the
+   * country's real stations on the first screen. Typing still searches the
+   * whole directory, and an uncovered station still appears with the badge
+   * that says so, because "this stop has no service" is a real answer.
+   */
+  const leading = useMemo(() => {
+    if (needle.length > 0) return matches;
+    return [...matches].sort((a, b) => {
+      const served = Number(b.terminal.coverage === 'covered') - Number(a.terminal.coverage === 'covered');
+      if (served !== 0) return served;
+      return b.terminal.boardingPointCount - a.terminal.boardingPointCount;
+    });
+  }, [matches, needle]);
+
+  const shown = needle.length > 0 ? matches : leading.slice(0, FIRST_VIEW);
   const hiddenCount = matches.length - shown.length;
 
   useHead({
