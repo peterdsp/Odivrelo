@@ -254,32 +254,47 @@ Both are product decisions, so neither was applied. The same question sits
 behind the boarding points that appear twice fifteen metres apart, which are
 most likely the two sides of a road.
 
-## Open, needing a healthy simulator
+## The simulator was not flaky, and the scroll was not needed
 
-`testTheAnswerArrivesOnScreen` checks that tapping "Search journeys" brings the
-answer into the top half of the screen. State on 6 Nov:
+Both were settled on 7 Nov, and both had been reported wrongly before that.
 
-- It ran and passed with the fix in place, when the assertion was the weaker
-  "the answer is somewhere inside the frame".
-- **It then passed with the fix removed.** The weak assertion proved nothing:
-  the answer begins inside the frame either way, low down and behind the tab
-  bar, which is the unreadable state the fix exists to prevent.
-- The assertion was sharpened to "the answer begins in the top half", which is
-  what the scroll actually does. **That version has not completed a run.** Two
-  attempts died in the runner (`kAXErrorServerNotFound` at launch, then
-  `crashed with signal term before establishing connection`).
+**The UI test failures had one cause.** The iOS 27.0 simulator runtime ships
+`UIAccessibilityLoaderWebShared` in two accessibility bundles, so the
+accessibility server never finishes starting:
 
-So: run it, and run it again with the `revealAnswer` call commented out. A pass
-in both states means the assertion is still too weak, not that the fix works.
-That is the trap this test already fell into once.
+    Failed to initialize for UI testing: XCTDaemonErrorDomain Code=18
+    "Timed out waiting for AX loaded notification"
 
-CoreSimulator has now failed roughly ten runs across 5 and 6 Nov with
-`Mach error -308`, `kAXErrorServerNotFound` and runner crashes, surviving a
-service kill, a device erase and several reboots. It wants a machine restart.
-One real result did come through between failures: the first run after an erase
-fails because the app adopts the seeded release on first launch, and the picker
-does not list places within 20 seconds. That is first-run cost, not a
-regression; the next run passed in 62 seconds.
+Everything that looked like flakiness came from that: `kAXErrorServerNotFound`,
+`Mach error -308`, runners crashing before connecting, roughly a dozen failures
+over two days through service kills, device erases and reboots. The advice
+recorded here previously, that it wanted a machine restart, was wrong and would
+not have helped. Create a device on another runtime, `iOS-26-5`, and the same
+test runs in sixteen seconds.
+
+**The answer was never hidden.** `revealAnswer` is removed. The measurement
+that ended it:
+
+    answer   538.3 to 743.0
+    tab bar  top at 791.0
+    screen   874.0
+
+The answer arrives whole, 48 points clear of the tab bar, directly under the
+button pressed. Three rounds of fixing the scroll produced the same number
+because the scroll was already doing everything it could; a scroll view cannot
+lift the last thing in its content to the top of a screen.
+
+That makes two defects chased in this branch that measurement did not support,
+the other being the largest-text-size one above. Both began as an inference
+from a screenshot, found plausible, and built on before being measured. The
+screenshot here showed text passing under a translucent bar, which is what
+scrolling content does.
+
+What survives is `testTheAnswerArrivesOnScreen`, asserting that the answer
+begins somewhere visible. It asserts the beginning and not the end on purpose:
+a list of departures is meant to run past the fold, and an earlier version of
+the assertion failed for a long answer, which would have made the test punish
+the product for working.
 
 ## For whoever continues
 
