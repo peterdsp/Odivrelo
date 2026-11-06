@@ -182,14 +182,19 @@ sites.
 **iOS picker and the App Intent: fixed.** Both go through the Kotlin core's
 `searchPlaces`, and the picker was looked at: Tripoli 75, Kerkyra 54, Kiato 49.
 
-**Web: not fixed, and has its own copy of the bug.** `apps/web/src/data/packQuery.ts`
-implements `searchPlaces` in TypeScript against the packs directly; the web
-client never calls the Kotlin core. Its empty-query branch sorts terminals
-first but filters nothing by coverage and does not rank by service, so it
-leads with the same pack-order names the iOS picker used to show. Read from
-the source, not run: three attempts to exercise it in vitest failed on the
-harness rather than the code, and it was not worth a fourth in a part of the
-tree another session is editing.
+**Web: already solved, differently, and the paragraph that stood here was
+wrong twice over.** It is true that `apps/web/src/data/packQuery.ts` implements
+`searchPlaces` in TypeScript and never calls the Kotlin core, and true that its
+empty-query branch filters nothing by coverage. What does not follow, and what
+was asserted anyway, is that the picker shows that list. `PlaceField.tsx:86`
+reads `query.trim().length === 0 && popular ? await popular() : await
+search(query)`, so an empty box calls `popularPlaces`, a curated set of seven
+station names sorted so covered records lead and deduplicated by name.
+
+The same mistake twice in one day, in opposite directions: first claiming the
+core fix reached four clients, then claiming web still carried the bug. Both
+came from reading one layer and inferring the next. The call site is one grep
+away and settles it.
 
 **Android: never had this bug and still does not get the better list.**
 `OdivreloViewModel.openPlacePicker` sets `places = Loadable.Idle` and queries
@@ -199,9 +204,21 @@ picker opens. Not done here: it cannot be built or seen on this machine, and
 shipping a change to a client nobody can look at is how a fixture build
 reached a phone earlier in this session.
 
-That leaves a real product question for a person: iOS now offers the busiest
-terminals before anyone types, and Android asks them to type first. Either is
-defensible; diverging by accident is not.
+That leaves a real product question for a person, and it is bigger than it
+looked. Three clients now answer "what do I offer before anyone types" three
+ways:
+
+- **iOS** ranks covered terminals by boarding points, from the release, so the
+  list follows the data: Tripoli, Kerkyra, Kiato, Trikala.
+- **Web** shows seven station names written into `Search.tsx`, chosen by hand
+  because they read well: Athens, Agrinio, Patras, Tripoli, Astros, Paralio
+  Astros, Megalopoli.
+- **Android** shows nothing and asks for typing.
+
+Each is defensible alone. Together they mean a traveller meets a different
+product on each, and the web list cannot follow the data: when a release adds
+or drops service, seven hardcoded names stay exactly as they were. That is a
+decision to make deliberately, not three accidents to leave standing.
 
 ## Open, needing a healthy simulator
 
