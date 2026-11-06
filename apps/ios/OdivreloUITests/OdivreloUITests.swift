@@ -178,11 +178,21 @@ final class OdivreloUITests: XCTestCase {
         expectation(for: answered, evaluatedWith: empty, handler: nil)
         waitForExpectations(timeout: 30)
 
-        let screen = app.windows.firstMatch.frame
+        // The application element rather than its main window: asking for the
+        // window returned kAXErrorServerNotFound, which fails the test for a
+        // reason that has nothing to do with where the answer is.
+        // The top half, not merely "on screen". Without the scroll the answer
+        // still begins inside the frame, low down and behind the tab bar, so a
+        // bounds check passes either way and proves nothing: this assertion was
+        // written that way first and passed with the fix removed. What marks
+        // the difference is the answer being brought up to where it is read.
+        let screen = app.frame
         let answer = empty.exists ? empty.frame : journeys.firstMatch.frame
-        XCTAssertTrue(
-            screen.contains(CGPoint(x: answer.midX, y: answer.minY + 1)),
-            "the answer starts at \(answer.minY) on a \(screen.height) point screen, which is off it"
+        XCTAssertLessThan(
+            answer.minY,
+            screen.height / 2,
+            "the answer starts at \(answer.minY) on a \(screen.height) point screen, "
+                + "which is the lower half: it was not brought into view"
         )
     }
 

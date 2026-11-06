@@ -205,18 +205,30 @@ defensible; diverging by accident is not.
 
 ## Open, needing a healthy simulator
 
-`OdivreloUITests.testTheAnswerArrivesOnScreen` has never been run. It checks
-that tapping "Search journeys" brings the answer on screen, and it prints the
-answer's position against the screen height when it fails. The fix it covers is
-committed and compiles.
+`testTheAnswerArrivesOnScreen` checks that tapping "Search journeys" brings the
+answer into the top half of the screen. State on 6 Nov:
 
-Run it, and then run it again with the `revealAnswer` call removed, to be sure
-it can fail. A test that passes either way proves nothing, which is the same
-trap as `simctl ui content_size` on a shut down device.
+- It ran and passed with the fix in place, when the assertion was the weaker
+  "the answer is somewhere inside the frame".
+- **It then passed with the fix removed.** The weak assertion proved nothing:
+  the answer begins inside the frame either way, low down and behind the tab
+  bar, which is the unreadable state the fix exists to prevent.
+- The assertion was sharpened to "the answer begins in the top half", which is
+  what the scroll actually does. **That version has not completed a run.** Two
+  attempts died in the runner (`kAXErrorServerNotFound` at launch, then
+  `crashed with signal term before establishing connection`).
 
-CoreSimulator died with `Mach error -308 - (ipc/mig) server died` on seven
-consecutive runs on 5 Nov, surviving a service kill and a device erase, and
-ended up unable to launch the unit suite either. It wants a machine restart.
+So: run it, and run it again with the `revealAnswer` call commented out. A pass
+in both states means the assertion is still too weak, not that the fix works.
+That is the trap this test already fell into once.
+
+CoreSimulator has now failed roughly ten runs across 5 and 6 Nov with
+`Mach error -308`, `kAXErrorServerNotFound` and runner crashes, surviving a
+service kill, a device erase and several reboots. It wants a machine restart.
+One real result did come through between failures: the first run after an erase
+fails because the app adopts the seeded release on first launch, and the picker
+does not list places within 20 seconds. That is first-run cost, not a
+regression; the next run passed in 62 seconds.
 
 ## For whoever continues
 
