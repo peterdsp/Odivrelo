@@ -375,6 +375,7 @@ export const en = {
   'station.changeDate': 'Change date',
   'station.instructions': 'Finding this boarding point',
   'station.notFoundTitle': 'That place is not in this data release',
+  'station.unnamed': 'Unnamed stop',
   'station.notFoundBody': 'Check the link, or search for the place by name.',
   'station.towards': 'towards {destination}',
 

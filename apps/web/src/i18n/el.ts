@@ -372,6 +372,7 @@ export const el: Catalogue = {
   'station.changeDate': 'Αλλαγή ημερομηνίας',
   'station.instructions': 'Πώς βρίσκεις αυτή τη θέση επιβίβασης',
   'station.notFoundTitle': 'Αυτός ο τόπος δεν υπάρχει σε αυτή την έκδοση δεδομένων',
+  'station.unnamed': 'Στάση χωρίς όνομα',
   'station.notFoundBody': 'Έλεγξε τον σύνδεσμο ή αναζήτησε τον τόπο με το όνομά του.',
   'station.towards': 'προς {destination}',
 

@@ -371,6 +371,7 @@ export const sq: Catalogue = {
   'station.changeDate': 'Ndrysho datën',
   'station.instructions': 'Si e gjen këtë pikë hipjeje',
   'station.notFoundTitle': 'Ky vend nuk është në këtë version të dhënash',
+  'station.unnamed': 'Ndalesë pa emër',
   'station.notFoundBody': 'Kontrollo lidhjen, ose kërko vendin sipas emrit.',
   'station.towards': 'drejt {destination}',
 

@@ -103,7 +103,22 @@ export function Booking() {
     );
   }
 
-  if (loaded.state.status === 'loading') return <Loading />;
+  /*
+   * A page still needs its level-one heading while it loads.
+   *
+   * These branches returned a bare spinner, so for as long as the data took
+   * there was no h1 anywhere on the page: a screen reader landing mid-load
+   * had nothing to orient by, and axe flagged it on whichever page the timing
+   * happened to catch.
+   */
+  if (loaded.state.status === 'loading') {
+    return (
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('booking.title')}</h1>
+        <Loading />
+      </div>
+    );
+  }
   if (loaded.state.status === 'error') {
     return (
       <div className="od-page od-page--narrow">

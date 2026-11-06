@@ -187,7 +187,18 @@ export function StationDetail() {
   });
   const place = loaded.state.status === 'ready' ? loaded.state.value : null;
   const result = place;
-  const placeName = place ? name(place.name) : '';
+  const rawPlaceName = place ? name(place.name) : '';
+  /*
+   * Some stops in the release carry no real name: the field is present but
+   * holds a dash in every language. Rendering that faithfully gave the page a
+   * heading of "-", which tells a reader nothing and leaves the page with no
+   * usable title at all for a screen reader.
+   *
+   * Saying the stop is unnamed is both truer and usable. The identifier and
+   * the coordinates below still say which stop this is.
+   */
+  const placeIsNamed = /[\p{L}\p{N}]/u.test(rawPlaceName);
+  const placeName = placeIsNamed ? rawPlaceName : t('station.unnamed');
   const manifestValue = manifest.status === 'ready' ? manifest.value : null;
   const releaseDates = useMemo(() => (manifestValue ? serviceDatesOf(manifestValue) : []), [manifestValue]);
 
@@ -210,7 +221,22 @@ export function StationDetail() {
       : undefined,
   });
 
-  if (loaded.state.status === 'loading') return <Loading />;
+  /*
+   * A page still needs its level-one heading while it loads.
+   *
+   * These branches returned a bare spinner, so for as long as the data took
+   * there was no h1 anywhere on the page: a screen reader landing mid-load
+   * had nothing to orient by, and axe flagged it on whichever page the timing
+   * happened to catch.
+   */
+  if (loaded.state.status === 'loading') {
+    return (
+      <div className="od-page od-page--narrow">
+        <h1 className="od-page__title">{t('meta.stations.title')}</h1>
+        <Loading />
+      </div>
+    );
+  }
   if (loaded.state.status === 'error') {
     return (
       <div className="od-page od-page--narrow">
