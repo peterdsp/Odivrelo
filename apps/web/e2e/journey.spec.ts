@@ -65,7 +65,10 @@ test.describe('search to boarding detail and back', () => {
     await page.getByRole('button', { name: 'Αναζήτηση δρομολογίων' }).click();
 
     // --- Results ----------------------------------------------------------
-    await expect(page).toHaveURL(/\/results\?/);
+    // The answer arrives under the form rather than on a page of its own, so
+    // the address bar stays on /search. It carries the query, which is what
+    // lets the way back further down restore this result.
+    await expect(page).toHaveURL(/\/search\?/);
     await waitForApp(page);
     const url = page.url();
     expect(url).toContain(`date=${query.date}`);

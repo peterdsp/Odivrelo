@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import type { Place } from '../data/contract';
+import type { Place, StopResult } from '../data/contract';
 import { useI18n } from '../i18n/I18nProvider';
 import { useHead, organizationNode } from '../hooks/useHead';
 import { useData, useDataMode } from '../app/DataProvider';
@@ -46,7 +46,7 @@ export function Search() {
   const { source, meta, manifest, reload } = useData();
   const dataMode = useDataMode();
   const { announce, alert } = useAnnouncer();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
 
   const incoming = useMemo(() => readSearchState(params), [params]);
 
@@ -91,6 +91,54 @@ export function Search() {
     return named;
   }, [athensPlaces.state, name]);
   const [inlineQuery, setInlineQuery] = useState<JourneyQuery | null>(null);
+
+  /*
+   * A search lives in the address bar, not only in this component.
+   *
+   * Answering in place used to leave the URL on a bare /search, so opening a
+   * journey and pressing back came home to an empty form: the results, and
+   * everything typed to find them, were gone. The query is written to the URL
+   * on submit and read back here, which also makes a search survive a refresh
+   * and be worth sending to someone.
+   */
+  const carried = incoming.originId && incoming.destinationId ? `${incoming.originId}~${incoming.destinationId}` : '';
+  /*
+   * Resolved one id at a time rather than by scanning the directory: the
+   * release carries 19,139 places, terminals sort first, and the ids in a link
+   * are usually boarding points, so any capped list of them comes back without
+   * the two that matter.
+   */
+  const carriedPlaces = useAsync(
+    async (signal) => {
+      const [from, to] = carried.split('~');
+      return Promise.all([source.place(from!, signal), source.place(to!, signal)]);
+    },
+    [source, carried],
+    { enabled: carried !== '' },
+  );
+  useEffect(() => {
+    if (!carried || carriedPlaces.state.status !== 'ready') return;
+    const [from, to] = carriedPlaces.state.value;
+    // A stop record carries everything a place does except the three fields
+    // below, each of which it states in another shape.
+    const asPlace = (stop: StopResult): Place => ({
+      ...stop,
+      parentId: stop.terminal?.id ?? null,
+      boardingPointCount: stop.boardingPoints.length,
+      operatorIds: stop.operators.map((operator) => operator.id),
+    });
+    setOrigin(asPlace(from!));
+    setDestination(asPlace(to!));
+    setInlineQuery({
+      originId: from!.id,
+      destinationId: to!.id,
+      date: incoming.date ?? todayServiceDate(),
+      operatorIds: incoming.operatorIds,
+      accessible: incoming.accessible,
+      departFrom: incoming.departFrom ?? undefined,
+      departTo: incoming.departTo ?? undefined,
+    });
+  }, [carried, carriedPlaces.state, incoming]);
 
   const metaValue = meta.status === 'ready' ? meta.value : null;
   const manifestValue = manifest.status === 'ready' ? manifest.value : null;
@@ -255,6 +303,8 @@ export function Search() {
       departFrom: state.departFrom ?? undefined,
       departTo: state.departTo ?? undefined,
     });
+    // Pushed, not replaced, so back from a journey returns to this answer.
+    setParams(writeSearchState(state));
   };
 
   const filterCount = activeFilterCount({
