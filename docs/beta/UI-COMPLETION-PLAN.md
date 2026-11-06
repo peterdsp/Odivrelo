@@ -263,8 +263,14 @@ Possible answers, none applied because each is a product decision:
   an operator's view of a stop rather than a stop.
 
 The first is the only one that also fixes the station directory and the
-pickers on all three clients. Until one is chosen, the product's central
-question can return the wrong answer to a reasonable search.
+pickers on every client, and that is checked rather than assumed: web and iOS
+are served the same file, `places-0a57c80efd12a60c.json`, same content hash,
+carrying the same eight records with the same seven covered badges. The defect
+is in the published release, not in a client, so no client can fix it alone and
+each would have to work around it separately.
+
+Until one answer is chosen, the product's central question can return the wrong
+answer to a reasonable search, on whichever client a traveller opens.
 
 ## The same station, several times: a decision nobody has made
 
