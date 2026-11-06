@@ -107,16 +107,26 @@ final class OdivreloUITests: XCTestCase {
         // Picking by position does not work either: the offer list is ranked
         // by boarding points and the busiest terminals are at opposite ends of
         // the country.
-        func choose(_ field: XCUIElement, _ query: String) {
+        // Chosen by id, not by name, and the reason is a defect rather than a
+        // convenience. Eight stop records share the name
+        // "ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ)", seven of them badged covered, and only
+        // ks_981ad561 carries the sixteen departures to Patras that this
+        // release holds for this service date. Tapping the first match picks
+        // one of the other seven and the product answers, correctly for the
+        // stop it was given, that nothing runs.
+        func choose(_ field: XCUIElement, typing query: String, thenTap id: String) {
             field.tap()
             let search = app.searchFields.firstMatch
             XCTAssertTrue(search.waitForExistence(timeout: 20), "the picker should offer a search field")
             search.tap()
             search.typeText(query)
-            XCTAssertTrue(places.firstMatch.waitForExistence(timeout: 20), "nothing matched \(query)")
-            places.firstMatch.tap()
+            let wanted = app.buttons["place.\(id)"]
+            XCTAssertTrue(wanted.waitForExistence(timeout: 20), "\(id) did not appear for \(query)")
+            wanted.tap()
             let gone = NSPredicate(format: "exists == false")
-            expectation(for: gone, evaluatedWith: places.firstMatch, handler: nil)
+            expectation(for: gone, evaluatedWith: app.buttons.matching(
+                NSPredicate(format: "identifier BEGINSWITH 'place.'")
+            ).firstMatch, handler: nil)
             waitForExpectations(timeout: 15)
         }
 
@@ -128,8 +138,8 @@ final class OdivreloUITests: XCTestCase {
         shoot(app, "02-place-picker")
         app.buttons["Cancel"].firstMatch.tap()
 
-        choose(origin, "ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ")
-        choose(app.buttons["search.destination"], "ΑΓΙΑ ΣΟΦΙΑ (ΠΑΤΡΑ")
+        choose(origin, typing: "ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ", thenTap: "ks_981ad5612757337fb6654902")
+        choose(app.buttons["search.destination"], typing: "ΑΓΙΑ ΣΟΦΙΑ (ΠΑΤΡΑ", thenTap: "ks_9aa9fbd42f9c171ee8b90642")
         shoot(app, "03-search-filled")
 
         var found = false
