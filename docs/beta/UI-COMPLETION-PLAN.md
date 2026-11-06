@@ -220,6 +220,40 @@ product on each, and the web list cannot follow the data: when a release adds
 or drops service, seven hardcoded names stay exactly as they were. That is a
 decision to make deliberately, not three accidents to leave standing.
 
+## The same station, several times: a decision nobody has made
+
+The station directory shows ATHENS six times in its first forty entries. It is
+not a rendering fault, and it is not safe to collapse by name.
+
+The release carries **17 terminals called ATHENS**, one per KTEL operator, and
+they are not all the same place:
+
+- Six sit at exactly 37.9986, 23.6989: arta, thesprotia, kastoria, zakynthos,
+  imathia and kavala have each imported the same physical terminal.
+- Others are up to fifteen kilometres apart. ktel-fthiotida's is at 38.0663,
+  23.7660 and ktel-kefalonia's at 38.0234, 23.6175. Those are different
+  terminals in Athens, both named ATHENS, which is what the source data says.
+
+Nothing distinguishes them on the page: `municipality` is null on all of them,
+so each row reads ATHENS, "not known", and a list of boarding points.
+
+Across the release, collapsing only records that share a name **and** a
+coordinate to within a metre would remove 85 of 4,222 terminals: PATRA six
+times at one point, THESSALONIKI six, GREVENA and SOFADES four each. That merge
+is provably safe in the sense that the records describe one place. It is not
+free: each carries its own `operatorIds` and its own children, so merging has
+to decide what the union means, and a terminal that loses its operator list
+loses the answer to "whose coach leaves from here".
+
+The alternative is to keep them and tell them apart, which means showing the
+operator where the municipality is empty: "ATHENS, KTEL Fthiotida". That is
+honest about what the data models, which is not a station but an operator's
+view of a station.
+
+Both are product decisions, so neither was applied. The same question sits
+behind the boarding points that appear twice fifteen metres apart, which are
+most likely the two sides of a road.
+
 ## Open, needing a healthy simulator
 
 `testTheAnswerArrivesOnScreen` checks that tapping "Search journeys" brings the
