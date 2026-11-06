@@ -220,6 +220,52 @@ product on each, and the web list cannot follow the data: when a release adds
 or drops service, seven hardcoded names stay exactly as they were. That is a
 decision to make deliberately, not three accidents to leave standing.
 
+## A traveller can be told no coach runs when sixteen do
+
+This is the sharp end of the duplicate-terminal question below, and it is not
+cosmetic. Found on 7 Nov while trying to photograph a journey detail.
+
+Searching **ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ) to ΑΓΙΑ ΣΟΦΙΑ (ΠΑΤΡΑ)** on 7 Nov returns
+"This corridor is not covered by the current data release." That day's journey
+pack carries **sixteen departures** on exactly that named pair, more than any
+other corridor in the release.
+
+The app is not wrong; it is answering about the stop it was given:
+
+    ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ)   8 stop records, 7 covered, 1 not covered
+    ΑΓΙΑ ΣΟΦΙΑ (ΠΑΤΡΑ)        1 record, covered
+    the sixteen journeys run   ks_981ad5612757337fb6654902 -> ks_9aa9fbd42f9c171ee8b90642
+
+Eight records share one name. The picker lists them identically: same text,
+and seven of them carry a green "Covered" badge. Only one has these
+departures. Pick any of the other seven and the product says nothing runs.
+
+Two things follow that are worth separating.
+
+**The badge does not mean what a reader will take it to mean.** "Covered" on a
+place says that place has some service somewhere, not that it has service on
+the corridor being asked about, and not that this is the record the timetable
+uses. Seven stops can be truthfully badged covered while six of them answer
+"nothing runs" for a route that runs sixteen times.
+
+**Picking by name is a lottery.** Nothing on the row distinguishes the eight,
+so a traveller cannot choose the right one even in principle, and the odds of
+landing on it here are one in eight.
+
+Possible answers, none applied because each is a product decision:
+
+- Collapse stops sharing a name and parent in the release pipeline, so one
+  record carries the union of the departures.
+- Expand a search to every stop sharing the chosen one's name and parent,
+  which keeps the data as it is and makes the question mean what a person
+  intends by it.
+- Show what distinguishes them on the row, which means admitting the model is
+  an operator's view of a stop rather than a stop.
+
+The first is the only one that also fixes the station directory and the
+pickers on all three clients. Until one is chosen, the product's central
+question can return the wrong answer to a reasonable search.
+
 ## The same station, several times: a decision nobody has made
 
 The station directory shows ATHENS six times in its first forty entries. It is

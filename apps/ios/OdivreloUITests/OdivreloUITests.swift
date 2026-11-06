@@ -91,30 +91,51 @@ final class OdivreloUITests: XCTestCase {
         let journeys = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'journey.'"))
         let submit = app.buttons["search.submit"]
 
+        // A corridor that actually runs, so the pictures show the product
+        // working rather than its "nothing runs between these two" screen.
+        // Athens Kifisos to Patras carries sixteen departures on the release's
+        // own service dates, more than any other pair. Typed rather than
+        // picked by position: the offer list is ranked by boarding points and
+        // the busiest terminals are at opposite ends of the country.
+        // Typed as the record actually begins. The picker ranks a prefix match
+        // above a contained one, so "ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ" selected a different
+        // terminal called "ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ ΑΘΗΝΑ", and the app then answered,
+        // correctly, that the corridor it was asked about is not covered.
+        // These two carry sixteen departures on this service date, more than
+        // any other pair in the release.
+        //
+        // Picking by position does not work either: the offer list is ranked
+        // by boarding points and the busiest terminals are at opposite ends of
+        // the country.
+        func choose(_ field: XCUIElement, _ query: String) {
+            field.tap()
+            let search = app.searchFields.firstMatch
+            XCTAssertTrue(search.waitForExistence(timeout: 20), "the picker should offer a search field")
+            search.tap()
+            search.typeText(query)
+            XCTAssertTrue(places.firstMatch.waitForExistence(timeout: 20), "nothing matched \(query)")
+            places.firstMatch.tap()
+            let gone = NSPredicate(format: "exists == false")
+            expectation(for: gone, evaluatedWith: places.firstMatch, handler: nil)
+            waitForExpectations(timeout: 15)
+        }
+
         origin.tap()
         guard places.firstMatch.waitForExistence(timeout: 20) else {
             XCTFail("the origin picker listed nothing")
             return
         }
         shoot(app, "02-place-picker")
-        places.firstMatch.tap()
+        app.buttons["Cancel"].firstMatch.tap()
 
-        // Most pairs of terminals have no service between them, and "nothing
-        // runs between these two" is a screen worth seeing but not the one
-        // wanted here. Try destinations in turn until a journey actually
-        // appears, and settle for whatever the last one shows if none does.
+        choose(origin, "ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ")
+        choose(app.buttons["search.destination"], "ΑΓΙΑ ΣΟΦΙΑ (ΠΑΤΡΑ")
+        shoot(app, "03-search-filled")
+
         var found = false
-        for candidate in 1..<3 where !found {
-            let destination = app.buttons["search.destination"]
-            guard destination.waitForExistence(timeout: 10) else { break }
-            destination.tap()
-            guard places.firstMatch.waitForExistence(timeout: 20) else { break }
-            guard places.count > candidate else { break }
-            places.element(boundBy: candidate).tap()
-
-            guard submit.waitForExistence(timeout: 10), submit.isEnabled else { continue }
+        if submit.waitForExistence(timeout: 10), submit.isEnabled {
             submit.tap()
-            found = journeys.firstMatch.waitForExistence(timeout: 25)
+            found = journeys.firstMatch.waitForExistence(timeout: 30)
         }
 
         shoot(app, found ? "03-results" : "03-results-nothing-runs")
