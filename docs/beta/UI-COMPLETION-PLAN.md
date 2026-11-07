@@ -241,7 +241,20 @@ values, `NO_SERVICE_ON_DATE`, `OUTSIDE_COVERAGE` and
 everything", so the screen cannot say the true thing.
 
 It applies to every filter: a maximum duration, an operator, excluding
-overnight journeys. One of them makes it certain rather than possible.
+overnight journeys, a departure window. One of them makes it certain rather
+than possible.
+
+**Both clients do it, each in its own code.** The web does not call the Kotlin
+core; `StaticPackSource.journeys` ends the same way, reporting
+`no_service_on_date` whenever filtering empties the list. Its step-free filter
+is stricter still, requiring `stepFree === true && reviewState === 'published'`,
+and both are null on every record. So this is not one bug in one client: the
+contract has no way to say "your filter excluded everything", and two
+independent implementations each fell into the same gap.
+
+The web's `UnavailableReason` already carries a value the Kotlin enum does not,
+`no_offline_data_for_date`, so the two are out of step on this type and the
+contract work has to reconcile them anyway.
 
 **The step-free filter can never match.** `matches` requires
 `accessibleBoardingPoint == true`, and every boarding point in the release has
