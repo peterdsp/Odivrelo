@@ -271,6 +271,34 @@ setting did it, and the plainest reading is that the coach does not exist.
 For a product whose first principle is not claiming what it does not know, this
 says something false to the reader least able to check it.
 
+### What the fix costs, so it can be weighed
+
+The mechanism is additive and safe. `UnavailableReason` already tolerates
+values a build does not know: the Swift enum carries `unstated` as its
+`unrecognised` fallback, and it already holds `noOfflineDataForDate`, which the
+Kotlin enum does not. So a new value decodes harmlessly on anything already
+shipped, and no contract version has to break.
+
+    Kotlin   add EXCLUDED_BY_FILTERS with its @SerialName, and return it from
+             searchJourneys when filtering empties a non-empty list
+    Swift    add the matching case to UnavailableReason
+    Web      add it to the union in contract.ts and to StaticPackSource
+    Copy     one message, in three catalogues
+
+The copy is the only part that is not mechanical, and it is the part a person
+should write. All three catalogues hold exactly 626 keys and `Catalogue` is
+typed from `en`, so Greek and Albanian are required, not optional. Drafts, for
+correction rather than use:
+
+    en  Journeys run on this date, but none match your filters.
+    el  Υπάρχουν δρομολόγια αυτή την ημέρα, αλλά κανένα δεν ταιριάζει με τα
+        φίλτρα σου.
+    sq  Ka udhëtime në këtë datë, por asnjë nuk përputhet me filtrat e tu.
+
+These were not written into the catalogues. A message shown to someone who has
+just been told, wrongly, that no coach runs is not the place for copy nobody
+fluent has read.
+
 Three things to decide, none applied:
 
 - Add a reason for "excluded by your filters", which is the honest answer and
