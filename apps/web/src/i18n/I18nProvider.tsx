@@ -38,6 +38,8 @@ export interface I18n {
   formatMoney: (amount: number, currency: string) => string;
   formatDuration: (minutes: number) => string;
   formatAge: (iso: string, now?: Date) => string;
+  /** How long since `iso`, as a length of time rather than a point in the past. */
+  formatAgeDuration: (iso: string, now?: Date) => string;
 }
 
 const I18nContext = createContext<I18n | null>(null);
@@ -106,6 +108,10 @@ export function I18nProvider({ children, initialLanguage }: I18nProviderProps) {
       formatAge: (iso, now) => {
         const hours = hoursSince(iso, now);
         return t(pluralKey('freshness.age', hours, language, catalogue), { count: hours });
+      },
+      formatAgeDuration: (iso, now) => {
+        const hours = hoursSince(iso, now);
+        return t(pluralKey('freshness.duration', hours, language, catalogue), { count: hours });
       },
     };
   }, [language, explicit, setLanguage]);

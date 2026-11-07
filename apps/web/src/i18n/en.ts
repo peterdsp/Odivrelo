@@ -219,6 +219,11 @@ export const en = {
   'freshness.age_zero': 'less than an hour ago',
   'freshness.age_one': '{count} hour ago',
   'freshness.age_other': '{count} hours ago',
+  // A length of time, not a point in it: the stale warning says how long
+  // something has gone unchecked, so "3 hours ago" does not fit the sentence.
+  'freshness.duration_zero': 'less than an hour',
+  'freshness.duration_one': '{count} hour',
+  'freshness.duration_other': '{count} hours',
   'freshness.staleWarning': 'This has not been rechecked for {age}. Confirm it with the operator before you travel.',
   'geometry.unverified': 'Route line not surveyed',
   'geometry.ordered_stops_only': 'Route line joins the stops in order',

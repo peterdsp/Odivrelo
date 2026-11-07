@@ -28,7 +28,7 @@ export interface JourneyCardProps {
 }
 
 export function JourneyCard({ journey, to, selected = false, now, headingLevel = 3 }: JourneyCardProps) {
-  const { t, name, formatClock, formatDuration, formatMoney, formatAge } = useI18n();
+  const { t, name, formatClock, formatDuration, formatMoney, formatAge, formatAgeDuration } = useI18n();
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const expired = isPastServiceDate(journey.serviceDate, now);
 
@@ -166,7 +166,7 @@ export function JourneyCard({ journey, to, selected = false, now, headingLevel =
       ) : null}
       {journey.freshness.state === 'stale' ? (
         <p className="od-journey__note od-journey__note--warning">
-          {t('freshness.staleWarning', { age: t('freshness.age_other', { count: journey.freshness.ageHours }) })}
+          {t('freshness.staleWarning', { age: formatAgeDuration(journey.freshness.checkedAt, now) })}
         </p>
       ) : null}
     </Card>

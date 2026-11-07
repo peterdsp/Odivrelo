@@ -327,6 +327,30 @@ test.describe('search to boarding detail and back', () => {
     await expect(results.locator('article.od-journey').first()).toContainText(origin);
   });
 
+  test('a stale card does not contradict itself about how old it is', async ({ page }) => {
+    await skipOnboarding(page);
+    await page.goto(`/search?origin=${query.originId}&destination=${query.destinationId}&date=${query.date}`);
+    await waitForApp(page);
+
+    const card = page.locator('article.od-journey').first();
+    await expect(card).toBeVisible({ timeout: 20_000 });
+    const text = (await card.innerText()).replace(/\s+/g, ' ');
+
+    /*
+     * The badge counted from the moment the data was checked, the warning
+     * repeated the age baked into the pack when it was built. They drifted
+     * apart by a day for every day the release sat unpublished, and it was the
+     * warning, the sentence telling the reader to ring the operator, that
+     * understated it.
+     */
+    const checked = text.match(/Ελέγχθηκε πριν από (\d+) ώρες/);
+    // Tolerates the older wording too, so a regression is compared rather than
+    // quietly skipped over.
+    const warned = text.match(/εδώ και (?:πριν από )?(\d+) ώρες/);
+    test.skip(checked === null || warned === null, 'this release carries no stale journey');
+    expect(warned![1], 'the warning and the badge disagree about the age').toBe(checked![1]);
+  });
+
   test('operates the place picker entirely from the keyboard', async ({ page }) => {
     await skipOnboarding(page);
     await page.goto('/search');
