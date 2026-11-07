@@ -2,6 +2,11 @@
 
 Locale: `el`.
 
+The App Store text that is actually uploaded now lives in
+`apps/ios/AppStore/metadata/`, written for the real-data release and sent by
+`scripts/ios-app-store-listing.sh`. The Apple section below is the earlier
+demonstration-data draft, kept for the record.
+
 ## Apple App Store
 
 **App name** (30): `Odivrelo`

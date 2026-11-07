@@ -1,0 +1,1 @@
+bus,intercity,timetable,schedule,departures,station,travel,offline,athens,patras,corfu,nafplio

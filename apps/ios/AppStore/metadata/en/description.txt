@@ -1,0 +1,34 @@
+Find the coach, know exactly where it leaves from, and buy your ticket from the people who run it.
+
+Greece's intercity coaches are run by dozens of regional operators, each with its own website, its own timetable and its own terminal. Odivrelo brings their published departures into one search, and for every fact it tells you when it was checked and where it came from.
+
+ONE SEARCH ACROSS OPERATORS
+Choose where you are leaving from, where you are going and the day you travel. Odivrelo lists every coach that runs between them that day, laid out like a departures board. Which operator runs which route is not your problem.
+
+THE STOP YOU ACTUALLY BOARD AT
+A city can have more than one coach terminal, and the wrong one means a missed coach. Odivrelo names the exact stop each departure leaves from and shows it on the map. The whole route is listed in order: your stop marked, every call the coach makes, and calls with no published time labelled as untimed instead of left blank.
+
+BUY FROM THE OPERATOR
+Odivrelo never sells or issues tickets. When you are ready, it opens the operator's own booking page, then brings you back to exactly where you were.
+
+KNOW HOW FRESH IT IS
+Every departure carries the date it was last checked and the source that published it. When Odivrelo is not sure, it says so instead of guessing.
+
+READY WITHOUT A SIGNAL
+Timetables are stored on your device, so search keeps working in a station basement or on a mountain road. Save a trip and it stays usable offline, showing which data release it came from.
+
+THE NEXT COACH, HANDS FREE
+Ask Siri "When is the next coach in Odivrelo" and hear the next departures from a terminal, with the time each was checked, without opening the app. It works in Shortcuts too.
+
+ALSO IN THE APP
+• A private travel wallet for ticket files you import yourself, kept on your device and never uploaded.
+• Opt-in reminders that never contain your name, your booking reference or your barcode.
+• Greek, English and Albanian throughout.
+• VoiceOver, Dynamic Type, high contrast and reduced motion, with a full text route to everything the map shows.
+• Layouts for iPhone and iPad, including Split View and Stage Manager.
+
+PRIVATE BY DESIGN
+No account. No analytics. No trackers. Your searches, saved trips and tickets never leave your device.
+
+INDEPENDENT
+Odivrelo is an independent project. It is not affiliated with, endorsed by or operated by the KTEL federation or any regional operator, and operator names belong to their owners. Coverage grows as more operators' timetables are reviewed, and the app shows which operators and stations it covers today.
