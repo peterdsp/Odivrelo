@@ -2,15 +2,17 @@ Odivrelo is an intercity coach timetable for Greece. It needs no account, no sig
 
 To see it working:
 1. On the welcome screen, tap "Start searching".
-2. Tap "From" and choose ATHENS. In the list that opens, ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ) is Athens' Kifisos coach terminal; you can also type "Athens".
-3. Tap "To" and choose PATRA, for example ΑΓΙΑ ΣΟΦΙΑ (ΠΑΤΡΑ); you can also type "Patra".
-4. Keep today's date and tap "Search journeys". The departures for that day are listed like a departures board. Station names are in Greek capitals because that is how the operators publish them.
-5. Tap a departure to see its full route, the exact stop it leaves from on the map, when the timetable was last checked, and the button that opens the operator's own booking page in Safari.
+2. Tap "From", type Zante in the search field and choose "ZANTE, Terminal" (the coach terminal on Zakynthos).
+3. Tap "To", type Aqua and choose "AQUA BEY, Terminal".
+4. Keep today's date and tap "Search journeys". The day's departures are listed like a departures board.
+5. Tap a departure to see its full route, the stop it leaves from on the map, when the timetable was last checked, and the "Continue to" button that opens the operator's own booking page in Safari.
+
+Station names are shown as the operators publish them, often in Greek capitals. Mainland example: Athens (ΑΘΗΝΑ (ΣΤΑΘΜΟΣ ΚΗΦΙΣΟΥ)) to Patras (ΑΓΙΑ ΣΟΦΙΑ (ΠΑΤΡΑ)).
 
 Odivrelo does not sell tickets and takes no payment. Booking happens on the operator's website, outside the app.
 
-The "My trips" tab keeps saved trips and the travel wallet (ticket files the person imports themselves, stored only on the device). "Offline" shows the timetable data stored on the device. "Settings" has the language (Greek, English, Albanian), the privacy statement and the data sources.
+"My trips" holds saved trips and the travel wallet (ticket files the person imports themselves, stored only on the device). "Offline" shows the timetable data stored on the device. "Settings" has the language (Greek, English, Albanian), privacy, data sources and licences.
 
-Location access is optional and only used while the app is open to show nearby stations. Notifications are optional and only used for reminders the person sets on a saved trip.
+Location access is optional and only used while the app is open, to show nearby stations. Notifications are optional and only used for reminders the person sets on a saved trip.
 
 The app has no analytics, no advertising and no tracking. Odivrelo is independent and not affiliated with any coach operator.
