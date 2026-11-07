@@ -297,6 +297,36 @@ test.describe('search to boarding detail and back', () => {
     }
   });
 
+  test('swapping the places does not relabel the results already on the page', async ({ page }) => {
+    await skipOnboarding(page);
+
+    // Opened by URL rather than through the picker: this test is about what
+    // the heading says after a swap, not about how the search was entered.
+    const origin = facts.placeNames[query.originId]!;
+    const destination = facts.placeNames[query.destinationId]!;
+    await page.goto(`/search?origin=${query.originId}&destination=${query.destinationId}&date=${query.date}`);
+    await waitForApp(page);
+
+    // The section holding the journeys, not the recent list.
+    const results = page.locator('.od-section').filter({ has: page.locator('article.od-journey') });
+    const title = results.locator('.od-section__title');
+    await expect(title).toHaveText(`${origin} προς ${destination}`, { timeout: 20_000 });
+
+    /*
+     * Swapping prepares the return trip, it does not re-run the search. The
+     * heading named whatever the form held, so it read "Β προς Α" over
+     * departures that leave Α: the list saying it is something it is not.
+     */
+    await page.getByRole('button', { name: 'Αντιστροφή αφετηρίας και προορισμού' }).click();
+    await expect(page.getByLabel(/^Από$/)).toHaveValue(destination);
+    await expect(page.getByLabel(/^Προς$/)).toHaveValue(origin);
+
+    // Read once rather than with a retrying matcher: a heading that corrects
+    // itself a moment later has still told the reader the wrong thing.
+    expect((await title.textContent())?.trim()).toBe(`${origin} προς ${destination}`);
+    await expect(results.locator('article.od-journey').first()).toContainText(origin);
+  });
+
   test('operates the place picker entirely from the keyboard', async ({ page }) => {
     await skipOnboarding(page);
     await page.goto('/search');

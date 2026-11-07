@@ -91,6 +91,15 @@ export function Search() {
     return named;
   }, [athensPlaces.state, name]);
   const [inlineQuery, setInlineQuery] = useState<JourneyQuery | null>(null);
+  /*
+   * The two places the inline results are for, kept beside the query.
+   *
+   * The heading used to name whatever the form held, so pressing swap
+   * relabelled the existing list: "ΑΘΗΝΑ προς ΝΑΥΠΛΙΟ" sat above departures
+   * that leave Ναύπλιο. The places are stored rather than their names so the
+   * heading still follows a language change.
+   */
+  const [inlinePlaces, setInlinePlaces] = useState<{ origin: Place; destination: Place } | null>(null);
 
   /*
    * A search lives in the address bar, not only in this component.
@@ -129,6 +138,7 @@ export function Search() {
     });
     setOrigin(asPlace(from!));
     setDestination(asPlace(to!));
+    setInlinePlaces({ origin: asPlace(from!), destination: asPlace(to!) });
     setInlineQuery({
       originId: from!.id,
       destinationId: to!.id,
@@ -303,6 +313,7 @@ export function Search() {
       departFrom: state.departFrom ?? undefined,
       departTo: state.departTo ?? undefined,
     });
+    setInlinePlaces({ origin, destination });
     // Pushed, not replaced, so back from a journey returns to this answer.
     setParams(writeSearchState(state));
   };
@@ -552,7 +563,10 @@ export function Search() {
 
       {inlineQuery ? (
         <Section
-          title={t('results.title', { origin: origin ? name(origin.name) : '', destination: destination ? name(destination.name) : '' })}
+          title={t('results.title', {
+            origin: inlinePlaces ? name(inlinePlaces.origin.name) : '',
+            destination: inlinePlaces ? name(inlinePlaces.destination.name) : '',
+          })}
           description={inlineQuery.date}
         >
           {inlineResults.state.status === 'loading' ? <Loading /> : null}
