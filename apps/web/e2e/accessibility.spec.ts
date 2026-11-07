@@ -37,6 +37,12 @@ function routes(): RouteUnderTest[] {
   if (facts.workingQuery) {
     const q = facts.workingQuery;
     list.push({ name: 'results', path: `/results?origin=${q.originId}&destination=${q.destinationId}&date=${q.date}` });
+    // The same answer in the place it is usually read: under the form, from a
+    // search carried in the URL rather than on a page of its own.
+    list.push({
+      name: 'search-with-results',
+      path: `/search?origin=${q.originId}&destination=${q.destinationId}&date=${q.date}`,
+    });
   }
   if (facts.journeyId && facts.workingQuery) {
     list.push({ name: 'journey', path: `/journey/${encodeURIComponent(facts.journeyId)}?date=${facts.workingQuery.date}` });
