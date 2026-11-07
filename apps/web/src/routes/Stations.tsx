@@ -205,8 +205,16 @@ export function Stations() {
                   <Link to={`/stations/${encodeURIComponent(child.id)}`} className="od-link">
                     {name(child.name)}
                   </Link>
-                  {child.bay ? <span className="od-muted"> {t('journey.boardingBay', { bay: child.bay })}</span> : null}{' '}
-                  <StepFreeBadge stepFree={child.stepFree ?? null} />
+                  {child.bay ? <span className="od-muted"> {t('journey.boardingBay', { bay: child.bay })}</span> : null}
+                  {/*
+                    No step-free badge on a directory row. Every one of the
+                    14,678 boarding points in the release has stepFree null, so
+                    the badge is a constant: it said "Step-free access not
+                    checked" under each of the 240 rows on this page's first
+                    screen and told a reader nothing they could act on. The
+                    station's own page still carries it, beside the one place
+                    somebody is deciding whether they can board.
+                  */}
                 </li>
               ))}
               {children.length > VISIBLE_CHILDREN ? (
