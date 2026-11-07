@@ -220,6 +220,53 @@ product on each, and the web list cannot follow the data: when a release adds
 or drops service, seven hardcoded names stay exactly as they were. That is a
 decision to make deliberately, not three accidents to leave standing.
 
+## A filter that empties the results is reported as "no service"
+
+Found 7 Nov. This one reaches a traveller through a switch in Settings.
+
+`ReleaseIndex.searchJourneys` ends:
+
+    val filtered = segments.filter { matches(it, filters) }
+    return JourneySearchOutcome(
+        results = filtered.sortedWith(comparatorFor(filters.sort)),
+        unavailableReason = if (filtered.isEmpty()) {
+            UnavailableReason.NO_SERVICE_ON_DATE
+        } else null,
+    )
+
+When filters remove every result, the product says there is no service on that
+date. There is service; the filter removed it. `UnavailableReason` has three
+values, `NO_SERVICE_ON_DATE`, `OUTSIDE_COVERAGE` and
+`ORIGIN_EQUALS_DESTINATION`, and none of them means "your filter excluded
+everything", so the screen cannot say the true thing.
+
+It applies to every filter: a maximum duration, an operator, excluding
+overnight journeys. One of them makes it certain rather than possible.
+
+**The step-free filter can never match.** `matches` requires
+`accessibleBoardingPoint == true`, and every boarding point in the release has
+`stepFree` null: 14,678 of them, with `reviewState` null too. Today's 149
+journeys all carry `boardingPoint.stepFree = null`. So Settings' "Default to
+journeys with reviewed step-free boarding" turns every search, on every
+corridor, on every date, into "no service on this date".
+
+Consider who turns that switch on. A traveller who needs step-free boarding
+enables the preference meant for them, searches a route that runs sixteen times
+a day, and is told nothing runs. Nothing on the screen suggests their own
+setting did it, and the plainest reading is that the coach does not exist.
+
+For a product whose first principle is not claiming what it does not know, this
+says something false to the reader least able to check it.
+
+Three things to decide, none applied:
+
+- Add a reason for "excluded by your filters", which is the honest answer and
+  needs the enum, the three web catalogues and the iOS strings.
+- Hold the step-free switch inactive while no record in the release can satisfy
+  it, and say why on the switch.
+- Decide what the step-free promise is for. The interface has `true` and
+  `false` states that have never once been rendered from real data.
+
 ## A traveller can be told no coach runs when sixteen do
 
 This is the sharp end of the duplicate-terminal question below, and it is not
