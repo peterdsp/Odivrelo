@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { readReleaseFacts, WEB_ROOT } from './support';
@@ -16,7 +16,9 @@ const dist = join(WEB_ROOT, 'dist');
  * indexed on the day the data becomes real.
  *
  * This test fails if a route in the router has no prerendered entry point, so a
- * new route cannot silently regress.
+ * new route cannot silently regress. Stations and journeys are the exception:
+ * they are answered by a `_redirects` rewrite to the shell, which is a 200 for
+ * the same bytes, because a file each does not fit the host's file limit.
  */
 
 /**
@@ -58,41 +60,43 @@ test.describe('prerendered entry points', () => {
     expect(missing, 'these router paths have no prerendered entry point and will return 404').toEqual([]);
   });
 
-  test('every operator, stop and journey in the release has one', () => {
+  test('every operator in the release has one', () => {
     test.skip(facts.releaseId === 'unknown', 'no release is published in dist');
-    const missing: string[] = [];
-    for (const id of facts.operatorIds) {
-      if (!entryPointExists(`/operators/${id}`)) missing.push(`/operators/${id}`);
+    const missing = facts.operatorIds.map((id) => `/operators/${id}`).filter((path) => !entryPointExists(path));
+    expect(missing, 'these operators are published but have no prerendered page').toEqual([]);
+  });
+
+  test('stations and journeys are answered by the shell with a 200, not by a file each', () => {
+    /*
+     * There are tens of thousands of stations and journeys, and a file each took
+     * the deployment past the host's 20,000 file limit. `_redirects` rewrites
+     * both routes to the shell instead. The target must be `/`: Cloudflare Pages
+     * redirects `/index.html` to `/`, so a rewrite to it loses the address.
+     */
+    const rules = readFileSync(join(dist, '_redirects'), 'utf8')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+      .map((line) => line.split(/\s+/));
+    for (const from of ['/stations/*', '/journey/*']) {
+      expect(rules, `no rewrite for ${from}`).toContainEqual([from, '/', '200']);
     }
-    // The stops pack is the authority for station pages.
-    const manifest = JSON.parse(readFileSync(join(dist, 'data', 'manifest.json'), 'utf8')) as {
-      files: Record<string, { path: string }>;
-    };
-    const stops = JSON.parse(
-      readFileSync(join(dist, 'data', manifest.files.stops!.path), 'utf8'),
-    ) as { stops: Record<string, unknown> };
-    for (const id of Object.keys(stops.stops)) {
-      if (!entryPointExists(`/stations/${id}`)) missing.push(`/stations/${id}`);
+    // A rule wins over a file on Pages, so a file under a rewritten route would
+    // be dead weight in the file budget and never served.
+    for (const route of ['stations', 'journey']) {
+      const directory = join(dist, route);
+      const shadowed = existsSync(directory) ? readdirSync(directory).filter((entry) => entry !== 'index.html') : [];
+      expect(shadowed, `files under /${route}/ that the rewrite shadows`).toEqual([]);
     }
-    for (const [name, entry] of Object.entries(manifest.files)) {
-      if (!name.startsWith('journeys-')) continue;
-      const pack = JSON.parse(readFileSync(join(dist, 'data', entry.path), 'utf8')) as {
-        journeys: Record<string, unknown>;
-      };
-      for (const id of Object.keys(pack.journeys ?? {})) {
-        if (!entryPointExists(`/journey/${id}`)) missing.push(`/journey/${id}`);
-        /*
-         * The booking page deliberately has no file. Its head is the same
-         * constants for every journey, and the host refuses a deployment above
-         * 20,000 files, which one page per journey would exceed. Without a file
-         * the route serves `404.html`, which boots this app, keeps the address
-         * and renders the right screen. A rewrite is not an option: Cloudflare
-         * does not preserve the address for one. The status code is wrong and
-         * the route is `noindex`, so nothing that reads it is misled.
-         */
-      }
-    }
-    expect(missing, 'these entities are published but have no prerendered page').toEqual([]);
+  });
+
+  test('the whole site stays far inside the host\'s file limit', () => {
+    const count = (directory: string): number =>
+      readdirSync(directory, { withFileTypes: true }).reduce(
+        (total, entry) => total + (entry.isDirectory() ? count(join(directory, entry.name)) : 1),
+        0,
+      );
+    expect(count(dist), 'dist holds more files than the 2,000 budget').toBeLessThanOrEqual(2_000);
   });
 
   test('the generated route list agrees with what is on disk', () => {

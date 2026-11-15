@@ -44,6 +44,16 @@ for path in /search /operators /settings /offline /saved /coverage; do
   [ "$code" = "200" ] && ok "$path loads directly ($code)" || bad "$path returned $code, expected 200"
 done
 
+# Stations and journeys have no file each; _redirects rewrites them to the
+# shell. The rewrite must answer 200 itself, not redirect the reader elsewhere,
+# so redirects are not followed here.
+for path in /stations/verify-station /journey/verify-journey /journey/verify-journey/booking; do
+  code=$(curl -sS -o /tmp/deeplink.$$ -w '%{http_code}' --max-time 20 "$BASE$path" || echo 000)
+  if [ "$code" = "200" ] && grep -q 'id="root"' /tmp/deeplink.$$; then ok "$path is served by the shell ($code)"
+  else bad "$path returned $code, expected 200 from the shell"; fi
+done
+rm -f /tmp/deeplink.$$
+
 # Per-page metadata, not the generic shell repeated.
 for path in /search /operators; do
   title=$(curl -sS --max-time 20 "$BASE$path" | sed -n 's/.*<title>\([^<]*\)<\/title>.*/\1/p' | head -1)

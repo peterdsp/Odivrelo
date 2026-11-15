@@ -135,8 +135,18 @@ breaks shared links, link previews and any hope of indexing.
 `npm run build` therefore emits a real `index.html` per route:
 
 - one per static route (`/search/index.html`, `/settings/index.html`, and so on);
-- one per operator, stop and journey in the release, enumerated from the packs in
-  `dist/data/`.
+- one per operator in the release, enumerated from the packs in `dist/data/`.
+
+Stations and journeys get no file each. There are tens of thousands of them, and
+one file per entity took the deployment past Cloudflare Pages' 20,000 file limit.
+`public/_redirects` answers `/stations/*` and `/journey/*` with the shell and a
+200, keeping the address, and the app renders the page and its head from the
+packs. The rewrite target is `/`, because Pages redirects `/index.html` to `/`
+and a rewrite to it loses the address.
+
+The build fails if `dist` holds more than 2,000 files. The site needs a few
+hundred, so anything that starts emitting a file per stop, journey or date is
+caught at build time rather than at the publish step.
 
 Each carries its **own** `<title>`, description, canonical link, Open Graph tags,
 robots directive and, for entity pages, JSON-LD. The body is still hydrated by the

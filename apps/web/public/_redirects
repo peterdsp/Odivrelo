@@ -1,0 +1,11 @@
+# Routes answered by the application shell, with a 200 and the address kept.
+#
+# Stations and journeys have no file each: there are tens of thousands of them,
+# and a file per entity took the deployment past the host's 20,000 file limit.
+# The app renders these pages, and their heads, from the data packs.
+#
+# The target is `/`, never `/index.html`. Cloudflare Pages redirects
+# `/index.html` to `/`, so a rewrite to it does not keep the address. Rules win
+# over files here, so no rule may cover a path that has its own file.
+/stations/*  /  200
+/journey/*   /  200
