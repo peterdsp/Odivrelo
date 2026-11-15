@@ -17,6 +17,9 @@ export const SHARED_LITERAL_KEYS: ReadonlySet<string> = new Set([
   'language.sq',
   'language.sqName',
   'settings.supportEmail',
+  // Apple publishes no Albanian App Store badge, so Albanian shows the English
+  // badge and its alt text reads what the badge says.
+  'app.lidhraBadgeAlt',
   'wallet.label',
   'booking.phone',
   'operator.title',

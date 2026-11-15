@@ -9,6 +9,7 @@ import { useOnline } from '../hooks/useOnline';
 import { DemoBanner } from './DemoBanner';
 import { ErrorBoundary } from './ErrorBoundary';
 import { UpdatePrompt } from './UpdatePrompt';
+import { LidhraCard } from './LidhraCard';
 import { LayoutContext } from './layoutContext';
 import type { MessageKey } from '../i18n/catalogues';
 
@@ -174,6 +175,7 @@ export function Layout() {
                 </a>
               </li>
             </ul>
+            <LidhraCard />
           </div>
         </footer>
 

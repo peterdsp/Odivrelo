@@ -266,6 +266,90 @@ svg {
   font-size: 0.875rem;
 }
 
+/* Lidhra, another app by the same maker: a quiet card at the foot of the page. */
+.od-lidhra {
+  margin-block-start: var(--od-space-3);
+  padding: var(--od-space-4);
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius-large);
+  background: var(--od-surface);
+  display: grid;
+  gap: var(--od-space-3);
+  max-inline-size: 36rem;
+}
+
+.od-lidhra__eyebrow {
+  font: var(--od-type-caption);
+  color: var(--od-text-secondary);
+}
+
+.od-lidhra__body {
+  display: flex;
+  gap: var(--od-space-3);
+  align-items: flex-start;
+}
+
+.od-lidhra__icon {
+  flex: none;
+  border-radius: var(--od-radius-medium);
+}
+
+.od-lidhra__text {
+  display: grid;
+  gap: var(--od-space-1);
+  min-inline-size: 0;
+}
+
+.od-lidhra__name {
+  font: var(--od-type-heading);
+  color: var(--od-text-primary);
+}
+
+.od-lidhra__line {
+  font-size: 0.875rem;
+  color: var(--od-text-secondary);
+}
+
+.od-lidhra__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--od-space-4);
+  font-size: 0.875rem;
+}
+
+.od-lidhra__badge {
+  display: inline-flex;
+  border-radius: var(--od-radius-small);
+}
+
+.od-lidhra__badge img {
+  block-size: 40px;
+  inline-size: auto;
+}
+
+.od-lidhra__badge-dark {
+  display: none;
+}
+
+:root[data-theme='dark'] .od-lidhra__badge-light {
+  display: none;
+}
+
+:root[data-theme='dark'] .od-lidhra__badge-dark {
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .od-lidhra__badge-light {
+    display: none;
+  }
+
+  :root:not([data-theme='light']) .od-lidhra__badge-dark {
+    display: block;
+  }
+}
+
 /* --------------------------------------------------------------------------
    Navigation
    -------------------------------------------------------------------------- */
