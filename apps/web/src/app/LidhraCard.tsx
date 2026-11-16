@@ -4,13 +4,13 @@ import { useI18n } from '../i18n/I18nProvider';
 const APP_STORE_URL = 'https://apps.apple.com/app/lidhra-debrid-downloader/id6790952504?ct=odivrelo&mt=8';
 const SITE_URL = 'https://lidhra.peterdsp.dev/';
 
-/** Rides shorter than this do not get the card: it is about having something to watch on the way. */
+/** Rides shorter than this do not get the card: a long ride is when there is time to download something to watch. */
 export const LIDHRA_MIN_RIDE_MINUTES = 90;
 
 /**
  * A card for Lidhra, another app by the same maker, shown on a journey once the
  * traveller has seen how long the ride is. It is content, not chrome: a solid
- * surface, no blur, no shadow. The two Lidhra screens sit at fixed aspect ratios,
+ * surface, no blur, no shadow. The two Lidhra screens (transfers on the Mac, the Add a transfer sheet on iPhone) sit at fixed aspect ratios,
  * so loading them never moves the page.
  *
  * Every asset is served from this origin, so the content security policy holds,
@@ -61,8 +61,8 @@ export function LidhraCard({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) {
         <figure className="od-lidhra__shots">
           <img
             className="od-lidhra__library"
-            src="/lidhra/lidhra-library-1200.webp"
-            srcSet="/lidhra/lidhra-library-640.webp 640w, /lidhra/lidhra-library-1200.webp 1200w"
+            src="/lidhra/lidhra-transfers-1200.webp"
+            srcSet="/lidhra/lidhra-transfers-640.webp 640w, /lidhra/lidhra-transfers-1200.webp 1200w"
             sizes="(min-width: 900px) 420px, 92vw"
             width={1200}
             height={600}
@@ -72,8 +72,8 @@ export function LidhraCard({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) {
           />
           <img
             className="od-lidhra__phone"
-            src="/lidhra/lidhra-play-360.webp"
-            srcSet="/lidhra/lidhra-play-240.webp 240w, /lidhra/lidhra-play-360.webp 360w"
+            src="/lidhra/lidhra-add-360.webp"
+            srcSet="/lidhra/lidhra-add-240.webp 240w, /lidhra/lidhra-add-360.webp 360w"
             sizes="(min-width: 900px) 120px, 26vw"
             width={360}
             height={570}

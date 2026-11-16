@@ -292,7 +292,7 @@ svg {
 
 .od-lidhra__title {
   font: var(--od-type-title);
-  max-inline-size: 20ch;
+  max-inline-size: 24ch;
   text-wrap: balance;
   color: var(--od-text-primary);
 }
@@ -362,7 +362,7 @@ svg {
   }
 }
 
-/* The library on the big screen, with the phone overlapping its corner. */
+/* Transfers on the Mac, with the phone overlapping its corner. */
 .od-lidhra__shots {
   order: -1;
   display: grid;
