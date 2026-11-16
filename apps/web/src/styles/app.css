@@ -267,16 +267,15 @@ svg {
 }
 
 /* Lidhra, another app by the same maker, on journeys long enough to watch
-   something on the way. A content-layer card: solid surface, no glass, no
-   shadow. Inner corners are the card radius minus its padding, so they stay
-   concentric. */
+   something on the way. A content-layer card: a tone step from the page, no
+   outline, no glass, no shadow. The panel radius less its padding gives the
+   screenshots their corners, so they stay concentric. */
 .od-lidhra {
   container-type: inline-size;
   margin-block-start: var(--od-space-8);
-  padding: var(--od-space-5);
-  border: 1px solid var(--od-border);
-  border-radius: var(--od-radius-large);
-  background: var(--od-surface);
+  padding: var(--od-space-6);
+  border-radius: var(--od-radius-panel);
+  background: var(--od-surface-muted);
   color: var(--od-text-primary);
 }
 
@@ -391,7 +390,7 @@ svg {
   aspect-ratio: 360 / 570;
   margin: 0 5% -13% 0;
   border-radius: var(--od-radius-medium);
-  outline: 4px solid var(--od-surface);
+  outline: 4px solid var(--od-surface-muted);
   background: #e9ebf2;
 }
 
@@ -1964,19 +1963,6 @@ svg {
   margin: 0;
 }
 
-.od-welcome__hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.9fr);
-  gap: var(--od-space-5);
-  align-items: center;
-  justify-items: start;
-}
-
-.od-welcome__hero-copy {
-  display: grid;
-  gap: var(--od-space-3);
-}
-
 .od-travel-image {
   position: relative;
   margin: 0;
@@ -2018,41 +2004,6 @@ svg {
   aspect-ratio: 16 / 5;
 }
 
-@media (max-width: 42rem) {
-  .od-welcome__hero {
-    grid-template-columns: 1fr;
-  }
-
-  .od-welcome__hero-image {
-    inline-size: 100%;
-  }
-}
-
-.od-welcome__title {
-  font: var(--od-type-display);
-  font-size: clamp(2rem, 7vw, 2.5rem);
-}
-
-.od-welcome__tagline {
-  font: var(--od-type-heading);
-  color: var(--od-primary-ink);
-}
-
-.od-welcome__intro {
-  max-inline-size: var(--od-reading-maximum);
-}
-
-.od-welcome__promises {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  gap: var(--od-space-4);
-}
-
-.od-welcome__promiseTitle {
-  font: var(--od-type-heading);
-  font-size: 1.0625rem;
-}
-
 /* --------------------------------------------------------------------------
    Wide layouts
    -------------------------------------------------------------------------- */
@@ -2076,5 +2027,778 @@ svg {
 @supports (width: env(viewport-segment-width 0 0)) {
   .od-two-pane[data-mode='two'][data-segments='2'] {
     column-gap: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) + var(--od-space-6));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Welcome page
+
+   The page is a departures slip: a paper sheet rising out of the deep teal
+   field, carrying the title and one real day of Athens departures on a
+   tear-off stub. Every colour, radius and face is the app's own token; the
+   page adds only its field colour and its five type steps.
+   -------------------------------------------------------------------------- */
+
+.od-landing {
+  --ld-field: var(--od-brand-deep-teal-blue, #0b4a6b);
+  --ld-on-field: #ffffff;
+  --ld-margin: clamp(16px, 4vw, 56px);
+  --ld-inline: max(var(--ld-margin), calc((100% - 1200px) / 2));
+  /* For boxes narrower than the page, such as one half of a split. */
+  --ld-inline-page: max(var(--ld-margin), calc((100vw - 1200px) / 2));
+  --ld-gap: clamp(88px, 11vw, 168px);
+  --ld-small: 0.8125rem;
+  --ld-body: 1.0625rem;
+  --ld-heading: clamp(1.875rem, 3vw, 2.75rem);
+  --ld-display: clamp(2.375rem, 6.2vw, 5.75rem);
+  background: var(--od-surface);
+  color: var(--od-text-primary);
+  font-size: var(--ld-body);
+  overflow-x: clip;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .od-landing {
+    --ld-field: var(--od-primary-soft);
+  }
+}
+
+:root[data-theme='dark'] .od-landing {
+  --ld-field: var(--od-primary-soft);
+}
+
+.od-landing h1,
+.od-landing h2,
+.od-landing h3 {
+  text-wrap: balance;
+}
+
+.od-landing .od-button {
+  border-radius: var(--od-radius-pill);
+  min-block-size: 3.25rem;
+  padding-inline: 1.75rem;
+  font-size: var(--ld-body);
+  transition: transform var(--od-motion-fast) var(--od-easing), background-color var(--od-motion-fast) var(--od-easing);
+}
+
+.od-landing .od-button:hover {
+  transform: translateY(-2px);
+}
+
+.od-landing .od-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* The shell around this one page drops its rules, so the field meets the bar. */
+.od-shell[data-route='welcome'] .od-header {
+  border-block-end: 0;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 45%);
+}
+
+.od-shell[data-route='welcome'] .od-nav--bar,
+.od-shell[data-route='welcome'] .od-nav--utility {
+  border-block-start: 0;
+}
+
+.od-shell[data-route='welcome'] .od-footer {
+  border-block-start: 0;
+  margin-block-start: 0;
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .od-shell[data-route='welcome'] .od-header {
+    box-shadow: none;
+    border-block-end: 2px solid var(--od-text-primary);
+  }
+}
+
+/* Hero: the sheet. */
+
+.od-landing__hero {
+  background: var(--ld-field);
+  padding: clamp(40px, 8vw, 112px) var(--ld-margin) 0;
+}
+
+.od-sheet {
+  position: relative;
+  max-inline-size: 62rem;
+  margin-inline: auto;
+  background: var(--od-surface);
+  color: var(--od-text-primary);
+  border-radius: var(--od-radius-panel) var(--od-radius-panel) 0 0;
+  padding: clamp(20px, 5vw, 64px) clamp(20px, 5vw, 64px) 0;
+  text-align: center;
+}
+
+.od-landing__languages {
+  border: 0;
+  margin: clamp(24px, 3vw, 32px) 0 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--od-space-2);
+}
+
+.od-landing__language {
+  position: relative;
+  display: inline-flex;
+}
+
+.od-landing__language input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.od-landing__language span {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--od-touch-minimum);
+  padding-inline: 1.125rem;
+  border-radius: var(--od-radius-pill);
+  font-size: var(--ld-body);
+  color: var(--od-text-primary);
+  transition: background-color var(--od-motion-fast) var(--od-easing), transform var(--od-motion-fast) var(--od-easing);
+}
+
+.od-landing__language:hover span {
+  background: var(--od-surface-muted);
+}
+
+.od-landing__language input:checked + span {
+  background: var(--od-primary-soft);
+  color: var(--od-primary-ink);
+  font-weight: 700;
+}
+
+.od-landing__language input:focus-visible + span {
+  outline: 3px solid var(--od-focus);
+  outline-offset: 2px;
+}
+
+.od-landing__title {
+  margin: 0 auto;
+  max-inline-size: 13ch;
+  font-family: var(--od-font-sans);
+  font-size: var(--ld-display);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--od-text-primary);
+}
+
+.od-landing__lede {
+  margin: clamp(24px, 3vw, 40px) auto 0;
+  max-inline-size: 40ch;
+  font-size: var(--ld-body);
+  line-height: 1.55;
+  color: var(--od-text-primary);
+}
+
+.od-landing__start {
+  margin-block-start: clamp(28px, 3vw, 40px);
+  display: flex;
+  justify-content: center;
+}
+
+/* The stub: one real day of departures. Its notches are the field showing through. */
+.od-board {
+  position: relative;
+  margin: clamp(48px, 6vw, 80px) calc(-1 * clamp(20px, 5vw, 64px)) 0;
+  padding: clamp(28px, 4vw, 48px) clamp(20px, 5vw, 64px) clamp(32px, 4vw, 56px);
+  background: var(--od-surface-muted);
+  text-align: start;
+}
+
+.od-board::before,
+.od-board::after {
+  content: '';
+  position: absolute;
+  inset-block-start: -16px;
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: 50%;
+  background: var(--ld-field);
+}
+
+.od-board::before {
+  inset-inline-start: -16px;
+}
+
+.od-board::after {
+  inset-inline-end: -16px;
+}
+
+.od-board__title {
+  margin: 0;
+  font-size: var(--ld-body);
+  font-weight: 700;
+  color: var(--od-text-primary);
+}
+
+.od-board__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--od-space-2);
+  margin-block: var(--od-space-4) var(--od-space-5);
+}
+
+.od-board__tab {
+  min-block-size: var(--od-touch-minimum);
+  padding-inline: 1.25rem;
+  border: 0;
+  border-radius: var(--od-radius-pill);
+  background: var(--od-surface);
+  color: var(--od-text-primary);
+  font: inherit;
+  font-size: var(--ld-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--od-motion-fast) var(--od-easing), transform var(--od-motion-fast) var(--od-easing);
+}
+
+.od-board__tab:hover {
+  transform: translateY(-1px);
+}
+
+.od-board__tab:active {
+  transform: scale(0.97);
+}
+
+.od-board__tab[aria-selected='true'] {
+  background: var(--od-primary);
+  color: var(--od-on-primary);
+}
+
+.od-board__tab:focus-visible {
+  outline: 3px solid var(--od-focus);
+  outline-offset: 2px;
+}
+
+.od-board__summary {
+  margin: 0 0 var(--od-space-3);
+  color: var(--od-text-secondary);
+  font-size: var(--ld-body);
+}
+
+.od-board__table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--ld-body);
+}
+
+.od-board__table th {
+  padding: 0 var(--od-space-3) var(--od-space-2) 0;
+  text-align: start;
+  font-size: var(--ld-small);
+  font-weight: 600;
+  color: var(--od-text-secondary);
+}
+
+.od-board__table td {
+  padding: 0.7rem var(--od-space-3) 0.7rem 0;
+  color: var(--od-text-primary);
+}
+
+.od-board__table tbody tr:nth-child(odd) td {
+  background: var(--od-surface);
+}
+
+.od-board__table tbody tr td:first-child {
+  padding-inline-start: var(--od-space-3);
+  border-start-start-radius: var(--od-radius-small);
+  border-end-start-radius: var(--od-radius-small);
+}
+
+.od-board__table tbody tr td:last-child {
+  border-start-end-radius: var(--od-radius-small);
+  border-end-end-radius: var(--od-radius-small);
+}
+
+.od-board__table thead th:first-child {
+  padding-inline-start: var(--od-space-3);
+}
+
+.od-board__time {
+  font-weight: 700;
+}
+
+.od-board__fare {
+  text-align: end !important;
+}
+
+.od-board__table tbody tr {
+  transform-origin: 50% 0;
+  animation: ld-flap 460ms var(--od-easing) both;
+  animation-delay: calc(var(--od-row, 0) * 45ms);
+}
+
+.od-board__note {
+  margin: var(--od-space-4) 0 0;
+  max-inline-size: 60ch;
+  font-size: var(--ld-body);
+  color: var(--od-text-secondary);
+}
+
+@media (max-width: 40rem) {
+  .od-board__table th:nth-child(2),
+  .od-board__table td:nth-child(2) {
+    display: none;
+  }
+}
+
+/* The stop: a plate and its story. */
+
+.od-landing__stop {
+  display: grid;
+  gap: clamp(32px, 5vw, 72px);
+  padding: var(--ld-gap) var(--ld-inline);
+  align-items: stretch;
+}
+
+@media (min-width: 56rem) {
+  .od-landing__stop {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.od-landing__plate {
+  margin: 0;
+  aspect-ratio: 1;
+  background: var(--ld-field);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.od-landing__plate img {
+  inline-size: 90%;
+  block-size: auto;
+  border-radius: var(--od-radius-large);
+}
+
+.od-landing__stop-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--od-space-6);
+}
+
+.od-landing__heading {
+  margin: 0;
+  font-size: var(--ld-heading);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--od-text-primary);
+  max-inline-size: 18ch;
+}
+
+.od-landing__heading--centre {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.od-landing__body {
+  margin: 0;
+  max-inline-size: 40ch;
+  font-size: var(--ld-body);
+  line-height: 1.55;
+}
+
+.od-landing__cells {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--od-space-2);
+  margin-block-start: var(--od-space-4);
+}
+
+.od-landing__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 4.5rem;
+  padding: var(--od-space-3);
+  border: 0;
+  border-radius: var(--od-radius-pill);
+  background: var(--od-surface-muted);
+  color: var(--od-text-primary);
+  font: inherit;
+  font-size: var(--ld-body);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--od-motion-fast) var(--od-easing), background-color var(--od-motion-fast) var(--od-easing);
+}
+
+.od-landing__cell--ink {
+  background: var(--od-primary);
+  color: var(--od-on-primary);
+}
+
+.od-landing__cell:hover {
+  transform: translateY(-2px);
+}
+
+.od-landing__cell:active {
+  transform: scale(0.98);
+}
+
+.od-landing__cell:focus-visible {
+  outline: 3px solid var(--od-focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 30rem) {
+  .od-landing__cells {
+    grid-template-columns: 1fr;
+  }
+
+  .od-landing__cell {
+    min-block-size: 3.75rem;
+  }
+}
+
+/* What it does: a second sheet with cut edges, on a tone step. */
+
+.od-landing__facts {
+  background: var(--od-surface-muted);
+  padding: var(--ld-gap) var(--ld-margin);
+}
+
+.od-sheet--list {
+  max-inline-size: 40rem;
+  border-radius: 0;
+  padding: clamp(48px, 6vw, 80px) clamp(20px, 4vw, 56px);
+  text-align: start;
+  clip-path: polygon(0.000% 10px, 2.778% 0px, 5.556% 10px, 8.333% 0px, 11.111% 10px, 13.889% 0px, 16.667% 10px, 19.444% 0px, 22.222% 10px, 25.000% 0px, 27.778% 10px, 30.556% 0px, 33.333% 10px, 36.111% 0px, 38.889% 10px, 41.667% 0px, 44.444% 10px, 47.222% 0px, 50.000% 10px, 52.778% 0px, 55.556% 10px, 58.333% 0px, 61.111% 10px, 63.889% 0px, 66.667% 10px, 69.444% 0px, 72.222% 10px, 75.000% 0px, 77.778% 10px, 80.556% 0px, 83.333% 10px, 86.111% 0px, 88.889% 10px, 91.667% 0px, 94.444% 10px, 97.222% 0px, 100.000% 10px, 100.000% calc(100% - 10px), 97.222% 100%, 94.444% calc(100% - 10px), 91.667% 100%, 88.889% calc(100% - 10px), 86.111% 100%, 83.333% calc(100% - 10px), 80.556% 100%, 77.778% calc(100% - 10px), 75.000% 100%, 72.222% calc(100% - 10px), 69.444% 100%, 66.667% calc(100% - 10px), 63.889% 100%, 61.111% calc(100% - 10px), 58.333% 100%, 55.556% calc(100% - 10px), 52.778% 100%, 50.000% calc(100% - 10px), 47.222% 100%, 44.444% calc(100% - 10px), 41.667% 100%, 38.889% calc(100% - 10px), 36.111% 100%, 33.333% calc(100% - 10px), 30.556% 100%, 27.778% calc(100% - 10px), 25.000% 100%, 22.222% calc(100% - 10px), 19.444% 100%, 16.667% calc(100% - 10px), 13.889% 100%, 11.111% calc(100% - 10px), 8.333% 100%, 5.556% calc(100% - 10px), 2.778% 100%, 0.000% calc(100% - 10px));
+}
+
+.od-facts__group {
+  margin-block-start: clamp(36px, 4vw, 48px);
+}
+
+.od-facts__group-title {
+  margin: 0 0 var(--od-space-3);
+  font-size: var(--ld-body);
+  font-weight: 700;
+  color: var(--od-primary);
+}
+
+.od-facts__list {
+  margin: 0;
+  display: grid;
+  gap: var(--od-space-4);
+}
+
+.od-facts__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--od-space-4);
+  row-gap: var(--od-space-1);
+}
+
+.od-facts__item dt {
+  font-weight: 700;
+}
+
+.od-facts__value {
+  margin: 0;
+  text-align: end;
+  color: var(--od-text-primary);
+}
+
+.od-facts__body {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-inline-size: 38ch;
+  color: var(--od-text-secondary);
+}
+
+@media (max-width: 30rem) {
+  .od-facts__item {
+    grid-template-columns: 1fr;
+  }
+
+  .od-facts__value {
+    text-align: start;
+  }
+}
+
+/* From, to, the day: the three screens of a search. */
+
+.od-landing__steps {
+  padding: var(--ld-gap) var(--ld-inline);
+}
+
+.od-steps {
+  list-style: none;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(32px, 4vw, 56px);
+}
+
+@media (min-width: 56rem) {
+  .od-steps {
+    grid-template-columns: 5fr 7fr;
+    grid-template-rows: auto auto;
+    column-gap: clamp(40px, 6vw, 96px);
+  }
+
+  .od-steps__item--tall {
+    grid-row: 1 / span 2;
+  }
+}
+
+.od-steps__item {
+  display: grid;
+  gap: var(--od-space-4);
+  align-content: start;
+}
+
+.od-steps__item img {
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--od-radius-large);
+  background: var(--od-surface-muted);
+}
+
+.od-steps__item--tall img {
+  max-inline-size: 26rem;
+}
+
+.od-steps__item p {
+  margin: 0;
+  max-inline-size: 36ch;
+  font-size: var(--ld-body);
+  line-height: 1.55;
+}
+
+/* One word is the button. */
+
+.od-landing__cta-link {
+  --ld-cta-ground: var(--od-accent);
+  --ld-cta-ink: var(--od-brand-navy, #082f45);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-block-size: max(22rem, 60svh);
+  padding: clamp(20px, 3vw, 32px) var(--ld-inline) 24px;
+  background: var(--ld-cta-ground);
+  color: var(--ld-cta-ink);
+  text-decoration: none;
+  transition: background-color var(--od-motion-fast) linear, color var(--od-motion-fast) linear;
+}
+
+.od-landing__cta-link:hover,
+.od-landing__cta-link:focus-visible {
+  background: var(--ld-cta-ink);
+  color: var(--ld-cta-ground);
+}
+
+.od-landing__cta-link:focus-visible {
+  outline: 4px solid var(--od-focus-ring);
+  outline-offset: -8px;
+}
+
+.od-landing__cta-line {
+  margin: 0;
+  max-inline-size: 26ch;
+  font-size: var(--ld-body);
+  font-weight: 600;
+}
+
+.od-landing__cta-arrow {
+  position: absolute;
+  inset-block-start: clamp(20px, 3vw, 32px);
+  inset-inline-end: var(--ld-inline);
+  transition: transform var(--od-motion-standard) var(--od-easing);
+}
+
+.od-landing__cta-link:hover .od-landing__cta-arrow {
+  transform: translate(6px, -6px);
+}
+
+.od-landing__cta-word {
+  margin: 0;
+  font-size: clamp(4rem, 25vw, 24rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  white-space: nowrap;
+}
+
+:lang(el) .od-landing__cta-word {
+  font-size: clamp(3rem, 16.5vw, 16rem);
+}
+
+:lang(sq) .od-landing__cta-word {
+  font-size: clamp(4rem, 28vw, 26rem);
+}
+
+/* The close: the station itself, and the rest of the app. */
+
+.od-landing__close {
+  display: grid;
+  background: var(--od-surface-muted);
+}
+
+@media (min-width: 56rem) {
+  .od-landing__close {
+    grid-template-columns: 1fr 1fr;
+    min-block-size: 88svh;
+  }
+}
+
+.od-landing__photo {
+  position: relative;
+  margin: 0;
+  min-block-size: 50svh;
+  overflow: hidden;
+}
+
+.od-landing__photo img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 40% 60%;
+}
+
+.od-landing__photo figcaption {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  padding: var(--od-space-3) var(--ld-margin) var(--od-space-3) var(--ld-inline-page);
+  background: rgb(4 20 30 / 72%);
+  color: #ffffff;
+  font-size: var(--ld-small);
+  line-height: 1.45;
+}
+
+.od-landing__credit {
+  color: inherit;
+}
+
+.od-landing__menu {
+  padding: clamp(48px, 7vw, 96px) var(--ld-inline-page) clamp(48px, 7vw, 96px) var(--ld-margin);
+  display: grid;
+  align-content: center;
+  gap: clamp(28px, 4vw, 48px);
+}
+
+.od-landing__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(12px, 1.6vw, 24px);
+}
+
+.od-landing__links a {
+  display: inline-block;
+  font-size: var(--ld-heading);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--od-text-primary);
+  text-decoration: none;
+  transition: transform var(--od-motion-standard) var(--od-easing), color var(--od-motion-fast) linear;
+}
+
+.od-landing__links:hover a {
+  color: var(--od-text-secondary);
+}
+
+.od-landing__links a:hover,
+.od-landing__links a:focus-visible {
+  color: var(--od-text-primary);
+  transform: translateX(12px);
+}
+
+/* Motion: parts rise as their section arrives; the stub's rows flip in. */
+
+.od-landing [data-rise].is-waiting {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.od-landing [data-rise].is-risen {
+  animation: ld-rise 720ms var(--od-easing) both;
+}
+
+.od-landing [data-rise].is-risen:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.od-landing [data-rise].is-risen:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+@keyframes ld-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Transform only, so a row is always at full contrast, even mid-flip. */
+@keyframes ld-flap {
+  from {
+    transform: perspective(600px) rotateX(-80deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes ld-drift {
+  from {
+    transform: scale(1.14) translateY(-3%);
+  }
+  to {
+    transform: scale(1) translateY(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .od-landing__photo img,
+  .od-landing__plate img {
+    animation: ld-drift linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 60%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .od-landing [data-rise].is-waiting {
+    opacity: 1;
+    transform: none;
+  }
+
+  .od-landing [data-rise].is-risen,
+  .od-board__table tbody tr,
+  .od-landing__photo img,
+  .od-landing__plate img {
+    animation: none;
+  }
+
+  .od-landing .od-button:hover,
+  .od-landing__cell:hover,
+  .od-board__tab:hover,
+  .od-landing__links a:hover {
+    transform: none;
   }
 }

@@ -200,7 +200,7 @@ describeRelease('language', () => {
         <Welcome />
       </Harness>,
     );
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Ταξίδεψε με βεβαιότητα');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Τα ΚΤΕΛ σε μία αναζήτηση');
     unmount();
 
     render(
@@ -208,7 +208,7 @@ describeRelease('language', () => {
         <Welcome />
       </Harness>,
     );
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Udhëto me siguri');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Autobusët grekë, një kërkim');
   });
 
   it('updates the document language so assistive technology uses the right voice', async () => {
@@ -228,7 +228,7 @@ describeRelease('language', () => {
       </Harness>,
     );
     await user.click(screen.getByRole('radio', { name: 'English' }));
-    await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Travel with certainty'));
+    await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Greek coaches, one search'));
     await waitFor(() => expect(document.documentElement.lang).toBe('en'));
   });
 });

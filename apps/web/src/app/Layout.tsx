@@ -77,7 +77,14 @@ export function Layout() {
       {/* Reads the four safe-area insets so the hook can report real numbers. */}
       <div id="od-safe-area-probe" aria-hidden="true" />
 
-      <div className="od-shell" ref={layout.containerRef} data-mode={layout.mode} data-two-pane={layout.twoPane ? '' : undefined}>
+      <div
+        className="od-shell"
+        ref={layout.containerRef}
+        data-mode={layout.mode}
+        data-two-pane={layout.twoPane ? '' : undefined}
+        // The welcome page is the one page that runs full bleed, so its shell drops the rules between bars.
+        data-route={location.pathname === '/welcome' ? 'welcome' : undefined}
+      >
         <a className="od-skip-link" href="#main">
           {t('app.skipToContent')}
         </a>

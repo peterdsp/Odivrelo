@@ -20,9 +20,9 @@ const facts = readReleaseFacts();
 
 test.describe('cold launch', () => {
   for (const [language, heading, startLabel] of [
-    ['el', 'Ταξίδεψε με βεβαιότητα', 'Ξεκίνα την αναζήτηση'],
-    ['en', 'Travel with certainty', 'Start searching'],
-    ['sq', 'Udhëto me siguri', 'Fillo kërkimin'],
+    ['el', 'Τα ΚΤΕΛ σε μία αναζήτηση', 'Ξεκίνα την αναζήτηση'],
+    ['en', 'Greek coaches, one search', 'Start searching'],
+    ['sq', 'Autobusët grekë, një kërkim', 'Fillo kërkimin'],
   ] as const) {
     test(`shows the first-launch page in ${language} with no account and no permission prompt`, async ({ page }, testInfo) => {
       // Fail the test if anything asks for a permission on first load.
