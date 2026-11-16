@@ -23,6 +23,7 @@ import { useAnnouncer } from '../components/Announcer';
 import { isPastServiceDate } from '../lib/time';
 import { loadSavedTrips, removeTrip, saveTrip, savedTripId, StorageFullError } from './savedTrips';
 import { decomposeJourneyId } from '../data/packQuery';
+import { LidhraCard, LIDHRA_MIN_RIDE_MINUTES } from '../app/LidhraCard';
 
 // MapLibre is the largest dependency in the app. Loading it here, and only when
 // the reader asks for the map, keeps it off every other route.
@@ -323,6 +324,9 @@ export function JourneyDetailView({
         </div>
         <StopTimeline stops={journey.stops} boardingStopId={journey.boardingPoint.stopId} sectionLevel={sectionLevel} />
       </Section>
+
+      {/* -- Lidhra, once the traveller knows the ride is long ------------- */}
+      {journey.durationMinutes >= LIDHRA_MIN_RIDE_MINUTES ? <LidhraCard headingLevel={sectionLevel} /> : null}
 
       {/* -- Restrictions -------------------------------------------------- */}
       {journey.restrictions.length > 0 ? (

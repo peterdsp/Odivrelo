@@ -266,56 +266,68 @@ svg {
   font-size: 0.875rem;
 }
 
-/* Lidhra, another app by the same maker: a quiet card at the foot of the page. */
+/* Lidhra, another app by the same maker, on journeys long enough to watch
+   something on the way. A content-layer card: solid surface, no glass, no
+   shadow. Inner corners are the card radius minus its padding, so they stay
+   concentric. */
 .od-lidhra {
-  margin-block-start: var(--od-space-3);
-  padding: var(--od-space-4);
+  container-type: inline-size;
+  margin-block-start: var(--od-space-8);
+  padding: var(--od-space-5);
   border: 1px solid var(--od-border);
   border-radius: var(--od-radius-large);
   background: var(--od-surface);
+  color: var(--od-text-primary);
+}
+
+.od-lidhra__inner {
   display: grid;
-  gap: var(--od-space-3);
-  max-inline-size: 36rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--od-space-5) var(--od-space-8);
 }
 
-.od-lidhra__eyebrow {
-  font: var(--od-type-caption);
-  color: var(--od-text-secondary);
-}
-
-.od-lidhra__body {
-  display: flex;
-  gap: var(--od-space-3);
-  align-items: flex-start;
-}
-
-.od-lidhra__icon {
-  flex: none;
-  border-radius: var(--od-radius-medium);
-}
-
-.od-lidhra__text {
-  display: grid;
-  gap: var(--od-space-1);
+.od-lidhra__copy {
   min-inline-size: 0;
 }
 
-.od-lidhra__name {
-  font: var(--od-type-heading);
+.od-lidhra__title {
+  font: var(--od-type-title);
+  max-inline-size: 20ch;
+  text-wrap: balance;
   color: var(--od-text-primary);
 }
 
 .od-lidhra__line {
-  font-size: 0.875rem;
+  margin-block-start: var(--od-space-3);
+  max-inline-size: 46ch;
+  font: var(--od-type-body);
+  color: var(--od-text-primary);
+}
+
+.od-lidhra__facts {
+  display: flex;
+  gap: var(--od-space-3);
+  align-items: center;
+  margin-block-start: var(--od-space-4);
+  font-size: 0.9375rem;
   color: var(--od-text-secondary);
+}
+
+.od-lidhra__facts strong {
+  color: var(--od-text-primary);
+}
+
+.od-lidhra__icon {
+  flex: none;
+  border-radius: 10px;
 }
 
 .od-lidhra__actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--od-space-4);
-  font-size: 0.875rem;
+  gap: var(--od-space-3) var(--od-space-5);
+  margin-block-start: var(--od-space-5);
 }
 
 .od-lidhra__badge {
@@ -324,7 +336,7 @@ svg {
 }
 
 .od-lidhra__badge img {
-  block-size: 40px;
+  block-size: 48px;
   inline-size: auto;
 }
 
@@ -348,6 +360,54 @@ svg {
   :root:not([data-theme='light']) .od-lidhra__badge-dark {
     display: block;
   }
+}
+
+/* The library on the big screen, with the phone overlapping its corner. */
+.od-lidhra__shots {
+  order: -1;
+  display: grid;
+  margin: 0 0 13%;
+  min-inline-size: 0;
+}
+
+.od-lidhra__shots img {
+  grid-area: 1 / 1;
+  display: block;
+  block-size: auto;
+}
+
+.od-lidhra__library {
+  inline-size: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  border-radius: var(--od-radius-medium);
+  background: #0d1424;
+}
+
+.od-lidhra__phone {
+  justify-self: end;
+  align-self: end;
+  inline-size: 27%;
+  aspect-ratio: 360 / 570;
+  margin: 0 5% -13% 0;
+  border-radius: var(--od-radius-medium);
+  outline: 4px solid var(--od-surface);
+  background: #e9ebf2;
+}
+
+@container (max-width: 479px) {
+  .od-lidhra__title { font-size: 1.375rem; max-inline-size: none; }
+}
+
+@container (min-width: 480px) and (max-width: 699px) {
+  .od-lidhra__shots { margin-block-end: 9%; }
+  .od-lidhra__phone { inline-size: 21%; margin-block-end: -9%; }
+}
+
+@container (min-width: 700px) {
+  .od-lidhra__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: center; }
+  .od-lidhra__shots { order: 0; margin-block-end: 9%; }
+  .od-lidhra__phone { inline-size: 25%; margin-block-end: -9%; }
 }
 
 /* --------------------------------------------------------------------------
